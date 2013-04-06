@@ -1,0 +1,1 @@
+<span style="color: #b94a48;"><?=__('Error loading module. :message', array(':message' => $message));?></span>
