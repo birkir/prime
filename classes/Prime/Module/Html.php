@@ -9,11 +9,6 @@
  */
 class Prime_Module_Html extends Prime_Module {
 
-	public static function factory($region)
-	{
-		return new Prime_Module_Html($region);
-	}
-
 	/**
 	 * Parameters to configure module
 	 * 
@@ -23,12 +18,6 @@ class Prime_Module_Html extends Prime_Module {
 	{
 		return array
 		(
-			'name' => array
-			(
-				'name'  => 'Name',
-				'group' => 'General',
-				'field' => 'Prime_Field_String'
-			),
 			'content' => array
 			(
 				'name'  => 'Content',

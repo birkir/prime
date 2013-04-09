@@ -26,6 +26,7 @@ class Prime_Field_String extends Prime_Field {
 		$view = View::factory('Prime/Field/String')
 		->set('name', $this->field['key'])
 		->set('caption', $this->field['name'])
+		->set('placeholder', Arr::get($this->field, 'placeholder', NULL))
 		->set('value', $this->value());
 
 		return $view;

@@ -503,7 +503,7 @@ select:focus:required:invalid:focus {
   border-radius: 0;
 }
 .scrollable::-webkit-scrollbar {
-  height: 16px;
+  height: 10px;
   width: 10px;
 }
 .scrollable::-webkit-scrollbar-button:start:decrement,

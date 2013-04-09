@@ -60,6 +60,36 @@ class Controller_Prime_Template extends Controller_Prime_Core {
 		$this->response->body($view->render());
 	}
 
+	public function action_move()
+	{
+		$this->auto_render = FALSE;
+
+		$response = array(
+			'status' => 'error',
+			'message' => 'Could not move file or folder. Check permissions.'
+		);
+
+		$file = APPPATH.'views/'.$this->request->param('id');
+		$pos = Arr::get($_POST, 'position', NULL);
+		$ref = APPPATH.'views/'.Arr::get($_POST, 'reference', NULL);
+		$fileName = pathinfo($file, PATHINFO_BASENAME);
+
+		if ($pos === 'last' OR $pos === 'first' OR $pos === 'inside') {
+			$toDir = $ref;
+		} else {
+			$toDir = pathinfo($ref, PATHINFO_DIRNAME);
+		}
+
+		try {
+			if (rename($file, $toDir.'/'.$fileName)) {
+				$response['status'] = 'success';
+			}
+		} catch (ErrorException $e) { $response['message'] = Prime::clean($e->getMessage()); }
+
+		$this->response->body(json_encode($response));
+
+	}
+
 	public function action_create()
 	{
 		$this->auto_render = FALSE;
@@ -104,10 +134,12 @@ class Controller_Prime_Template extends Controller_Prime_Core {
 
 		$dir = pathinfo($path, PATHINFO_DIRNAME);
 
-		if (rename($path, $dir.'/'.$_POST['name'])) {
-			$response['status'] = 'success';
-			$response['message'] = str_replace(APPATH, NULL, $dir.'/'.$_POST['name']);
-		}
+		try {
+			if (rename($path, $dir.'/'.$_POST['name'])) {
+				$response['status'] = 'success';
+				$response['message'] = str_replace(APPPATH.'views/', NULL, $dir.'/'.$_POST['name']);
+			}
+		} catch (ErrorException $e) { $response['message'] = Prime::clean($e->getMessage()); }
 
 		$this->response->body(json_encode($response));
 	}

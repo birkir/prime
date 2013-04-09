@@ -72,8 +72,11 @@ var prime = (function () {
                     x = 0,
                     li;
 
-                // setup context menu and append to module
-                this.context = $('<ul class="dropdown-menu contextmenu"></ul>').appendTo(this);
+                // setup context menu
+                this.context = $('<ul class="dropdown-menu contextmenu"></ul>');
+
+                // append to first level module for positioning of menu
+                this.context.appendTo($(this).parents('.prime-module:last').length === 0 ? this : $(this).parents('.prime-module:last'));
 
                 // loop through menu items
                 while (x < module.length) {

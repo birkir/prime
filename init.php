@@ -6,14 +6,13 @@ Cookie::$expiration = Date::WEEK;
 
 // Required modules
 $required = array(
-	'media'    => MODPATH.'media',
-	'prime'    => MODPATH.'prime',
-	'auth'     => MODPATH.'auth',
-	'cache'    => MODPATH.'cache',
-	'database' => MODPATH.'database',
-	'image'    => MODPATH.'image',
-	'orm'      => MODPATH.'orm',
-	'userguide'=> MODPATH.'userguide'
+	'media'     => MODPATH.'media',
+	'prime'     => MODPATH.'prime',
+	'auth'      => MODPATH.'auth',
+	'cache'     => MODPATH.'cache',
+	'database'  => MODPATH.'database',
+	'image'     => MODPATH.'image',
+	'orm'       => MODPATH.'orm'
 );
 
 // Lazy-load modules
@@ -37,8 +36,8 @@ Route::set('Prime', 'prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'
 
 // Web routing
 Route::set('Prime_Web', '<query>', array('query' => '.*'))
-->defaults(array(
-	'directory'  => 'Prime',
-	'controller' => 'Frontend',
-	'action'     => 'process'
-));
+	->defaults(array(
+		'directory'  => 'Prime',
+		'controller' => 'Frontend',
+		'action'     => 'process'
+	));

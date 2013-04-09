@@ -12,7 +12,8 @@ class Controller_Prime_Page extends Controller_Prime_Core {
 	public function action_index()
 	{
 		$this->template->left = View::factory('Prime/Page/Tree')
-		->set('items', ORM::factory('Prime_Page')->pages(TRUE));
+		->set('items', ORM::factory('Prime_Page')->pages(TRUE))
+		->set('path', $this->request->param('id'));
 
 		$iframe = array(
 			'src'         => 'http://prime-beta.forritun.org',

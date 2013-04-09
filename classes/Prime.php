@@ -245,6 +245,7 @@ class Prime {
                 	),
                 	'attr' => array(
                 		'data-type' => 'file',
+                		'data-id'   => substr($key, strlen('views/')),
                 		'id' => sha1(substr($key, strlen('views/'))),
                 	)
 	            );
@@ -268,6 +269,12 @@ class Prime {
 	    ksort($found);
 	 
 	    return $found;
+	}
+
+	public static function clean($message = NULL)
+	{
+		$message = str_replace(array(APPPATH, MODPATH, SYSPATH), array('APPPATH/', 'MODPATH/', 'SYSPATH/'), $message);
+		return $message;
 	}
 
 	public static function email($to = NULL, $subject = NULL, $content = NULL)

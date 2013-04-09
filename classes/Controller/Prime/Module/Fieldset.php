@@ -68,7 +68,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Core {
 		{
 			$_item= array(
 				'data' => array('title' => $item->name, 'attr' => array('href' => '#'), 'icon' => ($item->type === 'category' ? 'icon-folder-close' : 'icon-list-alt')),
-				'attr' => array('data-id' => $item->id, 'id' => 'page_id_'.$item->id, 'rel' => $item->type)
+				'attr' => array('data-id' => $item->id, 'data-type' => $item->type === 'category' ? 'folder' : 'file', 'id' => 'page_id_'.$item->id, 'rel' => $item->type)
 			);
 
 			$childs = ORM::factory('Prime_Module_Fieldset')->tree($item->id);

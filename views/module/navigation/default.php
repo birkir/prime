@@ -6,9 +6,9 @@
  * @param  ORM  $items
  * @return void
  */
-if ( ! function_exists('render'))
+if ( ! function_exists('render_navigation_default'))
 {
-	function render($items, $initial = TRUE)
+	function render_navigation_default($items, $initial = TRUE)
 	{
 		// Only print list if nodes available
 		if ( ! empty($items))
@@ -26,7 +26,7 @@ if ( ! function_exists('render'))
 				echo HTML::anchor($item->url, $item->name);
 
 				// Render more items (if available)			
-				render($item->children, FALSE);
+				render_navigation_default($item->children, FALSE);
 
 				// List item element ends
 				echo '</li>';
@@ -39,4 +39,4 @@ if ( ! function_exists('render'))
 }
 
 // Call tree render function
-render($items);
+render_navigation_default($items);

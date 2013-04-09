@@ -323,9 +323,6 @@ var app = (function () {
     // modal window
     _app.modal = function (url, backdrop, classes) {
 
-        // set cursor style
-        $('body').css({ cursor: 'wait' });
-
         // default add backdrop
         if (backdrop === undefined) {
             backdrop = false;
@@ -353,15 +350,12 @@ var app = (function () {
             }).append(response);
 
             modal.modal({ backdrop: backdrop });
-
-            $('body').css({ cursor: 'default' });
         });
 
         // on failure
         request.fail(function (jqXHR, textStatus) {
             console.log('Request failed: ' + textStatus);
             console.log(jqXHR);
-            $('body').css({ cursor: 'default' });
         });
 
         return false;
@@ -450,168 +444,363 @@ var app = (function () {
         });
     };
 
+    // confirm dialog
+    _app.confirm = function (title, text, callback) {
+
+        // find all open modal windows and close them
+        $('body > .modal:hidden').remove();
+
+        // dom definition
+        var modal = $('<div/>', { 'class': 'modal' }),
+            header = $('<div/>', { 'class': 'modal-header' }).appendTo(modal),
+            button = $('<button/>', { 'class': 'close', 'data-dismiss': 'modal', 'aria-hidden': 'true' }).html('&times;').appendTo(header),
+            h3 = $('<h3/>').text(title).appendTo(header),
+            mbody = $('<div/>', { 'class': 'modal-body scrollable' }).html(text).appendTo(modal),
+            mfooter = $('<div/>', { 'class': 'modal-footer' }).appendTo(modal),
+            cancel = $('<button/>', { 'class': 'btn', 'data-dismiss': 'modal', 'aria-hidden': 'true' }).text('Cancel').appendTo(mfooter),
+            confirm = $('<button/>', { 'class': 'btn btn-danger', 'type': 'submit' }).text('Confirm').appendTo(mfooter);
+
+        // open modal
+        modal.modal({ backdrop: true });
+
+        // trigger focus event to cancel button
+        cancel.trigger('focus');
+
+        // confirm handler
+        confirm.on('click', function () {
+
+            // callback
+            if (callback !== undefined && typeof callback  === 'function') {
+                callback(true);
+            }
+
+            // close the modal
+            modal.modal('hide');
+
+            // dont do anything
+            return false;
+        });
+
+        return false;
+    };
+
+    // mouse up function
+    _app.mouseup = function () {
+
+        // trigger document click
+        $(document).trigger('click');
+
+        // also hide jstree context menu
+        $('#vakata-contextmenu').css({ visibility: 'hidden' });
+    };
+
+    // tree core
+    _app.tree = function (options) {
+
+        // default options
+        var defaults = {
+            icons: false,
+            ajax: function (node) {
+                return options.url + '/tree/' + (node.data ? node.data('id') : '');
+            },
+            sort: true,
+            url: '',
+            context: function (node) {
+                return {};
+            },
+            pushState: true,
+            selectNode: function (id) {
+                return options.url + '/edit/' + id;
+            },
+            renameNode: function (name, id) {
+                var tree = this;
+                $.create(options.url + '/rename/' + id, { name: name }, function (response) {
+                    if (response.status === 'success') {
+                        tree.rslt.obj.data('id', response.message);
+                    } else {
+                        tree.inst.refresh();
+                        app.alert({ content: response.message, classes: 'alert-error' });
+                    }
+                });
+                return true;
+            },
+            createNode: function (name, parent) {
+                var tree = this;
+                $.create(options.url + '/create', { name: name, type: $(tree.rslt.obj).data('type'), parent: parent }, function (response) {
+                    if (response.status === 'success') {
+                        tree.rslt.obj.data('id', response.message);
+                    } else {
+                        tree.inst.refresh();
+                        app.alert({ content: response.message, classes: 'alert-error' });
+                    }
+                });
+            },
+            moveNode: function (id, ref, pos) {
+                var tree = this;
+                $.create(options.url + '/move/' + id, { reference: ref, position: pos }, function (response) {
+                    if (response.status === 'success') {
+                        console.log('doneeh');
+                    } else {
+                        tree.inst.refresh();
+                        app.alert({ content: response.message, classes: 'alert-error' });
+                    }
+                });
+            }
+        };
+
+        // options extended
+        options = $.extend(defaults, options);
+
+        var tree_config = {
+            plugins: [
+                'json_data',
+                'themes',
+                'ui',
+                'crrm',
+                'contextmenu',
+                'dnd',
+                'cookies'
+            ],
+            core: {
+                animation: false
+            },
+            json_data: {
+                ajax: {
+                    url: options.ajax,
+                    success: function (data) {
+                        return data.items;
+                    }
+                }
+            },
+            themes: {
+                theme: '',
+                dots: false,
+                icons: options.icons
+            },
+            cookies: {
+                cookie_options: {
+                    path: options.url
+                }
+            },
+            contextmenu: {
+                items: options.context
+            }
+        };
+
+        if (options.sort === true) {
+            tree_config.sort = function (a, b) {
+                return (($(a).data('type') === 'folder' ? 'a' : 'b') + this.get_text(a)) > (($(b).data('type') === 'folder' ? 'a' : 'b') + this.get_text(b)) ? 1 : -1;
+            };
+            tree_config.plugins.push('sort');
+        }
+
+        // tree
+        var tree = $('.jstree').on('loaded.jstree', function (event, data) {
+
+            // check if path is set to jstree node
+            if ($(this).data('path')) {
+
+                // dont select anything from cookies
+                data.inst.data.ui.to_select = [];
+
+                // deselect nodes
+                $(this).jstree('deselect_all');
+
+                // select node wanted
+                $(this).jstree('select_node', $(this).find('#' + $(this).data('path')));
+            }
+        }).jstree(tree_config);
+
+        tree.createNode = function (name, type) {
+            return 'awesome';
+        };
+
+        // select node event
+        tree.bind('select_node.jstree', function (e, tree) {
+
+            // get selectNode callback
+            var location = options.selectNode.call(tree, $(tree.rslt.obj).data('id'));
+
+            // check for location
+            if (location && options.pushState === true && window.location.pathname !== location) {
+
+                // send location to history
+                window.history.pushState({ node: $(tree.rslt.obj).data('id') }, window.document.title, location);
+            }
+        });
+
+        // rename node event
+        tree.bind('rename_node.jstree', function (e, tree) {
+
+            // variables
+            var node = $(tree.rslt.obj);
+
+            // check if no id is set
+            if (node.data('id') === undefined) {
+                options.createNode.call(tree, tree.inst.get_text(node), node.parents('li').data('id'));
+            } else {
+                options.renameNode.call(tree, tree.inst.get_text(node), node.data('id'));
+            }
+        });
+
+        // move node event
+        tree.bind('move_node.jstree', function (e, tree) {
+
+            // setup variables
+            var node = tree.rslt.o,
+                ref  = tree.rslt.r,
+                pos  = tree.rslt.p;
+
+            // call move node function
+            options.moveNode.call(tree.inst, node.data('id'), ref.data('id'), pos);
+        });
+
+        // remove node event
+        tree.bind('delete_node.jstree', function (node, tree) {
+
+            // call remove node function
+            options.deleteNode.call(tree.inst, $(tree.rslt.obj).data('id'));
+        });
+
+        // check if push state is wanted
+        if (options.pushState === true) {
+
+            // set popState event
+            window.onpopstate = function (event) {
+
+                // only when state is available
+                if (event.state) {
+
+                    // deselect nodes
+                    tree.jstree('deselect_all');
+
+                    // select correct node
+                    tree.jstree('select_node', tree.find('[data-id=' + event.state.node + ']'));
+                }
+            };
+        }
+
+        return tree;
+    };
+
     // page function
     _app.page = (function () {
 
-        // scope variables
-        var page = {};
+        // page scope
+        var page = {
+            region: {
+                reload: function (id) {
 
-        _app.live = $('#live').contents();
+                    // reload via ajax
+                    app.panel($('#live').contents().find('[data-prime-module=' + id + ']'), '/prime/region/load/' + id, function (obj, html) {
 
-        // mouse up function
-        _app.mouseup = function () {
-            $(document).trigger('click');
-            $('#vakata-contextmenu').css({ visibility: 'hidden' });
-        };
+                        // reinvoke context menus
+                        document.getElementById('live').contentWindow.prime.context();
+                    });
+                },
+                remove: function (id) {
 
-        // page region methods
-        page.region = (function () {
+                    // setup confirm dialog
+                    return app.confirm('Are you sure?', 'You are about to delete page region.', function () {
 
-            // region scope
-            var region = {};
+                        // remove module div from live view
+                        $('#live').contents().find('[data-prime-module=' + id + ']').remove();
 
-            // page region reload method
-            region.reload = function (id) {
+                        // reload context menus and drop zones
+                        document.getElementById('live').contentWindow.prime.context();
 
-                // reload via ajax
-                app.panel($('#live').contents().find('[data-prime-module=' + id + ']'), '/prime/region/load/' + id, function (obj, html) {
-
-                    // reinvoke context menus
-                    document.getElementById('live').contentWindow.prime.context();
-                });
-            };
-
-            // page region remove method
-            region.remove = function (id, confirm) {
-
-                // if confirmed
-                if (confirm === true) {
-                    $('#live').contents().find('[data-prime-module=' + id + ']').remove();
-                    document.getElementById('live').contentWindow.prime.context();
-                    app.page.settings();
-                    return true;
+                        // make sure we have page settings loaded
+                        app.page.settings();
+                    });
+                },
+                settings: function (id) {
+                    app.panel('.rightpanel', '/prime/region/settings/' + id);
                 }
-
-                // show confirmation modal
-                app.modal('/prime/region/remove/' + id, true);
-            };
-
-            // page region settings method
-            region.settings = function (id) {
-
-                // set panel via ajax
-                app.panel('.rightpanel', '/prime/region/settings/' + id);
-            };
-
-            return region;
-
-        }());
-
-        // page settings method
-        page.settings = function (id) {
-
-                // set panel via ajax
-            app.panel('.rightpanel', '/prime/page/settings/' + id);
-        };
-
-        // page create method
-        page.create = function (obj) {
-
-            // load modal via ajax
-            app.modal('/prime/page/create?parent=' + $(obj).data('id'));
-        };
-
-        // page remove method
-        page.remove = function (obj) {
-
-            // load modal via ajax
-            app.modal('/prime/page/delete?page_id=' + $(obj).data('id'));
-        };
-
-        // page properties method
-        page.properties = function (obj) {
-
-            // load modal via ajax
-            app.modal('/prime/page/properties/' + $(obj).data('id'));
-        };
-
-        // page tree method
-        page.tree = (function () {
-
-            // setup jstree
-            var tree = $('.jstree.tree-pages').jstree({
-                plugins: ['json_data', 'themes', 'ui', 'crrm', 'contextmenu', 'dnd', 'cookies'],
-                core: { animation: false },
-                json_data: { ajax: {
-                    url: function (n) {
-                        // return url
-                        return '/prime/page/rest' + (n.attr ? '/' + n.attr('data-id') : '');
-                    },
-                    success: function (data) {
-                        // return items object
-                        return data.items;
-                    }
-                }},
-                themes: { theme: '', dots: false, icons: false },
-                cookies: { cookie_options: { path: '/prime/page' }},
-                contextmenu: {
-                    items: {
-                        'reload': { label: 'Refresh tree', action: function (obj) { this.refresh(obj); }, separator_after: true },
-                        'create_page': { label: 'Create page', action: function (obj) { page.create(obj); }},
-                        'rename_page': { label: 'Rename page', action: function (obj) { this.rename(obj); }},
-                        'remove_page': { label: 'Delete page', action: function (obj) { page.remove(obj); }, separator_after: true },
-                        'publish': { label: 'Publish', action: function (obj) { page.publish(obj); }, separator_after: true },
-                        'properties': { label: 'Properties', action: function (obj) { page.properties(obj); }},
-                        'create': null,
-                        'rename': null,
-                        'remove': null,
-                        'ccp': null
-                    }
-                }
-            });
-
-            tree.bind('select_node.jstree', function (event, tree) {
-                var node = $(tree.rslt.obj),
-                    parents = node.parents('li[data-id]'),
-                    buff = [],
-                    iframe = document.getElementById('live');
-                page.id = node.data('id');
-                parents.each(function (i, item) {
-                    buff.push($(this).data('alias'));
+            },
+            settings: function (id) {
+                app.panel('.rightpanel', '/prime/page/settings/' + id);
+            },
+            create: function (id) {
+                app.modal('/prime/page/create?parent=' + id);
+            },
+            remove: function (id) {
+                return app.confirm('Are you sure?', 'You are about to remove a page.', function () {
+                    $.destroy('/prime/page/rest/' + id, {}, function (request) {
+                        if (request.status === 'success') {
+                            var tree = jQuery.jstree._reference(jQuery('.jstree')[0]);
+                            tree.remove(document.getElementById('page_id_<?=$item->id;?>'));
+                        }
+                    });
                 });
-                buff.reverse();
-                buff.push(node.data('alias'));
-                iframe.src = '/' + buff.join('/');
-                iframe.onload = function () {
-                    var script = document.createElement('script'),
-                        style = document.createElement('link'),
-                        head = $('#live').contents().find('head')[0];
-                    script.src = '/media/prime/js/frontend.js';
-                    style.href = '/media/prime/css/frontend.css';
-                    script.type = 'text/javascript';
-                    style.rel = 'stylesheet';
-                    head.appendChild(script);
-                    head.appendChild(style);
-                    page.settings();
-                };
-            });
-
-            tree.bind('rename.jstree', function (event, tree) {
-                $.getJSON('/prime/page/rename/' + $(tree.rslt.obj).data('id') + '?name=' + encodeURI(tree.rslt.new_name), function (request) {
-                    if (request.status === 'error') {
-                        page.tree.jstree('set_text', tree.rslt.obj, tree.rslt.old_name);
-                    }
-                });
-            });
-
-            if (document.getElementById('live') === 1) {
-                $(document).on('click', function () {
-                    document.getElementById('live').contentWindow.prime.mouseup();
-                });
+            },
+            properties: function (id) {
+                app.modal('/prime/page/properties/' + id);
             }
+        };
 
-            return tree;
-        }());
+        // make sure tree pages is available
+        if ($('.tree-pages').length === 1) {
+
+            // page tree
+            page.tree = _app.tree({
+                url: '/prime/page',
+                ajax: function (node) {
+                    return '/prime/page/rest' + (node.data ? '/' + node.data('id') : '');
+                },
+                sort: true,
+                context: function () {
+                    return {
+                        reload: { label: 'Refresh tree', action: function (obj) { this.refresh(obj); }, separator_after: true },
+                        create: { label: 'Create page', action: function (obj) { page.create($(obj).data('id')); }},
+                        rename: { label: 'Rename page', action: function (obj) { this.rename(obj); }},
+                        remove: { label: 'Delete page', action: function (obj) { page.remove($(obj).data('id')); }, separator_after: true },
+                        properties: { label: 'Properties', action: function (obj) { page.properties($(obj).data('id')); }}
+                    };
+                },
+                selectNode: function (n) {
+
+                    var node = $(this.rslt.obj),
+                        parents = node.parents('li[data-id]'),
+                        buff = [],
+                        iframe = document.getElementById('live');
+                    page.id = node.data('id');
+                    parents.each(function (i, item) {
+                        buff.push($(this).data('alias'));
+                    });
+                    buff.reverse();
+                    buff.push(node.data('alias'));
+                    iframe.src = '/' + buff.join('/');
+                    iframe.onload = function () {
+                        var script = document.createElement('script'),
+                            style = document.createElement('link'),
+                            head = $('#live').contents().find('head')[0];
+                        script.src = '/media/prime/js/frontend.js';
+                        style.href = '/media/prime/css/frontend.css';
+                        script.type = 'text/javascript';
+                        style.rel = 'stylesheet';
+                        head.appendChild(script);
+                        head.appendChild(style);
+                        page.settings();
+                    };
+
+                    return '/prime/page/index/' + n;
+                },
+                renameNode: function (name, id) {
+                    $.getJSON('/prime/page/rename/' + id + '?name=' + encodeURI(name), function (request) {
+                        if (request.status === 'error') {
+                            page.tree.jstree('refresh');
+                        }
+                    });
+                }
+            });
+
+            // proxy click callback
+            $(document).on('click', function () {
+                if (document.getElementById('live').contentWindow.prime) {
+                    document.getElementById('live').contentWindow.prime.mouseup();
+                }
+            });
+        }
 
         // return page object
         return page;
@@ -659,25 +848,29 @@ var app = (function () {
         };
 
         // remove file or folder
-        template.remove = function (obj, tree) {
+        template.remove = function (node, tree) {
 
-            // send create request
-            $.create('/prime/template/remove/' + $(obj).children('a').attr('href'), function (response) {
+            // setup confirm dialog
+            app.confirm('Are you sure?', 'Are you sure you want to remove this file or folder?', function () {
 
-                // check if succeeded
-                if (response.status === 'success') {
+                // send create request
+                $.create('/prime/template/remove/' + node.data('id'), function (response) {
 
-                    // remote node from tree
-                    tree.remove(obj);
+                    // check if succeeded
+                    if (response.status === 'success') {
 
-                } else {
+                        // remote node from tree
+                        tree.remove(node);
 
-                    // alert user of error
-                    app.alert({
-                        classes: 'alert-error',
-                        content: response.message
-                    });
-                }
+                    } else {
+
+                        // alert user of error
+                        app.alert({
+                            classes: 'alert-error',
+                            content: response.message
+                        });
+                    }
+                });
             });
         };
 
@@ -708,130 +901,36 @@ var app = (function () {
         // tree configure and setup
         template.tree = function () {
 
-            // setup jstree
-            var tree = $('.jstree.tree-templates').on('loaded.jstree', function (event, data) {
-
-                // check if path is set to jstree node
-                if ($(this).data('path')) {
-
-                    // dont select anything from cookies
-                    data.inst.data.ui.to_select = [];
-
-                    // deselect nodes
-                    $(this).jstree('deselect_all');
-
-                    // select node wanted
-                    $(this).jstree('select_node', $(this).find('#' + $(this).data('path')));
-                }
-
-            }).jstree({
-                plugins: ['json_data', 'themes', 'ui', 'crrm', 'contextmenu', 'dnd', 'cookies', 'sort'],
-                core: { animation: false },
-                json_data: { ajax: {
-                    url: function (n) { return '/prime/template/tree' + (n.attr ? '/' + n.attr('data-id') : ''); },
-                    success: function (data) { return data.items; }
-                }},
-                sort: function (a, b) {
-                    return (($(a).data('type') === 'folder' ? 'a' : 'b') + this.get_text(a)) > (($(b).data('type') === 'folder' ? 'a' : 'b') + this.get_text(b)) ? 1 : -1;
+            var tree = _app.tree({
+                url: '/prime/template',
+                ajax: function (node) {
+                    return '/prime/template/tree/' + (node.data ? node.data('id') : '');
                 },
-                themes: { theme: '', dots: false, icons: true },
-                cookies: { cookie_options: { path: '/prime/template' }},
-                contextmenu: {
-                    items: function (node) {
+                context: function (node) {
 
-                        var ret = {
-                            'create': null,
-                            'rename': null,
-                            'remove': null,
-                            'ccp': null,
-                            'reload': { label: 'Refresh tree', action: function (obj) { this.refresh(); }, separator_after: true }
-                        };
+                    var items = {};
 
-                        if ($(node).data('type') === 'folder') {
-                            ret.create_folder = { label: 'Create folder', action: function (obj) { template.create(obj, this, 'folder'); }};
-                            ret.rename_folder = { label: 'Rename folder', action: function (obj) { this.rename(obj); }};
-                            ret.remove_folder = { label: 'Delete folder', action: function (obj) { template.remove(obj, this); }, separator_after: true };
-                            ret.create_file = { label: 'New file', action: function (obj) { template.create(obj, this, 'file'); }};
-                        } else {
-                            ret.rename_file = { label: 'Rename', action: function (obj) { this.rename(obj); }};
-                            ret.remove_file = { label: 'Delete', action: function (obj) { template.remove(obj, this); }, separator_after: true };
-                        }
+                    items.reload = { label: 'Refresh tree', action: function (obj) { this.refresh(); }, separator_after: true };
 
-                        return ret;
-                    }
-                }
-            });
-
-            // select node
-            tree.bind('select_node.jstree', function (event, tree) {
-
-                // get node from event
-                var node = $(tree.rslt.obj),
-                    location = '/prime/template/edit/' + $(tree.rslt.obj).children('a').attr('href');
-
-                // if node is file type
-                if (node.data('type') === 'file') {
-
-                    // open up edit 
-                    app.template.edit(node.children('a').attr('href'));
-
-                    // push to historyState if not same as location
-                    if (window.location.pathname !== location) {
-                        window.history.pushState({ node: node.attr('id') }, window.document.title, location);
-                    }
-                }
-            });
-
-            // rename node
-            tree.bind('rename.jstree', function (event, tree) {
-
-                // setup request url
-                var url = '/prime/template/rename/' + $(tree.rslt.obj).children('a').attr('href'),
-                    node = $(tree.rslt.obj);
-
-                // check if node is newly created
-                if (node.children('a').attr('href') === '#') {
-
-                    // set to create path
-                    url = '/prime/template/create';
-                }
-
-                // send create request
-                $.create(url, { name: tree.inst.get_text(node), type: node.data('type') }, function (response) {
-
-                    // check for success
-                    if (response.status === 'success') {
-
-                        // set correct path to anchor
-                        node.children('a').attr('href', response.message);
-
+                    if ($(node).data('type') === 'folder') {
+                        items.create = { label: 'Create folder', action: function (obj) { template.create(obj, this, 'folder'); }};
+                        items.rename = { label: 'Rename folder', action: function (obj) { this.rename(obj); }};
+                        items.remove = { label: 'Delete folder', action: function (obj) { template.remove(obj, this); }, separator_after: true };
+                        items.file = { label: 'New file', action: function (obj) { template.create(obj, this, 'file'); }};
                     } else {
-
-                        // reload tree
-                        tree.inst.reload();
-
-                        // show error to user
-                        app.alert({
-                            content: response.message,
-                            classes: 'alert-error'
-                        });
+                        items.rename = { label: 'Rename', action: function (obj) { this.rename(obj); }};
+                        items.remove = { label: 'Delete', action: function (obj) { template.remove(obj, this); }, separator_after: true };
                     }
-                });
-            });
 
-            // set popState event
-            window.onpopstate = function (event) {
-
-                // only when state is available
-                if (event.state) {
-
-                    // deselect nodes
-                    tree.jstree('deselect_all');
-
-                    // select correct node
-                    tree.jstree('select_node', tree.find('#' + event.state.node));
+                    return items;
+                },
+                selectNode: function (id) {
+                    if (this.rslt.obj.data('type') === 'file') {
+                        app.template.edit(id);
+                    }
+                    return '/prime/template/edit/' + id;
                 }
-            };
+            });
 
             return tree;
         };
@@ -851,6 +950,8 @@ var app = (function () {
 
         var media = {
             edit: function (filepath) {
+
+                // show panel
                 app.panel('.centerpanel', '/prime/media/editor/' + filepath);
             },
             save: function (name, value) {
@@ -925,49 +1026,15 @@ var app = (function () {
                     },
                     true
                 );
-            }
-        };
-
-        // tree configure and setup
-        media.tree = function () {
-
-            // setup jstree
-            var tree = $('.jstree.tree-media').on('loaded.jstree', function (event, data) {
-
-                // check if path is set to jstree node
-                if ($(this).data('path')) {
-
-                    // dont select anything from cookies
-                    data.inst.data.ui.to_select = [];
-
-                    // deselect nodes
-                    $(this).jstree('deselect_all');
-
-                    // select node wanted
-                    $(this).jstree('select_node', $(this).find('#' + $(this).data('path')));
-                }
-
-            }).jstree({
-                plugins: ['json_data', 'themes', 'ui', 'crrm', 'contextmenu', 'dnd', 'cookies', 'sort'],
-                core: { animation: false },
-                json_data: { ajax: {
-                    url: function (n) { return '/prime/media/tree' + (n.attr ? '/' + n.attr('data-id') : ''); },
-                    success: function (data) { return data.items; }
-                }},
-                sort: function (a, b) {
-                    return (($(a).data('type') === 'folder' ? 'a' : 'b') + this.get_text(a)) > (($(b).data('type') === 'folder' ? 'a' : 'b') + this.get_text(b)) ? 1 : -1;
-                },
-                themes: { theme: '', dots: false, icons: true },
-                cookies: { cookie_options: { path: '/prime/media' }},
-                contextmenu: {
-                    items: function (node) {
+            },
+            tree: function () {
+                return _app.tree({
+                    url: '/prime/media',
+                    sort: true,
+                    context: function (node) {
 
                         var ret = {
-                            'create': null,
-                            'rename': null,
-                            'remove': null,
-                            'ccp': null,
-                            'reload': { label: 'Refresh tree', action: function (obj) { this.refresh(); }, separator_after: true }
+                            reload: { label: 'Refresh tree', action: function (obj) { this.refresh(); }, separator_after: true }
                         };
 
                         if ($(node).data('type') === 'folder') {
@@ -982,93 +1049,29 @@ var app = (function () {
                         }
 
                         return ret;
-                    }
-                }
-            });
+                    },
+                    selectNode: function (id) {
 
-            // select node
-            tree.bind('select_node.jstree', function (event, tree) {
+                        var unload = window.onbeforeunload !== null ? window.onbeforeunload() : null,
+                            go = true;
 
-                var unload = window.onbeforeunload !== null ? window.onbeforeunload() : null,
-                    go = true;
-
-                if (unload !== undefined && unload !== null) {
-                    go = confirm('You havent saved your changes.' + "\n" + ' Do you want to discard changes?');
-                }
-
-                if (go) {
-                    // get node from event
-                    var node = $(tree.rslt.obj),
-                        location = '/prime/media/edit/' + $(tree.rslt.obj).children('a').attr('href');
-
-                    // if node is file type
-                    if (node.data('type') === 'file') {
-
-                        // open up edit 
-                        app.media.edit(node.children('a').attr('href'));
-
-                        // push to historyState if not same as location
-                        if (window.location.pathname !== location) {
-                            window.history.pushState({ node: node.attr('id') }, window.document.title, location);
+                        if (unload !== undefined && unload !== null) {
+                            go = confirm('You havent saved your changes.' + "\n" + ' Do you want to discard changes?');
                         }
-                    }
-                } else {
-                    return false;
-                }
-            });
 
-            // rename node
-            tree.bind('rename.jstree', function (event, tree) {
+                        if (go) {
 
-                // setup request url
-                var node = $(tree.rslt.obj),
-                    url = '/prime/media/rename/' + $(tree.rslt.obj).children('a').attr('href');
+                            if (this.rslt.obj.data('type') === 'file') {
+                                app.media.edit(id);
+                            }
 
-                // check if node is newly created
-                if (node.children('a').attr('href') === '#') {
+                            return '/prime/media/edit/' + id;
+                        }
 
-                    // set to create path
-                    url = '/prime/media/create';
-                }
-
-                // send create request
-                $.create(url, { name: tree.inst.get_text(node), type: node.data('type'), parent: node.parents('li').children('a').attr('href') }, function (response) {
-
-                    // check for success
-                    if (response.status === 'success') {
-
-                        // set correct path to anchor
-                        node.children('a').attr('href', response.message);
-
-                    } else {
-
-                        // reload tree
-                        tree.inst.reload();
-
-                        // show error to user
-                        app.alert({
-                            content: response.message,
-                            classes: 'alert-error'
-                        });
+                        return false;
                     }
                 });
-            });
-
-            // set popState event
-            window.onpopstate = function (event) {
-
-                // only when state is available
-                if (event.state) {
-
-                    // deselect nodes
-                    tree.jstree('deselect_all');
-
-                    // select correct node
-                    tree.jstree('select_node', tree.find('#' + event.state.node));
-                }
-            };
-
-            return tree;
+            }
         };
 
         // identify tree fieldsets
@@ -1205,6 +1208,15 @@ var app = (function () {
             });
         };
 
+        // fieldset tree
+        _module.tree = function () {
+            $('.jstree.tree-fieldsets').each(function () {
+                _module._tree = _app.tree({
+                    url: '/prime/modules/fieldset'
+                });
+            });
+        };
+/*
         // tree view
         _module.tree = function () {
 
@@ -1290,44 +1302,6 @@ var app = (function () {
                 }
             });
 
-            // tree renaming method
-            tree.bind('rename.jstree', function (event, tree) {
-
-                // get node
-                var node = $(tree.rslt.obj);
-
-                // check if data id is unset
-                if (node.data('id') === 0) {
-
-                    // create node instead of renaming
-                    $.create('/prime/modules/fieldset/create/' + node.parents('li').data('id'), { name: tree.inst.get_text(node), type: node.attr('rel') }, function (response) {
-
-                        // reload tree
-                        tree.inst.refresh();
-                    });
-
-                } else {
-
-                    // rename node
-                    $.create('/prime/modules/fieldset/rename/' + node.data('id'), { name: tree.inst.get_text(node) }, function (response) {
-                        // success or not
-                    });
-                }
-            });
-
-            // window location pop state
-            window.onpopstate = function (event) {
-
-                // only on event state
-                if (event.state) {
-
-                    // deselect all nodes
-                    tree.jstree('deselect_all');
-
-                    // select correct node
-                    tree.jstree('select_node', tree.find('#page_id_' + event.state.node));
-                }
-            };
 
             // return jstree object
             return tree;
@@ -1340,6 +1314,8 @@ var app = (function () {
             _module._tree = _module.tree();
         }
 
+*/
+
         // return module
         return _module;
     }());
@@ -1348,7 +1324,6 @@ var app = (function () {
     _app.selects();
     _app.datagrid();
     prettyPrint();
-
     $('.uploader').each(_app.upload);
 
     // return app object
