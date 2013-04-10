@@ -16,6 +16,30 @@ class Prime_Field_String extends Prime_Field {
 	public $name = 'String';
 
 	/**
+	 * Extra options for field
+	 * 
+	 * @return array
+	 */
+	public function options()
+	{
+		return array(
+			'name'       => 'type',
+			'field'      => 'Prime_Field_Choose',
+			'properties' => array(
+				'options' => array(
+					'string'    => 'String',
+					'email'     => 'Email',
+					'integer'   => 'Integer',
+					'float'     => 'Float',
+					'money'     => 'Money',
+					'decimal'   => 'Decimal'
+				)
+			),
+			'default' => 'string'
+		);
+	}
+
+	/**
 	 * Fieldset render method
 	 *
 	 * @return View

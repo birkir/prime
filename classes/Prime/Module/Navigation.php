@@ -23,12 +23,6 @@ class Prime_Module_Navigation extends Prime_Module {
 	{
 		return array
 		(
-			'name' => array
-			(
-				'name'  => 'Name',
-				'group' => 'General',
-				'field' => 'Prime_Field_String'
-			),
 			'expanded' => array
 			(
 				'name'    => 'Expanded',
@@ -63,7 +57,7 @@ class Prime_Module_Navigation extends Prime_Module {
 				'group'   => 'Layout',
 				'field'   => 'Prime_Field_Template',
 				'properties' => array(
-					'scope' => 'navigation'
+					'scope' => 'module/navigation'
 				),
 				'default' => 'default'
 			)
@@ -130,6 +124,7 @@ class Prime_Module_Navigation extends Prime_Module {
 
 		// setup orm
 		$items = ORM::factory('Prime_Page')
+		->select(array(DB::select(DB::expr('COUNT(*)'))->from('prime_pages')->where('deleted', '=', 0)->where('parent_id', '=', DB::expr('`prime_page`.`id`')), 'childs'))
 		->where('parent_id', ($page === NULL ? 'IS' : '='), $page)
 		->where('deleted', '=', 0)
 		->order_by('index', 'ASC')
@@ -158,7 +153,7 @@ class Prime_Module_Navigation extends Prime_Module {
 			$node->active = in_array($node->id, $settings['active']);
 
 			// set children
-			$node->children = self::tree($settings, $node->id, $level + 1, $node->url);
+			$node->children = $node->childs > 0 ? self::tree($settings, $node->id, $level + 1, $node->url) : array();
 
 			if ($settings['to_level'] <= $node->level OR $settings['expanded'] === FALSE)
 			{

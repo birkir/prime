@@ -9,8 +9,18 @@
  */
 class Prime_Module {
 
+	/**
+	 * Region container
+	 * 
+	 * @var ORM
+	 */
 	public $_region;
 
+	/**
+	 * Merged settings with default values
+	 * 
+	 * @var object
+	 */
 	public $settings;
 
 	/**
@@ -27,6 +37,12 @@ class Prime_Module {
 		return new $class_name($region);
 	}
 
+	/**
+	 * Module constructor
+	 * 
+	 * @param ORM $region
+	 * @return self
+	 */
 	public function __construct($region)
 	{
 		// set region global
@@ -39,21 +55,40 @@ class Prime_Module {
 		return $this;
 	}
 
+	/**
+	 * Default values
+	 * 
+	 * @return array
+	 */
 	public function defaults()
 	{
-		$fields = $this->params();
+		// create array
 		$defaults = array();
 
-		foreach ($fields as $name => $field)
+		// loop through module field params
+		foreach ($this->params() as $name => $field)
 		{
+			// push to array
 			$defaults[$name] = isset($field['default']) ? $field['default'] : NULL;
 		}
-		
+
+		// return default values
 		return $defaults;
 	}
 
 	/**
-	 * Buttons to show in live mode
+	 * Check url for internal module route
+	 * 
+	 * @return boolean
+	 */
+	public function route($uri = NULL)
+	{
+		return FALSE;
+	}
+
+	/**
+	 * Actions to show in live mode, generally
+	 * this function will be extended.
 	 * 
 	 * @return array
 	 */

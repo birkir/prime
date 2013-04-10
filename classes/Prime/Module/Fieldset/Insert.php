@@ -37,6 +37,33 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 		);
 	}
 
+	public function post($fieldset)
+	{
+		// get post
+		$data = Request::current()->post();
+		$res = array();
+
+		// loop though fields for processing
+		foreach ($fieldset->fields->order_by('index', 'ASC')->find_all() as $field)
+		{
+			if (isset($data['field'.$field->id]))
+			{
+				$res[$field->name] = $data['field'.$field->id];
+			}
+		}
+
+		$item = array(
+			'prime_module_fieldset_id' => $fieldset->id,
+			'created' => date('Y-m-d H:i:s'),
+			'updated' => date('Y-m-d H:i:s'),
+			'data' => json_encode($res)
+		);
+
+		ORM::factory('Prime_Module_Fieldset_Item')
+		->values($item)
+		->save();
+	}
+
 	/**
 	 * Render module contents
 	 * 
@@ -64,7 +91,9 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 
 		// setup view
 		$view = View::factory('module/fieldset/insert/'.$this->settings['template'])
-		->bind('fieldset', $fieldset);
+		->bind('fieldset', $fieldset)
+		->bind('fields', $fields)
+		->set('item', ORM::factory('Prime_Module_Fieldset_Item', Arr::get($_REQUEST, 'itemid')));
 
 		// load fieldset item
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset']);
@@ -75,6 +104,12 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 			// return error view
 			return View::factory('Prime/Region/Error')->set('message', 'Could not find fieldset.');
 		}
+
+		// get fields
+		$fields = $fieldset->fields
+		->order_by('group', 'ASC')
+		->order_by('index', 'ASC')
+		->find_all();
 
 		// output view
 		return $view;

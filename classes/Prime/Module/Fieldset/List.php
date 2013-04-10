@@ -54,7 +54,7 @@ class Prime_Module_Fieldset_List extends Prime_Module {
 				'group'   => 'Layout',
 				'field'   => 'Prime_Field_Template',
 				'properties' => array(
-					'scope' => 'module/html'
+					'scope' => 'module/fieldset/list'
 				),
 				'default' => 'default'
 			)

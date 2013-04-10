@@ -76,8 +76,20 @@ $('.data-grid.onload').each(function () {
 
 	app.selects();
 	editor = ace.edit("editor");
+	editor.on('changeMode', function () {
+		if (editor.getSession().getMode().$id === 'ace/mode/coffee') {
+			editor.getSession().setUseSoftTabs(true);
+			editor.getSession().setTabSize(2);
+		} else {
+			editor.getSession().setUseSoftTabs(false);
+			editor.getSession().setTabSize(4);
+		}
+	});
 	editor.setTheme("ace/theme/" + ($.cookie('ace/theme') === null ? '<?=$theme;?>' : $.cookie('ace/theme')));
 	editor.getSession().setMode("ace/mode/<?=Prime::ext_to_mode(Arr::get($item, 'ext', 'php'));?>");
+
+
+
 	editor.getSession().setFoldStyle('markbegin');
 	originalValue = editor.getValue();
 	editor.commands.addCommand({

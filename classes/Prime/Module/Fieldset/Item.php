@@ -33,11 +33,26 @@ class Prime_Module_Fieldset_Item extends Prime_Module {
 				'group'   => 'Layout',
 				'field'   => 'Prime_Field_Template',
 				'properties' => array(
-					'scope' => 'module/fieldset/insert'
+					'scope' => 'module/fieldset/item'
 				),
 				'default' => 'default'
 			)
 		);
+	}
+
+	public function route($uri = NULL)
+	{
+		// load uri
+		$uri = explode('/', $uri);
+
+		// check if first part is item
+		if ($uri[0] === 'item')
+		{
+			// check fieldset item existance
+			return ORM::factory('Prime_Module_Fieldset_Item', intval($uri[1]))->loaded();
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -48,13 +63,13 @@ class Prime_Module_Fieldset_Item extends Prime_Module {
 	public function render()
 	{
 		// set default template if template not found.
-		if ( ! Kohana::find_file('views/module/fieldset/insert', $this->settings['template']))
+		if ( ! Kohana::find_file('views/module/fieldset/item', $this->settings['template']))
 		{
 			$this->settings['template'] = 'default';
 		}
 
 		// check if view exists
-		if ( ! Kohana::find_file('views/module/fieldset/insert', $this->settings['template']))
+		if ( ! Kohana::find_file('views/module/fieldset/item', $this->settings['template']))
 		{
 			// throw error
 			Kohana::$log->add(Log::ERROR, 'Could not locate template for module [:template]', array(
@@ -66,11 +81,11 @@ class Prime_Module_Fieldset_Item extends Prime_Module {
 		}
 
 		// setup view
-		$view = View::factory('module/fieldset/insert/'.$this->settings['template'])
+		$view = View::factory('module/fieldset/item/'.$this->settings['template'])
 		->bind('fieldset', $fieldset);
 
 		// load fieldset item
-		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset']);
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset_item']);
 
 		// if fieldset was not loaded
 		if ( ! $fieldset->loaded() OR $fieldset->type === 'category')

@@ -155,8 +155,10 @@ class Prime {
 
 	public static function selected_page($website = NULL)
 	{
+		// load website config if not loaded
 		if ($website === NULL)
 		{
+			// get from prime
 			$website = Prime::website();
 		}
 
@@ -180,9 +182,15 @@ class Prime {
 			// split query
 			$uri = explode('/', $uri);
 
+			// initialize last found page as ORM model
+			$last = ORM::factory('Prime_Page');
+
 			// loop through uri
-			foreach ($uri as $alias)
+			for ($i = 0; $i < count($uri); $i++)
 			{
+				// get alias
+				$alias = $uri[$i];
+
 				// build page orm
 				$page = ORM::factory('Prime_Page')
 				->where('alias', '=', $alias)
@@ -192,8 +200,49 @@ class Prime {
 				// check if not loaded
 				if ( ! $page->loaded())
 				{
+					// check for page with no alias
+					$page = ORM::factory('Prime_Page')
+					->where('alias', '=', '')
+					->where('parent_id', ! $last->loaded() ? 'IS' : '=', ! $last->loaded() ? NULL : $last->id)
+					->find();
+
+					// step back
+					$i--;
+
+					// and continue finding selected page
+					continue;
+				}
+
+				// check if not loaded
+				if ( ! $page->loaded())
+				{
+					// check if last page was loaded
+					if ($last->loaded())
+					{
+						// get route
+						$route = implode('/', array_slice($uri, $i));
+
+						// loop though regions on page
+						foreach ($last->regions->get_all() as $region)
+						{
+							// load module
+							$module = call_user_func_array(array($region->module->controller, 'factory'), array($region));
+
+							// check module for route
+							if ($module->route($route))
+							{
+								// return last page
+								return $last;
+							}
+						}
+					}
+
+					// defaults to false
 					return FALSE;
 				}
+
+				// set last page
+				$last = $page;
 			}
 		}
 

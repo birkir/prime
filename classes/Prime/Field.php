@@ -55,6 +55,14 @@ class Prime_Field {
 	}
 
 	/**
+	 * Options
+	 */
+	public function options()
+	{
+		return array();
+	}
+
+	/**
 	 * Get value for render or show
 	 */
 	public function value()

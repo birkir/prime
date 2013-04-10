@@ -37,6 +37,11 @@
 				<?=Form::input('properties', $item->properties, array('id' => 'fieldOptions', 'class' => 'input-block-level', 'placeholder' => 'Field options'));?>
 			</div>
 		</div>
+
+		<?php foreach ($fields as $name => $f): ?>
+			<?php $class = $name::facor
+		<?php endforeach; ?>
+
 		<div class="control-group">
 			<?=Form::label('fieldFlags', __('Flags'), array('class' => 'control-label'));?>
 			<div class="controls">

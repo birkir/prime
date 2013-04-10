@@ -765,10 +765,13 @@ var app = (function () {
                         iframe = document.getElementById('live');
                     page.id = node.data('id');
                     parents.each(function (i, item) {
-                        buff.push($(this).data('alias'));
+                        if ($(this).data('alias') !== '') {
+                            buff.push($(this).data('alias'));
+                        }
                     });
                     buff.reverse();
                     buff.push(node.data('alias'));
+                    console.log(buff.join('/'));
                     iframe.src = '/' + buff.join('/');
                     iframe.onload = function () {
                         var script = document.createElement('script'),
@@ -1209,58 +1212,15 @@ var app = (function () {
         };
 
         // fieldset tree
-        _module.tree = function () {
+        _module.tree = (function () {
             $('.jstree.tree-fieldsets').each(function () {
                 _module._tree = _app.tree({
-                    url: '/prime/modules/fieldset'
-                });
-            });
-        };
-/*
-        // tree view
-        _module.tree = function () {
-
-            // jstree object
-            var tree = $('.jstree.tree-fieldsets').on('loaded.jstree', function (event, data) {
-
-                // check if set data id attribute
-                if ($(this).data('id')) {
-
-                    // deselect all in tree
-                    $(this).jstree('deselect_all');
-
-                    // select wanted node
-                    $(this).jstree('select_node', $(this).find('[data-id=' + $(this).data('id') + ']'));
-                }
-
-            }).jstree({
-                plugins: ['json_data', 'themes', 'ui', 'crrm', 'contextmenu', 'cookies'],
-                core: { animation: false },
-                json_data: { ajax: {
-                    url: function (n) {
-
-                        // return tree loading path
-                        return '/prime/modules/fieldset/tree' + (n.attr ? '/' + n.attr('data-id') : '');
-                    },
-                    success: function (data) {
-
-                        // return items object
-                        return data.items;
-                    }
-                }},
-                themes: { theme: '', dots: false, icons: true },
-                cookies: { cookie_options: { path: '/prime/modules/fieldset' }},
-                contextmenu: {
-                    items: function (node) {
-
+                    icons: true,
+                    url: '/prime/modules/fieldset',
+                    context: function (node) {
                         // reset context items
                         var fieldset_create = { label: 'Create fieldset', action: function (obj) { app.module.fieldset.create(obj, this, 'fieldset'); }},
-                            items = {
-                                'create': null,
-                                'rename': null,
-                                'remove': null,
-                                'ccp': null
-                            };
+                            items = {};
 
                         // check if node is category
                         if ($(node).attr('rel') === 'category') {
@@ -1276,45 +1236,16 @@ var app = (function () {
                         }
 
                         return items;
+                    },
+                    selectNode: function (id) {
+                        if (this.rslt.obj.data('type') === 'file') {
+                            app.module.fieldset.item.list(id);
+                        }
+                        return '/prime/modules/fieldset/detail/' + id;
                     }
-                }
+                });
             });
-
-            // select node from tree
-            tree.bind('select_node.jstree', function (event, tree) {
-
-                // get node object
-                var node = $(tree.rslt.obj);
-
-                // only view details when fieldset
-                if (node.attr('rel') === 'fieldset') {
-
-                    // call fieldset item list
-                    app.module.fieldset.item.list(node.data('id'));
-
-                    // build link location for pushState
-                    var loc = '/prime/modules/fieldset/detail/' + node.data('id');
-
-                    // only when changing url
-                    if (window.location.pathname !== loc) {
-                        window.history.pushState({ node: node.data('id') }, 'Prime', loc);
-                    }
-                }
-            });
-
-
-            // return jstree object
-            return tree;
-        };
-
-        // identify tree fieldsets
-        if ($('.tree-fieldsets').length === 1) {
-
-            // call tree
-            _module._tree = _module.tree();
-        }
-
-*/
+        }());
 
         // return module
         return _module;
