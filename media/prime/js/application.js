@@ -330,7 +330,7 @@ var app = (function () {
 
         // default to fade
         if (classes === undefined) {
-            classes = ['fade'];
+            classes = [];
         }
 
         // find all open modal windows and close them
@@ -503,6 +503,7 @@ var app = (function () {
             ajax: function (node) {
                 return options.url + '/tree/' + (node.data ? node.data('id') : '');
             },
+            dragdrop: true,
             sort: true,
             url: '',
             context: function (node) {
@@ -545,6 +546,9 @@ var app = (function () {
                         app.alert({ content: response.message, classes: 'alert-error' });
                     }
                 });
+            },
+            deleteNode: function (id) {
+                return true;
             }
         };
 
@@ -558,7 +562,6 @@ var app = (function () {
                 'ui',
                 'crrm',
                 'contextmenu',
-                'dnd',
                 'cookies'
             ],
             core: {
@@ -589,9 +592,15 @@ var app = (function () {
 
         if (options.sort === true) {
             tree_config.sort = function (a, b) {
-                return (($(a).data('type') === 'folder' ? 'a' : 'b') + this.get_text(a)) > (($(b).data('type') === 'folder' ? 'a' : 'b') + this.get_text(b)) ? 1 : -1;
+                var aa = (($(a).data('type') === 'folder' ? 'a' : 'b') + this.get_text(a));
+                var bb = (($(b).data('type') === 'folder' ? 'a' : 'b') + this.get_text(b));
+                return aa.localeCompare(bb);
             };
             tree_config.plugins.push('sort');
+        }
+
+        if (options.dragdrop === true) {
+            tree_config.plugins.push('dnd');
         }
 
         // tree
@@ -724,7 +733,7 @@ var app = (function () {
                 app.modal('/prime/page/create?parent=' + id);
             },
             remove: function (id) {
-                return app.confirm('Are you sure?', 'You are about to remove a page.', function () {
+                return app.confirm('Are you sure?', 'You are about to remove a page and all its subpages.', function () {
                     $.destroy('/prime/page/rest/' + id, {}, function (request) {
                         if (request.status === 'success') {
                             var tree = jQuery.jstree._reference(jQuery('.jstree')[0]);
@@ -747,7 +756,7 @@ var app = (function () {
                 ajax: function (node) {
                     return '/prime/page/rest' + (node.data ? '/' + node.data('id') : '');
                 },
-                sort: true,
+                sort: false,
                 context: function () {
                     return {
                         reload: { label: 'Refresh tree', action: function (obj) { this.refresh(obj); }, separator_after: true },
@@ -1193,10 +1202,12 @@ var app = (function () {
         // create new fieldset or folder
         _module.create = function (obj, tree, type) {
             app.module.fieldset._tree.jstree('create', obj, 'last', {
-                attr: { 'data-id': 0, 'rel' : type },
-                data: { icon: 'icon-' + (type === 'fieldset' ? 'list-alt' : 'folder-close'), title: (type === 'fieldset' ? 'New fieldset' : 'New folder'), attr: { href: '#' }}
+                attr: { 'data-type' : type },
+                data: { icon: 'icon-' + (type === 'file' ? 'list-alt' : 'folder-close'), title: (type === 'file' ? 'New fieldset' : 'New folder'), attr: { href: '#' }}
             }, function (newobj) {
-                tree.rename(newobj);
+                setTimeout(function () {
+                    tree.rename(newobj);
+                }, 30);
             }, true);
         };
 
@@ -1216,23 +1227,29 @@ var app = (function () {
             $('.jstree.tree-fieldsets').each(function () {
                 _module._tree = _app.tree({
                     icons: true,
+                    dragdrop: false,
                     url: '/prime/modules/fieldset',
                     context: function (node) {
                         // reset context items
-                        var fieldset_create = { label: 'Create fieldset', action: function (obj) { app.module.fieldset.create(obj, this, 'fieldset'); }},
-                            items = {};
+                        var items = { refresh: { label: 'Refresh', action: function (obj) { this.refresh(); }, separator_after: true }};
 
                         // check if node is category
-                        if ($(node).attr('rel') === 'category') {
-                            items.fieldset_create = fieldset_create;
-                            items.folder_create = { label: 'Create folder', action: function (obj) { app.module.fieldset.create(obj, this, 'category'); }, separator_before: true};
-                            items.folder_rename = { label: 'Rename folder', action: function (obj) { this.rename(obj); }};
-                            items.folder_remove = { label: 'Delete folder', action: function (obj) { app.module.fieldset.remove(obj, this); } };
+                        if ($(node).data('type') === 'folder') {
+                            items.create = {
+                                label: 'Create',
+                                submenu: {
+                                    fieldset: { label: 'Fieldset', action: function (obj) { app.module.fieldset.create(obj, this, 'file'); }},
+                                    folder: { label: 'Folder', action: function (obj) { app.module.fieldset.create(obj, this, 'folder'); }}
+                                },
+                                separator_after: true
+                            };
+                            items.remove = { label: 'Delete', action: function (obj) { app.module.fieldset.remove(obj, this); }};
+                            items.rename = { label: 'Rename', action: function (obj) { this.rename(obj); }};
                         } else {
-                            items.fieldset_create = fieldset_create;
-                            items.fieldset_rename = { label: 'Rename fieldset', action: function (obj) { this.rename(obj); }};
-                            items.fieldset_remove = { label: 'Delete fieldset', action: function (obj) { app.module.fieldset.remove(obj, this); }, separator_after: true };
-                            items.fieldset_fields = { label: 'Edit fieldset', action: function (obj) { app.module.fieldset.field.list($(obj).data('id')); }};
+                            items.create = { label: 'Create', action: function (obj) { app.module.fieldset.create(obj, this, 'file'); }, separator_after: true };
+                            items.remove = { label: 'Delete', action: function (obj) { app.module.fieldset.remove(obj, this); }};
+                            items.rename = { label: 'Rename', action: function (obj) { this.rename(obj); }};
+                            items.properties = { label: 'Properties', action: function (obj) { app.module.fieldset.field.list($(obj).data('id')); }, separator_before: true };
                         }
 
                         return items;

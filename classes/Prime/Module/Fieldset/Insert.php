@@ -37,31 +37,57 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 		);
 	}
 
+	/**
+	 * Capture post from request
+	 * 
+	 * @param  ORM    $fieldset Fieldset object
+	 * @return bool
+	 */
 	public function post($fieldset)
 	{
-		// get post
+		// get post from request
 		$data = Request::current()->post();
-		$res = array();
 
-		// loop though fields for processing
-		foreach ($fieldset->fields->order_by('index', 'ASC')->find_all() as $field)
+		// check for correct action and id
+		if ($data['action'] === 'fieldset-insert' AND $data['fieldset-id'] === $fieldset->id)
 		{
-			if (isset($data['field'.$field->id]))
+			// setup result buffer
+			$res = array();
+
+			// loop though fields for processing
+			foreach ($fieldset->fields->order_by('index', 'ASC')->find_all() as $field)
 			{
-				$res[$field->name] = $data['field'.$field->id];
+				// if field exists
+				if (isset($data['field'.$field->id]))
+				{
+					// push field data to result buffer
+					$res[$field->name] = $data['field'.$field->id];
+				}
+			}
+
+			// prepare item
+			$item = array(
+				'prime_module_fieldset_id' => $fieldset->id,
+				'created' => date('Y-m-d H:i:s'),
+				'updated' => date('Y-m-d H:i:s'),
+				'data' => json_encode($res)
+			);
+
+			try
+			{
+				// save item for validation
+				ORM::factory('Prime_Module_Fieldset_Item')
+				->values($item)
+				->save();
+			}
+			catch (Exception $e)
+			{
+
 			}
 		}
 
-		$item = array(
-			'prime_module_fieldset_id' => $fieldset->id,
-			'created' => date('Y-m-d H:i:s'),
-			'updated' => date('Y-m-d H:i:s'),
-			'data' => json_encode($res)
-		);
-
-		ORM::factory('Prime_Module_Fieldset_Item')
-		->values($item)
-		->save();
+		// did nothing by default
+		return FALSE;
 	}
 
 	/**
@@ -97,6 +123,9 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 
 		// load fieldset item
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset']);
+
+		// post check
+		$this->post($fieldset);
 
 		// if fieldset was not loaded
 		if ( ! $fieldset->loaded() OR $fieldset->type === 'category')

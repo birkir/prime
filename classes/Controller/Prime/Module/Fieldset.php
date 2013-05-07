@@ -89,12 +89,12 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Core {
 	{
 		$item = ORM::factory('Prime_Module_Fieldset');
 		$item->name = Arr::get($_POST, 'name');
-		$item->type = Arr::get($_POST, 'type');
-		$item->parent_id = $this->request->param('id');
+		$item->type = Arr::get($_POST, 'type') === 'file' ? 'fieldset' : 'category';
+		$item->parent_id = Arr::get($_POST, 'parent');
 		$item->created = date('Y-m-d H:i:s');
 		$item->save();
 
-		$this->response->body(json_encode(array('status' => 'success')));
+		$this->response->body(json_encode(array('status' => 'success', 'message' => $item->id)));
 	}
 
 	public function action_rename()

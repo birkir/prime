@@ -1,3 +1,4 @@
+<?php $mode = Arr::get(Prime::$config->ace['ext'], Arr::get($item, 'ext', 'php'), Arr::get($item, 'ext', 'php')); ?>
 <div class="data-grid with-navbar onload">
 	<div class="navbar navbar-static-top">
 		<div class="navbar-inner">
@@ -13,7 +14,7 @@
 						<?=Form::label('aceTheme', __('Theme').':', array('style' => 'margin: 4px 8px 0 15px;'));?>
 						<?=Form::select(NULL, $themes, $theme, array('id' => 'aceTheme', 'class' => 'select input-medium', 'onchange' => 'changeTheme(this.value);'));?>
 						<?=Form::label('aceMode', __('Mode').':', array('style' => 'margin: 4px 8px 0 15px;'));?>
-						<?=Form::select(NULL, $modes, Prime::ext_to_mode(Arr::get($item, 'ext', 'php')), array('id' => 'aceMode', 'class' => 'select input-medium', 'onchange' => 'changeMode(this.value);'));?>
+						<?=Form::select(NULL, $modes, $mode, array('id' => 'aceMode', 'class' => 'select input-medium', 'onchange' => 'changeMode(this.value);'));?>
 					</form>
 				</div>
 			</div>
@@ -86,7 +87,8 @@ $('.data-grid.onload').each(function () {
 		}
 	});
 	editor.setTheme("ace/theme/" + ($.cookie('ace/theme') === null ? '<?=$theme;?>' : $.cookie('ace/theme')));
-	editor.getSession().setMode("ace/mode/<?=Prime::ext_to_mode(Arr::get($item, 'ext', 'php'));?>");
+
+	editor.getSession().setMode("ace/mode/<?=$mode;?>");
 
 
 

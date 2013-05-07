@@ -3,24 +3,26 @@
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 		<h3><?=__('Create page');?></h3>
 	</div>
-	<div class="modal-body scrollable">
+	<div class="modal-body scrollable" style="overflow: hidden;">
 		<div class="control-group">
 			<?=Form::label('pageName', __('Page name'), array('class' => 'control-label'));?>
 			<div class="controls">
 				<?=Form::input('name', NULL, array('id' => 'pageName', 'class' => 'input-block-level', 'placeholder' => 'Page name'));?>
 			</div>
 		</div>
-		<div class="control-group">
-			<?=Form::label('pageTemplate', __('Template'), array('class' => 'control-label'));?>
-			<div class="controls">
-				<?=Form::select('template', explode(' ', 'Lorem ipsum dolor sitamet'), NULL, array('class' => 'input-block-level select'));?>
-			</div>
-		</div>
+		<?=$templates;?>
 		<script type="text/javascript">
+		// reload form selects
 		app.selects();
+
+		// focus pagename
+		document.getElementById('pageName').focus();
+
+		// lets create page
 		function pageCreate(form)
 		{
 			var formData = $(form).serializeObject();
+
 			formData.parent_id = <?=$item->id;?>;
 
 			$.create('/prime/page/rest', JSON.stringify(formData), function (request) {

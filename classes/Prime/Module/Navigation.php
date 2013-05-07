@@ -176,7 +176,7 @@ class Prime_Module_Navigation extends Prime_Module {
 	public function render()
 	{
 		// set selected page
-		$this->settings['selected'] = Prime::selected_page();
+		$this->settings['selected'] = Prime::$page->selected();
 
 		// nest backward
 		$this->settings['active'] = self::actives($this->settings['selected']);

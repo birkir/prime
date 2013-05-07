@@ -1,4 +1,6 @@
 <?=Form::open();?>
+	<input type="hidden" name="action" value="fieldset-insert" />
+	<input type="hidden" name="fieldset-id" value="<?=$fieldset->id;?>" />
 	<legend><?=$fieldset->name;?></legend>
 	<?php foreach ($fields as $field): ?>
 		<div class="control-group">

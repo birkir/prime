@@ -36,7 +36,7 @@ class Prime_Field_Template extends Prime_Field {
 				$node = str_replace(array(APPPATH, MODPATH, SYSPATH, '.php'), NULL, $node);
 				$node = str_replace('prime/views/'.$this->field['properties']['scope'].'/', NULL, $node);
 				$node = str_replace('views/'.$this->field['properties']['scope'].'/', NULL, $node);
-				$ori = $node;
+				$ori = $this->field['properties']['scope'].'/'.$node;
 				$node = UTF8::ucfirst(Inflector::humanize($node));
 				$ret[$ori] = $node;
 			}
@@ -56,6 +56,7 @@ class Prime_Field_Template extends Prime_Field {
 
 		// setup view
 		$view = View::factory('Prime/Field/Template')
+		->set('field', $this->field)
 		->set('name', $this->field['key'])
 		->set('caption', $this->field['name'])
 		->set('value', $this->value())

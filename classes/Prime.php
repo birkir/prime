@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Class
+ * Contains low-level and most used methods in Prime:
+ *
+ * - Environment initialization
+ * - Locating files within the cascading filesystem (overloaded)
+ * - Most used functions in Prime CMS
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
@@ -9,323 +13,239 @@
  */
 class Prime {
 
-	public static function ext_to_mode($ext = NULL)
+	// Release version and codename
+	const VERSION  = '3.3.0';
+	const CODENAME = 'holymontain';
+
+	// Delta environment (staging flag)
+	const DELTA = TRUE;
+
+	/**
+	 * @var  Prime_Website  website object
+	 */
+	public static $website;
+
+	/**
+	 * @var  Prime_Page     page object
+	 */
+	public static $page;
+
+	/**
+	 * @var  Prime_Frontend frontend object
+	 */
+	public static $frontend;
+
+	/**
+	 * @var  Prime_Auth     auth object
+	 */
+	public static $auth;
+
+	/**
+	 * @var  Config         config object
+	 */
+	public static $config;
+
+	/**
+	 * @var  boolean  Has [Prime::init] been called?
+	 */
+	protected static $_init = FALSE;
+
+	/**
+	 * Singleton instance
+	 */
+	public static function init(array $settings = NULL)
 	{
-		$exts = array(
-			'js'  => 'javascript',
-			'py'  => 'python',
-			'cpp' => 'c_cpp',
-			'md'  => 'markdown',
-			'm'   => 'objectivec',
-		);
-
-		return isset($exts[$ext]) ? $exts[$ext] : $ext;
-	}
-
-	public static function ace_modes()
-	{
-		return array(
-			'Common' => array(
-				'php' => 'PHP',
-				'html' => 'HTML',
-				'css' => 'CSS',
-				'javascript' => 'JavaScript',
-				'coffee' => 'CoffeeScript',
-				'less' => 'LESS',
-				'sass' => 'SASS',
-				'python' => 'Python',
-				'text' => 'Text',
-			),
-			'Others' => array(
-				'abap' => 'ABAP',
-				'asciidoc' => 'AsciiDoc',
-				'c9search' => 'C9Search',
-				'coldfusion' => 'ColdFusion',
-				'csharp' => 'C#',
-				'curly' => 'Curly',
-				'dart' => 'Dart',
-				'diff' => 'Diff',
-				'dot' => 'Dot',
-				'ftl' => 'FreeMarker',
-				'glsl' => 'Glsl',
-				'golang' => 'Go',
-				'groovy' => 'Groovy',
-				'haxe' => 'haXe',
-				'haml' => 'HAML',
-				'c_cpp' => 'C/C++',
-				'clojure' => 'Clojure',
-				'jade' => 'Jade',
-				'java' => 'Java',
-				'jsp' => 'JSP',
-				'json' => 'JSON',
-				'jsx' => 'JSX',
-				'latex' => 'LaTeX',
-				'lisp' => 'Lisp',
-				'scheme' => 'Scheme',
-				'liquid' => 'Liquid',
-				'livescript' => 'LiveScript',
-				'logiql' => 'LogiQL',
-				'lua' => 'Lua',
-				'luapage' => 'LuaPage',
-				'lucene' => 'Lucene',
-				'lsl' => 'LSL',
-				'makefile' => 'Makefile',
-				'markdown' => 'Markdown',
-				'objectivec' => 'Objective-C',
-				'ocaml' => 'OCaml',
-				'pascal' => 'Pascal',
-				'perl' => 'Perl',
-				'pgsql' => 'pgSQL',
-				'powershell' => 'Powershell',
-				'r' => 'R',
-				'rdoc' => 'RDoc',
-				'rhtml' => 'RHTML',
-				'ruby' => 'Ruby',
-				'scad' => 'OpenSCAD',
-				'scala' => 'Scala',
-				'scss' => 'SCSS',
-				'sh' => 'SH',
-				'sql' => 'SQL',
-				'stylus' => 'Stylus',
-				'svg' => 'SVG',
-				'tcl' => 'Tcl',
-				'tex' => 'Tex',
-				'textile' => 'Textile',
-				'tm_snippet' => 'tmSnippet',
-				'toml' => 'toml',
-				'typescript' => 'Typescript',
-				'vbscript' => 'VBScript',
-				'xml' => 'XML',
-				'xquery' => 'XQuery',
-				'yaml' => 'YAML'
-			)
-		);
-	}
-
-	public static function ace_themes()
-	{
-		return array(
-			'Bright' => array(
-				'chrome' => 'Chrome',
-				'clouds' => 'Clouds',
-				'crimson_editor' => 'Crimson Editor',
-				'dawn' => 'Dawn',
-				'dreamweaver' => 'Dreamweaver',
-				'eclipse' => 'Eclipse',
-				'github' => 'GitHub',
-				'solarized_light' => 'Solarized Light',
-				'textmate' => 'TextMate',
-				'tomorrow' => 'Tomorrow',
-				'xcode' => 'XCode',
-			),
-			'Dark' => array(
-				'ambiance' => 'Ambiance',
-				'chaos' => 'Chaos',
-				'clouds_midnight' => 'Clouds Midnight',
-				'cobalt' => 'Cobalt',
-				'idle_fingers' => 'idleFingers',
-				'kr_theme' => 'krTheme',
-				'merbivore' => 'Merbivore',
-				'merbivore_soft' => 'Merbivore Soft',
-				'mono_industrial' => 'Mono Industrial',
-				'monokai' => 'Monokai',
-				'pastel_on_dark' => 'Pastel on dark',
-				'solarized_dark' => 'Solarized Dark',
-				'twilight' => 'Twilight',
-				'tomorrow_night' => 'Tomorrow Night',
-				'tomorrow_night_blue' => 'Tomorrow Night Blue',
-				'tomorrow_night_bright' => 'Tomorrow Night Bright',
-				'tomorrow_night_eighties' => 'Tomorrow Night 80s',
-				'vibrant_ink' => 'Vibrant Ink',
-			)
-		);
-	}
-
-	public static function website()
-	{
-		$settings = array();
-
-		foreach (ORM::factory('Prime_Website')->find_all() as $item)
+		if (Prime::$_init)
 		{
-			$settings[$item->key] = $item->value;
+			// Do not allow execution twice
+			return;
 		}
 
-		return $settings;
-	}
+		// Prime is now initialized
+		Prime::$_init = TRUE;
 
-	public static function selected_page($website = NULL)
-	{
-		// load website config if not loaded
-		if ($website === NULL)
+		// Determine if views directory exists
+		if ( ! is_dir(APPPATH.'views'))
 		{
-			// get from prime
-			$website = Prime::website();
-		}
-
-		// get current request
-		$request = Request::current();
-
-		// get uri
-		$uri = $request->param('query');
-
-		// if default page
-		if ($qp = Arr::get($request->query(), 'page'))
-		{
-			$page = ORM::factory('Prime_page', $qp);
-		}
-		else if (empty($uri))
-		{
-			$page = ORM::factory('Prime_Page', Arr::get($website, 'default_page_id', 1));
-		}
-		else
-		{
-			// split query
-			$uri = explode('/', $uri);
-
-			// initialize last found page as ORM model
-			$last = ORM::factory('Prime_Page');
-
-			// loop through uri
-			for ($i = 0; $i < count($uri); $i++)
+			try
 			{
-				// get alias
-				$alias = $uri[$i];
+				// Create the views directory
+				mkdir(APPPATH.'views', 0755, TRUE);
 
-				// build page orm
-				$page = ORM::factory('Prime_Page')
-				->where('alias', '=', $alias)
-				->where('parent_id', ! isset($page) ? 'IS' : '=', ! isset($page) ? NULL : $page->id)
-				->find();
-
-				// check if not loaded
-				if ( ! $page->loaded())
-				{
-					// check for page with no alias
-					$page = ORM::factory('Prime_Page')
-					->where('alias', '=', '')
-					->where('parent_id', ! $last->loaded() ? 'IS' : '=', ! $last->loaded() ? NULL : $last->id)
-					->find();
-
-					// step back
-					$i--;
-
-					// and continue finding selected page
-					continue;
-				}
-
-				// check if not loaded
-				if ( ! $page->loaded())
-				{
-					// check if last page was loaded
-					if ($last->loaded())
-					{
-						// get route
-						$route = implode('/', array_slice($uri, $i));
-
-						// loop though regions on page
-						foreach ($last->regions->get_all() as $region)
-						{
-							// load module
-							$module = call_user_func_array(array($region->module->controller, 'factory'), array($region));
-
-							// check module for route
-							if ($module->route($route))
-							{
-								// return last page
-								return $last;
-							}
-						}
-					}
-
-					// defaults to false
-					return FALSE;
-				}
-
-				// set last page
-				$last = $page;
+				// Set permissions (must be manually set to fix umask issues)
+				chmod(APPPATH.'views', 0755);
+			}
+			catch(Exception $e)
+			{
+				throw new Kohana_Exception('Could not create views directory :dir',
+					array(':dir' => Debug::path(APPPATH.'views')));
 			}
 		}
 
-		return $page;
+		// Determine if views directory is writable
+		if ( ! is_writable(APPPATH.'views'))
+		{
+			throw new Kohana_Exception('Directory :dir must be writable',
+				array(':dir' => Debug::path(APPPATH.'views')));
+		} 
+
+		// Load the website object if one doesn't already exist
+		if ( ! Prime::$website instanceof Prime_Website)
+		{
+			Prime::$website = Prime_Website::instance();
+		}
+
+		// Load the page object if one doesn't already exist
+		if ( ! Prime::$page instanceof Prime_Page)
+		{
+			Prime::$page = Prime_Page::instance();
+		}
+
+		// Load the frontend object if one doesn't already exist
+		if ( ! Prime::$frontend instanceof Prime_Frontend)
+		{
+			Prime::$frontend = Prime_Frontend::instance();
+		}
+
+		// Load the prime configuration
+		Prime::$config = Kohana::$config->load('prime');
 	}
 
 	/**
-	 * List files and folders for tree generation
+	 * Cleans up the environment:
+	 *
+	 * - Destroy the Prime::$website and Prime::$page objects
+	 * 
+	 * @return void
 	 */
-	public static function ls($directory = NULL)
+	public static function deinit()
+	{
+		if (Prime::$_init)
+		{
+			// Destroy objects created by init
+			Prime::$website = Prime::$page = Prime::$config = NULL;
+
+			// Prime is no longer initialized
+			Prime::$_init = FALSE;
+		}
+	}
+
+	/**
+	 * List files in target directory and return jstree structure.
+	 * 
+	 * @param  string $directory Directory to list
+	 * @return array
+	 */
+	public static function lstree($directory = NULL, $base = NULL)
 	{
 		$path = APPPATH;
 
-	    if ($directory !== NULL)
-	    {
-	        // Add the directory separator
-	        $directory .= DIRECTORY_SEPARATOR;
-	    }
-	 
-	    // Create an array for the files
-	    $found = array();
-	 
-	    if (is_dir($path.$directory))
-	    {
-	        // Create a new directory iterator
-	        $dir = new DirectoryIterator($path.$directory);
+		if ($directory !== NULL)
+		{
+			// Add the directory separator
+			$directory .= DIRECTORY_SEPARATOR;
+		}
 
-	        foreach ($dir as $file)
-	        {
-	            // Get the file name
-	            $filename = $file->getFilename();
+		if ($base === NULL)
+		{
+			$base = $directory;
+		}
 
-	            if ($filename[0] === '.' OR $filename[strlen($filename)-1] === '~')
-	            {
-	                // Skip all hidden files and UNIX backup files
-	                continue;
-	            }
+		// Create an array for the files
+		$found = array();
 
-	            // Relative filename is the array key
-	            $key = $directory.$filename;
+		if (is_dir($path.$directory))
+		{
+			// Create a new directory iterator
+			$dir = new DirectoryIterator($path.$directory);
 
-	            $_found = array(
-                	'data' => array(
-                		'title' => $file->getBasename(),
-                		'attr' => array(
-                			'href' => substr($key, strlen('views/'))
-                		),
-                		'icon' => ($file->isFile() ? 'icon-file' : 'icon-folder-close')
-                	),
-                	'attr' => array(
-                		'data-type' => 'file',
-                		'data-id'   => substr($key, strlen('views/')),
-                		'id' => sha1(substr($key, strlen('views/'))),
-                	)
-	            );
+			foreach ($dir as $file)
+			{
+				// Get the file name
+				$filename = $file->getFilename();
 
-	            // if dir
-	            if ($file->isDir())
-	            {
-	                $_found['attr']['data-type'] = 'folder';
+				if ($filename[0] === '.' OR $filename[strlen($filename)-1] === '~')
+				{
+					// Skip all hidden files and UNIX backup files
+					continue;
+				}
 
-	                if ($sub_dir = self::ls($key))
-	                {
-	                	$_found['children'] = $sub_dir;
-	                }
-	            }
+				// Relative filename is the array key
+				$key = $directory.$filename;
 
-	            $found[] = $_found;
-	        }
-	    }
-	 
-	    // Sort the results alphabetically
-	    ksort($found);
-	 
-	    return $found;
+				$_found = array(
+					'data' => array(
+						'title' => $file->getBasename(),
+						'attr' => array(
+							'href' => substr($key, strlen($base))
+						),
+						'icon' => ($file->isFile() ? 'icon-file' : 'icon-folder-close')
+					),
+					'attr' => array(
+						'data-type' => 'file',
+						'data-id'   => substr($key, strlen($base)),
+						'id' => sha1(substr($key, strlen($base))),
+					)
+				);
+
+				// if dir
+				if ($file->isDir())
+				{
+					$_found['attr']['data-type'] = 'folder';
+
+					if ($sub_dir = self::lstree($key, $base))
+					{
+						$_found['children'] = $sub_dir;
+					}
+				}
+
+				$found[] = $_found;
+			}
+		}
+
+		// Sort the results alphabetically
+		ksort($found);
+
+		return $found;
 	}
 
+	/**
+	 * Clean paths and replace their shorter equivalents.
+	 * 
+	 * @param  string $message Message to replace
+	 * @return string
+	 */
 	public static function clean($message = NULL)
 	{
-		$message = str_replace(array(APPPATH, MODPATH, SYSPATH), array('APPPATH/', 'MODPATH/', 'SYSPATH/'), $message);
+		$paths = array(
+			APPPATH,
+			MODPATH,
+			SYSPATH,
+			DOCROOT
+		);
+
+		$fixes = array(
+			'APPPATH'.DIRECTORY_SEPARATOR,
+			'MODPATH'.DIRECTORY_SEPARATOR,
+			'SYSPATH'.DIRECTORY_SEPARATOR,
+			'DOCROOT'.DIRECTORY_SEPARATOR
+		);
+
+		// replace
+		$message = str_replace($paths, $fixes, $message);
+
+		// return message
 		return $message;
 	}
 
+	/**
+	 * Send an email
+	 * 
+	 * @param  string $to      Email addresses
+	 * @param  string $subject Message subject
+	 * @param  string $content Message body
+	 * @return boolean
+	 */
 	public static function email($to = NULL, $subject = NULL, $content = NULL)
 	{
 		$headers = array(
@@ -338,6 +258,16 @@ class Prime {
 		$html = '<html><head><title>'.$subject.'</title><body>'.$content.'</body></html>';
 
 		return mail($to, $subject, $html, implode("\r\n", $headers)."\r\n");
+	}
+
+	/**
+	 * Generates a version string based on the variables defined above.
+	 * 
+	 * @return string
+	 */
+	public static function version()
+	{
+		return 'Prime '.Prime::VERSION.' ('.Prime::CODENAME.')';
 	}
 
 } // End Prime

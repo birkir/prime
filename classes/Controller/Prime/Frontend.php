@@ -10,11 +10,6 @@
 class Controller_Prime_Frontend extends Controller {
 
 	/**
-	 * @var ORM Page
-	 */
-	public $page = NULL;
-
-	/**
 	 * Authentication method frontend
 	 *
 	 * @return string
@@ -71,9 +66,6 @@ class Controller_Prime_Frontend extends Controller {
 	 */
 	public function action_process()
 	{
-		// get website settings
-		$this->website = $website = Prime::website();
-
 		// get uri
 		$uri = $this->request->param('query');
 
@@ -87,34 +79,35 @@ class Controller_Prime_Frontend extends Controller {
 		}
 
 		// get selected page
-		$this->page = Prime::selected_page($website);
+		$page = Prime::$page->selected();
 
-		if ( ! $this->page)
+		if ( ! $page)
 		{
 			return $this->not_found();
 		}
 
 		// check if template was found
-		if ( ! Kohana::find_file('views', $this->page->template))
+		if ( ! Kohana::find_file('views', $page->template))
 		{
-			throw new Kohana_Exception('Did not find template :template', array(':template' => $this->page->template));
+			throw new Kohana_Exception('Did not find template :template', array(':template' => $page->template));
 		}
 
 		// setup template
-		$this->template = View::factory($this->page->template);
+		$this->template = View::factory($page->template)
+		->bind('region', $region);
 
 		// set region instance
-		$this->template->region = Prime_Region::instance();
+		$region = Prime_Region::instance();
 
 		// set global variables
-		View::set_global('page', $this->page);
+		View::set_global('page', $page);
 		View::set_global('prime', Prime_Frontend::instance());
 
 		// loop through regions
-		foreach ($this->page->regions->get_all() as $region)
+		foreach ($page->regions->get_all() as $_region)
 		{
 			// attach region
-			$this->template->region->attach($region);
+			$region->attach($_region);
 		}
 
 		// set response as template

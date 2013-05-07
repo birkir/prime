@@ -9,19 +9,46 @@
  */
 class Controller_Prime_Media extends Controller_Prime_Core {
 
+	/**
+	 * Set directory to serve
+	 * 
+	 * @var string
+	 */
+	public $directory = 'media';
+
+	/**
+	 * Save method for files
+	 * 
+	 * @var string
+	 */
+	public $savemethod = 'app.media.save';
+
+	/**
+	 * Default landing page
+	 * 
+	 * @return void
+	 */
 	public function action_index()
 	{
 		$this->template->left = View::factory('Prime/Media/Tree');
-
-		$this->view = '';
 	}
 
+	/**
+	 * Edit page
+	 * 
+	 * @return void
+	 */
 	public function action_edit()
 	{
 		$this->template->left = View::factory('Prime/Media/Tree')
 		->set('path', $this->request->param('id'));
 	}
 
+	/**
+	 * Media file editor (or viewer)
+	 * 
+	 * @return void
+	 */
 	public function action_editor()
 	{
 		$this->auto_render = FALSE;
@@ -30,7 +57,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 		$file = $this->request->param('id');
 
 		// get real path
-		$filename = realpath(APPPATH.'media/'.$file);
+		$filename = realpath(APPPATH.$this->directory.DIRECTORY_SEPARATOR.$file);
 
 		// setup item
 		$item = array(
@@ -51,10 +78,10 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 		{
 			$view = View::factory('Prime/Misc/Ace')
 			->set('item', $item)
-			->set('themes', Prime::ace_themes())
-			->set('modes', Prime::ace_modes())
+			->set('themes', Prime::$config->ace['themes'])
+			->set('modes', Prime::$config->ace['modes'])
 			->set('theme', Arr::get($_COOKIE, 'ace/theme', 'chrome'))
-			->set('savemethod', 'app.media.save(\''.Arr::get($item, 'name').'\', editor.getValue());');
+			->set('savemethod', $this->savemethod.'(\''.Arr::get($item, 'name').'\', editor.getValue());');
 		}
 
 		// image viewer
@@ -71,9 +98,15 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 			->set('item', $item);
 		}
 
+		// attach view to body
 		$this->response->body($view->render());
 	}
 
+	/**
+	 * Compile LESS and CoffeeScript files
+	 * 
+	 * @return void
+	 */
 	public function action_compile()
 	{
 		// auto render false
@@ -139,37 +172,61 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 		$this->response->body(json_encode($response));
 	}
 
+	/**
+	 * Create file or folder
+	 * 
+	 * @return void
+	 */
 	public function action_create()
 	{
+		// disable auto render
 		$this->auto_render = FALSE;
 
+		// setup response to error by default
 		$response = array(
 			'status' => 'error',
 			'message' => 'Could not create '.Arr::get($_POST, 'type', 'file').'. Check permissions.'
 		);
 
-		$path = APPPATH.'media/'.Arr::get($_POST, 'parent').'/'.Arr::get($_POST, 'name');
+		// set path
+		$path = APPPATH.$this->directory.DIRECTORY_SEPARATOR.Arr::get($_POST, 'parent').'/'.Arr::get($_POST, 'name');
 
 		if (Arr::get($_POST, 'type') === 'folder')
 		{
-			if (mkdir($path, 0777, TRUE)) {
+			// create directory
+			if (mkdir($path, 0777, TRUE))
+			{
+				// make directory writable
 				chmod($path, 0777);
+
+				// set response
 				$response['status'] = 'success';
 				$response['message'] = Arr::get($_POST, 'parent').'/'.Arr::get($_POST, 'name');
 			}
 		}
 		else
 		{
-			if (touch($path)) {
+			// create file
+			if (touch($path))
+			{
+				// make file writable
 				chmod($path, 0777);
+
+				// set response
 				$response['status'] = 'success';
 				$response['message'] = Arr::get($_POST, 'parent').'/'.Arr::get($_POST, 'name');
 			}
 		}
 
+		// set response body
 		$this->response->body(json_encode($response));
 	}
 
+	/**
+	 * Rename file or folder
+	 * 
+	 * @return void
+	 */
 	public function action_rename()
 	{
 		$this->auto_render = FALSE;
@@ -179,7 +236,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 			'message' => 'Could not rename. Check permissions.'
 		);
 
-		$path = APPPATH.'media/'.$this->request->param('id');
+		$path = APPPATH.$this->directory.DIRECTORY_SEPARATOR.$this->request->param('id');
 
 		$dir = pathinfo($path, PATHINFO_DIRNAME);
 
@@ -200,7 +257,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 			'message' => 'Could not remove '.Arr::get($_POST, 'name').'. Check permissions.'
 		);
 
-		$file = APPPATH.'media/'.$this->request->param('id');
+		$file = APPPATH.$this->directory.DIRECTORY_SEPARATOR.$this->request->param('id');
 
 		if ( ! is_dir($file)) {
 			if (unlink($file)) {
@@ -228,7 +285,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 
 		try
 		{
-			$fh = fopen(APPPATH.'media/'.$file, 'w');
+			$fh = fopen(APPPATH.$this->directory.DIRECTORY_SEPARATOR.$file, 'w');
 			fwrite($fh, utf8_decode($this->request->body()));
 			fclose($fh);
 			$response['status'] = 'success';
@@ -249,7 +306,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 
 		$tree = array(
 			'data' => array(
-				'title' => 'media',
+				'title' => $this->directory,
 				'attr' => array(
 					'href' => '#'
 				),
@@ -258,9 +315,9 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 			'state' => 'open',
 			'attr' => array(
 				'data-type' => 'folder',
-				'id' => sha1('media'),
+				'id' => sha1($this->directory),
 			),
-			'children' => Prime::ls('media')
+			'children' => Prime::lstree($this->directory)
 		);
 
 		$response = array(
@@ -271,6 +328,11 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 		$this->response->body(json_encode($response));
 	}
 
+	/**
+	 * Upload files and folders
+	 * 
+	 * @return void
+	 */
 	public function action_upload()
 	{
 		// disable auto render
@@ -300,7 +362,7 @@ class Controller_Prime_Media extends Controller_Prime_Core {
 
 			// collect upload information
 			$upload = array(
-				'target' => APPPATH.'media'.DIRECTORY_SEPARATOR.$this->request->param('id'),
+				'target' => APPPATH.$this->directory.DIRECTORY_SEPARATOR.$this->request->param('id'),
 				'name'   => Arr::get($_REQUEST, 'name', NULL),
 				'offset' => Arr::get($_REQUEST, 'offset',  0),
 				'total'  => Arr::get($_REQUEST, 'total',   0),

@@ -39,7 +39,7 @@
 		</div>
 
 		<?php foreach ($fields as $name => $f): ?>
-			<?php $class = $name::facor
+			<?php // $class = $name::facor ?>
 		<?php endforeach; ?>
 
 		<div class="control-group">

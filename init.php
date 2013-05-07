@@ -18,6 +18,9 @@ $required = array(
 // Lazy-load modules
 Kohana::modules($required);
 
+// Initialize Prime
+Prime::init();
+
 // Prime module routing
 Route::set('Prime_Module', 'prime/modules/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
