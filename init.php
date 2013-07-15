@@ -22,7 +22,7 @@ Kohana::modules($required);
 Prime::init();
 
 // Prime module routing
-Route::set('Prime_Module', 'prime/modules/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
+Route::set('Prime_Module', 'Prime/Module/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
 		'directory'  => 'Prime/Module',
 		'controller' => 'Dashboard',
@@ -30,7 +30,7 @@ Route::set('Prime_Module', 'prime/modules/(<controller>(/<action>(/<id>)))', arr
 	));
 
 // Prime routing
-Route::set('Prime', 'prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
+Route::set('Prime', 'Prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
 		'directory'  => 'Prime',
 		'controller' => 'Dashboard',

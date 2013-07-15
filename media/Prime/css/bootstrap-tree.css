@@ -1,0 +1,90 @@
+.nav-tree,
+.nav-tree .list-group {
+  margin-bottom: 0;
+  background: transparent;
+}
+.nav-tree .list-group-item {
+    padding: 0;
+    position: relative;
+}
+.nav-tree .list-group-item a {
+    margin: 0;
+    padding-left: 3px;
+    height: auto;
+    line-height: 16px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-right: 1px;
+}
+.nav-tree .list-group-item.active > a {
+    padding-left: 0;
+}
+.nav-tree .list-group-item span {
+    padding-left: 0px;
+    display: inline-block;
+}
+.nav-tree .list-group-item span i {
+	color: #474747;
+	font-size: 14px;
+}
+.nav-tree .list-group-item span:before {
+    position: absolute;
+    top: 7px;
+    margin-left: -18px;
+    color: #666666;
+}
+.nav-tree .list-group-item > .caret {
+    position: absolute;
+    height: 28px;
+    width: 16px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+.nav-tree .list-group-item > .caret:after {
+    display: none;
+}
+.nav-tree .list-group-item.has-children > .caret:after {
+    display: block;
+    content: url(http://ssl.gstatic.com/ui/v1/zippy/arrow_right.png);
+    left: 6px;
+    top: 3px;
+    position: absolute;
+}
+.nav-tree .list-group-item > .list-group {
+    display: none;
+}
+.nav-tree .open > .list-group {
+    display: block;
+}
+.nav-tree .list-group-item.has-children.open > .caret:after {
+    content: url(http://ssl.gstatic.com/ui/v1/zippy/arrow_down.png);
+    left: 5px;
+    top: 2px;
+}
+.nav-tree .list-group-item > a:hover,
+.nav-tree .list-group-item > a:focus,
+.nav-tree .list-group-item.has-children > .caret:hover {
+    background-color: #ddd;
+}
+.nav-tree .list-group-item > a > span > .icon-folder-open:before {
+	content: "\f07b";
+}
+.nav-tree .list-group-item.open > a > span > .icon-folder-open:before {
+	content: "\f07c";
+}
+.tree-item-drag {
+    display: inline-block;
+    font-weight: bold;
+    padding: 4px 10px;
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    height: 28px !important;
+    width: auto !important;
+}
+.ui-sortable-placeholder {
+    visibility: visible !important;
+    border-left: 3px solid #fbb450 !important;
+    background: #f3f3f3;
+}
