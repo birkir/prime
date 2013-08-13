@@ -18,12 +18,14 @@ class Prime_Field_String extends Prime_Field {
 				'field'   => 'Prime_Field_Choose',
 				'default' => 'string',
 				'options' => [
-					'string'    => 'String',
-					'email'     => 'Email',
-					'integer'   => 'Integer',
-					'float'     => 'Float',
-					'money'     => 'Money',
-					'decimal'   => 'Decimal'
+					'items' => [
+						'string'    => 'String',
+						'email'     => 'Email',
+						'integer'   => 'Integer',
+						'float'     => 'Float',
+						'money'     => 'Money',
+						'decimal'   => 'Decimal'
+					]
 				]
 			],
 		];
@@ -40,8 +42,9 @@ class Prime_Field_String extends Prime_Field {
 		$view = View::factory('Prime/Field/String')
 		->set('field', $this->field)
 		->set('form', $form)
+		->set('caller', $this)
+		->set('item', $item)
 		->set('value', $this->value($item));
-
 
 		return $view;
 	}

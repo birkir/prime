@@ -22,11 +22,11 @@
     <?php endforeach; ?>
 <?php } ?>
 
-<span class="nav-header">Fieldsets</span>
+<span class="list-group-header" style="padding: 4px 10px;"><?=__('Fieldsets');?></span>
 
-<ul class="nav-tree list-group">
+<ul class="nav-tree list-group" style="border: 1px solid #e5e5e5; margin: 0 -1px;">
     <li class="list-group-item has-children open">
-        <a href="#" onclick="return false;" unselectable="on"><i class="icon-folder-close"></i> Fieldsets</a>
+        <a href="#" onclick="return false;" unselectable="on"><i class="icon-folder-close"></i> <?=__('Fieldsets');?></a>
         <ul class="list-group">
             <?php RenderFieldsetTree($nodes); ?>
         </ul>

@@ -12,9 +12,9 @@
     <?php endforeach; ?>
 <?php } ?>
 
-<span class="nav-header">Site Tree</span>
+<span class="list-group-header" style="padding: 4px 10px;"><?=__('Site Tree');?></span>
 
-<ul class="nav-tree list-group">
+<ul class="nav-tree list-group" style="border: 1px solid #e5e5e5; margin: 0 -1px;">
     <li class="list-group-item has-children open">
         <a href="#" data-root="true"><i class="icon-globe"></i> <?=Prime::$config->website['name'];?></a>
         <ul class="list-group">

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="Prime">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title ng-bind="'Prime - ' + $state.current.name">Prime 3.3/master</title>
+		<title>Prime 3.3/master</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -35,11 +35,11 @@
 			</ul>
 			<ul class="nav navbar-nav pull-right">
 				<li class="dropdown">
-					<?php $avatar = HTML::image('http://www.gravatar.com/avatar/'.md5(strtolower(trim('birkir.gudjonsson@gmail.com'))).'?s=24', array('alt' => 'Profile photo')); ?>
-					<?=HTML::anchor('#', 'Username '."\n".$avatar."\n".'<span class="caret"></span>', ['class' => 'dropdown-toggle nav-user', 'data-toggle' => 'dropdown']);?>
+					<?php $avatar = HTML::image('http://www.gravatar.com/avatar/'.md5(strtolower(trim($user->email))).'?s=24', array('alt' => 'Profile photo')); ?>
+					<?=HTML::anchor('#', $user->email.' '."\n".$avatar."\n".'<span class="caret"></span>', ['class' => 'dropdown-toggle nav-user', 'data-toggle' => 'dropdown']);?>
 					<ul class="dropdown-menu">
-						<li><?=HTML::anchor('Prime/User/Profile', '<i class="icon-user"></i> '.__('Profile'));?></li>
-						<li><?=HTML::anchor('Prime/User/Logout', '<i class="icon-off"></i> '.__('Sign out'));?></li>
+						<li><?=HTML::anchor('Prime/Account', '<i class="icon-user"></i> '.__('Profile'));?></li>
+						<li><?=HTML::anchor('Prime/Account/Logout', '<i class="icon-off"></i> '.__('Sign out'));?></li>
 					</ul>
 				</li>
 			</ul>

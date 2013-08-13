@@ -452,7 +452,8 @@ var Prime = (function () {
 	app.Tables = function () {
 
 		// FIXED HEADER
-		if ($(this).hasClass('table')) {
+		if ($(this).hasClass('table') && $(this).parents('.modal-body').length === 0) {
+
 			var table = $(this),
 				thead = table.children('thead'),
 				containment = table.parent(),
@@ -468,7 +469,6 @@ var Prime = (function () {
 				if (containment.scrollTop() > 0) table.addClass('scrolled');
 				else table.removeClass('scrolled');
 			});
-
 			// calculate new widths on copied thead
 			$(window).on('resize', function () {
 				fixed
@@ -588,17 +588,35 @@ var Prime = (function () {
 	/**
 	 * Load View
 	 */
-	app.LoadView = function (href) {
-		$('.panel-center').empty();
+	app.LoadView = function (href, whereto) {
+		whereto = whereto === undefined ? $('.panel-center') : whereto;
+
+		whereto.empty();
 		$.ajax({
 			url: href
 		})
 		.done(function (response) {
-			$('.panel-center').html(response);
+			whereto.html(response);
 
 			// wat table test
-			$('.panel-center').each(app.Elements);
+			whereto.each(app.Elements);
 		});
+		return false;
+	};
+
+	app.LoadPopup = function (href) {
+		$.ajax({
+			url: href
+		})
+		.done(function (response) {
+			Prime.Modal({
+				title: 'Configure Fields',
+				close: true,
+				body: '<section class="popup">' + response + '</section>'
+			});
+			$('section.popup').each(Prime.Elements);
+		});
+
 		return false;
 	};
 

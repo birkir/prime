@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Core Controller
+ * Prime Template Controller
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
@@ -10,22 +10,24 @@
 class Controller_Prime_Template extends Controller {
 
 	/**
-	 * Template view name
-	 * @var string
+	 * @var string Template view name
 	 */
 	public $template = 'Prime/Template';
 
 	/**
-	 * View container
-	 * @var [type]
+	 * @var View View container
 	 */
 	public $view = NULL;
 
 	/**
-	 * Auto render template
-	 * @var boolean
+	 * @var boolean Auto render template
 	 */
 	public $auto_render = TRUE;
+
+	/**
+	 * @var boolean Authentication required
+	 */
+	public $authentication = TRUE;
 
 	/**
 	 * Before action
@@ -35,10 +37,44 @@ class Controller_Prime_Template extends Controller {
 	{
 		// load template
 		$this->template = View::factory($this->template);
+
+		// set r object
+		View::set_global('r', $this->request);
+
+		// check for authentication
+		$this->check_auth();
+	}
+
+	/**
+	 * Check for authentication if needed
+	 *
+	 * @return void
+	 */
+	public function check_auth()
+	{
+		// check if user is logged in
+		$logged_in = Auth::instance()->logged_in();
+
+		// if we want authentication to be required
+		if ($this->authentication AND ! $logged_in)
+		{
+			return HTTP::redirect('Prime/Account/Login');
+		}
+
+		// add user if available
+		if ($logged_in)
+		{
+			// get the user
+			$this->user = Auth::instance()->get_user();
+
+			// add user to global view and vise versa
+			View::set_global('user', $this->user);
+		}
 	}
 
 	/**
 	 * After action
+	 *
 	 * @return void
 	 */
 	public function after()
@@ -54,4 +90,4 @@ class Controller_Prime_Template extends Controller {
 		}
 	}
 
-} // End Core
+} // End Prime Template Controller

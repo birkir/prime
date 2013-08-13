@@ -3,15 +3,15 @@
 		<div class="btn-toolbar">
 			<div class="btn-group">
 				<a href="/Prime/Module/Fieldset/ItemCreate/<?=$fieldset->id;?>" onclick="return Prime.LoadView(this.href);" class="btn btn-default">
-					<i class="icon-file-text"></i>&nbsp; Create
+					<i class="icon-file-text"></i>&nbsp; <?=__('Create');?>
 				</a>
 			</div>
 			<div class="btn-group">
 				<a href="#" class="btn btn-default">
-					<i class="icon-edit"></i>&nbsp; Edit
+					<i class="icon-edit"></i>&nbsp; <?=__('Edit');?>
 				</a>
 				<a href="#" onclick="return Prime.LoadView(this.href);" class="btn btn-default">
-					<i class="icon-trash"></i>&nbsp; Delete
+					<i class="icon-trash"></i>&nbsp; <?=__('Delete');?>
 				</a>
 			</div>
 			<div class="pull-right">
@@ -21,8 +21,8 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu pull-right">
-						<li class="nav-header">Fieldset</li>
-						<li><a href="/Prime/Field/Detail/<?=$fieldset->id;?>?type=Module_Fieldset&amp;back=/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" onclick="return Prime.LoadView(this.href);">Field configure</a></li>
+						<li class="dropdown-header"><?=__('Fieldset');?></li>
+						<li><a href="/Prime/Field/Detail/<?=$fieldset->id;?>?type=Module_Fieldset&amp;back=/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" onclick="return Prime.LoadPopup(this.href);"><?=__('Field configure');?></a></li>
 					</ul>
 				</div>
 			</div>

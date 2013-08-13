@@ -21,14 +21,18 @@ class Prime_Field {
 	}
 
 	// Get value (orm, php storage or default)
-	public function value($item)
+	public function value($item = NULL)
 	{
-		if ($item->loaded() AND isset($item->data) AND isset($this->data[$this->field['name']]))
+		$value = NULL;
+
+		if ($item->loaded() AND isset($item->data) AND isset($item->data[$this->field['name']]))
 			$value = $item->data[$this->field['name']];
 		else if ($item->loaded() AND isset($item->settings) AND isset($item->settings[$this->field['name']]))
 			$value = $item->settings[$this->field['name']];
 		else
 			$value = $this->field['default'];
+
+		return $value;
 	}
 
 	/**

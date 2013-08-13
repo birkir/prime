@@ -33,7 +33,7 @@ Route::set('Prime_Module', 'Prime/Module/(<controller>(/<action>(/<id>)))', arra
 Route::set('Prime', 'Prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
 		'directory'  => 'Prime',
-		'controller' => 'Dashboard',
+		'controller' => 'Page',
 		'action'     => 'index',
 	));
 

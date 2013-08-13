@@ -5,11 +5,11 @@
 		<div class="navbar navbar-toolbar">
 			<div class="btn-toolbar">
 				<div class="btn-group">
-					<button type="submit" class="btn btn-primary"><i class="icon-save" style="color: #fff;"></i>&nbsp; Save</a>
+					<button type="submit" class="btn btn-primary"><i class="icon-save" style="color: #fff;"></i>&nbsp; <?=__('Save');?></a>
 				</div>
 				<div class="btn-group">
 					<a href="/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" class="btn btn-default" onclick="return Prime.LoadView(this.href);">
-						Cancel
+						<?=__('Cancel');?>
 					</a>
 				</div>
 			</div>
