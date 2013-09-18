@@ -578,11 +578,59 @@ var Prime = (function () {
 	};
 
 	app.Elements = function () {
+
+		// select elements
+		// ---------------
 		$(this).find('select').select2({
 			placeholder: 'Please select something',
 			minimumResultsForSearch: 100
 		});
+
+		// tables
+		// ------
 		$(this).find('table').each(app.Tables);
+
+		// trees
+		// --------------
+		$(this)
+		.on('click', '.nav-tree a:not([unselectable])', function () {
+			$(this).closest('.nav-tree').find('li').removeClass('active');
+			$(this).parent('li').addClass('active');
+		})
+		.on('click', '.nav-tree b.caret', function () {
+			$(this).parent('li').toggleClass('open');
+		})
+		.on('contextmenu', '.nav-tree a', function (e) {
+
+			if ($(this).closest('.dropdown-menu').length === 1)
+				return true;
+
+			var source = $(this).closest('.nav-tree').find('.context').html(),
+			    template = Handlebars.compile(source),
+			    node = $(this).data(),
+			    context = template(node);
+
+			$('.has-context').removeClass('open has-context').each(function () {
+				this.context.remove();
+				this.context = null;
+			});
+
+			this.context = $('<div/>')
+			.css({ top: e.clientY, left: e.clientX, position: 'fixed', zIndex: 123 })
+			.addClass('open')
+			.append(context)
+			.appendTo('body');
+
+			$(this).addClass('open has-context');
+
+			return false;
+		});
+		$('html').on('click', function () {
+			$('.has-context').removeClass('open has-context').each(function () {
+				this.context.remove();
+				this.context = null;
+			});
+		});
 	};
 
 	/**

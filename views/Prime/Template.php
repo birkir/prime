@@ -61,6 +61,7 @@
 		<div class="alert-container"></div>
 		<script src="/media/Prime/js/respond.min.js"></script>
 		<script src="/media/Prime/js/jquery-2.0.2.min.js"></script>
+		<script src="/media/Prime/js/handlebars-1.0.0.js"></script>
 		<script src="/media/Prime/js/jquery-ui-1.10.3.min.js"></script>
 		<script src="/media/Prime/js/jquery.tablednd.js"></script>
 		<script src="/media/Prime/js/tablesorter.min.js"></script>

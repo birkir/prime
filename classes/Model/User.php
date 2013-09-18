@@ -1,13 +1,13 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime User Model
+ * User Model
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_User extends Model_Auth_User {
+class Model_User extends Model_Auth_User {
 
 	/**
 	 * A user has many tokens and roles
@@ -15,8 +15,8 @@ class Model_Prime_User extends Model_Auth_User {
 	 * @var array Relationhips
 	 */
 	protected $_has_many = [
-		'prime_user_tokens' => array('model' => 'Prime_User_Token'),
-		'prime_roles'       => array('model' => 'Prime_Role', 'through' => 'prime_roles_prime_users'),
+		'user_tokens' => array('model' => 'User_Token'),
+		'roles'       => array('model' => 'Role', 'through' => 'roles_users'),
 	];
 
 	public function rules()
@@ -33,4 +33,4 @@ class Model_Prime_User extends Model_Auth_User {
 	    ];
 	}
 
-} // End Prime User Model
+} // End User Model
