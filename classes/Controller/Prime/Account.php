@@ -19,12 +19,13 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	{
 		$post = ['email' => 'admin@prime.com', 'password' => 'foobazar'];
 
-		// $validation = Validation::factory($post)
-		// ->rule('password_confirm', 'matches', [':validation', ':field', 'password']);
+		ORM::factory('User', 1)
+		->values([
+			'password' => 'adminadmin'
+		])
+		->save();
 
-		ORM::factory('Prime_User')
-		->values($post, ['email', 'password'])
-		->create();
+		exit;
 	}
 
 	public function action_index()

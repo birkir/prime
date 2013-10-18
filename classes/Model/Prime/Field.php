@@ -17,9 +17,14 @@ class Model_Prime_Field extends ORM {
 		// only on load
 		if ($this->loaded())
 		{
-			try {
+			try
+			{
 				$values['options'] = json_decode($values['options'], TRUE);
-			} catch (Exception $e) {}
+			}
+			catch (Exception $e)
+			{
+				Kohana::$log->add(Log::ERROR, 'Failed loading options for field.');
+			}
 
 			// set field as class
 			$this->_object['field'] = call_user_func_array([$values['field'], 'factory'], [$values]);

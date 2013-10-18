@@ -10,16 +10,12 @@
 class Prime_Module {
 
 	/**
-	 * Region container
-	 * 
-	 * @var ORM
+	 * @var ORM Region container
 	 */
 	public $_region;
 
 	/**
-	 * Merged settings with default values
-	 * 
-	 * @var object
+	 * @var object Merged settings with default values
 	 */
 	public $settings;
 
@@ -51,9 +47,14 @@ class Prime_Module {
 		// get defaults
 		$this->settings = [];
 
+		// add params to settings array
 		foreach ($this->params() as $group)
+		{
 			foreach ($group as $name => $param)
+			{
 				$this->settings[$param['name']] = isset($param['default']) ? $param['default'] : NULL;
+			}
+		}
 
 		// decode settings json
 		try
@@ -83,24 +84,23 @@ class Prime_Module {
 	}
 
 	/**
-	 * Actions to show in live mode, generally
-	 * this function will be extended.
+	 * Actions to show in live mode, modules should extend this function.
 	 * 
 	 * @return array
 	 */
 	public function actions()
 	{
 		return [
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-wrench']).'></i>', [
-				'onclick' => 'window.top.Prime.Page.RegionItemSettings('.$this->_region->id.'); return false;'
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-settingsandroid']).'></i>', [
+				'onclick' => 'window.top.prime.page.region.settings('.$this->_region->id.'); return false;'
 			]),
 			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-trash']).'></i>', [
-				'onclick' => 'window.top.Prime.Page.RegionItemDelete('.$this->_region->id.'); return false;'
-			]),
+				'onclick' => 'window.top.prime.page.region.remove('.$this->_region->id.'); return false;'
+			])/*,
 			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-move']).'></i>', [
 				'class'   => 'prime-move-handle',
 				'onclick' => 'return false;'
-			])
+			])*/
 		];
 	}
 

@@ -3,8 +3,8 @@
  * Prime Module Fieldset Controller
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
- * @package Prime
- * @category Controller
+ * @package Prime/Module
+ * @category Fieldset
  * @copyright (c) 2013 SOLID Productions
  */
 class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
@@ -15,6 +15,20 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	public $auto_render = FALSE;
 
 	/**
+	 * Render page tree
+	 * 
+	 * @return void
+	 */
+	public function action_tree()
+	{
+		$view = View::factory('Prime/Module/Fieldset/Tree')
+		->set('nodes', ORM::factory('Prime_Module_Fieldset'))
+		->set('open', json_decode(Arr::get($_COOKIE, 'tree-fieldsets', '{}'), TRUE));
+
+		$this->response->body($view);
+	}
+
+	/**
 	 * Default action
 	 */
 	public function action_index()
@@ -22,14 +36,13 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$this->auto_render = TRUE;
 
 		// setup left view
-		$this->template->left = View::factory('Prime/Module/Fieldset/Tree')
-		->set('nodes', ORM::factory('Prime_Module_Fieldset'));
+		$this->template->left = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 
 		// center view
 		$this->view = NULL;
 	}
 
-	public function action_Detail()
+	public function action_detail()
 	{
 		// load fieldset
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
@@ -43,8 +56,15 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		->set('fieldset', $fieldset)
 		->set('fields', $fieldset->fields());
 
-		// return view
-		$this->response->body($view);
+		if ($this->request->is_ajax())
+		{
+			$this->response->body($view);
+		}
+		else
+		{
+			$this->action_index();
+			$this->view = $view;
+		}
 	}
 
 	public function action_ItemCreate()

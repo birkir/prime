@@ -1,4 +1,4 @@
-<?php 
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Prime Region Class
  *
@@ -10,13 +10,12 @@
 class Prime_Region {
 
 	/**
-	 * Template region container
-	 * @var array
+	 * @var array Contain all template region items
 	 */
 	private $items = array();
 
 	/**
-	 * Class constructor
+	 * Class constructor, singleton method
 	 *
 	 * @return self
 	 */
@@ -48,9 +47,10 @@ class Prime_Region {
 	}
 
 	/**
-	 * Get overload constructor
-	 * 
-	 * @param  string $name
+	 * Overload get method and return new Item Loop View with
+	 * all region items.
+	 *
+	 * @param  string $name Name of region to get
 	 * @return View
 	 */
 	public function __get($name)
@@ -61,4 +61,4 @@ class Prime_Region {
 		->set('name', $name);
 	}
 
-} // End Prime Region Class
+} // End Prime Region

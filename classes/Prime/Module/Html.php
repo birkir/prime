@@ -3,8 +3,8 @@
  * Prime Module Html
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
- * @package Prime/Module/Html
- * @category Prime
+ * @package Prime/Module
+ * @category Html
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Module_Html extends Prime_Module {

@@ -9,20 +9,37 @@
  */
 class Prime_Frontend {
 
+	/**
+	 * Instance
+	 *
+	 * @return Prime_Frontend
+	 */
 	public static function instance()
 	{
 		return new Prime_Frontend;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @return self
+	 */
 	public function __construct()
 	{
 		return $this;
 	}
 
+	/**
+	 * Module
+	 *
+	 * @return Prime_Frontend
+	 */
 	public static function module($name = NULL, array $options = array())
 	{
-		// create module name
-		$class_name = 'Prime_Module_'.UTF8::ucfirst($name);
+		$module = ORM::factory('Prime_Module', ['slug' => $name]);
+
+		if ( ! $module->loaded())
+			return '<!-- Module not found -->';
 
 		// fake region with settings json encoded
 		$region = (object) [
@@ -30,7 +47,7 @@ class Prime_Frontend {
 		];
 
 		// call module
-		$module = call_user_func_array([$class_name, 'factory'], [$region]);
+		$module = call_user_func_array([$module->controller, 'factory'], [$region]);
 
 		// return its render function
 		return $module->render();

@@ -1,15 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Field String
+ * Prime Field Boolean
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
- * @category Prime
+ * @category Fields
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Field_Boolean extends Prime_Field {
 
-	// Parameters
+	/**
+	 * Params for field
+	 *
+	 * @return array
+	 */
 	public function params()
 	{
 		return [];
@@ -31,4 +35,4 @@ class Prime_Field_Boolean extends Prime_Field {
 		return $view;
 	}
 
-} // End Priem Field String
+} // End Priem Field Boolean

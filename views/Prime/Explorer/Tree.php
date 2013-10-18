@@ -1,16 +1,19 @@
-<span class="list-group-header" style="padding: 4px 10px;"><?=__('Explorer');?></span>
+<span class="list-group-header"><?=__('Explorer');?></span>
 
-<ul class="nav-tree list-group" style="border: 1px solid #e5e5e5; margin: 0 -1px;">
+<ul class="nav-tree list-group scrollable" data-identifier="explorer">
+
 	<li class="list-group-item has-children open">
+
 		<a href="#" onclick="return false;" unselectable="on">
-			<span style="margin-left: 7px;">
-				<i class="icon-folder-open"></i> <?=__('Files');?>
-			</span>
+			<span><i class="icon-th"></i> <?=__('Files');?></span>
 		</a>
+
 		<ul class="list-group">
-			<?=View::factory('Prime/Explorer/Tree/Node')->set('nodes', $files);?>
+			<?=View::factory('Prime/Explorer/Tree/Node')->set('nodes', $files)->set('open', $open);?>
 		</ul>
+
 	</li>
+
 	<script class="context" type="text/x-handlebars-template">
 		<ul class="dropdown-menu" role="menu">
 			<li{{#if folder}} class="disabled"{{/if}}><a href="/Prime/Explorer/File/{{file}}" tabindex="-1" data-action="open">Open</a></li>

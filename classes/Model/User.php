@@ -15,8 +15,8 @@ class Model_User extends Model_Auth_User {
 	 * @var array Relationhips
 	 */
 	protected $_has_many = [
-		'user_tokens' => array('model' => 'User_Token'),
-		'roles'       => array('model' => 'Role', 'through' => 'roles_users'),
+		'user_tokens' => ['model' => 'User_Token'],
+		'roles'       => ['model' => 'Role', 'through' => 'roles_users'],
 	];
 
 	public function rules()

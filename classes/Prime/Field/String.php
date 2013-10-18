@@ -4,12 +4,16 @@
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
- * @category Prime
+ * @category Fields
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Field_String extends Prime_Field {
 
-	// Parameters
+	/**
+	 * Params for field
+	 *
+	 * @return array
+	 */
 	public function params()
 	{
 		return [

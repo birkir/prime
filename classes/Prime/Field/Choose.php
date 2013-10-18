@@ -4,7 +4,7 @@
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
- * @category Prime
+ * @category Fields
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Field_Choose extends Prime_Field {

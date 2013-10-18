@@ -5,5 +5,6 @@ return [
 		'host'  => 'prime-dev.forritun.org',
 		'name' => 'RSK ríkisskattstjóri'
 	],
-	'default_page_id' => 1
+	'default_page_id' => 1,
+	'hashkey' => 'Foobar'
 ];

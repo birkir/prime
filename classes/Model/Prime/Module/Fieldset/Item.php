@@ -3,24 +3,27 @@
  * Prime Module Fieldset Item Model
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
- * @package Prime/Module/Fieldset
- * @category Model
+ * @package Prime/Module
+ * @category Fieldset
  * @copyright (c) 2013 SOLID Productions
  */
 class Model_Prime_Module_Fieldset_Item extends ORM {
 
+	/**
+	 * @var array Fields container
+	 */
 	protected $_fields;
 
 	/**
 	 * Belongs to relationships
 	 * @var array
 	 */
-	protected $_belongs_to = array(
-		'fieldset' => array(
+	protected $_belongs_to = [
+		'fieldset' => [
 			'model'       => 'Prime_Module_Fieldset',
 			'foreign_key' => 'prime_module_fieldset_id'
-		)
-	);
+		]
+	];
 
 	protected function _load_values(array $values)
 	{
@@ -32,10 +35,13 @@ class Model_Prime_Module_Fieldset_Item extends ORM {
 		{
 			$this->_object['data'] = json_decode($this->_object['data'], TRUE);
 		}
-		catch (Exception $e) {}
+		catch (Exception $e)
+		{
+			Kohana::$log->add(Log::ERROR, 'Failed loading data for fieldset item.');
+		}
 
 		// return self
 		return $this;
 	}
 
-} // End Prime Module Fieldset Item Model
+} // End Prime Module Fieldset Item

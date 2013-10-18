@@ -3,8 +3,8 @@
  * Prime Module Multiview
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
- * @package Prime/Module/Multiview
- * @category Prime
+ * @package Prime/Module
+ * @category Multiview
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Module_MultiView extends Prime_Module {

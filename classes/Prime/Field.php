@@ -4,7 +4,7 @@
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
- * @category Prime
+ * @category Fields
  * @copyright (c) 2013 SOLID Productions
  */
 class Prime_Field {
@@ -14,25 +14,36 @@ class Prime_Field {
 	 */
 	public $field;
 
-	// Parameters
+	/**
+	 * Params for field
+	 *
+	 * @return array
+	 */
 	public function params()
 	{
 		return [];
 	}
 
-	// Get value (orm, php storage or default)
+	/**
+	 * Get value for field
+	 *
+	 * @return string
+	 */
 	public function value($item = NULL)
 	{
-		$value = NULL;
+		if ($item->loaded())
+		{
+			if (isset($item->data) AND isset($item->data[$this->field['name']]))
+			{
+				return $item->data[$this->field['name']];
+			}
+			else if ($item->loaded() AND isset($item->settings) AND isset($item->settings[$this->field['name']]))
+			{
+				return $item->settings[$this->field['name']];
+			}
+		}
 
-		if ($item->loaded() AND isset($item->data) AND isset($item->data[$this->field['name']]))
-			$value = $item->data[$this->field['name']];
-		else if ($item->loaded() AND isset($item->settings) AND isset($item->settings[$this->field['name']]))
-			$value = $item->settings[$this->field['name']];
-		else
-			$value = $this->field['default'];
-
-		return $value;
+		return $this->field['default'];
 	}
 
 	/**
@@ -69,6 +80,8 @@ class Prime_Field {
 
 	/**
 	 * Get Field Data as Text
+	 *
+	 * @return string
 	 */
 	public function as_text(ORM $item)
 	{
@@ -77,6 +90,8 @@ class Prime_Field {
 
 	/**
 	 * Prepare Value for Saving
+	 *
+	 * @return mixed
 	 */
 	public function prepare_value($value = NULL)
 	{

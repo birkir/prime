@@ -28,6 +28,7 @@ class Model_Prime_Region extends ORM {
 		// check if the class exists
 		if ( ! class_exists($this->module->controller))
 		{
+			echo $this->module->controller;
 			Kohana::$log->add(Log::ERROR, 'Class [:module] was not found', array(
 				':module' => $this->module->controller
 			));
@@ -39,4 +40,4 @@ class Model_Prime_Region extends ORM {
 		return call_user_func_array(array($this->module->controller, 'factory'), array($this));
 	}
 
-} // End Prime Region Model
+} // End Prime Region

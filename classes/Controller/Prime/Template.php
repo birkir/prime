@@ -53,7 +53,7 @@ class Controller_Prime_Template extends Controller {
 	public function check_auth()
 	{
 		// check if user is logged in
-		$logged_in = Auth::instance()->logged_in();
+		$logged_in = Auth::instance()->logged_in('prime');
 
 		// if we want authentication to be required
 		if ($this->authentication AND ! $logged_in)

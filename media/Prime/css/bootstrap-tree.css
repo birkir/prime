@@ -2,6 +2,7 @@
 .nav-tree .list-group {
   margin-bottom: 0;
   background: transparent;
+  padding-bottom: 1px;
 }
 .nav-tree .list-group-item {
     padding: 0;
@@ -22,6 +23,7 @@
 .nav-tree .list-group-item span {
     padding-left: 0px;
     display: inline-block;
+    white-space: nowrap;
 }
 .nav-tree .list-group-item span i {
 	color: #474747;
@@ -32,6 +34,9 @@
     top: 7px;
     margin-left: -18px;
     color: #666666;
+}
+.nav-tree .list-group-item > ul {
+    font-weight: normal;
 }
 .nav-tree .list-group-item > .caret {
     position: absolute;
@@ -46,7 +51,7 @@
 }
 .nav-tree .list-group-item.has-children > .caret:after {
     display: block;
-    content: url(http://ssl.gstatic.com/ui/v1/zippy/arrow_right.png);
+    content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAHCAYAAAAvZezQAAAAIklEQVQIW2OIjIz8D8QMMMwAFfiPTeA/NoH/eFWgmAG3BQCddS0l75aFpQAAAABJRU5ErkJggg==);
     left: 6px;
     top: 3px;
     position: absolute;
@@ -58,7 +63,7 @@
     display: block;
 }
 .nav-tree .list-group-item.has-children.open > .caret:after {
-    content: url(http://ssl.gstatic.com/ui/v1/zippy/arrow_down.png);
+    content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAECAYAAABCxiV9AAAAJUlEQVQIW2OIjIz8jwszAAkGbBJAwACTZECXAEuCCGQFMAkQBgCrMjrDUR6EaAAAAABJRU5ErkJggg==);
     left: 5px;
     top: 2px;
 }

@@ -1,24 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-// Cookie setup
-Cookie::$salt = 'Salt me';
+// Set cookie hash salt key
+Cookie::$salt = Kohana::$config->load('prime')->hashkey.'cookie';
 Cookie::$expiration = Date::WEEK;
 
-// Required modules
-$required = array(
-	'media'     => MODPATH.'media',
-	'prime'     => MODPATH.'prime',
-	'auth'      => MODPATH.'auth',
-	'cache'     => MODPATH.'cache',
-	'database'  => MODPATH.'database',
-	'image'     => MODPATH.'image',
-	'orm'       => MODPATH.'orm'
-);
-
-// Lazy-load modules
-Kohana::modules($required);
-
-// Initialize Prime
+// Initialize prime cms
 Prime::init();
 
 // Prime module routing

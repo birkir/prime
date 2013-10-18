@@ -30,13 +30,13 @@ class Controller_Prime_Frontend extends Controller {
 		}
 
 		// check if template was found
-		if ( ! Kohana::find_file('views', $page->template))
+		if ( ! Kohana::find_file('views', 'template/'.$page->template))
 		{
 			throw new Kohana_Exception('Did not find template :template', array(':template' => $page->template));
 		}
 
 		// setup template
-		$this->template = View::factory($page->template)
+		$this->template = View::factory('template/'.$page->template)
 
 		// bind regions
 		->bind('region', $regions);

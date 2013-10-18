@@ -10,54 +10,38 @@
 class Controller_Prime_Page extends Controller_Prime_Template {
 
 	/**
-	 * @var Disable auto render
+	 * @var bool Disable auto render
 	 */
 	public $auto_render = FALSE;
 
-	public function action_index()
-	{
-		$this->auto_render = TRUE;
 
-		// setup tree view
-		$this->template->left = View::factory('Prime/Page/Tree')
-		->bind('nodes', $nodes);
-
-		// get all nodes
-		$nodes = ORM::factory('Prime_Page');
-
-		// setup right view
-		$this->template->right = View::factory('Prime/Page/Modules')
-		->bind('modules', $modules);
-
-		// get all modules
-		$modules = ORM::factory('Prime_Module')
-		->find_all();
-
-		$this->view = '<iframe'.HTML::attributes([
-			'src' => '/?mode=design',
-			'frameborder' => 0,
-			'class' => 'scrollable prime-live-iframe',
-			'style' => 'width: 100%; height: 100%;',
-			'name' => 'PrimeLive'
-		]).'></iframe>';
-	}
-
+	/**
+	 * @return void
+	 */
 	public function GetRegion(ORM $region)
 	{
+		// check if region is loaded
 		if ($region->loaded())
 		{
+			// load its page id
 			$page = ORM::factory('Prime_Page', $region->prime_page_id);
 
+			// get things needed for region
 			View::set_global('page', $page);
 			View::set_global('prime', Prime_Frontend::instance());
 
+			// setup view for region item
 			$view = View::factory('Prime/Page/Region/Item')
 			->set('item', $region->module());
 
+			// whola
 			return $view;
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_AddRegion()
 	{
 		$region = ORM::factory('Prime_Region');
@@ -95,6 +79,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_MovePage()
 	{
 		// node to move
@@ -114,6 +101,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		->execute();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_DeletePage()
 	{
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
@@ -124,6 +114,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page->delete();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_CreatePage()
 	{
 		$parent = ORM::factory('Prime_Page', $this->request->param('id'));
@@ -142,6 +135,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$this->response->body($tree);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_RenamePage()
 	{
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
@@ -151,6 +147,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$this->response->body(json_encode(['name' => $page->name, 'slug' => $page->slug]));
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_DeleteRegion()
 	{
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
@@ -163,6 +162,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$region->delete();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_RegionSettings()
 	{
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
@@ -176,7 +178,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// get module fields
 		$fields = $module->params();
 
-		$view = View::factory('Prime/Page/Region/Settings')
+		$view = View::factory('Prime/Region/Settings')
 		->set('fields', $fields)
 		->set('region', $region);
 
@@ -184,6 +186,9 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$this->response->body($view);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function action_RegionItemActions()
 	{
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
@@ -196,30 +201,120 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$this->response->body(json_encode($region->module()->live()));
 	}
 
-	public function action_EditContent()
+
+
+
+	/**
+	 * Main Pages Display
+	 *
+	 * @return void
+	 */
+	public function action_index()
 	{
-		$region = ORM::factory('Prime_Region', $this->request->param('id'));
+		// disable auto render
+		$this->auto_render = TRUE;
 
-		if ($region->loaded())
-		{
-			$module = $region->module();
+		// setup template views
+		$this->template->left = Request::factory('Prime/Page/Tree')->execute();
 
-			if ($module->settings['content'] !== $this->request->post('content'))
-			{
-				$module->settings['content'] = $this->request->post('content');
+		$this->template->right = View::factory('Prime/Page/Modules')
+		->bind('modules', $modules);
 
-				$module->save();
-			}
-		}
+		// get all nodes
+		$nodes = ORM::factory('Prime_Page');
+
+		// get all modules
+		$modules = ORM::factory('Prime_Module')
+		->find_all();
+
+		// setup main view
+		$this->view = '<iframe'.HTML::attributes([
+			'src' => '/?mode=design',
+			'frameborder' => 0,
+			'class' => 'scrollable prime-live-iframe',
+			'style' => 'width: 100%; height: 100%;',
+			'name' => 'PrimeLive'
+		]).'></iframe>';
 	}
 
-	public function action_GetContent()
+	/**
+	 * Render page tree
+	 * 
+	 * @return void
+	 */
+	public function action_tree()
 	{
-		$region = ORM::factory('Prime_Region', $this->request->param('id'));
+		$view = View::factory('Prime/Page/Tree')
+		->set('nodes', ORM::factory('Prime_Page'))
+		->set('open', json_decode(Arr::get($_COOKIE, 'tree-page', '{}'), TRUE));
 
-		if ($region->loaded()) {
-			$this->response->body($region->module()->settings['content']);
+		$this->response->body($view);
+	}
+
+	public function action_create()
+	{
+		// get parent page
+		$parent = ORM::factory('Prime_Page', $this->request->param('id'));
+
+		// setup view
+		$view = View::factory('Prime/Page/Create')
+		->set('page', $parent)
+		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// create new page
+			$page = ORM::factory('Prime_Page');
+			$page->parent_id = $this->request->post('parent_id');
+			$page->name = $this->request->post('name');
+			$page->slug = $this->request->post('slug');
+			$page->template = $this->request->post('template');
+			$page->position = 100;
+			$page->save();
+
+			// get new tree
+			$view = Request::factory('Prime/Page/Tree')->execute();
 		}
+
+		// show tree
+		$this->response->body($view);
+	}
+
+	public function action_properties()
+	{
+		$page = ORM::factory('Prime_Page', $this->request->param('id'));
+
+		$view = View::factory('Prime/Page/Properties')
+		->set('page', $page)
+		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// update page properties
+			$page->name = $this->request->post('name');
+			$page->slug = $this->request->post('slug');
+			$page->template = $this->request->post('template');
+			$page->save();
+
+			// get new tree
+			$view = Request::factory('Prime/Page/Tree')->execute();
+		}
+
+		$this->response->body($view);
+	}
+
+	public function action_remove()
+	{
+		$page = ORM::factory('Prime_Page', $this->request->param('id'));
+		$page->deleted = 1;
+		$page->save();
+	}
+
+	public function action_rename()
+	{
+		$page = ORM::factory('Prime_Page', $this->request->param('id'));
+		$page->name = $this->request->post('name');
+		$page->save();
 	}
 
 } // End Prime Page

@@ -22,7 +22,7 @@
 					</a>
 					<ul class="dropdown-menu pull-right">
 						<li class="dropdown-header"><?=__('Fieldset');?></li>
-						<li><a href="/Prime/Field/Detail/<?=$fieldset->id;?>?type=Module_Fieldset&amp;back=/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" onclick="return Prime.LoadPopup(this.href);"><?=__('Field configure');?></a></li>
+						<li><a href="/Prime/Field/Detail/<?=$fieldset->id;?>?type=Module_Fieldset&amp;back=/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" onclick="return prime.dialog({ remote: this.href });"><?=__('Field configure');?></a></li>
 					</ul>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 			</thead>
 			<tbody>
 				<?php foreach ($fieldset->items->find_all() as $item): ?>
-					<tr ondblclick="Prime.LoadView('/Prime/Module/Fieldset/ItemUpdate/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
+					<tr ondblclick="prime.view('/Prime/Module/Fieldset/ItemUpdate/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
 						<td class="text-center">
 							<input type="checkbox">
 						</td>

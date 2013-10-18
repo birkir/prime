@@ -9,21 +9,18 @@
  */
 class Model_Prime_Page extends ORM {
 
-	protected $_has_many = array
-	(
-		'pages' => array
-		(
+	protected $_has_many = [
+		'pages' => [
 			'model'       => 'Prime_Page',
 			'foreign_key' => 'parent_id',
 			'far_key'     => 'id'
-		),
-		'regions' => array
-		(
+		],
+		'regions' => [
 			'model'       => 'Prime_Region',
 			'foreign_key' => 'prime_page_id',
 			'far_key'     => 'id'
-		)
-	);
+		]
+	];
 
 	public function selected($path = NULL)
 	{

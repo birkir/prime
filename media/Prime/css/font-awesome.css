@@ -190,9 +190,13 @@ a [class*=" icon-"] {
 .dropdown-menu > li > a > [class*="icon-"] {
   position: absolute;
   left: 10px;
-  top: 6px;
+  top: 4px;
   color: #777;
   font-size: 14px;
+}
+.dropdown-menu > .disabled > a > [class^="icon-"],
+.dropdown-menu > .disabled > a > [class*="icon-"] {
+  color: #bbb;
 }
 /* keeps Bootstrap styles with and without icons the same */
 .btn [class^="icon-"].icon-large,

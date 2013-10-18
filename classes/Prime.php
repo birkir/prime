@@ -84,6 +84,38 @@ class Prime {
 	}
 
 	/**
+	 * Prepare list of files to array for combobox
+	 * 
+	 * @param  array recursive array of files
+	 * @return array
+	 */
+	public static function treeselect($nodes, $mask = 'views/', $level = 1)
+	{
+		// list buffer
+		$list = [];
+
+		// loop through nodes
+		foreach ($nodes as $node)
+		{
+			// process recursive
+			if (is_array($node))
+			{
+				// combine to list
+				$list = Arr::merge($list, Prime::treeselect($node, $mask, ++$level));
+			}
+			else
+			{
+				$node = str_replace([APPPATH, MODPATH, SYSPATH], NULL, $node);
+				$node = substr($node, 0, strlen($mask)) === $mask ? substr($node, strlen($mask)) : $node;
+				$node = substr($node, 0, strrpos($node, '.'));
+				$list[$node] = $node;
+			}
+		}
+
+		return $list;
+	}
+
+	/**
 	 * Cleans up the environment:
 	 *
 	 * - Destroy the Prime::$website and Prime::$page objects

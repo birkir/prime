@@ -3,23 +3,25 @@
  * Prime Module Fieldset Model
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
- * @package Prime/Module/Fieldset
- * @category Model
+ * @package Prime/Module
+ * @category Fieldset
  * @copyright (c) 2013 SOLID Productions
  */
 class Model_Prime_Module_Fieldset extends ORM {
 
+	/**
+	 * @var array Fields container
+	 */
 	protected $_fields;
 
 	/**
-	 * Has many relationships
-	 * @var array
+	 * @var array Has many relationships
 	 */
-	protected $_has_many = array(
-		'items' => array(
+	protected $_has_many = [
+		'items' => [
 			'model' => 'Prime_Module_Fieldset_Item'
-		)
-	);
+		]
+	];
 
 	public function fields()
 	{
