@@ -24,18 +24,21 @@ class Prime_Module_Navigation extends Prime_Module {
 					'field'   => 'Prime_Field_Boolean',
 					'default' => TRUE
 				],
-				'from_level' => [
-					'name'    => 'From level',
+				[
+					'name'    => 'from_level',
+					'caption' => 'From level',
 					'field'   => 'Prime_Field_String',
 					'default' => 0
 				],
-				'to_level' => [
-					'name'    => 'To level',
+				[
+					'name'    => 'to_level',
+					'caption' => 'To level',
 					'field'   => 'Prime_Field_String',
 					'default' => 10
 				],
-				'root_page' => [
-					'name'    => 'Root page',
+				[
+					'name'    => 'root_page',
+					'caption' => 'Root page',
 					'field'   => 'Prime_Field_Page',
 					'default' => NULL
 				],

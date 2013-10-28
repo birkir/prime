@@ -9,48 +9,6 @@
  */
 class Prime_Field_String extends Prime_Field {
 
-	/**
-	 * Params for field
-	 *
-	 * @return array
-	 */
-	public function params()
-	{
-		return [
-			'type' => [
-				'caption' => 'Type',
-				'field'   => 'Prime_Field_Choose',
-				'default' => 'string',
-				'options' => [
-					'items' => [
-						'string'    => 'String',
-						'email'     => 'Email',
-						'integer'   => 'Integer',
-						'float'     => 'Float',
-						'money'     => 'Money',
-						'decimal'   => 'Decimal'
-					]
-				]
-			],
-		];
-	}
-
-	/**
-	 * Fieldset render method
-	 *
-	 * @return View
-	 */
-	public function as_input($form = 'form_', $item)
-	{
-		// setup view
-		$view = View::factory('Prime/Field/String')
-		->set('field', $this->field)
-		->set('form', $form)
-		->set('caller', $this)
-		->set('item', $item)
-		->set('value', $this->value($item));
-
-		return $view;
-	}
+	protected $_as_input = 'Prime/Field/String';
 
 } // End Priem Field String

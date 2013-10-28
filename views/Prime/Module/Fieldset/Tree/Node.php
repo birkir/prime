@@ -7,17 +7,18 @@
 
 		<b class="caret" onselectstart="return false;"></b>
 
-		<?=HTML::anchor('/Prime/Module/Fieldset/Detail/'.$node->id, '<span><i class="icon-'.($folder ? 'folder-close' : 'list-alt').'"></i> '.$node->name.'</span>', [
-			'onclick'   => $folder ? 'return false;' : 'return prime.view(this.href);',
+		<?=HTML::anchor('/Prime/Module/Fieldset/List/'.$node->id, '<span><i class="icon-'.($folder ? 'folder-close' : 'list-alt').'"></i> '.$node->name.'</span>', [
+			'onclick'   => $folder || $request->is_initial() ? 'return false;' : 'return prime.view(this.href);',
 			'data-id'   => $node->id,
-			'data-href' => '/Prime/Module/Fieldset/Detail/'.$node->id,
+			'data-dir'  => $folder,
+			'data-href' => '/Prime/Module/Fieldset/List/'.$node->id,
 			$folder ? 'unselectable' : '' => $folder ? 'on' : ''
 		]);?>
 
 		<?php if ($children): ?>
 
 			<ul class="list-group">
-				<?=View::factory('Prime/Module/Fieldset/Tree/Node')->set('nodes', $node)->set('open', $open);?>
+				<?=View::factory('Prime/Module/Fieldset/Tree/Node')->set('nodes', $node)->set('open', $open)->set('request', $request);?>
 			</ul>
 
 		<?php endif; ?>

@@ -19,6 +19,19 @@ class Prime_Module_MultiView extends Prime_Module {
 		return [
 			'General' => [
 				[
+					'name'    => 'type',
+					'caption' => 'Type',
+					'field'   => 'Prime_Field_Choose',
+					'default' => 'columns',
+					'options' => [
+						'items' => [
+							'columns'   => 'Columns',
+							'tabs'      => 'Tabs',
+							'accordion' => 'Accordion'
+						]
+					]
+				],
+				[
 					'name'    => 'views',
 					'caption' => 'View names',
 					'field'   => 'Prime_Field_String',
@@ -26,12 +39,6 @@ class Prime_Module_MultiView extends Prime_Module {
 					'options' => [
 						'placeholder' => 'ex. tab1, tab2'
 					]
-				],
-				[
-					'name'    => 'fluid',
-					'caption' => 'Fluid',
-					'field'   => 'Prime_Field_Boolean',
-					'default' => FALSE
 				],
 				[
 					'name'    => 'classes',
@@ -74,8 +81,7 @@ class Prime_Module_MultiView extends Prime_Module {
 		// setup view
 		$view = View::factory('module/multiview/'.$this->settings['template'])
 		->bind('items', $items)
-		->set('fluid', $this->settings['fluid'])
-		->set('classes', $this->settings['classes'])
+		->set('options', $this->settings)
 		->set('region', $this->_region->id);
 
 		// split view names

@@ -24,10 +24,7 @@ class Controller_Prime_Frontend extends Controller {
 
 		// page loaded
 		if ( ! $page->loaded())
-		{
-			$this->response->status(404);
-			return $this->response->body('404 Not Found');
-		}
+			throw HTTP_Exception::factory(404, 'Not found');
 
 		// check if template was found
 		if ( ! Kohana::find_file('views', 'template/'.$page->template))

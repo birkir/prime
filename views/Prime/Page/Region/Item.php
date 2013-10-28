@@ -4,5 +4,9 @@
 	<?php endforeach; ?>
 </ul>
 <div class="prime-region-item-content"<?php if (isset($item->wysiwyg)): ?> contenteditable="true"<?php endif; ?>>
-	<?=$item->render();?>
+	<?php try { ?>
+		<?=$item->render();?>
+	<?php } catch (Kohana_Exception $e) { ?>
+		<pre><?=__('Error loading module');?>: <?=$e->getMessage();?></pre>
+	<?php } ?>
 </div>

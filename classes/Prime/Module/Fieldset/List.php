@@ -21,7 +21,7 @@ class Prime_Module_Fieldset_List extends Prime_Module {
 				[
 					'name'    => 'fieldset',
 					'caption' => 'Fieldset',
-					'field'   => 'Prime_Field_String',
+					'field'   => 'Prime_Field_Fieldset',
 					'default' => '',
 				]
 			],
@@ -68,17 +68,14 @@ class Prime_Module_Fieldset_List extends Prime_Module {
 
 		// check if view exists
 		if ( ! Kohana::find_file('views/module/fieldset/list/', $this->settings['template']))
-		{
-			// throw some errors
-			throw new Kohana_Exception('Could not find view :view', array(':view' => $this->settings['template']));
-		}
+			throw new Kohana_Exception('Could not find view [:view].', array(':view' => $this->settings['template']));
 
 		// Get fieldset
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset']);
 
 		// Make sure fieldset exists
 		if ( ! $fieldset->loaded())
-			throw new Kohana_Exception('Could not find fieldset :fieldset', array(':fieldset' => $this->settings['fieldset']));
+			throw new Kohana_Exception('Could not find fieldset [:fieldset].', array(':fieldset' => $this->settings['fieldset']));
 
 		// setup view
 		$view = View::factory('module/fieldset/list/'.$this->settings['template'])

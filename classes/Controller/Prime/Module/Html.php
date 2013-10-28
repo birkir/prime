@@ -17,7 +17,7 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 	/**
 	 * @return void
 	 */
-	public function action_EditContent()
+	public function action_save()
 	{
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
 

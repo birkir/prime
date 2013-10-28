@@ -10,29 +10,23 @@
 class Prime_Field_Boolean extends Prime_Field {
 
 	/**
-	 * Params for field
-	 *
-	 * @return array
+	 * @var string Template to show field as input
 	 */
-	public function params()
-	{
-		return [];
-	}
+	protected $_as_input = 'Prime/Field/Boolean';
 
 	/**
-	 * Fieldset render method
+	 * Overload Field Data as Text
 	 *
-	 * @return View
+	 * @param  mixed  $item
+	 * @return string
 	 */
-	public function as_input($form = 'form_', $item)
+	public function as_text($item)
 	{
-		// setup view
-		$view = View::factory('Prime/Field/Boolean')
-		->set('field', $this->field)
-		->set('form', $form)
-		->set('value', $this->value($item));
+		// get parent field
+		$str = parent::as_text($item);
 
-		return $view;
+		// just return true or false
+		return UTF8::ucfirst($str ? __('yes') : __('no'));
 	}
 
 } // End Priem Field Boolean

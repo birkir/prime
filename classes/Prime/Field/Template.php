@@ -10,6 +10,11 @@
 class Prime_Field_Template extends Prime_Field {
 
 	/**
+	 * @var string Template to show field as input
+	 */
+	protected $_as_input = 'Prime/Field/Template';
+
+	/**
 	 * List templates by scope
 	 * 
 	 * @param  string $scope Scope to find
@@ -30,7 +35,7 @@ class Prime_Field_Template extends Prime_Field {
 				$node = str_replace(array(APPPATH, MODPATH, SYSPATH, '.php'), NULL, $node);
 				$node = str_replace('prime/views/'.$this->field['options']['directory'].'/', NULL, $node);
 				$node = str_replace('views/'.$this->field['options']['directory'].'/', NULL, $node);
-				$ori = $this->field['options']['directory'].'/'.$node;
+				$ori = $node;
 				$node = UTF8::ucfirst(Inflector::humanize($node));
 				$ret[$ori] = $node;
 			}
@@ -39,23 +44,31 @@ class Prime_Field_Template extends Prime_Field {
 		return $ret;
 	}
 
+	public function prepare_value($str = NULL)
+	{
+		$str = str_replace($this->field['options']['directory'].'/', NULL, $str);
+
+		return $str;
+	}
+
 	/**
-	 * Fieldset render method
+	 * Overload as input method
 	 *
+	 * @param  ORM   Field object
+	 * @param  array Error list
 	 * @return View
 	 */
-	public function as_input($form = 'form_', $item)
+	public function as_input($item, $errors = [])
 	{
-		$templates = $this->tree(Kohana::list_files('views/'.$this->field['options']['directory']));
+		// get parent view
+		$view = parent::as_input($item, $errors);
 
-		// setup view
-		$view = View::factory('Prime/Field/Template')
-		->set('field', $this->field)
-		->set('form', $form)
-		->set('value', $this->value($item))
-		->set('templates', $templates);
+		// set view templates list
+		$view->templates = $this->tree(Kohana::list_files('views/'.Arr::get($view->options, 'directory', NULL)));
 
+		// return view
 		return $view;
 	}
+
 
 } // End Field Template

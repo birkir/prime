@@ -2,39 +2,28 @@
 	<div class="navbar navbar-toolbar">
 		<div class="btn-toolbar">
 			<div class="btn-group">
-				<a href="/Prime/Module/Fieldset/ItemCreate/<?=$fieldset->id;?>" onclick="return Prime.LoadView(this.href);" class="btn btn-default">
-					<i class="icon-file-text"></i>&nbsp; <?=__('Create');?>
-				</a>
+				<?=HTML::anchor('Prime/Module/Fieldset/Create/'.$fieldset->id, __('Create'), [
+					'onclick' => 'return prime.view(this.href);',
+					'class'   => 'btn btn-danger'
+				]);?>
 			</div>
-			<div class="btn-group">
-				<a href="#" class="btn btn-default">
+			<div class="btn-group table-bind-template">
+			</div>
+    		<script id="selTemplate" type="text/x-handlebars-template">
+				<a href="/Prime/Module/Fieldset/Edit/{{id}}" onclick="return {{#if one}}prime.view(this.href){{else}}false{{/if}};" class="btn btn-default{{#more}} disabled{{/more}}{{#zero}} disabled{{/zero}}">
 					<i class="icon-edit"></i>&nbsp; <?=__('Edit');?>
 				</a>
-				<a href="#" onclick="return Prime.LoadView(this.href);" class="btn btn-default">
+				<a href="/Prime/Module/Fieldset/Delete/{{id}}" onclick="return {{#if zero}}false{{else}}prime.fieldset.delete(this){{/if}};" class="btn btn-default{{#zero}} disabled{{/zero}}">
 					<i class="icon-trash"></i>&nbsp; <?=__('Delete');?>
 				</a>
-			</div>
-			<div class="pull-right">
-				<div class="btn-group">
-					<a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-cog"></i>
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu pull-right">
-						<li class="dropdown-header"><?=__('Fieldset');?></li>
-						<li><a href="/Prime/Field/Detail/<?=$fieldset->id;?>?type=Module_Fieldset&amp;back=/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" onclick="return prime.dialog({ remote: this.href });"><?=__('Field configure');?></a></li>
-					</ul>
-				</div>
-			</div>
+    		</script>
 		</div>
 	</div>
-	<div class="scrollable" style="padding-right: 20px;">
-		<table class="table table-hover table-condensed table-selection table-sortable">
+	<div class="scrollable">
+		<table class="table table-hover table-condensed table-selection table-sortable" data-bind-template="#selTemplate" data-bind=".table-bind-template">
 			<thead>
 				<tr>
-					<th width="30" class="text-center" data-sorter="false">
-						<input type="checkbox">
-					</th>
+					<th width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></th>
 					<?php foreach ($fields as $field): ?>
 						<th><?=$field->caption;?></th>
 					<?php endforeach; ?>
@@ -42,10 +31,8 @@
 			</thead>
 			<tbody>
 				<?php foreach ($fieldset->items->find_all() as $item): ?>
-					<tr ondblclick="prime.view('/Prime/Module/Fieldset/ItemUpdate/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
-						<td class="text-center">
-							<input type="checkbox">
-						</td>
+					<tr ondblclick="prime.view('/Prime/Module/Fieldset/Edit/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
+						<td class="text-center"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></td>
 						<?php foreach ($fields as $field): ?>
 							<td><?=$field->field->as_text($item);?></td>
 						<?php endforeach; ?>

@@ -1,23 +1,30 @@
 <div class="fullscreen-ui">
-	<form action="" class="form-fieldset" onsubmit="return Prime.Module.Fieldset.SaveItem(this);">
-		<input type="hidden" name="_fieldset_id" value="<?=$fieldset->id;?>">
-		<input type="hidden" name="_fieldset_item_id" value="<?=$item->id;?>">
-		<div class="navbar navbar-toolbar">
+	<?=Form::open($action, [
+		'role'     => 'form',
+		'class'    => 'form-fieldset',
+		'onsubmit' => 'return prime.fieldset.save(this);',
+		'data-id'  => $fieldset->id
+	]);?>
+		<div class="navbar navbar-toolbar navbar-default">
 			<div class="btn-toolbar">
 				<div class="btn-group">
-					<button type="submit" class="btn btn-primary"><i class="icon-save" style="color: #fff;"></i>&nbsp; <?=__('Save');?></a>
+					<?=Form::button(NULL, __('Save'), [
+						'type' => 'submit',
+						'class' => 'btn btn-primary'
+					]);?>
 				</div>
 				<div class="btn-group">
-					<a href="/Prime/Module/Fieldset/Detail/<?=$fieldset->id;?>" class="btn btn-default" onclick="return Prime.LoadView(this.href);">
-						<?=__('Cancel');?>
-					</a>
+					<?=HTML::anchor('Prime/Module/Fieldset/List/'.$fieldset->id, __('Cancel'), [
+						'class' => 'btn btn-default',
+						'onclick' => 'return prime.view(this.href);'
+					]);?>
 				</div>
 			</div>
 		</div>
 		<div class="scrollable">
 			<?php foreach ($fieldset->fields() as $field): ?>
-				<?=$field->field->as_input('form_'.$fieldset->id.'_', $item);?>
+				<?=$field->field->as_input($item);?>
 			<?php endforeach; ?>
 		</div>
-	</form>
+	<?=Form::close();?>
 </div>

@@ -12,22 +12,6 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public $authentication = FALSE;
 
-	/**
-	 * Dummy function to make admin account
-	 */
-	public function action_makeadmin()
-	{
-		$post = ['email' => 'admin@prime.com', 'password' => 'foobazar'];
-
-		ORM::factory('User', 1)
-		->values([
-			'password' => 'adminadmin'
-		])
-		->save();
-
-		exit;
-	}
-
 	public function action_index()
 	{
 		$this->auto_render = TRUE;
@@ -50,7 +34,11 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 
 		// set template view
 		$this->template = View::factory('Prime/Login')
-		->bind('message', $message);
+		->bind('message', $message)
+		->bind('post', $post);
+
+		// get post data
+		$post = $this->request->post();
 
 		// check for post method
 		if ($this->request->method() === HTTP_Request::POST)
@@ -64,7 +52,7 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 			// try login
 			if (Auth::instance()->login($post['email'], $post['password'], isset($post['remember'])))
 			{
-				return HTTP::redirect('Prime/Account');
+				return HTTP::redirect('Prime/Page');
 			}
 
 			$message = 'E-Mail or password incorrect, try again!';

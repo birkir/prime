@@ -152,7 +152,7 @@ class Controller_Prime_Log extends Controller_Prime_Template {
 			}
 		}
 
-		return $items;
+		return array_reverse($items);
 	}
 
 

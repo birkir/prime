@@ -10,28 +10,49 @@
 class Prime_Field_Page extends Prime_Field {
 
 	/**
-	 * Params for field
-	 *
-	 * @return array
+	 * @var string Template to show field as input
 	 */
-	public function params()
+	protected $_as_input = 'Prime/Field/Page';
+
+	/**
+	 * Overload Field Data as Text
+	 *
+	 * @param  mixed  $item
+	 * @return string
+	 */
+	public function as_text($item)
 	{
-		return [];
+		// get parent field
+		$str = parent::as_text($item);
+
+		if (intval($str) === 0)
+			return __('No page selected');
+
+		// get page
+		$page = ORM::factory('Prime_Page', $str);
+
+		if ($page->loaded())
+			return $page->name;
+		else
+			return __('Invalid page');
 	}
 
 	/**
-	 * Fieldset render method
+	 * Overload as input method
 	 *
+	 * @param  ORM   Field object
+	 * @param  array Error list
 	 * @return View
 	 */
-	public function as_input($form = 'form_', $item)
+	public function as_input($item, $errors = [])
 	{
-		// setup view
-		$view = View::factory('Prime/Field/Boolean')
-		->set('field', $this->field)
-		->set('form', $form)
-		->set('value', $this->value($item));
+		// get parent view
+		$view = parent::as_input($item, $errors);
 
+		// set view page orm
+		$view->page = ORM::factory('Prime_Page', $view->value);
+
+		// return view
 		return $view;
 	}
 

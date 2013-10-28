@@ -91,7 +91,7 @@ class Prime_Module {
 	public function actions()
 	{
 		return [
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-settingsandroid']).'></i>', [
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-wrench']).'></i>', [
 				'onclick' => 'window.top.prime.page.region.settings('.$this->_region->id.'); return false;'
 			]),
 			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-trash']).'></i>', [
@@ -110,8 +110,27 @@ class Prime_Module {
 	 * @param array Parameters
 	 * @return string
 	 */
-	public function save()
+	public function save(array $params = NULL)
 	{
+		if ($params)
+		{
+			// loop through module params
+			foreach ($this->params() as $group => $fields)
+			{
+				foreach ($fields as $field)
+				{
+					if (isset($params[$field['name']]))
+					{
+						// call field
+						$class = call_user_func_array(array($field['field'], 'factory'), array($field));
+
+						// process its save state
+						$this->settings[$field['name']] = $class->prepare_value($params[$field['name']]);
+					}
+				}
+			}
+		}
+
 		// update settings item
 		$this->_region->settings = json_encode($this->settings);
 

@@ -10,102 +10,232 @@
 class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 
 	/**
-	 * @var boolean Disable auto render template
-	 */ 
-	public $auto_render = FALSE;
-
-	/**
-	 * Render page tree
+	 * Render fieldset tree
 	 * 
 	 * @return void
 	 */
 	public function action_tree()
 	{
+		$this->auto_render = FALSE;
+
+		// setup view
 		$view = View::factory('Prime/Module/Fieldset/Tree')
-		->set('nodes', ORM::factory('Prime_Module_Fieldset'))
-		->set('open', json_decode(Arr::get($_COOKIE, 'tree-fieldsets', '{}'), TRUE));
+		->bind('nodes', $nodes)
+		->bind('open', $open)
+		->set('request', $this->request);
+
+		$open = $this->request->is_initial() ? [] : json_decode(Arr::get($_COOKIE, 'tree-fieldsets', '{}'), TRUE);
+
+		// get nodes
+		$nodes = ORM::factory('Prime_Module_Fieldset');
+
+		$this->response->body($view);
+	}
+
+	public function action_test()
+	{
+		$this->auto_render = FALSE;
+
+		$items = ORM::factory('Prime_Module_Fieldset_Item')
+		->data_to_columns(['name', 'socialid', 'phone', 'gender', 'email'])
+		->where('prime_module_fieldset_id', '=', 5)
+		->having('name', 'LIKE', '%birkir%');
+
+		foreach($items->find_all() as $item) {
+			echo Debug::vars($item->as_array());
+		}
+
+		echo View::factory('profiler/stats');
+	}
+
+	public function action_new()
+	{
+		$this->auto_render = FALSE;
+
+		$fieldset = ORM::factory('Prime_Module_Fieldset');
+		$fieldset->parent_id = $this->request->param('id');
+		$fieldset->name = $this->request->post('name');
+		$fieldset->type = $this->request->post('type');
+		$fieldset->save();
+
+		$view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 
 		$this->response->body($view);
 	}
 
 	/**
-	 * Default action
+	 * Default page
+	 *
+	 * @return void
 	 */
 	public function action_index()
 	{
-		$this->auto_render = TRUE;
-
-		// setup left view
-		$this->template->left = Request::factory('Prime/Module/Fieldset/Tree')->execute();
-
-		// center view
-		$this->view = NULL;
+		// show tree
+		$this->template->left = Request::factory('Prime/Module/Fieldset/Tree')
+		->execute();
 	}
 
-	public function action_detail()
+	/**
+	 * Show list of fieldset rows
+	 *
+	 * @return void
+	 */
+	public function action_list()
 	{
+		// show tree
+		$this->template->left = Request::factory('Prime/Module/Fieldset/Tree')
+		->execute();
+
 		// load fieldset
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
 
 		// throw error if fieldset was not found
 		if ( ! $fieldset->loaded())
-			return $this->response->status(404);
+			throw HTTP_Exception::factory(404, 'Not found');
 
 		// setup view
-		$view = View::factory('Prime/Module/Fieldset/List')
+		$this->view = View::factory('Prime/Module/Fieldset/List')
 		->set('fieldset', $fieldset)
 		->set('fields', $fieldset->fields());
 
-		if ($this->request->is_ajax())
+		// just view for ajax requests
+		if ($this->request->is_ajax() OR ! $this->request->is_external())
 		{
-			$this->response->body($view);
-		}
-		else
-		{
-			$this->action_index();
-			$this->view = $view;
+			// disable auto render
+			$this->auto_render = FALSE;
+
+			// output center view
+			$this->response->body($this->view);
 		}
 	}
 
-	public function action_ItemCreate()
+	/**
+	 * Create new fieldset
+	 *
+	 * @return void
+	 */
+	public function action_create()
 	{
+		$this->auto_render = FALSE;
+
+		// create fieldset record
+		$item = ORM::factory('Prime_Module_Fieldset_Item');
+
+		// find parent fieldset
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+
+		// setup view
 		$view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
-		->set('fieldset', ORM::factory('Prime_Module_Fieldset', $this->request->param('id')))
-		->set('item', ORM::factory('Prime_Module_Fieldset'));
-
-		$this->response->body($view);
-	}
-
-	public function action_ItemUpdate()
-	{
-		$item = ORM::factory('Prime_Module_Fieldset_Item', $this->request->param('id'));
-
-		$view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
-		->set('fieldset', ORM::factory('Prime_Module_Fieldset', $item->prime_module_fieldset_id))
+		->set('action', 'Prime/Module/Fieldset/Create/'.$fieldset->id)
+		->set('fieldset', $fieldset)
 		->set('item', $item);
 
+		// process post values
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// get post data
+			$post = $this->request->post();
+			$data = [];
+
+			// loop through fieldset fields
+			foreach ($fieldset->fields() as $field)
+			{
+				$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+			}
+
+			// set item data
+			$item->prime_module_fieldset_id = $fieldset->id;
+			$item->data = json_encode($data);
+			$item->save();
+		}
+
+		// render view
 		$this->response->body($view);
 	}
 
-	public function action_ItemSave()
+	/**
+	 * Edit fieldset item
+	 *
+	 * @return void
+	 */
+	public function action_edit()
 	{
-		$post = $this->request->post();
-		$data = [];
+		$this->auto_render = FALSE;
 
-		$fieldset = ORM::factory('Prime_Module_Fieldset', Arr::get($post, '_fieldset_id', 0));
+		// create fieldset record
+		$item = ORM::factory('Prime_Module_Fieldset_Item', $this->request->param('id'));
 
-		if ( ! $fieldset->loaded()) return;
+		// find parent fieldset
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $item->prime_module_fieldset_id);
 
-		foreach ($fieldset->fields() as $field)
+		// setup view
+		$view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
+		->set('action', 'Prime/Module/Fieldset/Edit/'.$item->id)
+		->set('fieldset', $fieldset)
+		->set('item', $item);
+
+		// process post values
+		if ($this->request->method() === HTTP_Request::POST)
 		{
-			$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+			// get post data
+			$post = $this->request->post();
+			$data = [];
+
+			// loop through fieldset fields
+			foreach ($fieldset->fields() as $field)
+			{
+				$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+			}
+
+			$item->data = json_encode($data);
+			$item->save();
 		}
 
-		$item = ORM::factory('Prime_Module_Fieldset_Item', Arr::get($post, '_fieldset_item_id', 0));
-		$item->prime_module_fieldset_id = $fieldset->id;
-		$item->data = json_encode($data);
-		$item->position = 0;
-		$item->save();
+		// render view
+		$this->response->body($view);
+	}
+
+	public function action_delete()
+	{
+		$this->auto_render = FALSE;
+
+		$fields = explode(':', $this->request->param('id'));
+		$view = NULL;
+
+		foreach ($fields as $field)
+		{
+			$item = ORM::factory('Prime_Module_Fieldset_Item', $field);
+
+			if ($item->loaded() AND $view === NULL)
+			{
+				$view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
+			}
+
+			$item->delete();
+		}
+
+		$this->response->body($view->execute());
+	}
+
+	public function action_remove()
+	{
+		$this->auto_render = FALSE;
+
+		$page = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+		$page->delete();
+
+		$view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
+
+		$this->response->body($view);
+	}
+
+	public function action_rename()
+	{
+		$this->auto_render = FALSE;
+
+		$page = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+		$page->name = $this->request->post('name');
+		$page->save();
 	}
 
 } // End Prime Module Fieldset

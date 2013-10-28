@@ -10,29 +10,8 @@
 class Prime_Field_File extends Prime_Field {
 
 	/**
-	 * Params for field
-	 *
-	 * @return array
+	 * @var string Template to show field as input
 	 */
-	public function params()
-	{
-		return [];
-	}
-
-	/**
-	 * Fieldset render method
-	 *
-	 * @return View
-	 */
-	public function as_input($form = 'form_', $item)
-	{
-		// setup view
-		$view = View::factory('Prime/Field/Boolean')
-		->set('field', $this->field)
-		->set('form', $form)
-		->set('value', $this->value($item));
-
-		return $view;
-	}
+	protected $_as_input = 'Prime/Field/File';
 
 } // End Priem Field File

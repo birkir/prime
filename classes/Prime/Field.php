@@ -15,14 +15,9 @@ class Prime_Field {
 	public $field;
 
 	/**
-	 * Params for field
-	 *
-	 * @return array
+	 * Default field options
 	 */
-	public function params()
-	{
-		return [];
-	}
+	protected $_defaults = [];
 
 	/**
 	 * Get value for field
@@ -31,15 +26,21 @@ class Prime_Field {
 	 */
 	public function value($item = NULL)
 	{
-		if ($item->loaded())
+		// Arrays
+		if (is_array($item))
 		{
-			if (isset($item->data) AND isset($item->data[$this->field['name']]))
+			if (isset($item[$this->field['name']]))
+			{
+				return $item[$this->field['name']];
+			}
+		}
+
+		// ORM models
+		if ($item instanceof ORM)
+		{
+			if ($item->loaded() AND isset($item->data[$this->field['name']]))
 			{
 				return $item->data[$this->field['name']];
-			}
-			else if ($item->loaded() AND isset($item->settings) AND isset($item->settings[$this->field['name']]))
-			{
-				return $item->settings[$this->field['name']];
 			}
 		}
 
@@ -79,16 +80,6 @@ class Prime_Field {
 	}
 
 	/**
-	 * Get Field Data as Text
-	 *
-	 * @return string
-	 */
-	public function as_text(ORM $item)
-	{
-		return Arr::get($item->data, $this->field['name'], NULL);
-	}
-
-	/**
 	 * Prepare Value for Saving
 	 *
 	 * @return mixed
@@ -96,6 +87,45 @@ class Prime_Field {
 	public function prepare_value($value = NULL)
 	{
 		return $value;
+	}
+
+	/**
+	 * Get Field Data as Text
+	 *
+	 * @return string
+	 */
+	public function as_text($item)
+	{
+		return $this->value($item);
+	}
+
+	/**
+	 * Fieldset render method
+	 *
+	 * @return View
+	 */
+	public function as_input($item, $errors = [])
+	{
+		// setup view
+		$view = View::factory($this->_as_input);
+
+		// set called field object
+		$view->field = $this->field;
+
+		// set item field value 
+		$view->value = $this->value($item);
+
+		// set field id
+		$view->id = implode('_', Arr::extract($this->field, ['resource_type', 'resource_id', 'name']));
+
+		// set error if found
+		$view->error = Arr::get($errors, Arr::get($this->field, 'name'), FALSE);
+
+		// set options if found
+		$view->options = Arr::get($this->field, 'options', []);
+
+		// return view
+		return $view;
 	}
 
 } // End Field

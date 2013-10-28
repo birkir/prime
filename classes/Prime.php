@@ -116,6 +116,90 @@ class Prime {
 	}
 
 	/**
+	 * Recursively finds all of the files in the specified directory at any location in the
+	 * [Cascading Filesystem], and returns an array of all the files found, sorted alphabetically.
+	 *
+	 * @param string Directory name
+	 * @param array  List of paths to search
+	 * @return array
+	 */
+	public static function list_files($directory = NULL, array $paths = NULL)
+	{
+		if ($directory !== NULL)
+		{
+			// Add the directory separator
+			$directory .= DIRECTORY_SEPARATOR;
+		}
+
+		if ($paths === NULL)
+		{
+			// Use the default paths
+			$paths = Kohana::$_paths;
+		}
+
+		// Create an array for the files
+		$found = array();
+
+		foreach ($paths as $path)
+		{
+			if (is_dir($path.$directory))
+			{
+				// Create a new directory iterator
+				$dir = new DirectoryIterator($path.$directory);
+
+				foreach ($dir as $file)
+				{
+					// Get the file name
+					$filename = $file->getFilename();
+
+					if ($filename[0] === '.' OR $filename[strlen($filename)-1] === '~')
+					{
+						// Skip all hidden files and UNIX backup files
+						continue;
+					}
+
+					// Relative filename is the array key
+					$key = $directory.$filename;
+	 
+					if ($file->isDir())
+					{
+						if ($sub_dir = Kohana::list_files($key, $paths))
+						{
+							if (isset($found[$key]))
+							{
+								// Append the sub-directory list
+								$found[$key] += $sub_dir;
+							}
+							else
+							{
+								// Create a new sub-directory list
+								$found[$key] = $sub_dir;
+							}
+						}
+						else
+						{
+							$found[$key] = [];
+						}
+					}
+					else
+					{
+						if ( ! isset($found[$key]))
+						{
+							// Add new files to the list
+							$found[$key] = realpath($file->getPathName());
+						}
+					}
+				}
+			}
+		}
+
+		// Sort the results alphabetically
+		ksort($found);
+
+		return $found;
+	}
+
+	/**
 	 * Cleans up the environment:
 	 *
 	 * - Destroy the Prime::$website and Prime::$page objects

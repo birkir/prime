@@ -1,7 +1,6 @@
-<form action="" onsubmit="return Prime.Field.SaveItem(this);">
-	<input type="hidden" name="_field_id" value="<?=$item->id;?>">
-	<input type="hidden" name="_resource_id" value="<?=$item->loaded() ? $item->resource_id : $resource_id; ?>">
-	<input type="hidden" name="_resource_type" value="<?=$item->loaded() ? $item->resource_type : $_GET['type']; ?>">
+<?=Form::open($action, ['role' => 'form']);?>
+	<?=Form::hidden('visible', 0);?>
+	<?=Form::hidden('required', 0);?>
 	<div class="row">
 		<div class="col-lg-6">
 			<div class="form-group">
@@ -39,12 +38,14 @@
 		</div>
 		<div class="col-lg-2">
 			<label for="fieldVisible" class="checkbox-inline" style="margin-top: 28px;">
-				<input type="checkbox" name="visible" value="1" id="fieldVisible"<?=$item->visible || ! $item->loaded()?' checked="checked"':NULL;?>> <?=__('Visible');?>
+				<?=Form::checkbox('visible', 1, $item->loaded() ? (bool) $item->visible : TRUE, ['id' => 'fieldVisible']);?>
+				<?=__('Visible');?>
 			</label>
 		</div>
 		<div class="col-lg-2">
 			<label for="fieldRequired" class="checkbox-inline" style="margin-top: 28px;">
-				<input type="checkbox" name="required" value="1" id="fieldRequired"<?=$item->required?' checked="checked"':NULL;?>> <?=__('Required');?>
+				<?=Form::checkbox('required', 1, (bool) $item->required, ['id' => 'fieldRequired']);?>
+				<?=__('Required');?>
 			</label>
 			</div>
 		</div>
@@ -53,16 +54,4 @@
 		<?=Form::label('fieldOptions', __('Options'), ['class' => 'control-label']);?>
 		<?=Form::textarea('options', $item->options, ['id' => 'fieldOptions', 'placeholder' => '{"foo":"bar"}', 'rows' => 3, 'class' => 'form-control']);?>
 	</div>
-	<div class="navbar navbar-masthead">
-		<div class="btn-toolbar" style="margin-top: 7px;">
-			<div class="btn-group">
-				<button type="submit" class="btn btn-primary"><i class="icon-save" style="color: #fff;"></i>&nbsp; <?=__('Save');?></a>
-			</div>
-			<div class="btn-group">
-				<a href="/Prime/Field/Detail/<?=$item->loaded() ? $item->resource_id : $resource_id;?>?type=<?=$item->loaded() ? $item->resource_type : $_GET['type'];?>&amp;back=<?=$_GET['back'];?>" class="btn btn-default" onclick="return Prime.LoadView(this.href, $('section.popup'));">
-					<?=__('Cancel');?>
-				</a>
-			</div>
-		</div>
-	</div>
-</form>
+<?=Form::close();?>

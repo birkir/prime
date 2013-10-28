@@ -3,7 +3,7 @@
 	<?php $children = $node->recursive()->count_all() > 0; ?>
 	<?php $path = $url.'/'.$node->slug; ?>
 
-	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$path]) ? ' open' : '')]);?>>
+	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$node->id]) ? ' open' : '')]);?>>
 
 		<b class="caret" onselectstart="return false;"></b>
 

@@ -27,7 +27,7 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 				[
 					'name'    => 'submit_url',
 					'caption' => 'URL after submit',
-					'field'   => 'Prime_Field_String',
+					'field'   => 'Prime_Field_Page',
 					'default' => ''
 				],
 				[
@@ -117,6 +117,58 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 		// Get fieldset
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->settings['fieldset']);
 
+		$item = ORM::factory('Prime_Module_Fieldset_Item');
+
+		$errors = [];
+
+		$post = Request::current()->post();
+
+		// Process post values
+		if (Request::current()->method() === HTTP_Request::POST)
+		{
+			// make sure we are posting to correct fieldset
+			if ($fieldset->id === Arr::get($post, 'fieldset_id', 0))
+			{
+				$data = [];
+
+				// loop through fieldset fields
+				foreach ($fieldset->fields() as $field)
+				{
+					$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+				}
+
+				// setup validation
+				$validation = Validation::factory($data);
+
+				// loop through fields (again)
+				foreach ($fieldset->fields() as $field)
+				{
+					if ((bool) $field->required)
+					{
+						$validation->rule($field->name, 'not_empty');
+					}
+				}
+
+				if ($validation->check())
+				{
+					// set item data
+					$item->prime_module_fieldset_id = $fieldset->id;
+					$item->data = json_encode($data);
+					$item->save();
+
+					// redirect if set
+					if ( ! empty($this->settings['submit_url']))
+					{
+						header('Location: '.$this->settings['submit_url']);
+					}
+				}
+				else
+				{
+					$errors = $validation->errors('fieldset');
+				}
+			}
+		}
+
 		// Make sure fieldset exists
 		if ( ! $fieldset->loaded())
 			throw new Kohana_Exception('Could not find fieldset :fieldset', array(':fieldset' => $this->settings['fieldset']));
@@ -124,7 +176,8 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 		// setup view
 		$view = View::factory('module/fieldset/insert/'.$this->settings['template'])
 		->set('fieldset', $fieldset)
-		->set('item', ORM::factory('Prime_Module_Fieldset_Item'))
+		->set('item', $post)
+		->set('errors', $errors)
 		->set('fields', $fieldset->fields());
 
 		return $view;
