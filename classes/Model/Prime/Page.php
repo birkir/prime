@@ -111,6 +111,11 @@ class Model_Prime_Page extends ORM {
 		return parent::save($validation);
 	}
 
+	public function draft()
+	{
+
+	}
+
 	public function base()
 	{
 		// only not deleted pages

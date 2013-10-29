@@ -32,8 +32,11 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 		// do a template render
 		$this->auto_render = TRUE;
 
+		$this->template = View::factory('Prime/Alternative')
+		->bind('view', $view);
+
 		// set template view
-		$this->template = View::factory('Prime/Login')
+		$this->view = View::factory('Prime/Account/Login')
 		->bind('message', $message)
 		->bind('post', $post);
 

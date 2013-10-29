@@ -46,6 +46,24 @@ class Controller_Prime_Template extends Controller {
 	}
 
 	/**
+	 * Install Prime
+	 *
+	 * @return void
+	 */
+	public function install()
+	{
+		// load prime configure
+		$prime = Kohana::$config->load('prime');
+
+		// check if no file has been generated
+		if (empty($prime->as_array()))
+		{
+			HTTP::redirect('/Prime/Install');
+			exit;
+		}
+	}
+
+	/**
 	 * Check for authentication if needed
 	 *
 	 * @return void
@@ -54,6 +72,9 @@ class Controller_Prime_Template extends Controller {
 	{
 		// check if user is logged in
 		$logged_in = Auth::instance()->logged_in('prime');
+
+		// install Prime 
+		$this->install();
 
 		// if we want authentication to be required
 		if ($this->authentication AND ! $logged_in)

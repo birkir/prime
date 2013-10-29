@@ -1,7 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+// Get Prime configuration
+$prime = Kohana::$config->load('prime');
+
 // Set cookie hash salt key
-Cookie::$salt = Kohana::$config->load('prime')->hashkey.'cookie';
+Cookie::$salt = (isset($prime->hashkey) ? $prime->hashkey : NULL).'cookie';
 Cookie::$expiration = Date::WEEK;
 
 // Initialize prime cms
