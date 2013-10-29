@@ -1,33 +1,31 @@
-<form class="form-signin" style="max-width: <?php if ( ! empty($config)): ?>800<?php else: ?>550<?php endif; ?>px;" method="post">
+<form method="post" class="form-signin" style="max-width: 500px;">
 	<div class="well">
+		<h3>Create admin</h3>
 
-		<h1>Create admin</h1>
+		<div class="form-group">
+			<?=Form::label('formEmail', __('Email address'), ['class' => 'control-label']);?>
+			<?=Form::input('email', NULL, ['class' => 'form-control', 'id' => 'formEmail', 'autocomplete' => 'off']);?>
+		</div>
 
-		<?php if ( ! empty($config)): ?>
+		<div class="form-group">
+			<?=Form::label('formPassword', __('Password'), ['class' => 'control-label']);?>
+			<?=Form::password('password', NULL, ['class' => 'form-control', 'id' => 'formPassword', 'autocomplete' => 'off']);?>
+		</div>
 
-			<p>Paste this code to <strong><?=APPPATH;?>config/prime.php</strong></p>
+		<hr style="border-color: #ddd;">
 
-			<pre><?=htmlentities($config);?></pre>
+		<div class="form-group">
+			<?=Form::label('formName', __('Website name'), ['class' => 'control-label']);?>
+			<?=Form::input('name', 'Default website', ['class' => 'form-control', 'id' => 'formName', 'autocomplete' => 'off']);?>
+		</div>
 
-			<?=HTML::anchor('Prime', 'All done, lets sign in', ['class' => 'btn btn-lg btn-danger']);?>
+		<div class="form-group">
+			<?=Form::label('formHostname', __('Hostname'), ['class' => 'control-label']);?>
+			<?=Form::input('hostname', Arr::get($_SERVER, 'HTTP_HOST'), ['class' => 'form-control', 'id' => 'formHostname', 'autocomplete' => 'off']);?>
+		</div>
 
-		<?php else: ?>
-
-			<div class="form-group">
-				<?=Form::label('formEmail', __('Email address'), ['class' => 'control-label']);?>
-				<?=Form::input('email', NULL, ['class' => 'form-control', 'id' => 'formEmail', 'autocomplete' => 'off']);?>
-			</div>
-
-			<div class="form-group">
-				<?=Form::label('formPassword', __('Password'), ['class' => 'control-label']);?>
-				<?=Form::password('password', NULL, ['class' => 'form-control', 'id' => 'formPassword', 'autocomplete' => 'off']);?>
-			</div>
-
-			<div class="form-group">
-				<button type="submit" class="btn btn-lg btn-danger">Create admin</button>
-			</div>
-
-		<?php endif; ?>
-
+		<div class="form-group">
+			<button type="submit" class="btn btn-lg btn-danger">Create admin</button>
+		</div>
 	</div>
 </form>

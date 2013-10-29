@@ -13,9 +13,11 @@
 
 		<?php else: ?>
 
-			<div class="alert alert-warning">
-				<p><strong>Error:</strong> <?=$error;?></p>
-			</div>
+			<?php if ( ! empty($error)): ?>
+				<div class="alert alert-warning">
+					<p><strong>Error:</strong> <?=$error;?></p>
+				</div>
+			<?php endif; ?>
 
 			<div class="form-group">
 				<?=Form::label('databaseHostname', 'Hostname');?>

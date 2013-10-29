@@ -9,10 +9,16 @@
  */
 class Controller_Prime_Install extends Controller {
 
+	/**
+	 * Before action execution
+	 *
+	 * @return void
+	 */
 	public function before()
 	{
+		// call parent before
 		parent::before();
-
+/*
 		// load prime configure
 		$prime = Kohana::$config->load('prime');
 
@@ -22,25 +28,36 @@ class Controller_Prime_Install extends Controller {
 			HTTP::redirect('Prime');
 			exit;
 		}
-
+*/
 		// default template
 		$this->template = View::factory('Prime/Alternative');
 
+		// setup default view
 		$this->view = NULL;
 	}
 
+	/**
+	 * Show a welcome message to the user
+	 *
+	 * @return void
+	 */
 	public function action_index()
 	{
-		// setup view
 		$this->view = View::factory('Prime/Install/Welcome');
 	}
 
+	/**
+	 * Show screen with permissions status
+	 *
+	 * @return void
+	 */
 	public function action_permissions()
 	{
 		// directories that needs to be writable
 		$this->view = View::factory('Prime/Install/Permissions')
 		->bind('writable', $writable);
 
+		// directories needed chmodding
 		$writable = [
 			'app'    => is_writable(APPPATH),
 			'config' => is_writable(APPPATH.'config'),
@@ -49,6 +66,11 @@ class Controller_Prime_Install extends Controller {
 		];
 	}
 
+	/**
+	 * Setup database connection
+	 *
+	 * @return void
+	 */
 	public function action_database()
 	{
 		$this->view = View::factory('Prime/Install/Database')
@@ -56,8 +78,10 @@ class Controller_Prime_Install extends Controller {
 		->bind('error', $error)
 		->bind('config', $config);
 
+		// get post data
 		$post = $this->request->post();
 
+		// process post requests
 		if ($this->request->method() === HTTP_Request::POST)
 		{
 			// database connection
@@ -115,9 +139,10 @@ class Controller_Prime_Install extends Controller {
 				return;
 			}
 
-			$config = array(
+			// setup database config
+			$database = array(
 				'default' => array(
-					'type' => 'MySQL',
+					'type' => 'MySQLi',
 					'connection' => array(
 						'hostname' => Arr::get($post, 'hostname'),
 						'database' => Arr::get($post, 'database'),
@@ -131,66 +156,115 @@ class Controller_Prime_Install extends Controller {
 				)
 			);
 
-			$config = Kohana::FILE_SECURITY.PHP_EOL.PHP_EOL.'return '.var_export($config, TRUE).';';
-
-			if (is_writable(APPPATH.'config/database.php'))
-			{
-				$fh = fopen(APPPATH.'config/database.php', 'w');
-				fwrite($fh, $config);
-				fclose($fh);
-
-				HTTP::redirect('Prime/Install/User');
-			}
+			// write database config
+			$this->write_config('database', $database);
 		}
 	}
 
+	/**
+	 * Create administrator user
+	 *
+	 * @return void
+	 */
 	public function action_user()
 	{
-		$count = intval(ORM::factory('User')->count_all());
+		// if (intval(ORM::factory('User')->count_all()) > 0)
+		//	return HTTP::redirect('Prime');
 
-		if ($count === 0)
+		// setup view
+		$this->view = View::factory('Prime/Install/User')
+		->bind('error', $error)
+		->bind('config', $config);
+
+		// catch http post
+		if ($this->request->method() === HTTP_Request::POST)
 		{
-			$this->view = View::factory('Prime/Install/User')
-			->bind('error', $error)
-			->bind('config', $config);
+			// post data
+			$post = $this->request->post();
 
-			if ($this->request->method() === HTTP_Request::POST)
+			// setup auth config array
+			$auth = array(
+				'driver' => 'ORM',
+				'hash_method' => 'sha256',
+				'hash_key' => sha1(implode('.', $this->request->post()))
+			);
+
+			// write the auth configuration
+			$this->write_config('auth', $auth);
+
+			try
 			{
-				try {
-					ORM::factory('User')
-					->values($this->request->post())
-					->save();
-				}
-				catch (ORM_Validation_Exception $e)
-				{
-					$error = Debug::vars($e->errors());
-				}
+				// create user
+				$user = ORM::factory('User')
+				->values($this->request->post())
+				->save();
 
-				// write prime configure
-				$config = array(
-					'website' => array(
-						'host'  => Arr::get($post, 'hostname', Arr::get($_SERVER, 'HTTP_HOST')),
-						'name' => Arr::get($post, 'name', 'Default website'),
-					),
-					'default_page_id' => 0
-				);
+				// add roles to user
+				$user->add('roles', ORM::factory('Role', ['name' => 'login']));
+				$user->add('roles', ORM::factory('Role', ['name' => 'prime']));
 
-				$config['hashkey'] = sha1(implode('.', $config['website']));
-
-				$config = Kohana::FILE_SECURITY.PHP_EOL.PHP_EOL.'return '.var_export($config, TRUE).';';
-
-				if (is_writable(APPPATH.'config/prime.php'))
-				{
-					$fh = fopen(APPPATH.'config/prime.php', 'w');
-					fwrite($fh, $config);
-					fclose($fh);
-
-					HTTP::redirect('Prime');
-				}
+				// create default page
+				$page = ORM::factory('Prime')
+				->values([
+					'name' => 'Frontpage',
+					'slug' => 'frontpage',
+					'template' => 'default',
+					'description' => '',
+					'keywords' => '',
+					'protocol' => 'both',
+					'method' => 'get,post',
+					'position' => 0
+				])
+				->save();
 			}
+			catch (ORM_Validation_Exception $e)
+			{
+				// throw errors finer...
+				$error = Debug::vars($e->errors());
+			}
+
+			// write prime configure
+			$prime = array(
+				'website' => array(
+					'host'  => Arr::get($post, 'hostname', Arr::get($_SERVER, 'HTTP_HOST')),
+					'name' => Arr::get($post, 'name', 'Default website'),
+				),
+				'default_page_id' => isset($page) ? $page->id : 0
+			);
+
+			// set prime hash key
+			$prime['hashkey'] = sha1(implode('.', $prime['website']));
+
+			// write prime config
+			$this->write_config('prime', $prime);
 		}
 	}
 
+	/**
+	 * Write config files
+	 *
+	 * @param  string Filename
+	 * @param  array  Configuration array
+	 * @return boolean
+	 */
+	public function write_config($name, $arr)
+	{
+		// set security header and export array
+		$content = Kohana::FILE_SECURITY.PHP_EOL.PHP_EOL.'return '.var_export($arr, TRUE).';';
+
+		// write to file
+		$fh = fopen(APPPATH.'config/'.$name.'.php', 'w');
+		fwrite($fh, $content);
+		fclose($fh);
+
+		return TRUE;
+	}
+
+	/**
+	 * Render view
+	 *
+	 * @return void
+	 */
 	public function after()
 	{
 		$this->template->view = $this->view;
@@ -200,4 +274,4 @@ class Controller_Prime_Install extends Controller {
 		return parent::after();
 	}
 
-}
+} // End Prime Install

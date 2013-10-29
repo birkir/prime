@@ -6,7 +6,7 @@
 .prime-region-item:hover { outline: 1px dashed #faa328; }
 .prime-region-item-active,
 .prime-region-item-active:hover { outline: 1px solid #faa328; box-shadow: 1px 1px 1px 1px rgba(0,0,0, 0.1); }
-.prime-region-actions { display: none; position: absolute; top: -22px; right: -1px; background: #faa328; list-style: none; padding: 0px 2px; font-size: 14px; box-shadow: 1px 0px 1px rgba(0,0,0, 0.1); }
+.prime-region-actions { margin: 0; display: none; position: absolute; top: -22px; right: -1px; background: #faa328; list-style: none; padding: 0px 2px; font-size: 14px; box-shadow: 1px 0px 1px rgba(0,0,0, 0.1); }
 .prime-region-actions li { float: left; padding: 0; line-height: 1em; }
 .prime-region-actions li a { color: #fff; padding: 2px 4px; line-height: 22px; text-decoration: none; text-shadow: 1px 1px rgba(0,0,0,0.2); }
 .prime-region-actions li a i { font-size: 14px; }
