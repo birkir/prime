@@ -171,7 +171,7 @@ class Controller_Prime_Install extends Controller {
 					'website' => array(
 						'host'  => Arr::get($post, 'hostname', Arr::get($_SERVER, 'HTTP_HOST')),
 						'name' => Arr::get($post, 'name', 'Default website'),
-					)
+					),
 					'default_page_id' => 0
 				);
 
