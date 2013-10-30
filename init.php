@@ -10,16 +10,40 @@ Cookie::$expiration = Date::WEEK;
 // Initialize prime cms
 Prime::init();
 
-// Prime module routing
-Route::set('Prime_Module', 'Prime/Module/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
+// Media file serving router
+Route::set('media', 'media(/<file>)', array('file' => '.+'))
+	->defaults(array(
+		'controller' => 'Media',
+		'action'     => 'serve',
+		'file'       => NULL
+	));
+
+// Prime Module routing
+Route::set('Prime_Module', '<prime>/<module>/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
+	->filter(function ($route, $params, $request) {
+
+		// allow both lowercase and uppercase
+		if (strtolower($params['prime']) === 'prime' AND strtolower($params['module']) !== 'module')
+			return FALSE;
+
+		return TRUE;
+	})
 	->defaults(array(
 		'directory'  => 'Prime/Module',
-		'controller' => 'Dashboard',
+		'controller' => '',
 		'action'     => 'index',
 	));
 
 // Prime routing
-Route::set('Prime', 'Prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
+Route::set('Prime', '<prime>(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
+	->filter(function ($route, $params, $request) {
+
+		// allow both lowercase and uppercase
+		if (strtolower($params['prime']) !== 'prime')
+			return FALSE;
+
+		return TRUE;
+	})
 	->defaults(array(
 		'directory'  => 'Prime',
 		'controller' => 'Page',

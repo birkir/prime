@@ -21,6 +21,11 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 		$this->view = 'Hello world! my profile';
 	}
 
+	public function action_test()
+	{
+		echo $test;
+	}
+
 	/**
 	 * Logs a user out
 	 */
@@ -32,8 +37,7 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 		// do a template render
 		$this->auto_render = TRUE;
 
-		$this->template = View::factory('Prime/Alternative')
-		->bind('view', $view);
+		$this->template = View::factory('Prime/Alternative');
 
 		// set template view
 		$this->view = View::factory('Prime/Account/Login')
@@ -49,9 +53,6 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 			// no direct output
 			$this->response->body(json_encode(['message' => 'Email or password incorrect.']));
 
-			// get post data
-			$post = $this->request->post();
-
 			// try login
 			if (Auth::instance()->login($post['email'], $post['password'], isset($post['remember'])))
 			{
@@ -59,6 +60,20 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 			}
 
 			$message = 'E-Mail or password incorrect, try again!';
+		}
+	}
+
+	public function action_forgotpassword()
+	{
+		$this->auto_render = TRUE;
+
+		$this->template = View::factory('Prime/Alternative');
+
+		$this->view = View::factory('Prime/Account/ForgotPassword');
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+
 		}
 	}
 

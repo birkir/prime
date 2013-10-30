@@ -18,7 +18,7 @@ class Controller_Prime_Install extends Controller {
 	{
 		// call parent before
 		parent::before();
-/*
+
 		// load prime configure
 		$prime = Kohana::$config->load('prime');
 
@@ -28,7 +28,7 @@ class Controller_Prime_Install extends Controller {
 			HTTP::redirect('Prime');
 			exit;
 		}
-*/
+
 		// default template
 		$this->template = View::factory('Prime/Alternative');
 
@@ -142,7 +142,7 @@ class Controller_Prime_Install extends Controller {
 			// setup database config
 			$database = array(
 				'default' => array(
-					'type' => 'MySQLi',
+					'type' => function_exists('mysqli_connect') ? 'MySQLi' : 'MySQL',
 					'connection' => array(
 						'hostname' => Arr::get($post, 'hostname'),
 						'database' => Arr::get($post, 'database'),
