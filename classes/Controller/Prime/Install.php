@@ -158,6 +158,9 @@ class Controller_Prime_Install extends Controller {
 
 			// write database config
 			$this->write_config('database', $database);
+
+			// great, lets create user
+			HTTP::redirect('Prime/Install/User');
 		}
 	}
 
@@ -204,7 +207,7 @@ class Controller_Prime_Install extends Controller {
 				$user->add('roles', ORM::factory('Role', ['name' => 'prime']));
 
 				// create default page
-				$page = ORM::factory('Prime')
+				$page = ORM::factory('Prime_Page')
 				->values([
 					'name' => 'Frontpage',
 					'slug' => 'frontpage',
