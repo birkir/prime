@@ -83,13 +83,18 @@ class Controller_Prime_User extends Controller_Prime_Template {
 		->bind('item', $item)
 		->bind('properties', $properties)
 		->bind('fields', $fields)
+		->bind('roles', $roles)
+		->bind('user_roles', $user_roles)
 		->set('action', 'Prime/User/Create');
 
 		// get base item
 		$item = ORM::factory('User');
 
 		// get user roles
-		$roles = $item->roles->find_all();
+		$user_roles = $item->roles->find_all();
+
+		// get all roles
+		$roles = ORM::factory('Role')->find_all();
 
 		// get properties fields
 		$fields = ORM::factory('Prime_Field')
@@ -113,23 +118,28 @@ class Controller_Prime_User extends Controller_Prime_Template {
 		$this->view = View::factory('Prime/User/Fieldset')
 		->bind('item', $item)
 		->bind('properties', $properties)
+		->bind('roles', $roles)
+		->bind('user_roles', $user_roles)
 		->bind('fields', $fields);
 
 		// get base item
 		$item = ORM::factory('User', $this->request->param('id'));
+
+		// get all roles
+		$roles = ORM::factory('Role')->find_all();
 
 		// check if item is loaded
 		if ( ! $item->loaded())
 			throw HTTP_Exception::factory(404, 'User not found.');
 
 		// get user roles
-		$roles = $item->roles->find_all();
-		$no_roles = count($roles) === 0;
+		$user_roles = $item->roles->find_all();
+		$no_roles = count($user_roles) === 0;
 
 		// get properties fields
 		$fields = ORM::factory('Prime_Field')
 		->where('resource_type', '=', 'Role')
-		->where('resource_id', $no_roles ? 'IS' : 'IN', $no_roles ? NULL : DB::expr('('.implode(',', $roles->as_array('name', 'id')).')'))
+		->where('resource_id', $no_roles ? 'IS' : 'IN', $no_roles ? NULL : DB::expr('('.implode(',', $user_roles->as_array('name', 'id')).')'))
 		->order_by('position', 'ASC')
 		->find_all();
 
@@ -225,6 +235,8 @@ class Controller_Prime_User extends Controller_Prime_Template {
 	{
 		$page = ORM::factory('Role', $this->request->param('id'));
 		$page->delete();
+
+		$this->action_tree();
 	}
 
 	/**
@@ -278,10 +290,23 @@ class Controller_Prime_User extends Controller_Prime_Template {
 				// save model
 				$item->save($password_validation);
 
+				foreach ($item->roles->find_all() AS $role)
+				{
+					$item->remove('roles', $role);
+				}
+
+				if (isset($post['roles']))
+				{
+					foreach (Arr::get($post, 'roles') AS $role)
+					{
+						$item->add('roles', ORM::factory('Role', $role));
+					}
+				}
+
 				// set successful
 				$this->json['success'] = TRUE;
 				$this->json['data'] = $item->as_array();
-				$this->json['message'] = __('User has been created.');
+				$this->json['message'] = __('User has been saved.');
 			}
 			catch (ORM_Validation_Exception $e)
 			{
@@ -292,7 +317,7 @@ class Controller_Prime_User extends Controller_Prime_Template {
 
 				// set errors and message
 				$this->json['data'] = Arr::merge($errors, $external);
-				$this->json['message'] = __('User could not be created.');
+				$this->json['message'] = __('User could not be saved.');
 			}
 		}
 	}

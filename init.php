@@ -19,15 +19,7 @@ Route::set('media', 'media(/<file>)', array('file' => '.+'))
 	));
 
 // Prime Module routing
-Route::set('Prime_Module', '<prime>/<module>/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
-	->filter(function ($route, $params, $request) {
-
-		// allow both lowercase and uppercase
-		if (strtolower($params['prime']) === 'prime' AND strtolower($params['module']) !== 'module')
-			return FALSE;
-
-		return TRUE;
-	})
+Route::set('Prime_Module', 'Prime/Module/(<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
 		'directory'  => 'Prime/Module',
 		'controller' => '',
@@ -35,15 +27,7 @@ Route::set('Prime_Module', '<prime>/<module>/(<controller>(/<action>(/<id>)))', 
 	));
 
 // Prime routing
-Route::set('Prime', '<prime>(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
-	->filter(function ($route, $params, $request) {
-
-		// allow both lowercase and uppercase
-		if (strtolower($params['prime']) !== 'prime')
-			return FALSE;
-
-		return TRUE;
-	})
+Route::set('Prime', 'Prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'))
 	->defaults(array(
 		'directory'  => 'Prime',
 		'controller' => 'Page',

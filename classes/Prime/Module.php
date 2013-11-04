@@ -72,6 +72,28 @@ class Prime_Module {
 		return $this;
 	}
 
+	/**
+	 * Generate attributes for view render
+	 *
+	 * @param  string $name
+	 * @return array
+	 */
+	public function attrs($name = NULL)
+	{
+		switch ($name)
+		{
+			case 'dropzone_a':
+				return ['class' => 'prime-drop prime-drop-above', 'style' => 'display: none;'];
+			case 'dropzone_b':
+				return ['class' => 'prime-drop prime-drop-below', 'style' => 'display: none;'];
+			case 'actions':
+				return ['class' => 'prime-region-actions', 'style' => 'display: none;'];
+			case 'content':
+				return ['class' => 'prime-region-item-content'];
+		};
+
+		return [];
+	}
 
 	/**
 	 * Check url for internal module route
@@ -91,17 +113,58 @@ class Prime_Module {
 	public function actions()
 	{
 		return [
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-wrench']).'></i>', [
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'fa fa-wrench']).'></i>', [
 				'onclick' => 'window.top.prime.page.region.settings('.$this->_region->id.'); return false;'
 			]),
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-trash']).'></i>', [
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'fa fa-move']).'></i>', [
+				'onclick' => 'return false;',
+				'class' => 'move-handle'
+			]),
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'fa fa-trash-o']).'></i>', [
 				'onclick' => 'window.top.prime.page.region.remove('.$this->_region->id.'); return false;'
-			])/*,
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-move']).'></i>', [
-				'class'   => 'prime-move-handle',
-				'onclick' => 'return false;'
-			])*/
+			])
 		];
+	}
+
+	/**
+	 * Get module settings option
+	 *
+	 * @param string Option name
+	 * @param mixed  Default
+	 * @return mixed
+	 */
+	public function option($option, $default = NULL)
+	{
+		// find option in settings
+		return Arr::get($this->settings, $option, $default);
+	}
+
+	/**
+	 * Find and load a module view in specific directory
+	 *
+	 * @param string Directory path
+	 * @param string Template
+	 * @param string Fallback
+	 * @return View
+	 */
+	public function load_view($directory = NULL, $template = NULL, $fallback = 'standard')
+	{
+		// set default template if template not found.
+		if ( ! Kohana::find_file('views/'.$directory, $template))
+		{
+			if ( ! Kohana::find_file('views/'.$directory, 'standard'))
+			{
+				throw new Kohana_Exception('Could not find view [:view] or [:fallback]', array(
+					':view'     => $template,
+					':fallback' => $fallback
+				));
+			}
+
+			$template = $fallback;
+		}
+
+		// return template
+		return View::factory($directory.'/'.$template);
 	}
 
 	/**
@@ -136,6 +199,21 @@ class Prime_Module {
 
 		// save region
 		$this->_region->save();
+	}
+
+	public function output_for_web()
+	{
+		$output = NULL;
+
+		try {
+			$output = $this->render();
+		}
+		catch (Kohana_Exception $e)
+		{
+			$output = '<pre>'.__('Error loading module').':'.$e->getMessage().'</pre>';
+		}
+
+		return $output;
 	}
 
 } // End Prime Module

@@ -10,14 +10,19 @@ No documentation has been created, but is planned in the near future. It will be
 ## Installation
 1. Download Kohana and follow the [install guide](http://kohanaframework.org/3.3/guide/kohana/install).
 2. Download the latest stable release of Prime and unzip to your **modules** folder.
-3. Open **application/bootstrap.php** and make the following changes:
+3. Open **application/bootstrap.php** and find [Kohana::modules] function and replace it with the following content:
 
 ~~~
 Kohana::modules(array(
-	'prime'         => MODPATH.'prime',      // Prime CMS
-	// 'cache'      => MODPATH.'cache',      // Caching with multiple backends
+	'prime'      => MODPATH.'prime',      // Prime CMS
+	'image'      => MODPATH.'image',      // Image manipulation
+	'cache'      => MODPATH.'cache',      // Caching with multiple backends
+	'orm'        => MODPATH.'orm',        // Object Relationship Mapping
+	'database'   => MODPATH.'database',   // Database access
+	'auth'       => MODPATH.'auth',       // Basic authentication
 	));
 ~~~
 
-4. Create database config file in **application/config/database.php**.
-5. You are good to go!
+4. Allow write permissions recursivly to **application** folder (chmod -R 0777).
+5. Open up http://yourdomain/Prime and hit install. 
+6. You are good to go!

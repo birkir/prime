@@ -11,10 +11,10 @@
 			</div>
     		<script id="selTemplate" type="text/x-handlebars-template">
 				<a href="/Prime/Module/Fieldset/Edit/{{id}}" onclick="return {{#if one}}prime.view(this.href){{else}}false{{/if}};" class="btn btn-default{{#more}} disabled{{/more}}{{#zero}} disabled{{/zero}}">
-					<i class="icon-edit"></i>&nbsp; <?=__('Edit');?>
+					<i class="fa fa-edit"></i>&nbsp; <?=__('Edit');?>
 				</a>
 				<a href="/Prime/Module/Fieldset/Delete/{{id}}" onclick="return {{#if zero}}false{{else}}prime.fieldset.delete(this){{/if}};" class="btn btn-default{{#zero}} disabled{{/zero}}">
-					<i class="icon-trash"></i>&nbsp; <?=__('Delete');?>
+					<i class="fa fa-trash"></i>&nbsp; <?=__('Delete');?>
 				</a>
     		</script>
 		</div>

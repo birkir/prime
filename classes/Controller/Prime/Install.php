@@ -240,6 +240,9 @@ class Controller_Prime_Install extends Controller {
 
 			// write prime config
 			$this->write_config('prime', $prime);
+
+			// redirect to login
+			HTTP::redirect('Prime');
 		}
 	}
 

@@ -72,10 +72,7 @@
 .nav-tree .list-group-item.has-children > .caret:hover {
     background-color: #ddd;
 }
-.nav-tree .list-group-item > a > span > .icon-folder-open:before {
-	content: "\f07b";
-}
-.nav-tree .list-group-item.open > a > span > .icon-folder-open:before {
+.nav-tree .list-group-item.open > a > span > .fa-folder:before {
 	content: "\f07c";
 }
 .tree-item-drag {
@@ -92,4 +89,14 @@
     visibility: visible !important;
     border-left: 3px solid #fbb450 !important;
     background: #f3f3f3;
+}
+
+.nav-tree .list-group-item.disabled > a {
+    color: #999;
+}
+.nav-tree .list-group-item.disabled > a > span > i {
+    color: #999;
+}
+.nav-tree .list-group-item.disabled > b {
+    opacity: 0.5;
 }

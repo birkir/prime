@@ -50,11 +50,65 @@ class Model_Prime_Page extends ORM {
 			->where('parent_id', ! isset($page) ? 'IS' : '=', ! isset($page) ? NULL : $page->id)
 			->find();
 
+			if ( ! $page->loaded())
+				break;
+
 			// set last page
 			$last = $page;
 		}
 
+		// check last page for regions uri
+		if ( ! $page->loaded() AND $last->loaded())
+		{
+			// combine overload parts
+			$uri = implode('/', array_slice($uri, $i));
+
+			// loop through regions
+			foreach ($last->regions->order_by('position', 'ASC')->find_all() as $region)
+			{
+				// check if module routes
+				if ($region->module()->route($uri))
+				{
+					// set overload uri
+					Prime::$page_overload_uri = $uri;
+
+					// return last loaded page
+					return $last;
+				}
+			}
+		}
+
 		return $page;
+	}
+
+	/**
+	 * Get page absolute uri
+	 *
+	 * @param ORM Page object
+	 * @return string
+	 */
+	public function uri()
+	{
+		$page = $this;
+
+		$uri = [$page->slug];
+
+		if ( ! $page->loaded())
+			return;
+
+		while ($page->loaded())
+		{
+			$page = ORM::factory('Prime_Page')
+			->where('deleted', '=', 0)
+			->where('id', '=', $page->parent_id)
+			->find();
+
+			$uri[] = $page->slug;
+		}
+
+		$uri = array_reverse($uri);
+
+		return implode('/', $uri);
 	}
 
 	public function slug($str = NULL)
@@ -109,11 +163,6 @@ class Model_Prime_Page extends ORM {
 		}
 
 		return parent::save($validation);
-	}
-
-	public function draft()
-	{
-
 	}
 
 	public function base()

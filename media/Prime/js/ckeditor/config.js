@@ -36,4 +36,8 @@ CKEDITOR.editorConfig = function( config ) {
     ];
 
     config.floatSpaceDockedOffsetY = 25;
+
+    config.filebrowserBrowseUrl = '/Prime/File/CKEditor';
+    config.filebrowserUploadUrl = '/Prime/File/Upload';
+
 };

@@ -56,7 +56,7 @@ class Prime_Region {
 	public function __get($name)
 	{
 		// render its view through region iterator
-		return View::factory('Prime/Page/Region/ItemLoop')
+		return View::factory('Prime/Region/Wrap')
 		->set('items', isset($this->items[$name]) ? $this->items[$name] : array())
 		->set('name', $name);
 	}

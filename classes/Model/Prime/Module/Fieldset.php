@@ -43,6 +43,7 @@ class Model_Prime_Module_Fieldset extends ORM {
 		// return ORM for further process
 		return $this;
 	}
+
 	/**
 	 * Recursivly find sub pages of loaded record
 	 * @return ORM

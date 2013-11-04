@@ -10,19 +10,19 @@
 	<div class="tabbable tabs-left">
 		<ul class="nav nav-tabs">
 			<li class="active"><?=HTML::anchor('#pp01', __('General'), ['data-toggle' => 'tab']);?></li>
-			<li><?=HTML::anchor('#pp02', __('Meta data'), ['data-toggle' => 'tab']);?></li>
+			<li><?=HTML::anchor('#pp02', __('Content'), ['data-toggle' => 'tab']);?></li>
 			<li><?=HTML::anchor('#pp03', __('Request'), ['data-toggle' => 'tab']);?></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" id="pp01">
 				<div class="form-group">
 					<?=Form::label('formName', __('Page name'), ['class' => 'control-label']);?>
-					<?=Form::input('name', $page->name, ['class' => 'form-control', 'id' => 'formName']);?>
+					<?=Form::input('name', $page->name, ['class' => 'form-control', 'id' => 'formName', ($page->loaded() ? 'no' : 'autofocus') => 'autofocus']);?>
 				</div>
 
 				<div class="form-group">
 					<?=Form::label('formTemplate', __('Template'), ['class' => 'control-label']);?>
-					<?=Form::select('template', $templates, $page->template, ['class' => 'form-control']);?>
+					<?=Form::select('template', $templates, $page->template, ['class' => 'form-control', 'id' => 'formTemplate']);?>
 				</div>
 
 				<div class="form-group">
@@ -46,6 +46,7 @@
 				</div>
 			</div>
 			<div class="tab-pane" id="pp02">
+
 				<div class="form-group">
 					<?=Form::label('formDescription', __('Description'), ['class' => 'control-label']);?>
 					<?=Form::textarea('description', $page->description, ['class' => 'form-control', 'id' => 'formDescription', 'rows' => 2]);?>
@@ -54,6 +55,11 @@
 				<div class="form-group">
 					<?=Form::label('formKeywords', __('Keywords'), ['class' => 'control-label']);?>
 					<?=Form::input('keywords', $page->keywords, ['class' => 'form-control', 'id' => 'formKeywords', 'rows' => 2]);?>
+				</div>
+
+				<div class="form-group">
+					<?=Form::label('formLanguage', __('Languge'), ['class' => 'control-label']);?>
+					<?=Form::select('language', $languages, $page->language, ['class' => 'form-control', 'id' => 'formLanguage']);?>
 				</div>
 
 				<div class="form-group">
@@ -92,7 +98,7 @@
 						'get'  => __('GET'),
 						'get,post'  => __('GET and POST only'),
 						'all' => __('All methods accepted')
-					], $page->protocol, ['class' => 'form-control', 'id' => 'formMethod']);?>
+					], $page->method, ['class' => 'form-control', 'id' => 'formMethod']);?>
 				</div>
 				<div class="form-group">
 					<label for="formAllowAjax" class="checkbox" style="font-weight: normal;">
@@ -107,5 +113,5 @@
 			</div>
 		</div>
 	</div>
-	<input type="submit" class="hidden" />
+	<input type="submit" class="sr-only" />
 <?=Form::close();?>

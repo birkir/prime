@@ -15,11 +15,24 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	public $auto_render = FALSE;
 
 	/**
+	 * @var array Available languages
+	 */
+	public $languages = array(
+		'en-us' => 'English',
+		'is-is' => 'Icelandic'
+	);
+
+	public function action_index()
+	{
+		$this->action_edit();
+	}
+
+	/**
 	 * Default page
 	 *
 	 * @return void
 	 */
-	public function action_index()
+	public function action_edit()
 	{
 		// disable auto render
 		$this->auto_render = TRUE;
@@ -31,7 +44,8 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		->bind('modules', $modules);
 
 		// get all nodes
-		$nodes = ORM::factory('Prime_Page');
+		$page = ORM::factory('Prime_Page', $this->request->param('id'))
+		->uri();
 
 		// get all modules
 		$modules = ORM::factory('Prime_Module')
@@ -39,13 +53,14 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 
 		// setup main view
 		$this->view = '<iframe'.HTML::attributes([
-			'src' => '',
+			'src' => ($page ? $page : '/').'?mode=design',
 			'frameborder' => 0,
 			'class' => 'scrollable prime-live-iframe',
 			'style' => 'width: 100%; height: 100%;',
 			'name' => 'PrimeLive'
 		]).'></iframe>';
 	}
+
 
 	/**
 	 * Render page tree
@@ -59,7 +74,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		->bind('open', $open)
 		->set('request', $this->request);
 
-		$open = $this->request->is_initial() ? [] : json_decode(Arr::get($_COOKIE, 'tree-page', '{}'), TRUE);
+		$open = $this->request->is_ajax() ? [] : json_decode(Arr::get($_COOKIE, 'tree-page', '{}'), TRUE);
 
 		$this->response->body($view);
 	}
@@ -76,6 +91,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 
 		// setup default values
 		$default = ORM::factory('Prime_Page');
+		$default->language = 'en-us';
 		$default->slug_auto = 1;
 		$default->noindex = 0;
 		$default->nofollow = 0;
@@ -90,6 +106,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// setup view
 		$view = View::factory('Prime/Page/Properties')
 		->set('page', $default)
+		->set('languages', $this->languages)
 		->set('action', '/Prime/Page/Create/' . $this->request->param('id'))
 		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
 
@@ -122,6 +139,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// setup view
 		$view = View::factory('Prime/Page/Properties')
 		->set('page', $page)
+		->set('languages', $this->languages)
 		->set('action', '/Prime/Page/Properties/' . $page->id)
 		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
 
@@ -136,6 +154,21 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 			$view = Request::factory('Prime/Page/Tree')->execute();
 		}
 
+		$this->response->body($view);
+	}
+
+	public function action_visible()
+	{
+		list ($page, $visible) = explode(':', $this->request->param('id'));
+
+		$page = ORM::factory('Prime_Page', $page);
+		$page->visible = $visible == 'true' ? 1 : 0;
+		$page->save();
+
+		// get new tree
+		$view = Request::factory('Prime/Page/Tree')->execute();
+
+		// output view
 		$this->response->body($view);
 	}
 
@@ -161,6 +194,26 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
 		$page->name = $this->request->post('name');
 		$page->save();
+	}
+
+	/**
+	 * Move page
+	 **/
+	public function action_move()
+	{
+		// get page and to
+		list ($page, $to) = explode(':', $this->request->param('id'));
+
+		// list pages
+		$page = ORM::factory('Prime_Page', $page);
+		$page->parent_id = $to;
+		$page->save();
+
+		// get new tree
+		$view = Request::factory('Prime/Page/Tree')->execute();
+
+		// output view
+		$this->response->body($view);
 	}
 
 	/**

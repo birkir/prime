@@ -157,15 +157,35 @@ define(['jquery', 'ace', 'emmet', 'aceEmmet'], function($, _ace, _emmet, Emmet) 
 		element.editor = editor;
 	};
 
+	explorer.arritor = function () {
+		var form = $(this).find('form').on('submit', function () {
+			$.ajax({
+				url: $(this).attr('action'),
+				data: $(this).serialize(),
+				type: 'POST'
+			})
+			.done(function (response) {
+				console.log(response);
+			});
+			return false;
+		});
+
+		$(this).find('.arritor-save').on('click', function () {
+			form.trigger('submit');
+		});
+	};
+
 	/**
 	 * Extend elements list
 	 */
 	prime.elementsExternal.push(function () {
 		$(this).find('.ace-editor').each(explorer.editor);
+		$(this).find('.arritor').each(explorer.arritor);
 	});
 
 	// run editors
 	$('.ace-editor').each(explorer.editor);
+	$('.arritor').each(explorer.editor);
 
 	return explorer;
 

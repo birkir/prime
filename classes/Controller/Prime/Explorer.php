@@ -159,7 +159,8 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		// no cache or logs please
 		unset($files['cache']);
 		unset($files['logs']);
-		unset($files['config']);
+
+		// unset($files['config']);
 	}
 
 	public function action_index()
@@ -185,10 +186,18 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		$fileinfo = pathinfo($file);
 
 		// attach absolutepath
-		$fileinfo['file'] = APPPATH.$file;
+		$fileinfo['file'] = Kohana::find_file($fileinfo['dirname'], $fileinfo['filename'], $fileinfo['extension'], TRUE);
 
-		// lets ace this
-		$this->ace($fileinfo);
+		// config files
+		if (substr($fileinfo['dirname'], 0, 6) === 'config' OR substr($fileinfo['dirname'], 0, 4) === 'i18n')
+		{
+			$this->arritor($fileinfo);
+		}
+		else
+		{
+			// lets ace this
+			$this->ace($fileinfo);
+		}
 	}
 
 	/**
@@ -234,6 +243,87 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		}
 	}
 
+	public function action_save_arritor()
+	{
+		$post = $this->request->post();
+		$this->json = ['status' => FALSE, 'message' => 'Failed saving data'];
+
+		try
+		{
+			$data = array();
+			$config = array();
+
+			// make temporary lookup array
+			foreach ($post['table'] as $key => $val)
+			{
+				if ( ! is_array($val))
+					continue;
+
+				if (isset($val['key']) AND isset($val['val']))
+				{
+					$data[$val['key']] = $val['val'];
+					continue;
+				}
+
+				foreach ($val as $k => $v)
+				{
+					if (isset($v['key']) AND isset($v['val']) AND substr($v['key'], -1) !== '.')
+					{
+						$data[$v['key']] = $v['val'];
+					}
+				}
+			}
+
+			// hackathon!
+			foreach ($data as $keys => $value)
+			{
+				$keys = (substr($this->request->param('id'), 0, 4) === 'i18n' ? array($keys) : explode('.', $keys));
+
+				if (sizeof($keys) > 0 AND ! isset($config[$keys[0]]))
+					$config[$keys[0]] = array();
+				if (sizeof($keys) === 1)
+					$config[$keys[0]] = $value;
+				if (sizeof($keys) > 1 AND ! isset($config[$keys[0]][$keys[1]]))
+					$config[$keys[0]][$keys[1]] = array();
+				if (sizeof($keys) === 2)
+					$config[$keys[0]][$keys[1]] = $value;
+				if (sizeof($keys) > 2 AND ! isset($config[$keys[0]][$keys[1]][$keys[2]]))
+					$config[$keys[0]][$keys[1]][$keys[2]] = array();
+				if (sizeof($keys) === 3)
+					$config[$keys[0]][$keys[1]][$keys[2]] = $value;
+				if (sizeof($keys) > 3 AND ! isset($config[$keys[0]][$keys[1]][$keys[2]][$keys[3]]))
+					$config[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = array();
+				if (sizeof($keys) === 4)
+					$config[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = $value;
+			}
+
+			$content = Kohana::FILE_SECURITY.PHP_EOL.PHP_EOL.'return '.var_export($config, TRUE).';';
+			$content = str_replace('array (', 'array(', $content);
+			$content = str_replace('  ', "\t", $content);
+			$content = preg_replace("#\n\t+array#", 'array', $content);
+			$content = preg_replace("#,(\s+)\)#", '$1)', $content);
+		}
+		catch (ErrorException $e)
+		{
+			$this->json['message'] = 'Invalid data array.';
+			$this->json['exception'] = $e->getMessage();
+			return;
+		}
+
+		if ( ! empty($content))
+		{
+			// write to file
+			$fh = fopen(APPPATH.$this->request->param('id'), 'w');
+			fwrite($fh, $content);
+			fclose($fh);
+
+			$this->json = [
+				'status'  => TRUE,
+				'message' => 'Saved data'
+			];
+		}
+	}
+
 	public function ace(array $file)
 	{
 		$this->view = View::factory('Prime/Explorer/Ace/Ace')
@@ -245,6 +335,8 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		->set('id', $this->request->param('id'))
 		->set('modes', $this->_modes)
 		->set('themes', $this->_themes);
+
+		$file['file'] = end($file['file']);
 
 		// set theme and handpick github if none is set
 		$theme = Arr::get($_COOKIE, 'ace-theme', 'github');
@@ -274,9 +366,29 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		$content = file_get_contents($file['file']);
 	}
 
-	public function photo()
+	/**
+	 * Arritor interface
+	 *
+	 * @param string $file
+	 * @return void
+	 */
+	public function arritor($file)
 	{
+		$table = array();
 
+		foreach ($file['file'] as $_file)
+		{
+			// Merge the array strings into the table
+			$table = array_merge($table, Kohana::load($_file));
+		}
+
+		$this->view = View::factory('Prime/Explorer/Arritor/Arritor')
+		->bind('filename', $filename)
+		->set('uri', $this->request->param('id'))
+		->set('table', $table);
+
+		// set filename
+		$filename = $file['basename'];
 	}
 
 	/**

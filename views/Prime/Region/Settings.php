@@ -1,4 +1,4 @@
-<?=Form::open('Prime/Region/Settings/'.$region->id);?>
+<?=Form::open('Prime/Region/Settings/'.$region->id.'?mode=design');?>
 	<div class="tabbable tabs-left">
 		<ul class="nav nav-tabs">
 			<?php $i = 0; ?>
@@ -20,4 +20,5 @@
 			<?php endforeach; ?>
 		</div>
 	</div>
+	<input type="submit" class="sr-only">
 <?=Form::close();?>

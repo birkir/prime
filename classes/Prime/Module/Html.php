@@ -10,9 +10,22 @@
 class Prime_Module_Html extends Prime_Module {
 
 	/**
-	 * @var Boolean WYSIWYG
+	 * Extend attributes for output
+	 *
+	 * @param string $name
+	 * @return array 
 	 */
-	public $wysiwyg = TRUE;
+	public function attrs($name = NULL)
+	{
+		$attrs = parent::attrs($name);
+
+		if ($name === 'content')
+		{
+			$attrs['contenteditable'] = 'true';
+		}
+
+		return $attrs;
+	}
 
 	/**
 	 * Parameters to configure module
@@ -57,6 +70,20 @@ class Prime_Module_Html extends Prime_Module {
 	}
 
 	/**
+	 * Process $_POST list to acceptable JSON data and update Model
+	 *
+	 * @param array Parameters
+	 * @return string
+	 */
+	public function save(array $params = NULL)
+	{
+		// never save content
+		unset($params['content']);
+
+		return parent::save($params);
+	}
+
+	/**
 	 * Buttons to show in live mode
 	 * 
 	 * @return array
@@ -64,8 +91,8 @@ class Prime_Module_Html extends Prime_Module {
 	public function actions()
 	{
 		return Arr::merge([
-			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'icon-pencil']).'></i>', [
-				'onclick' => 'window.top.Prime.Page.EditContent('.$this->_region->id.'); return false;'
+			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'fa fa-pencil']).'></i>', [
+				'onclick' => 'window.top.prime.page.module.html('.$this->_region->id.'); return false;'
 			])
 		], parent::actions());
 	}
@@ -77,25 +104,8 @@ class Prime_Module_Html extends Prime_Module {
 	 */
 	public function render()
 	{
-		// set default template if template not found.
-		if ( ! Kohana::find_file('views/module/html', $this->settings['template']))
-		{
-			$this->settings['template'] = 'default';
-		}
-
-		// check if view exists
-		if ( ! Kohana::find_file('views/module/html', $this->settings['template']))
-		{
-			// throw some errors
-			throw new Kohana_Exception('Could not find view :view', array(':view' => $this->settings['template']));
-		}
-
-		// setup view
-		$view = View::factory('module/html/'.$this->settings['template'])
-		->bind('content', $content);
-
-		// get content
-		$content = Arr::get($this->settings, 'content', NULL);
+		$view = self::load_view('module/html', self::option('template'))
+		->set('content', self::option('content'));
 
 		return $view;
 	}

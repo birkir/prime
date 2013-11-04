@@ -7,7 +7,7 @@
 	<li class="list-group-item has-children open">
 
 		<a href="#" onclick="return false;" unselectable="on">
-			<span><i class="icon-globe"></i> <?=Prime::$config->website['name'];?></span>
+			<span><i class="fa fa-globe"></i> <?=Prime::$config->website['name'];?></span>
 		</a>
 
 		<ul class="list-group">
@@ -23,12 +23,13 @@
 				<li class="divider"></li>
 				<li><a href="/Prime/Page/Create/{{id}}" tabindex="-1" data-id="{{id}}" data-title="<?=__('Create new page');?>" onclick="return prime.page.create(this);"><?=__('New page...');?></a></li>
 				<li class="divider"></li>
+				<li{{#if visible}} class="enabled"{{/if}}><a href="/Prime/Page/Visible/{{id}}:{{#if visible}}false{{else}}true{{/if}}" data-id="{{id}}" tabindex="1" onclick="return prime.page.visible(this);"><i class="icon-checkmark"></i><?=__('Visible in menu');?></a></li>
 				<li><a href="/Prime/Page/Properties/{{id}}" tabindex="-1" onclick="return prime.page.properties(this);"><?=__('Properties');?></a></li>
 				<li class="divider"></li>
-				<li class="disabled"><a href="/Prime/Page/Move/{{id}}" tabindex="-1" onclick="return false;"><i class="icon-folderalt"></i><?=__('Move to...');?></a></li>
+				<li><a href="/Prime/Page/Move/{{id}}" tabindex="-1" data-id="{{id}}" onclick="return prime.page.move(this);"><i class="fa fa-folderalt"></i><?=__('Move to...');?></a></li>
 				<li><a href="/Prime/Page/Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
 				<li class="divider"></li>
-				<li><a href="/Prime/Page/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this page, are you sure?');?>" onclick="return prime.page.remove(this);"><i class="icon-trash"></i><?=__('Delete');?></a></li>
+				<li><a href="/Prime/Page/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this page, are you sure?');?>" onclick="return prime.page.remove(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
 			</ul>
 		</script>
 	<?php endif; ?>

@@ -43,6 +43,7 @@ class Controller_Prime_Template extends Controller {
 
 		// check for authentication
 		$this->check_auth();
+
 	}
 
 	/**
@@ -87,6 +88,8 @@ class Controller_Prime_Template extends Controller {
 		{
 			// get the user
 			$this->user = Auth::instance()->get_user();
+
+			I18n::lang($this->user->language);
 
 			// add user to global view and vise versa
 			View::set_global('user', $this->user);

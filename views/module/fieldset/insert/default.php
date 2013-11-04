@@ -5,13 +5,13 @@
 	<?php if (count($errors) > 0): ?>
 		<div class="alert">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			You have some errors in your form, please fix them and try again.
+			<?=__('You have some errors in your form, please fix them and try again.');?>
 		</div>
 	<?php endif; ?>
 
 	<?php foreach ($fields as $field): ?>
 
-		<?=$field->field->as_input('form_'.$fieldset->id.'_', $item, $errors);?>
+		<?=$field->field->as_input($item, $errors);?>
 
 	<?php endforeach; ?>
 

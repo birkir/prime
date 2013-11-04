@@ -3,13 +3,13 @@
 		<thead>
 			<tr class="nodrag">
 				<th width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></th>
-				<th>Name</th>
-				<th>Caption</th>
-				<th>Group</th>
-				<th>Field</th>
-				<th>Default</th>
-				<th>Visible</th>
-				<th>Required</th>
+				<th><?=__('Name');?></th>
+				<th><?=__('Caption');?></th>
+				<th><?=__('Group');?></th>
+				<th><?=__('Field');?></th>
+				<th><?=__('Default');?></th>
+				<th><?=__('Visible');?></th>
+				<th><?=__('Required');?></th>
 				<th width="30"></th>
 			</tr>
 		</thead>
@@ -24,7 +24,7 @@
 					<td><?=$field->default;?></td>
 					<td><?=$field->visible ? 'Yes' : 'No';?></td>
 					<td><?=$field->required ? 'Yes' : 'No';?></td>
-					<td class="reorder-handle"><i class="icon-reorder"></i></td>
+					<td class="reorder-handle"><i class="fa fa-reorder"></i></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>

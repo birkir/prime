@@ -15,6 +15,8 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 	public $auto_render = FALSE;
 
 	/**
+	 * Save contents from CKEditor
+	 *
 	 * @return void
 	 */
 	public function action_save()
@@ -24,26 +26,27 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 		if ($region->loaded())
 		{
 			$module = $region->module();
-
-			if ($module->settings['content'] !== $this->request->post('content'))
-			{
-				$module->settings['content'] = $this->request->post('content');
-
-				$module->save();
-			}
+			$module->settings['content'] = $this->request->post('content');
+			$module->save();
 		}
 	}
 
 	/**
+	*
 	 * @return void
 	 */
-	public function action_GetContent()
+	public function action_editor()
 	{
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
+		if ( ! $region->loaded()) return;
 
-		if ($region->loaded()) {
-			$this->response->body($region->module()->settings['content']);
-		}
+		$module = $region->module();
+
+		$view = View::factory('Prime/Module/Html/Editor')
+		->set('content', $module->settings['content'])
+		->set('editor_type', $module->settings['editor_type']);
+
+		$this->response->body($view->render());
 	}
 
 } // End Prime Module Html Controller

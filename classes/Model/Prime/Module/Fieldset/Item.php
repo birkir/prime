@@ -27,8 +27,6 @@ class Model_Prime_Module_Fieldset_Item extends ORM {
 
 	public function data_to_columns($columns = [])
 	{
-		unset($this->_table_columns['data']);
-
 		foreach ($columns as $column)
 		{
 			$this->select([DB::expr(
@@ -36,7 +34,7 @@ class Model_Prime_Module_Fieldset_Item extends ORM {
 				. 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE(data,\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')),'
         		. 'LOCATE(\',\',SUBSTRING(REPLACE(REPLACE(REPLACE(data,\'{\',\'\'),\'}\',\',\'),\'"\',\'\'),'
                 . 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE(data,\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')))) - 1)'
-			, [':column' => $column]), $column]);
+			, [':column' => $column]), 'data_'.$column]);
 		}
 
 		return $this;

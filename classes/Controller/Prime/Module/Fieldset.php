@@ -32,22 +32,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$this->response->body($view);
 	}
 
-	public function action_test()
-	{
-		$this->auto_render = FALSE;
-
-		$items = ORM::factory('Prime_Module_Fieldset_Item')
-		->data_to_columns(['name', 'socialid', 'phone', 'gender', 'email'])
-		->where('prime_module_fieldset_id', '=', 5)
-		->having('name', 'LIKE', '%birkir%');
-
-		foreach($items->find_all() as $item) {
-			echo Debug::vars($item->as_array());
-		}
-
-		echo View::factory('profiler/stats');
-	}
-
 	public function action_new()
 	{
 		$this->auto_render = FALSE;
@@ -221,8 +205,8 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	{
 		$this->auto_render = FALSE;
 
-		$page = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
-		$page->delete();
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+		$fieldset->delete();
 
 		$view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 
@@ -233,9 +217,9 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	{
 		$this->auto_render = FALSE;
 
-		$page = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
-		$page->name = $this->request->post('name');
-		$page->save();
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+		$fieldset->name = $this->request->post('name');
+		$fieldset->save();
 	}
 
 } // End Prime Module Fieldset

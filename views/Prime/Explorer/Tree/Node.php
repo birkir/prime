@@ -13,7 +13,7 @@
 
 		<b class="caret" onselectstart="return false;"></b>
 
-		<?=HTML::anchor($path, '<span><i class="icon-'.($folder ? 'folder-close' : 'file').'"></i> '.basename($name).'</span>', [
+		<?=HTML::anchor($path, '<span><i class="fa fa-'.($folder ? 'folder' : 'file').'"></i> '.basename($name).'</span>', [
 			'onclick'      => $folder ? 'return false;' : 'return prime.view(this.href);',
 			'data-id'      => $key,
 			'data-folder'  => (string) $folder,

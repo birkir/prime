@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Prime 3.3/master</title>
+		<title>Prime 3.3 &raquo; Home</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -33,19 +33,25 @@
 		<div class="navbar navbar-default navbar-fullscreen">
 			<?=HTML::anchor('Prime', HTML::image('media/Prime/img/logo.png', ['alt' => '']), ['class' => 'navbar-brand pull-left']);?>
 			<ul class="nav navbar-nav">
-				<li><?=HTML::anchor('Prime/Page', '<i class="icon-edit"></i> '.__('Content')); ?></li>
 				<li class="dropdown">
-					<?=HTML::anchor('#', '<i class="icon-folder-close"></i> '.__('Modules').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']); ?>
+					<?=HTML::anchor('Prime', '<i class="fa fa-edit"></i> '.__('Content').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']); ?>
 					<ul class="dropdown-menu">
-						<li><?=HTML::anchor('Prime/Module/Fieldset', '<i class="icon-list-alt"></i> '.__('Fieldsets')); ?></li>
+						<li><?=HTML::anchor('Prime/Page', '<i class="fa fa-file"></i> '.__('Pages')); ?></li>
+						<li><?=HTML::anchor('Prime/File', '<i class="fa fa-th"></i> '.__('Files')); ?></li>
 					</ul>
 				</li>
-				<li><?=HTML::anchor('Prime/Explorer', '<i class="icon-th"></i> '.__('Explorer'));?></li>
 				<li class="dropdown">
-					<?=HTML::anchor('#', '<i class="icon-wrench"></i> '.__('System').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']);?>
+					<?=HTML::anchor('#', '<i class="fa fa-folder"></i> '.__('Modules').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']); ?>
 					<ul class="dropdown-menu">
-						<li><?=HTML::anchor('Prime/Log', '<i class="icon-tasks"></i> '.__('Event Log'));?></li>
-						<li><?=HTML::anchor('Prime/User', '<i class="icon-group"></i> '.__('Users'));?></li>
+						<li><?=HTML::anchor('Prime/Module/Fieldset', '<i class="fa fa-list-alt"></i> '.__('Fieldsets')); ?></li>
+					</ul>
+				</li>
+				<li><?=HTML::anchor('Prime/Explorer', '<i class="fa fa-th"></i> '.__('Explorer'));?></li>
+				<li class="dropdown">
+					<?=HTML::anchor('#', '<i class="fa fa-wrench"></i> '.__('System').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']);?>
+					<ul class="dropdown-menu">
+						<li><?=HTML::anchor('Prime/Log', '<i class="fa fa-tasks"></i> '.__('Event Log'));?></li>
+						<li><?=HTML::anchor('Prime/User', '<i class="fa fa-group"></i> '.__('Users'));?></li>
 					</ul>
 				</li>
 			</ul>
@@ -54,13 +60,13 @@
 					<?php $avatar = HTML::image('http://www.gravatar.com/avatar/'.md5(strtolower(trim($user->email))).'?s=24', array('alt' => 'Profile photo')); ?>
 					<?=HTML::anchor('#', $user->email.' '."\n".$avatar."\n".'<span class="caret"></span>', ['class' => 'dropdown-toggle nav-user', 'data-toggle' => 'dropdown']);?>
 					<ul class="dropdown-menu">
-						<li><?=HTML::anchor('Prime/Account', '<i class="icon-user"></i> '.__('Profile'));?></li>
-						<li><?=HTML::anchor('Prime/Account/Logout', '<i class="icon-off"></i> '.__('Sign out'));?></li>
+						<li><?=HTML::anchor('Prime/Account', '<i class="fa fa-user"></i> '.__('Profile'));?></li>
+						<li><?=HTML::anchor('Prime/Account/Logout', '<i class="fa fa-power-off"></i> '.__('Sign out'));?></li>
 					</ul>
 				</li>
 			</ul>
 		</div>
-		<div class="fullscreen<?=(empty($left) ? NULL : ' with-panel-left');?><?=(empty($right) ? NULL : ' with-panel-right');?>" data-controller="<?=UTF8::strtolower($r->controller());?>">
+		<div class="fullscreen<?=(empty($left) ? NULL : ' with-panel-left');?><?=(empty($right) ? NULL : ' with-panel-right');?>" data-controller="<?=UTF8::strtolower($r->directory().'/'.$r->controller());?>">
 			<div class="panel-left well well-small scrollable">
 <?=isset($left) ? $left : NULL;?>
 

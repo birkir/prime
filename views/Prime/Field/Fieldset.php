@@ -4,7 +4,7 @@
 	<div class="input-group">
 		<div class="form-control">
 			<?php if ($fieldset->loaded()): ?>
-				<i class="icon-file" style="font-size: 14px; color: #555;"></i> <?=$fieldset->name;?>
+				<i class="fa fa-file" style="font-size: 14px; color: #555;"></i> <?=$fieldset->name;?>
 			<?php else: ?>
 				<span class="text-muted"><?=__('No fieldset selected');?></span>
 			<?php endif; ?>

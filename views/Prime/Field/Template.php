@@ -1,6 +1,7 @@
 <div class="form-group <?php if ($error): ?> has-error<?php endif; ?>">
 	<?=Form::label($id, $field['caption'], ['class' => 'control-label']);?>
 	<?=Form::select($field['name'], $templates, $value, ['id' => $id, 'class' => 'form-control input-small']); ?>
+
 	<!-- TODO:
 	<div class="btn-group">
 		<button class="btn btn-sm btn-warning" onclick="return false;"><?=__('Edit');?></button>

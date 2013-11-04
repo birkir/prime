@@ -23,14 +23,22 @@
 						<?=Form::password('password_confirm', NULL, ['class' => 'form-control', 'id' => 'formPasswordConfirm', 'placeholder' => __('Re-type password'), 'data-matches' => '[name=password]']);?>
 					</div>
 				</div>
+
+				<div class="form-group">
+					<?=Form::label('formRoles', __('Roles'), ['class' => 'control-label', 'multiple' => 'multiple']);?>
+					<?=Form::select('roles[]', $roles->as_array('id', 'name'), $user_roles->as_array('id'), ['class' => 'form-control']);?>
+				</div>
+
 			</div>
 			<div class="tab-pane" id="tabProperties">
-				<?php foreach ($fields as $field): ?>
-					<?=$field->field->as_input('form_user_', $properties);?>
-				<?php endforeach; ?>
 				<?php if (count($fields) === 0): ?>
 					<p class="text-center text-muted"><?=__('No fields for user roles.');?></p>
+				<?php else: ?>
+					<?php foreach ($fields as $field): ?>
+						<?=$field->field->as_input('form_user_', $properties);?>
+					<?php endforeach; ?>
 				<?php endif; ?>
+
 			</div>
 		</div>
 	</div>

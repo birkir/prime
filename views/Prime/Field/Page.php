@@ -4,7 +4,7 @@
 	<div class="input-group">
 		<div class="form-control">
 			<?php if ($page->loaded()): ?>
-				<i class="icon-file" style="font-size: 14px; color: #555;"></i> <?=$page->name;?>
+				<i class="fa fa-file" style="font-size: 14px; color: #555;"></i> <?=$page->name;?>
 			<?php else: ?>
 				<span class="text-muted"><?=__('No page selected');?></span>
 			<?php endif; ?>

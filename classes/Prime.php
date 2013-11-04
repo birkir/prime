@@ -41,9 +41,19 @@ class Prime {
 	public static $selected_page;
 
 	/**
-	 * @var  Boolean      Design mode on/off
+	 * @var  string    Overload uri for page
+	 */
+	public static $page_overload_uri = FALSE;      
+
+	/**
+	 * @var  boolean   Design mode on/off
 	 */
 	public static $design_mode;
+
+	/**
+	 * @var  boolean   Disable cache flag
+	 */
+	public static $nocache = FALSE;
 
 	/**
 	 * Singleton instance
@@ -77,8 +87,15 @@ class Prime {
 	 */
 	public static function selected(HTTP_Request $request)
 	{
-		Prime::$selected_page = ORM::factory('Prime_Page')
-		->selected($request->param('query'));
+		if (intval($request->query('pageid')) > 0)
+		{
+			Prime::$selected_page = ORM::factory('Prime_Page', $request->query('pageid'));
+		}
+		else
+		{
+			Prime::$selected_page = ORM::factory('Prime_Page')
+			->selected($request->param('query'));
+		}
 
 		return Prime::$selected_page;
 	}
@@ -105,10 +122,13 @@ class Prime {
 			}
 			else
 			{
+				$node = str_replace(MODPATH.'prime/'.$mask, 'prime:', $node);
+				$node = str_replace(MODPATH.'prime/'.$mask, NULL, $node);
 				$node = str_replace([APPPATH, MODPATH, SYSPATH], NULL, $node);
 				$node = substr($node, 0, strlen($mask)) === $mask ? substr($node, strlen($mask)) : $node;
 				$node = substr($node, 0, strrpos($node, '.'));
-				$list[$node] = $node;
+
+				$list[str_replace('prime:', NULL, $node)] = $node;
 			}
 		}
 
@@ -197,6 +217,31 @@ class Prime {
 		ksort($found);
 
 		return $found;
+	}
+
+	public static function email($subject, $body, $from, $to)
+	{
+		// load Swift Mailer
+		if ( ! class_exists('Swift_Mailer', FALSE))
+		{
+			require Kohana::find_file('vendor', 'swift/swift_required');
+		}
+
+		// setup transport
+		$transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+
+		// setup swift mailer
+		$mailer = Swift_Mailer::newInstance($transport);
+
+		// create message
+		$message = new Swift_Message($subject, $body, 'text/html', 'utf-8');
+
+		// set recipents and sender
+		$message->setFrom($from);
+		$message->setTo($to);
+
+		// return Swift Mailer
+		return $mailer->send($message);
 	}
 
 	/**

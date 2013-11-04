@@ -7,7 +7,7 @@
 
 		<b class="caret" onselectstart="return false;"></b>
 
-		<?=HTML::anchor('/Prime/Module/Fieldset/List/'.$node->id, '<span><i class="icon-'.($folder ? 'folder-close' : 'list-alt').'"></i> '.$node->name.'</span>', [
+		<?=HTML::anchor('/Prime/Module/Fieldset/List/'.$node->id, '<span><i class="fa fa-'.($folder ? 'folder' : 'list-alt').'"></i> '.$node->name.'</span>', [
 			'onclick'   => $folder || $request->is_initial() ? 'return false;' : 'return prime.view(this.href);',
 			'data-id'   => $node->id,
 			'data-dir'  => $folder,

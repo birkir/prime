@@ -11,10 +11,10 @@
 			</div>
 			<script class="table-actions-template" type="text/x-handlebars-template">
 				<a href="#" data-id="{{id}}" onclick="return {{#if one}}prime.user.edit(this){{else}}false{{/if}};" class="btn btn-default{{#more}} disabled{{/more}}{{#zero}} disabled{{/zero}}">
-					<i class="icon-edit"></i>&nbsp; <?=__('Edit');?>
+					<i class="fa fa-edit"></i>&nbsp; <?=__('Edit');?>
 				</a>
 				<a href="/Prime/User/Remove/{{id}}" onclick="return {{#if zero}}false{{else}}prime.user.remove(this){{/if}};" class="btn btn-default{{#zero}} disabled{{/zero}}" data-title="<?=__('Delete user');?>" data-message="<?=__('Are you sure you want to delete selected users?');?>">
-					<i class="icon-trash"></i>&nbsp; <?=__('Delete');?>
+					<i class="fa fa-trash"></i>&nbsp; <?=__('Delete');?>
 				</a>
 			</script>
 		</div>

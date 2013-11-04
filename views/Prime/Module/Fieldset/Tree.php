@@ -7,7 +7,7 @@
     <li class="list-group-item has-children open">
 
         <a href="#" onclick="return false;" unselectable="on" data-dir="1" data-root="1">
-            <span><i class="icon-folder-close"></i> <?=__('Fieldsets');?>
+            <span><i class="fa fa-folder-open"></i> <?=__('Fieldsets');?>
         </a>
 
         <ul class="list-group">
@@ -27,7 +27,7 @@
             <li class="divider"></li>
             <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/Module/Fieldset/Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
             <li class="divider"></li>
-            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/Module/Fieldset/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this {{#if dir}}folder{{else}}fieldset{{/if}}, are you sure?');?>" onclick="return prime.fieldset.remove(this);"><i class="icon-trash"></i><?=__('Delete');?></a></li>
+            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/Module/Fieldset/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this {{#if dir}}folder{{else}}fieldset{{/if}}, are you sure?');?>" onclick="return prime.fieldset.remove(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
         </ul>
     </script>
 <?php endif; ?>

@@ -32,38 +32,93 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	public function action_add()
 	{
 		// get parameters
-		$params = $this->request->post();
+		$post = $this->request->post();
 
 		// create new region
 		$region = ORM::factory('Prime_Region');
-		$region->values($params);
+		$region->prime_page_id = Arr::get($post, 'page');
+		$region->prime_module_id = Arr::get($post, 'module');
+		$region->name = Arr::get($post, 'region');
+		$region->settings = '{}';
+		$region->position = 0;
 
 		// reference region
-		$reference = ORM::factory('Prime_Region', Arr::get($params, '_ref'));
+		$reference = ORM::factory('Prime_Region', Arr::get($post, 'reference'));
 
 		// check if reference region was loaded
 		if ($reference->loaded())
 		{
-			// fit position
-			$pos = (Arr::get($params, '_pos') === 'above' ? 0 : $reference->position);
+			// generate new position
+			$region->position = $reference->position + (Arr::get($post, 'position', 'below') === 'above' ? 0 : 1);
 
-			// update reference region
+			// bump all rows below position
 			DB::update('prime_regions')
 			->set(['position' => DB::expr('`position` + 1')])
-			->where('position', '>'.($pos === 0  ? '=' : NULL), $pos)
-			->where('prime_page_id', '=', $reference->prime_page_id)
-			->where('name', '=', $reference->name)
+			->where('position', '>=', $region->position)
+			->where('prime_page_id', '=', $region->prime_page_id)
+			->where('name', '=', $region->name)
+			->where('deleted', '=', 0)
 			->execute();
-
-			// update position
-			$region->position = $pos;
 		}
 
 		// save region
 		$region->save();
 
+		// execute display request
+		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
+
 		// display region
-		$this->response->body(Request::factory('Prime/Region/Display/'.$region->id)->execute());
+		$this->response->body('<div'.HTML::attributes(['class' => 'prime-region-item', 'data-id' => $region->id]).'>'.$output.'</div>');
+	}
+
+	/**
+	 * Move region above reference region
+	 *
+	 * @return void
+	 */
+	public function action_reorder()
+	{
+		// get parameters
+		$post = $this->request->post();
+
+		// node to move
+		$region = ORM::factory('Prime_Region', Arr::get($post, 'region'));
+
+		// node to reference as above
+		$reference = ORM::factory('Prime_Region', Arr::get($post, 'reference'));
+
+		if ( ! $reference->loaded())
+			return;
+
+		// generate new position
+		$new = $reference->position + (Arr::get($post, 'position', 'below') === 'above' ? 0 : 1);
+
+		if ($region->name === $reference->name)
+		{
+			// execute multi-query
+			DB::update('prime_regions')
+			->set(['position' => DB::expr('CASE `position` WHEN '.$region->position.' THEN '.$new.' ELSE `position` + SIGN('.($region->position - $new).') END')])
+			->where('position', 'BETWEEN', DB::expr('LEAST('.$new.','.$region->position.') AND GREATEST('.$new.','.$region->position.')'))
+			->where('prime_page_id', '=', $region->prime_page_id)
+			->where('name', '=', $region->name)
+			->where('deleted', '=', 0)
+			->execute();
+		}
+		else
+		{
+			// bump all rows below position
+			DB::update('prime_regions')
+			->set(['position' => DB::expr('`position` + 1')])
+			->where('position', '>=', $new)
+			->where('prime_page_id', '=', $region->prime_page_id)
+			->where('name', '=', $region->name)
+			->where('deleted', '=', 0)
+			->execute();
+
+			// save region
+			$region->position = $new;
+			$region->save();
+		}
 	}
 
 	/**
@@ -133,27 +188,14 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		// check if region is loaded
 		if ($region->loaded())
 		{
-			// load its page id
-			$page = ORM::factory('Prime_Page', $region->prime_page_id);
+			// proxy to frontpage
+			$response = Request::factory('')
+			->query('region', $region->id)
+			->query('mode', 'design')
+			->execute();
 
-			// set selected page
-			Prime::$selected_page = $page;
-
-			// get things needed for region
-			View::set_global('page', $page);
-			View::set_global('prime', Prime_Frontend::instance());
-
-			// setup view for region item
-			$view = View::factory('Prime/Page/Region/Item')
-			->set('item', $region->module());
-
-			// setup DOM
-			$re = '<div class="prime-region-item" data-id="'.$region->id.'">'
-				. $view
-				. '<div class="prime-drop" data-position="below" style="display: none;">drop below</div>'
-				. '</div>';
-
-			$this->response->body($re);
+			// set requested response body
+			$this->response->body(gzdecode($response->body()));
 		}
 	}
 

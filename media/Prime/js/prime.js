@@ -489,55 +489,14 @@ var prime = (function () {
 	};
 
 	/**
-	 * Handle all custom elements on page controller
-	 *
-	 * @return object
-	 */
-	app.pageController = function () {
-		return require(['page'], function (pageController) {
-			app.page = pageController;
-		});
-	};
-
-	/**
-	 * Handle all custom elements on fieldset controller
-	 *
-	 * @return object
-	 */
-	app.fieldsetController = function () {
-		require(['module/fieldset'], function (fieldsetController) {
-			app.fieldset = fieldsetController;
-		});
-	};
-
-	/**
-	 * Handle all custom elements on user controller
-	 *
-	 * @return object
-	 */
-	app.userController = function () {
-		require(['user'], function (userController) {
-			app.user = userController;
-		});
-	};
-
-	/**
-	 * Handle all custom elements on explorer controller
-	 *
-	 * @return object
-	 */
-	app.explorerController = function () {
-		require(['explorer'], function (explorerController) {
-			app.explorer = explorerController;
-		});
-	};
-
-	/**
 	 * Load remote view to specific destination in DOM
 	 *
 	 * @return object
 	 */
 	app.view = function (url, destination) {
+
+		// set last view
+		app.last_view = [url, destination];
 
 		// get absolute destination
 		destination = destination || $('.panel-center');
@@ -556,6 +515,20 @@ var prime = (function () {
 
 		//return false for direct onclick in anchors
 		return false;
+	};
+
+	app.reload_view = function () {
+		return app.view(app.last_view[0], app.last_view[1]);
+	}
+
+	/**
+	 * TODO!
+	 * Manage all ajax calls that change history URL and
+	 * repeat them on back / forward buttons.
+	 */
+	app.history = function () {
+		// yes sir!
+		// console.log(History.getState());
 	};
 
 	/**
@@ -847,7 +820,9 @@ var prime = (function () {
 			handlebars: '../lib/handlebars-1.0.0',
 			ace: '../lib/ace/ace',
 			aceEmmet: '../lib/ace/ext-emmet',
-			emmet: '../lib/emmet'
+			emmet: '../lib/emmet',
+			history: '../lib/history',
+			plupload: '../lib/plupload.full.min'
 		},
 		shim: {
 			bootstrap: { deps: ['jquery'] },
@@ -858,19 +833,31 @@ var prime = (function () {
 
 	// run when jquery has loaded
 	// --------------------------
-	define(['jquery', 'handlebars', 'select2', 'cookie', 'bootstrap'], function ($) {
+	define(['jquery', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($) {
 
-		// page controller
-		$('[data-controller=page]').each(app.pageController);
+		// list available controllers
+		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file'];
 
-		// fieldset controller
-		$('[data-controller=fieldset]').each(app.fieldsetController);
+		// define current controller
+		var Controller  = ($('[data-controller]').data('controller') + '').substr(6);
 
-		// user controller
-		$('[data-controller=user]').each(app.userController);
+		// loop through controllers
+		for (var key in Controllers) {
 
-		// explorer controller
-		$('[data-controller=explorer]').each(app.explorerController);
+			// check if he matches current
+			if (Controller === Controllers[key]) {
+
+				// get last key after slash
+				var name = Controller.split('/')[Controller.split('/').length - 1];
+
+				// use requirejs to fetch controller
+				require([Controller], function (innerController) {
+
+					// bind to prime
+					app[name] = innerController;
+				});
+			}
+		}
 
 		// elements
 		$('body').each(app.elements);
@@ -880,6 +867,9 @@ var prime = (function () {
 
 		// events
 		$(document).each(app.events);
+
+		// history adapter
+		History.Adapter.bind(window, 'statechange', app.history);
 	});
 
 	// return app

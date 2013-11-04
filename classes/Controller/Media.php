@@ -53,6 +53,7 @@ class Controller_Media extends Controller {
 		$this->response->body(file_get_contents($output));
 		$this->response->headers('content-type', File::mime_by_ext($info['extension']));
 		$this->response->headers('last-modified', date('r', filemtime($output)));
+		$this->response->headers('expires', gmdate('D, d M Y H:i:s', time() + (86400 * 14)));
 	}
 
 	/**
@@ -62,7 +63,7 @@ class Controller_Media extends Controller {
 	{
 		$this->cache('.gz', function ($recompile, $read, $write, $response)
 		{
-			if ( ! Request::current()->accept_encoding())
+			if ( ! Request::current()->accept_encoding('gzip'))
 				return $read;
 
 			// set response header
