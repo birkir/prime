@@ -40,26 +40,9 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->prime_module_id = Arr::get($post, 'module');
 		$region->name = Arr::get($post, 'region');
 		$region->settings = '{}';
-		$region->position = 0;
 
-		// reference region
-		$reference = ORM::factory('Prime_Region', Arr::get($post, 'reference'));
-
-		// check if reference region was loaded
-		if ($reference->loaded())
-		{
-			// generate new position
-			$region->position = $reference->position + (Arr::get($post, 'position', 'below') === 'above' ? 0 : 1);
-
-			// bump all rows below position
-			DB::update('prime_regions')
-			->set(['position' => DB::expr('`position` + 1')])
-			->where('position', '>=', $region->position)
-			->where('prime_page_id', '=', $region->prime_page_id)
-			->where('name', '=', $region->name)
-			->where('deleted', '=', 0)
-			->execute();
-		}
+		// set position
+		$region->position(Arr::get($post, 'reference'));
 
 		// save region
 		$region->save();
@@ -78,47 +61,12 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	 */
 	public function action_reorder()
 	{
-		// get parameters
-		$post = $this->request->post();
+		list($id, $reference) = explode(':', $this->request->param('id'));
 
-		// node to move
-		$region = ORM::factory('Prime_Region', Arr::get($post, 'region'));
-
-		// node to reference as above
-		$reference = ORM::factory('Prime_Region', Arr::get($post, 'reference'));
-
-		if ( ! $reference->loaded())
-			return;
-
-		// generate new position
-		$new = $reference->position + (Arr::get($post, 'position', 'below') === 'above' ? 0 : 1);
-
-		if ($region->name === $reference->name)
-		{
-			// execute multi-query
-			DB::update('prime_regions')
-			->set(['position' => DB::expr('CASE `position` WHEN '.$region->position.' THEN '.$new.' ELSE `position` + SIGN('.($region->position - $new).') END')])
-			->where('position', 'BETWEEN', DB::expr('LEAST('.$new.','.$region->position.') AND GREATEST('.$new.','.$region->position.')'))
-			->where('prime_page_id', '=', $region->prime_page_id)
-			->where('name', '=', $region->name)
-			->where('deleted', '=', 0)
-			->execute();
-		}
-		else
-		{
-			// bump all rows below position
-			DB::update('prime_regions')
-			->set(['position' => DB::expr('`position` + 1')])
-			->where('position', '>=', $new)
-			->where('prime_page_id', '=', $region->prime_page_id)
-			->where('name', '=', $region->name)
-			->where('deleted', '=', 0)
-			->execute();
-
-			// save region
-			$region->position = $new;
-			$region->save();
-		}
+		// region to move
+		$region = ORM::factory('Prime_Region', intval($id))
+		->position($reference)
+		->save();
 	}
 
 	/**

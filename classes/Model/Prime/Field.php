@@ -7,26 +7,19 @@
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Field extends ORM {
+class Model_Prime_Field extends Model_Prime {
 
-	public function save(Validation $validation = NULL)
-	{
-		// create position if non existent
-		if ( ! $this->loaded() AND $this->position === NULL)
-		{
-			$this->position = DB::select([DB::expr('MAX(`position`)'), 'pos'])
-			->from('prime_fields')
-			->where('resource_id', '=', $this->resource_id)
-			->where('resource_type', '=', $this->resource_type)
-			->limit(1)
-			->execute()
-			->get('pos') + 1;
-		}
+	/**
+	 * @var boolean Add sortable with specific keys
+	 */
+	protected $_sortable = ['resource_id', 'resource_type'];
 
-		// continue ...
-		return parent::save($validation);
-	}
-
+	/**
+	 * Overwrite load values function
+	 *
+	 * @param  array List of values
+	 * @return ORM
+	 */
 	protected function _load_values(array $values)
 	{
 		// load values defaults

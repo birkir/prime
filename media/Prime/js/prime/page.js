@@ -8,7 +8,7 @@ define(['jquery', 'jqueryUI'], function($) {
 	page.id = doc.find('[data-pageid]:eq(0)').data('pageid');
 
 	// sortable tree function
-	page.tree = function () {
+	page.tree = function (active_node) {
 		$('.panel-left .nav-tree .list-group').sortable({
 			appendTo: 'body',
 			revert: 50,
@@ -26,7 +26,7 @@ define(['jquery', 'jqueryUI'], function($) {
 				});
 			},
 			update: function (event, ui) {
-				var ref = ui.item.index() === 0 ? 0 : ui.item.prev().children('a').data('id'),
+				var ref = ui.item.next().children('a').data('id'),
 				    id = ui.item.children('a').data('id');
 
 				$.ajax({
@@ -34,22 +34,35 @@ define(['jquery', 'jqueryUI'], function($) {
 				});
 			}
 		});
+		$('.panel-left [data-id='+active_node+']').parent().addClass('active');
 	};
 
 	// set page tree actions and functions
 	page.tree();
 
 	page.visible = function (el) {
+		var active = $('.panel-left li.active').children('a').data('id');
 		$.ajax({
 			url: $(el).attr('href')
 		})
 		.done(function (response) {
 			$('.panel-left').html(response);
-			page.tree();
+			page.tree(active);
 		});
 
 		return false;
 	};
+
+	page.rename = function (el) {
+		var active = $('.panel-left li.active').children('a').data('id');
+
+		prime.rename(el, function (response) {
+			$('.panel-left').html(response)
+			prime.page.tree(active);
+		});
+
+		return false;
+	}
 
 	// live module actions
 	// todo: Move to acceptable place
@@ -385,11 +398,14 @@ define(['jquery', 'jqueryUI'], function($) {
 			// move some module
 			if (ui.draggable.hasClass('prime-region-item'))
 			{
+				var node = ui.draggable;
+				var reference = above ? drop.parent() : drop.parent().next();
+
 				// move node in dom
 				drop.parent()[above ? 'before' : 'after'](ui.draggable);
 
 				// send api call       [id]                     [reference]               [above = true|below = false]
-				prime.page.region.move(ui.draggable.data('id'), drop.parent().data('id'), above);
+				prime.page.region.move(node.data('id'), reference.data('id'));
 			}
 			else if (ui.draggable.hasClass('list-group-item'))
 			{
@@ -470,8 +486,10 @@ define(['jquery', 'jqueryUI'], function($) {
 			page.addDelay = true;
 			setTimeout(function() { page.addDelay = false; }, 330);
 		},
-		move: function (region_id, reference_id, above) {
-
+		move: function (region_id, reference_id) {
+			$.ajax({
+				url: '/Prime/Region/Reorder/' + region_id + ':' + reference_id
+			});
 		},
 		remove: function (id) {
 			prime.dialog({

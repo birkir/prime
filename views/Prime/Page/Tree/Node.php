@@ -1,6 +1,6 @@
-<?php foreach ($nodes->recursive()->find_all() as $node): ?>
+<?php foreach ($nodes->order_by('position', 'ASC')->find_all() as $node): ?>
 
-	<?php $children = $node->recursive()->count_all() > 0; ?>
+	<?php $children = $node->pages->count_all() > 0; ?>
 	<?php $path = $url.'/'.$node->slug; ?>
 
 	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$node->id]) ? ' open' : ''.($node->visible ? '' : ' disabled'))]);?>>
@@ -14,7 +14,7 @@
 		<?php if ($children): ?>
 
 			<ul class="list-group">
-				<?=View::factory('Prime/Page/Tree/Node')->set('nodes', $node)->set('open', $open)->set('url', $path);?>
+				<?=View::factory('Prime/Page/Tree/Node')->set('nodes', $node->pages)->set('open', $open)->set('url', $path);?>
 			</ul>
 
 		<?php endif; ?>

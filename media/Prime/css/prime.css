@@ -182,15 +182,16 @@ body > .fullscreen.with-panel-right > .panel-right {
 .table thead  i { display: none; }
 .table thead .table-header-asc i,
 .table thead .table-header-desc i { display: inline; padding-top: 3px; padding-right: 3px; color: #949494; font-size: 11px; }
-.table thead .table-header-desc .icon-chevron-down:before { content: "\f077"; }
+.table thead .table-header-desc .fa-chevron-down:before { content: "\f077"; }
 .table thead.header-fixed:after { -webkit-transition: all ease 200ms; content: ""; display: block; position: absolute; bottom: 0px; left: 0; right: 0; height: 4px; background: transparent; border-bottom: 1px solid #ebebeb; -webkit-box-shadow: 0 0px 3px -2px rgba(0,0,0,0.1); }
 .table.scrolled thead.header-fixed:after { -webkit-box-shadow: 0 4px 4px -2px rgba(0,0,0,0.125); }
 .table tbody tr.active td,
 .table tbody tr.active th { background-color: #ffc; }
 .table-sortable thead tr th { cursor: pointer; }
 .table-sortable thead tr th.sorter-false { cursor: default; }
-.table .reorder-handle { cursor: move; font-size: 14px; color: #888; }
+.table .reorder-handle { cursor: move; font-size: 14px; color: #888; text-align: center; padding-right: 15px; }
 .table .reorder-handle:hover { color: #333; }
+.table .noreorder { color: #ddd; cursor: move; font-size: 14px; text-align: center; padding-right: 15px; }
 
 /** module list **/
 .prime-module-list { margin: 0 -10px; }
@@ -389,4 +390,11 @@ body > .fullscreen.with-panel-right > .panel-right {
 	padding: 10px;
 	text-align: center;
 	height: 0;
+}
+.text-overflow {
+	display: block;
+	width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

@@ -181,22 +181,13 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	 */
 	public function action_reorder()
 	{
+		// get page and reference page
+		list($field, $reference) = explode(':', $this->request->param('id'));
+
 		// node to move
-		$item = ORM::factory('Prime_Field', $this->request->post('id'));
-
-		// node to reference as above
-		$ref = ORM::factory('Prime_Field', $this->request->post('ref'));
-
-		// generate new position
-		$new = $ref->loaded() ? $ref->position + ($item->position > $ref->position ? 1 : 0) : 0;
-
-		// execute multi-query
-		DB::update('prime_fields')
-		->set(['position' => DB::expr('CASE `position` WHEN '.$item->position.' THEN '.$new.' ELSE `position` + SIGN('.($item->position - $new).') END')])
-		->where('position', 'BETWEEN', DB::expr('LEAST('.$new.','.$item->position.') AND GREATEST('.$new.','.$item->position.')'))
-		->where('resource_id', '=', $item->resource_id)
-		->where('resource_type', '=', $item->resource_type)
-		->execute();
+		$field = ORM::factory('Prime_Field', $field)
+		->position($reference)
+		->save();
 	}
 
 } // End Prime Field

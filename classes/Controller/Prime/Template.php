@@ -89,6 +89,10 @@ class Controller_Prime_Template extends Controller {
 			// get the user
 			$this->user = Auth::instance()->get_user();
 
+			//  set user in prime class
+			Prime::$user = $this->user;
+
+			// set language
 			I18n::lang($this->user->language);
 
 			// add user to global view and vise versa

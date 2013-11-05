@@ -1,6 +1,6 @@
-<?php foreach ($nodes->files->where('type', '=', 0)->where('deleted', '=', 0)->order_by('name', 'ASC')->find_all() as $node): ?>
+<?php foreach ($nodes->files->where('type', '=', 0)->order_by('name', 'ASC')->find_all() as $node): ?>
 
-	<?php $children = $node->files->where('deleted', '=', 0)->where('type', '=', 0)->count_all() > 0; ?>
+	<?php $children = $node->files->where('type', '=', 0)->count_all() > 0; ?>
 
 	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$node->id]) ? ' open' : '')]);?>>
 

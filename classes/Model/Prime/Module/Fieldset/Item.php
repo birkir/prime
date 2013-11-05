@@ -7,12 +7,17 @@
  * @category Fieldset
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Module_Fieldset_Item extends ORM {
+class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 
 	/**
 	 * @var array Fields container
 	 */
 	protected $_fields;
+
+	/**
+	 * @var boolean Add sortable with specific keys
+	 */
+	protected $_sortable = ['prime_module_fieldset_id'];
 
 	/**
 	 * Belongs to relationships

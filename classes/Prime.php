@@ -41,6 +41,11 @@ class Prime {
 	public static $selected_page;
 
 	/**
+	 * @var  ORM Logged in User
+	 */
+	public static $user;
+
+	/**
 	 * @var  string    Overload uri for page
 	 */
 	public static $page_overload_uri = FALSE;      

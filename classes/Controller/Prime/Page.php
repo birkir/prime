@@ -61,7 +61,6 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		]).'></iframe>';
 	}
 
-
 	/**
 	 * Render page tree
 	 * 
@@ -70,7 +69,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	public function action_tree()
 	{
 		$view = View::factory('Prime/Page/Tree')
-		->set('nodes', ORM::factory('Prime_Page'))
+		->set('nodes', ORM::factory('Prime_Page')->where('parent_id', 'IS', NULL))
 		->bind('open', $open)
 		->set('request', $this->request);
 
@@ -179,9 +178,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	 */
 	public function action_remove()
 	{
-		$page = ORM::factory('Prime_Page', $this->request->param('id'));
-		$page->deleted = 1;
-		$page->save();
+		ORM::factory('Prime_Page', $this->request->param('id'))->delete();
 	}
 
 	/**
@@ -194,6 +191,12 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
 		$page->name = $this->request->post('name');
 		$page->save();
+
+		// get new tree
+		$view = Request::factory('Prime/Page/Tree')->execute();
+
+		// output view
+		$this->response->body($view);
 	}
 
 	/**
@@ -224,24 +227,12 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	public function action_reorder()
 	{
 		// get page and reference page
-		list($page, $ref) = explode(':', $this->request->param('id'));
+		list($page, $reference) = explode(':', $this->request->param('id'));
 
 		// node to move
-		$page = ORM::factory('Prime_Page', $page);
-
-		// node to reference as above
-		$ref = ORM::factory('Prime_Page', $ref);
-
-		// generate new position
-		$new = $ref->loaded() ? $ref->position + ($page->position > $ref->position ? 1 : 0) : 0;
-
-		// execute multi-query
-		DB::update('prime_pages')
-		->set(['position' => DB::expr('CASE `position` WHEN '.$page->position.' THEN '.$new.' ELSE `position` + SIGN('.($page->position - $new).') END')])
-		->where('position', 'BETWEEN', DB::expr('LEAST('.$new.','.$page->position.') AND GREATEST('.$new.','.$page->position.')'))
-		->where('parent_id', $page->parent_id ? '=' : 'IS', $page->parent_id)
-		->where('deleted', '=', 0)
-		->execute();
+		$page = ORM::factory('Prime_Page', $page)
+		->position($reference)
+		->save();
 	}
 
 } // End Prime Page

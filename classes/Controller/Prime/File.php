@@ -20,8 +20,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$open = $this->request->is_initial() ? [] : json_decode(Arr::get($_COOKIE, 'tree-files', '{}'), TRUE);
 
 		// get nodes
-		$nodes = ORM::factory('Prime_File')
-		->where('deleted', '=', 0);
+		$nodes = ORM::factory('Prime_File');
 
 		$this->response->body($view);
 	}
@@ -55,8 +54,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$this->auto_render = FALSE;
 
 		$file = ORM::factory('Prime_File', $this->request->param('id'));
-		$file->deleted = 1;
-		$file->save();
+		$file->delete();
 
 		$view = Request::factory('Prime/File/Tree')->execute();
 
@@ -79,11 +77,11 @@ class Controller_Prime_File extends Controller_Prime_Template {
 
 		$file = ORM::factory('Prime_File', $this->request->param('id'));
 
-		if ( ! $file->loaded() OR $file->deleted === 1)
+		if ( ! $file->loaded())
 			throw HTTP_Exception::factory(404, 'File not found');
 
 		// last updated
-		$updated = strtotime($file->updated_at ? $file->updated_at : $file->created_at);
+		$updated = strtotime($file->updated_at);
 
 		// generate 256x256 sized thumbnails
 		try 
@@ -175,10 +173,8 @@ class Controller_Prime_File extends Controller_Prime_Template {
 
 		// find all items in folder
 		$items = $folder->files
-		->where('deleted', '=', 0)
 		->where('type', '=', 1)
 		->order_by('updated_at', 'DESC')
-		->order_by('created_at', 'DESC')
 		->find_all();
 
 		// setup view
@@ -305,8 +301,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		foreach ($files as $file)
 		{
 			$item = ORM::factory('Prime_File', $file);
-			$item->deleted = 1;
-			$item->save();
+			$item->delete();
 		}
 	}
 

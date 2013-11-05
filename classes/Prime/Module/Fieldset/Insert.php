@@ -21,7 +21,7 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 				[
 					'name'    => 'fieldset',
 					'caption' => 'Fieldset',
-					'field'   => 'Prime_Field_String',
+					'field'   => 'Prime_Field_Fieldset',
 					'default' => '',
 				],
 				[

@@ -153,6 +153,7 @@ define(['jquery'], function($) {
 		a[0].context = $();
 
 		prime.rename({ href: null }, function (text) {
+			console.log(text);
 			$.ajax({
 				url: item.href,
 				type: 'POST',

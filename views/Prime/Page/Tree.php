@@ -27,7 +27,7 @@
 				<li><a href="/Prime/Page/Properties/{{id}}" tabindex="-1" onclick="return prime.page.properties(this);"><?=__('Properties');?></a></li>
 				<li class="divider"></li>
 				<li><a href="/Prime/Page/Move/{{id}}" tabindex="-1" data-id="{{id}}" onclick="return prime.page.move(this);"><i class="fa fa-folderalt"></i><?=__('Move to...');?></a></li>
-				<li><a href="/Prime/Page/Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
+				<li><a href="/Prime/Page/Rename/{{id}}" tabindex="-1" onclick="return prime.page.rename(this);"><?=__('Rename...');?></a></li>
 				<li class="divider"></li>
 				<li><a href="/Prime/Page/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this page, are you sure?');?>" onclick="return prime.page.remove(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
 			</ul>

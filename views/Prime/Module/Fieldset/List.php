@@ -20,22 +20,24 @@
 		</div>
 	</div>
 	<div class="scrollable">
-		<table class="table table-hover table-condensed table-selection table-sortable" data-bind-template="#selTemplate" data-bind=".table-bind-template">
+		<table class="table table-hover table-condensed table-selection table-sortable table-dnd" data-bind-template="#selTemplate" data-bind=".table-bind-template" data-reorder-api="/Prime/Module/Fieldset/Reorder">
 			<thead>
-				<tr>
+				<tr class="nodrag">
 					<th width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></th>
 					<?php foreach ($fields as $field): ?>
 						<th><?=$field->caption;?></th>
 					<?php endforeach; ?>
+					<th width="70">Order</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($fieldset->items->find_all() as $item): ?>
+				<?php foreach ($fieldset->items->order_by('position', 'ASC')->find_all() as $item): ?>
 					<tr ondblclick="prime.view('/Prime/Module/Fieldset/Edit/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
 						<td class="text-center"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></td>
 						<?php foreach ($fields as $field): ?>
 							<td><?=$field->field->as_text($item);?></td>
 						<?php endforeach; ?>
+						<td class="reorder-handle"><i class="fa fa-reorder"></i></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>

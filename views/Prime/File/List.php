@@ -35,7 +35,7 @@
 							<img src="" data-src="/Prime/File/Preview/<?=$item->id;?>" alt="">
 						</a>
 					</div>
-					<span class="grid-group-item-caption"><?=$item->name;?></span>
+					<span class="grid-group-item-caption"><span class="text-overflow"><?=$item->name;?></span></span>
 				</div>
 			<?php endforeach; ?>
 		</div>

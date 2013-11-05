@@ -7,8 +7,16 @@
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_File extends ORM {
+class Model_Prime_File extends Model_Prime {
 
+	/**
+	 * @var boolean Model is not sortable
+	 */
+	protected $_sortable = FALSE;
+
+	/**
+	 * @var array Has many relationships
+	 */
 	protected $_has_many = [
 		'files' => [
 			'model'       => 'Prime_File',
@@ -16,5 +24,10 @@ class Model_Prime_File extends ORM {
 			'far_key'     => 'id'
 		]
 	];
+
+	public function delete()
+	{
+
+	}
 
 } // End Prime File Model

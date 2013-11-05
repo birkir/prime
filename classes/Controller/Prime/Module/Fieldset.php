@@ -222,4 +222,17 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$fieldset->save();
 	}
 
+	public function action_reorder()
+	{
+		$this->auto_render = FALSE;
+
+		// get page and reference page
+		list($item, $reference) = explode(':', $this->request->param('id'));
+
+		// node to move
+		$item = ORM::factory('Prime_Module_Fieldset_Item', $item)
+		->position($reference)
+		->save();
+	}
+
 } // End Prime Module Fieldset

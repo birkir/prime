@@ -10,6 +10,8 @@
  */
 class Database_MySQLi extends Database {
 
+	const MULTIQUERY = 10;
+
 	// Database in use by each connection
 	protected static $_current_databases = array();
 
@@ -149,7 +151,7 @@ class Database_MySQLi extends Database {
 		}
 	}
 
-	public function query($type, $sql, $as_object = FALSE, array $params = NULL)
+	public function multiquery($sql)
 	{
 		// Make sure the database is connected
 		$this->_connection or $this->connect();
@@ -160,8 +162,10 @@ class Database_MySQLi extends Database {
 			$benchmark = Profiler::start("Database ({$this->_instance})", $sql);
 		}
 
+		$result = mysqli_multi_query($this->_connection, $sql);
+
 		// Execute the query
-		if (($result = mysqli_query($this->_connection, $sql)) === FALSE)
+		if ($result === FALSE)
 		{
 			if (isset($benchmark))
 			{
@@ -181,6 +185,64 @@ class Database_MySQLi extends Database {
 
 		// Set the last query
 		$this->last_query = $sql;
+
+		$output = [];
+
+		do {
+			if ($result = mysqli_store_result($this->_connection))
+			{
+				while ($row = mysqli_fetch_row($result))
+				{
+					$output[] = $row[0];
+				}
+
+				mysqli_free_result($result);
+        	}
+        	if (mysqli_next_result($this->_connection))
+        		$output[] = 'foo';
+		}
+		while (mysqli_more_results($this->_connection));
+
+		// return affected rows
+		return implode("\n", $output);
+	}
+
+	public function query($type, $sql, $as_object = FALSE, array $params = NULL)
+	{
+		// Make sure the database is connected
+		$this->_connection or $this->connect();
+
+		if (Kohana::$profiling)
+		{
+			// Benchmark this query for the current instance
+			$benchmark = Profiler::start("Database ({$this->_instance})", $sql);
+		}
+
+		// get result
+		$result = mysqli_query($this->_connection, $sql);
+
+		// Execute the query
+		if ($result === FALSE)
+		{
+			if (isset($benchmark))
+			{
+				// This benchmark is worthless
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(':error [ :query ]',
+				array(':error' => mysqli_error($this->_connection), ':query' => $sql),
+				mysqli_errno($this->_connection));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		// Set the last query
+		$this->last_query = $sql;
+
 
 		if ($type === Database::SELECT)
 		{

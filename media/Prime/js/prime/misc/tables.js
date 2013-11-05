@@ -3,6 +3,11 @@ define(['jquery'], function($) {
 
 		var table = $(this);
 
+		// find reorder handle
+		if (table.hasClass('table-dnd')) {
+			table.data('reorder', table.find('tbody > tr td.reorder-handle').index());
+		}
+
 		// selectable rows
 		// ---------------
 		if (table.hasClass('table-selection')) {
@@ -56,6 +61,17 @@ define(['jquery'], function($) {
 			})
 		}
 
+		table.bind('sortEnd', function (e, table) {
+			var sort = table.config.sortList[0],
+				index = $(table).data('reorder');
+
+			if (sort[0] === index && sort[1] === 0) {
+				$(table).find('tbody .noreorder').removeClass('noreorder').addClass('reorder-handle');
+			} else {
+				$(table).find('tbody .reorder-handle').removeClass('reorder-handle').addClass('noreorder');
+			}
+		});
+
 		// enable sortable rows
 		// --------------------
 		if (table.hasClass('table-sortable')) {
@@ -96,7 +112,7 @@ define(['jquery'], function($) {
 					tableClass: 'table-sortable',
 					cssAsc: 'table-header-asc',
 					cssDesc: 'table-header-desc',
-					cssIcon: 'icon-chevron-down pull-right'
+					cssIcon: 'fa fa-chevron-down pull-right'
 				});
 			});
 		}
@@ -108,12 +124,15 @@ define(['jquery'], function($) {
 				table.tableDnD({
 					onDrop: function (table, row) {
 						$.ajax({
-							url: $(table).data('reorder-api'),
-							type: 'POST',
-							data: { id: $(row).data('id'), ref: $(row).prev().data('id') || 0 }
+							url: $(table).data('reorder-api') + '/' + $(row).data('id') + ':' + $(row).next().data('id')
 						});
 					}
 				});
+
+				if (table.hasClass('table-sortable'))
+				{
+					table.trigger('sorton', [[[table.data('reorder'), 0]], null]);
+				}
 			});
 		}
 	};

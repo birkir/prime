@@ -96,7 +96,7 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 			    h = Math.floor(240 * (w / 243));
 
 			items.each(function () {
-				$(this).parents('.grid-group-item').css({ width: w, height: h });
+				$(this).parents('.grid-group-item').css({ width: w, height: h }).children('span').children('span').css({ width: w })
 				$(this).css({ maxWidth: w - 20, maxHeight: h - 20 });
 				this.top = $(this).offset().top;
 			});
@@ -178,6 +178,7 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 		element.parent().children().removeClass('active');
 		element.addClass('active')
 
+		$.cookie.json = false;
 		$.cookie('prime-viewmode', mode);
 
 		$('.grid-group')[mode === 'list' ? 'addClass' : 'removeClass']('hidden')

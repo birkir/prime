@@ -69,13 +69,22 @@ class Prime_Module_Navigation extends Prime_Module {
 		];
 	}
 
+	/**
+	 * Generate tree for navigation module
+	 *
+	 * @param  Database_Result Pages to loop through
+	 * @param  string          URI to append to
+	 * @return array
+	 */
 	public function generate_tree($pages = NULL, $slug = NULL)
 	{
+		// only visible pagse
 		if ( ! $this->option('show_invisible', FALSE))
 		{
 			$pages->where('visible', '=', 1);
 		}
 
+		// setup function variables
 		$active_in_tree = FALSE;
 		$expanded = (bool) $this->option('expanded', FALSE);
 		$from_level = intval($this->option('from_level', 1));
@@ -83,7 +92,6 @@ class Prime_Module_Navigation extends Prime_Module {
 
 		// set flags
 		$pages->where('disabled', '=', 0);
-		$pages->where('deleted', '=', 0);
 
 		// process query
 		$pages = $pages->find_all();
@@ -150,6 +158,7 @@ class Prime_Module_Navigation extends Prime_Module {
 				$this->from_node = $node['pages'];
 			}
 
+			// push to tree array
 			$tree[] = $node;
 		}
 
@@ -157,21 +166,31 @@ class Prime_Module_Navigation extends Prime_Module {
 		return $tree;
 	}
 
+	/**
+	 * Get active nodes in tree
+	 *
+	 * @return array
+	 */
 	public function actives()
 	{
+		// set selected page
 		$selected = intval($this->option('selected_page', 0));
 
+		// get page from Prime class or find selected page
 		$page = $selected > 0 ? ORM::factory('Prime_Page', $selected) : Prime::$selected_page;
 
+		// setup return array with current page as first item
 		$ret = array(intval($page->id));
 
+		// while page has parent page
 		while ($page->loaded() AND intval($page->parent_id) !== 0)
 		{
+			// find parent page
 			$page = ORM::factory('Prime_Page')
 			->where('id', '=', $page->parent_id)
-			->where('deleted', '=', 0)
 			->find();
 
+			// push to return array
 			$ret[] = intval($page->id);
 		}
 

@@ -708,6 +708,11 @@ var prime = (function () {
 			icon = node.children('span').children('i'),
 			input = $('<input/>', { type: 'text', value: text}).css({ display: 'inline', width: '75%', border: 'none', marginLeft: '4px', padding: 0 }).data('changed', false);
 
+		success = success || function (response) {
+			var active = $('.panel-left .active').children('a').data('id')
+			$('.panel-left').html(response).find('[data-id='+active+']').addClass('active');
+		};
+
 		// add icon and input
 		node.children('span').empty().append(icon).append(input);
 
@@ -722,11 +727,13 @@ var prime = (function () {
 				var newText = $(this).val().trim();
 				if (newText !== text) {
 					if (element.href) {
-						$.ajax({ url: element.href, type: 'POST', data: { name: newText }});
+						$.ajax({ url: element.href, type: 'POST', data: { name: newText }})
+						.done(success);
+					} else {
+						success(newText);
 					}
 					text = newText;
 				}
-				if (success !== undefined) success(text);
 				$(this).data('changed', true).trigger('blur');
 			}
 			if (e.keyCode === 27) {

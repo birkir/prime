@@ -7,8 +7,11 @@
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Page extends ORM {
+class Model_Prime_Page extends Model_Prime {
 
+	/**
+	 * @var array Has many relationship
+	 */
 	protected $_has_many = [
 		'pages' => [
 			'model'       => 'Prime_Page',
@@ -22,6 +25,12 @@ class Model_Prime_Page extends ORM {
 		]
 	];
 
+	/**
+	 * Get selected page by URI
+	 *
+	 * @param  string Location URI
+	 * @return ORM
+	 */
 	public function selected($path = NULL)
 	{
 		// default page
@@ -45,7 +54,6 @@ class Model_Prime_Page extends ORM {
 
 			// build page orm
 			$page = ORM::factory('Prime_Page')
-			->base()
 			->where('slug', '=', $slug)
 			->where('parent_id', ! isset($page) ? 'IS' : '=', ! isset($page) ? NULL : $page->id)
 			->find();
@@ -82,35 +90,46 @@ class Model_Prime_Page extends ORM {
 	}
 
 	/**
-	 * Get page absolute uri
+	 * Get the absolute page uri
 	 *
-	 * @param ORM Page object
+	 * @param  ORM    Page object
 	 * @return string
 	 */
 	public function uri()
 	{
+		// load page
 		$page = $this;
 
+		// set first slug
 		$uri = [$page->slug];
 
+		// only allow loaded pages
 		if ( ! $page->loaded())
 			return;
 
 		while ($page->loaded())
 		{
+			// find parent page
 			$page = ORM::factory('Prime_Page')
-			->where('deleted', '=', 0)
 			->where('id', '=', $page->parent_id)
 			->find();
 
 			$uri[] = $page->slug;
 		}
 
+		// reverse the array
 		$uri = array_reverse($uri);
 
+		// join together
 		return implode('/', $uri);
 	}
 
+	/**
+	 * Generate page slug
+	 *
+	 * @param  string Pagename
+	 * @return string
+	 */
 	public function slug($str = NULL)
 	{
 		$str = UTF8::strtolower($str);
@@ -124,68 +143,38 @@ class Model_Prime_Page extends ORM {
 		return $str;
 	}
 
+	/**
+	 * Overwrite page save with validation
+	 *
+	 * @param  Validation Validation object
+	 * @return ORM
+	 */
 	public function save(Validation $validation = NULL)
 	{
-		// create position if non existent
-		if ( ! $this->loaded() AND $this->position !== NULL)
-		{
-			$this->position = DB::select([DB::expr('MAX(`position`)'), 'pos'])
-			->from('prime_pages')
-			->where('parent_id', $this->parent_id === NULL ? 'IS' : '=', $this->parent_id)
-			->limit(1)
-			->execute()
-			->get('pos') + 1;
-		}
+		// old position and parent_id
+		$old = $this->original_values();
 
-		if ((bool) $this->slug_auto === TRUE)
+		// generate slug
+		if ((bool) $this->slug_auto === TRUE AND Arr::get($old, 'name') !== $this->name)
 		{
 			$this->slug = $this->slug($this->name);
 			$count = 0;
+			$not_available = TRUE;
 
-			$na = (bool) DB::select([DB::expr('COUNT(*)'), 'sum'])->from('prime_pages')
-			->where('parent_id', $this->parent_id === NULL ? 'IS' : '=', $this->parent_id)
-			->where('id', '!=', $this->id)
-			->where('slug', '=', $this->slug)
-			->execute()
-			->get('sum', 0);
-
-			while ($na)
+			while ($not_available)
 			{
-				$this->slug .= '-'.++$count;
-
-				$na = (bool) DB::select([DB::expr('COUNT(*)'), 'sum'])->from('prime_pages')
+				$not_available = (bool) DB::select([DB::expr('COUNT(*)'), 'sum'])->from('prime_pages')
 				->where('parent_id', $this->parent_id === NULL ? 'IS' : '=', $this->parent_id)
 				->where('id', '!=', $this->id)
-				->where('slug', '=', $this->slug)
+				->where('slug', '=', $this->slug.($count > 0 ? '-'.$count : NULL))
 				->execute()
 				->get('sum', 0);
+
+				$count++;
 			}
 		}
 
 		return parent::save($validation);
-	}
-
-	public function base()
-	{
-		// only not deleted pages
-		$this->where('deleted', '=', 0);
-
-		// order by item position ascending
-		$this->order_by('position', 'ASC');
-
-		// return ORM for further process
-		return $this;
-	}
-
-	/**
-	 * Recursivly find sub pages of loaded record
-	 * @return ORM
-	 */
-	public function recursive()
-	{
-		return ORM::factory('Prime_Page')
-		->base()
-		->where('parent_id', $this->loaded() ? '=' : 'IS', $this->loaded() ? $this->id : NULL);
 	}
 
 } // End Prime Page

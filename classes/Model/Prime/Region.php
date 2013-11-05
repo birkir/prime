@@ -7,7 +7,12 @@
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Region extends ORM {
+class Model_Prime_Region extends Model_Prime {
+
+	/**
+	 * @var boolean Add sortable with specific keys
+	 */
+	protected $_sortable = ['prime_page_id', 'name'];
 
 	/**
 	 * Belongs to relationships
@@ -20,6 +25,11 @@ class Model_Prime_Region extends ORM {
 		]
 	];
 
+	/**
+	 * Get region module
+	 *
+	 * @return Prime_Module_?
+	 */
 	public function module()
 	{
 		if ( ! $this->loaded())
