@@ -34,7 +34,7 @@ class Model_Prime extends ORM {
 	 */
 	public function save(Validation $validation = NULL)
 	{
-		if ($this->_updatable)
+		if ($this->_updatable AND isset(Prime::$user->id))
 		{
 			// set current user as updating user
 			$this->updated_by = Prime::$user->id;
