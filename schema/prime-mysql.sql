@@ -32,6 +32,33 @@ CREATE TABLE IF NOT EXISTS `prime_fields` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
+--
+--
+
+CREATE TABLE IF NOT EXISTS `prime_files` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `ext` varchar(16) DEFAULT NULL,
+  `mime` varchar(32) DEFAULT NULL,
+  `size` bigint(20) unsigned DEFAULT NULL,
+  `width` int(6) DEFAULT NULL,
+  `height` int(6) DEFAULT NULL,
+  `bits` varchar(16) DEFAULT NULL,
+  `channels` varchar(16) DEFAULT NULL,
+  `filename` varchar(255) NOT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` int(11) DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `updated_by` (`updated_by`),
+  KEY `deleted_at` (`deleted_at`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+--
 -- Table structure and data for table `prime_modules`
 --
 
@@ -103,6 +130,7 @@ CREATE TABLE IF NOT EXISTS `prime_module_fieldset_items` (
 CREATE TABLE IF NOT EXISTS `prime_pages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) unsigned DEFAULT NULL,
+  `language` VARCHAR(16) NOT NULL DEFAULT 'en-us',
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `slug_auto` tinyint(1) unsigned NOT NULL DEFAULT '1',
