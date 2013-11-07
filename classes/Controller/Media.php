@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Media Controller
  *
@@ -9,14 +9,19 @@
  */
 class Controller_Media extends Controller {
 
+	/**
+	 * @var string Cache store directory
+	 */
 	private $_cache_dir;
 
+	/**
+	 * @var boolean Is media file cached?
+	 */
 	private $cached;
 
 	/**
 	 * Serve media files
 	 *
-	 * @param string filename
 	 * @return void
 	 */
 	public function action_serve()
@@ -58,11 +63,14 @@ class Controller_Media extends Controller {
 
 	/**
 	 * Gzip contents
+	 *
+	 * @return void
 	 */
 	public function gzip()
 	{
 		$this->cache('.gz', function ($recompile, $read, $write, $response)
 		{
+			// just plain text
 			if ( ! Request::current()->accept_encoding('gzip'))
 				return $read;
 
@@ -78,6 +86,7 @@ class Controller_Media extends Controller {
 				gzclose($gf);
 			}
 
+			// return new media filepath
 			return $write;
 		});
 	}
@@ -85,8 +94,8 @@ class Controller_Media extends Controller {
 	/**
 	 * Cache specific version of file
 	 *
-	 * @param string name
-	 * @param lambda callback function
+	 * @param  string   $name     Cache name
+	 * @param  function $callback Executed with new cache name
 	 * @return void
 	 */
 	public function cache($name, $callback)
@@ -112,7 +121,7 @@ class Controller_Media extends Controller {
 				chmod($this->_cache_dir, 0777);
 			}
 
-			/// set cached filepath
+			// set cached filepath
 			$this->cached = $this->_cache_dir.'/'.sha1($this->file);
 		}
 

@@ -40,4 +40,5 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.extraAllowedContent = '*[id](*)';
     config.contentsCss = '/media/Prime/css/bootstrap.css';
+    config.filebrowserBrowseUrl = '/Prime/File/CKEditor';
 };

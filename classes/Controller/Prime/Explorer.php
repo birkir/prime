@@ -11,135 +11,6 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 
 	public $json = NULL;
 
-	protected $_themes = [
-		'chrome' => 'Chrome',
-		'clouds' => 'Clouds',
-		'crimson_editor' => 'Crimson Editor',
-		'dawn' => 'Dawn',
-		'dreamweaver' => 'Dreamweaver',
-		'eclipse' => 'Eclipse',
-		'github' => 'GitHub',
-		'solarized_light' => 'Solarized Light',
-		'textmate' => 'TextMate',
-		'tomorrow' => 'Tomorrow',
-		'xcode' => 'XCode',
-		'ambiance' => 'Ambiance',
-		'chaos' => 'Chaos',
-		'clouds_midnight' => 'Clouds Midnight',
-		'cobalt' => 'Cobalt',
-		'facebook' => 'Facebook',
-		'idle_fingers' => 'idleFingers',
-		'kr_theme' => 'krTheme',
-		'merbivore' => 'Merbivore',
-		'merbivore_soft' => 'Merbivore Soft',
-		'mono_industrial' => 'Mono Industrial',
-		'monokai' => 'Monokai',
-		'pastel_on_dark' => 'Pastel on dark',
-		'solarized_dark' => 'Solarized Dark',
-		'terminal' => 'Terminal',
-		'tomorrow_night' => 'Tomorrow Night',
-		'tomorrow_night_blue' => 'Tomorrow Night Blue',
-		'tomorrow_night_bright' => 'Tomorrow Night Bright',
-		'tomorrow_night_eighties' => 'Tomorrow Night 80s',
-		'twilight' => 'Twilight',
-		'vibrant_ink' => 'Vibrant Ink'
-	];
-
-	protected $_modes = [
-		'abap' => 'ABAP',
-		'ada' => 'ADA',
-		'actionscript' => 'ActionScript',
-		'asciidoc' => 'AsciiDoc',
-		'assembly_x86' => 'Assembly_x86',
-		'autohotkey' => 'AutoHotKey',
-		'batchfile' => 'BatchFile',
-		'c9search' => 'C9Search',
-		'c_cpp' => 'C/C++',
-		'clojure' => 'Clojure',
-		'cobol' => 'Cobol',
-		'coffee' => 'CoffeeScript',
-		'coldfusion' => 'ColdFusion',
-		'csharp' => 'C#',
-		'css' => 'CSS',
-		'curly' => 'Curly',
-		'd' => 'D',
-		'dart' => 'Dart',
-		'diff' => 'Diff',
-		'dot' => 'Dot',
-		'erlang' => 'Erlang',
-		'ejs' => 'EJS',
-		'forth' => 'Forth',
-		'ftl' => 'FreeMarker',
-		'glsl' => 'Glsl',
-		'golang' => 'Go',
-		'groovy' => 'Groovy',
-		'haml' => 'HAML',
-		'haskell' => 'Haskell',
-		'haxe' => 'haXe',
-		'html' => 'HTML',
-		'ini' => 'Ini',
-		'jade' => 'Jade',
-		'java' => 'Java',
-		'javascript' => 'JavaScript',
-		'json' => 'JSON',
-		'jsoniq' => 'JSONiq',
-		'jsp' => 'JSP',
-		'jsx' => 'JSX',
-		'julia' => 'Julia',
-		'latex' => 'LaTeX',
-		'less' => 'LESS',
-		'liquid' => 'Liquid',
-		'lisp' => 'Lisp',
-		'livescript' => 'LiveScript',
-		'logiql' => 'LogiQL',
-		'lsl' => 'LSL',
-		'lua' => 'Lua',
-		'luapage' => 'LuaPage',
-		'lucene' => 'Lucene',
-		'makefile' => 'Makefile',
-		'matlab' => 'MATLAB',
-		'markdown' => 'Markdown',
-		'mysql' => 'MySQL',
-		'mushcode' => 'MUSHCode',
-		'objectivec' => 'Objective',
-		'ocaml' => 'OCaml',
-		'pascal' => 'Pascal',
-		'perl' => 'Perl',
-		'pgsql' => 'pgSQL',
-		'php' => 'PHP',
-		'powershell' => 'Powershell',
-		'prolog' => 'Prolog',
-		'properties' => 'Properties',
-		'python' => 'Python',
-		'r' => 'R',
-		'rdoc' => 'RDoc',
-		'rhtml' => 'RHTML',
-		'ruby' => 'Ruby',
-		'rust' => 'Rust',
-		'sass' => 'SASS',
-		'scad' => 'SCAD',
-		'scala' => 'Scala',
-		'scheme' => 'Scheme',
-		'scss' => 'SCSS',
-		'sh' => 'SH',
-		'snippets' => 'snippets',
-		'sql' => 'SQL',
-		'stylus' => 'Stylus',
-		'svg' => 'SVG',
-		'tcl' => 'Tcl',
-		'tex' => 'Tex',
-		'text' => 'Text',
-		'textile' => 'Textile',
-		'toml' => 'Toml',
-		'twig' => 'Twig',
-		'typescript' => 'Typescript',
-		'vbscript' => 'VBScript',
-		'velocity' => 'Velocity',
-		'xml' => 'XML',
-		'xquery' => 'XQuery',
-		'yaml' => 'YAML'
-	];
-
 	/**
 	 * Default action displays the tree on left and
 	 * upload target dropzone in view.
@@ -159,8 +30,6 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		// no cache or logs please
 		unset($files['cache']);
 		unset($files['logs']);
-
-		// unset($files['config']);
 	}
 
 	public function action_index()
@@ -188,16 +57,8 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		// attach absolutepath
 		$fileinfo['file'] = Kohana::find_file($fileinfo['dirname'], $fileinfo['filename'], $fileinfo['extension'], TRUE);
 
-		// config files
-		if (substr($fileinfo['dirname'], 0, 6) === 'config' OR substr($fileinfo['dirname'], 0, 4) === 'i18n')
-		{
-			$this->arritor($fileinfo);
-		}
-		else
-		{
-			// lets ace this
-			$this->ace($fileinfo);
-		}
+		// lets ace this
+		$this->ace($fileinfo);
 	}
 
 	/**
@@ -243,87 +104,6 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		}
 	}
 
-	public function action_save_arritor()
-	{
-		$post = $this->request->post();
-		$this->json = ['status' => FALSE, 'message' => 'Failed saving data'];
-
-		try
-		{
-			$data = array();
-			$config = array();
-
-			// make temporary lookup array
-			foreach ($post['table'] as $key => $val)
-			{
-				if ( ! is_array($val))
-					continue;
-
-				if (isset($val['key']) AND isset($val['val']))
-				{
-					$data[$val['key']] = $val['val'];
-					continue;
-				}
-
-				foreach ($val as $k => $v)
-				{
-					if (isset($v['key']) AND isset($v['val']) AND substr($v['key'], -1) !== '.')
-					{
-						$data[$v['key']] = $v['val'];
-					}
-				}
-			}
-
-			// hackathon!
-			foreach ($data as $keys => $value)
-			{
-				$keys = (substr($this->request->param('id'), 0, 4) === 'i18n' ? array($keys) : explode('.', $keys));
-
-				if (sizeof($keys) > 0 AND ! isset($config[$keys[0]]))
-					$config[$keys[0]] = array();
-				if (sizeof($keys) === 1)
-					$config[$keys[0]] = $value;
-				if (sizeof($keys) > 1 AND ! isset($config[$keys[0]][$keys[1]]))
-					$config[$keys[0]][$keys[1]] = array();
-				if (sizeof($keys) === 2)
-					$config[$keys[0]][$keys[1]] = $value;
-				if (sizeof($keys) > 2 AND ! isset($config[$keys[0]][$keys[1]][$keys[2]]))
-					$config[$keys[0]][$keys[1]][$keys[2]] = array();
-				if (sizeof($keys) === 3)
-					$config[$keys[0]][$keys[1]][$keys[2]] = $value;
-				if (sizeof($keys) > 3 AND ! isset($config[$keys[0]][$keys[1]][$keys[2]][$keys[3]]))
-					$config[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = array();
-				if (sizeof($keys) === 4)
-					$config[$keys[0]][$keys[1]][$keys[2]][$keys[3]] = $value;
-			}
-
-			$content = Kohana::FILE_SECURITY.PHP_EOL.PHP_EOL.'return '.var_export($config, TRUE).';';
-			$content = str_replace('array (', 'array(', $content);
-			$content = str_replace('  ', "\t", $content);
-			$content = preg_replace("#\n\t+array#", 'array', $content);
-			$content = preg_replace("#,(\s+)\)#", '$1)', $content);
-		}
-		catch (ErrorException $e)
-		{
-			$this->json['message'] = 'Invalid data array.';
-			$this->json['exception'] = $e->getMessage();
-			return;
-		}
-
-		if ( ! empty($content))
-		{
-			// write to file
-			$fh = fopen(APPPATH.$this->request->param('id'), 'w');
-			fwrite($fh, $content);
-			fclose($fh);
-
-			$this->json = [
-				'status'  => TRUE,
-				'message' => 'Saved data'
-			];
-		}
-	}
-
 	public function ace(array $file)
 	{
 		$this->view = View::factory('Prime/Explorer/Ace/Ace')
@@ -333,8 +113,8 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		->bind('theme', $theme)
 		->bind('emmet', $emmet)
 		->set('id', $this->request->param('id'))
-		->set('modes', $this->_modes)
-		->set('themes', $this->_themes);
+		->set('modes', Prime::$config->modes)
+		->set('themes', Prime::$config->themes);
 
 		$file['file'] = end($file['file']);
 
@@ -364,31 +144,6 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 
 		// set content
 		$content = file_get_contents($file['file']);
-	}
-
-	/**
-	 * Arritor interface
-	 *
-	 * @param string $file
-	 * @return void
-	 */
-	public function arritor($file)
-	{
-		$table = array();
-
-		foreach ($file['file'] as $_file)
-		{
-			// Merge the array strings into the table
-			$table = array_merge($table, Kohana::load($_file));
-		}
-
-		$this->view = View::factory('Prime/Explorer/Arritor/Arritor')
-		->bind('filename', $filename)
-		->set('uri', $this->request->param('id'))
-		->set('table', $table);
-
-		// set filename
-		$filename = $file['basename'];
 	}
 
 	/**

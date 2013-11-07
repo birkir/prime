@@ -43,6 +43,30 @@ class Task_Search extends Minion_Task
 		}
 	}
 
+	public function search()
+	{
+		$index = Zend_Search_Lucene::open(APPPATH.'cache/lucene');
+
+		$query = Zend_Search_Lucene_Search_QueryParser::parse('foo');
+		$hits = $index->find($query);
+
+		$found = [];
+
+		foreach ($hits as $hit)
+		{
+			if (in_array($hit->page, $found))
+				continue;
+
+			$found[] = $hit->page;
+
+			$page = ORM::factory('Prime_Page', $hit->page);
+
+			echo ' - '.$page->name.' ('.$hit->score.')<br>';
+			echo $page->uri().'<br>';
+
+		}
+	}
+
 	/**
 	 * Execute task
 	 *

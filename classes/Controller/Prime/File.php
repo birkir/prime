@@ -1,5 +1,12 @@
-<?php
-
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Prime File Controller
+ *
+ * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
+ * @package Prime
+ * @category Controller
+ * @copyright (c) 2013 SOLID Productions
+ */
 class Controller_Prime_File extends Controller_Prime_Template {
 
 	/**
