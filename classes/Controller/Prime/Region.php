@@ -143,8 +143,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 			->execute();
 
 			// set requested response body
-			$this->response->body(gzdecode($response->body()));
+			$this->response->body($response->body());
 		}
 	}
-
-}
+} // End Controller Prime Region 

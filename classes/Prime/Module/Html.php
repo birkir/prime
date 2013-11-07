@@ -19,7 +19,7 @@ class Prime_Module_Html extends Prime_Module {
 	{
 		$attrs = parent::attrs($name);
 
-		if ($name === 'content')
+		if ($name === 'content' AND $this->option('editor_type', 'plaintext') === 'wysiwyg')
 		{
 			$attrs['contenteditable'] = 'true';
 		}
@@ -39,8 +39,11 @@ class Prime_Module_Html extends Prime_Module {
 				[
 					'name'    => 'content',
 					'caption' => 'Content',
-					'field'   => 'Prime_Field_String',
+					'field'   => 'Prime_Field_Text',
 					'default' => '',
+					'options' => [
+						'hidden' => TRUE
+					]
 				],
 				[
 					'name'    => 'editor_type',

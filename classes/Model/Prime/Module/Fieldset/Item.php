@@ -10,11 +10,6 @@
 class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 
 	/**
-	 * @var array Fields container
-	 */
-	protected $_fields;
-
-	/**
 	 * @var boolean Add sortable with specific keys
 	 */
 	protected $_sortable = ['prime_module_fieldset_id'];
@@ -29,6 +24,16 @@ class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 			'foreign_key' => 'prime_module_fieldset_id'
 		]
 	];
+
+	public function get($column)
+	{
+		if (array_key_exists($column, Arr::get($this->_object, 'data', [])))
+		{
+			return $this->_object['data'][$column];
+		}
+
+		return parent::get($column);
+	}
 
 	public function data_to_columns($columns = [])
 	{

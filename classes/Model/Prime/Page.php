@@ -40,6 +40,10 @@ class Model_Prime_Page extends Model_Prime {
 			->find();
 		}
 
+		// inheritance
+		$template = 'default';
+		$language = 'en-us';
+
 		// split url path
 		$uri = explode('/', $path);
 
@@ -57,6 +61,12 @@ class Model_Prime_Page extends Model_Prime {
 			->where('slug', '=', $slug)
 			->where('parent_id', ! isset($page) ? 'IS' : '=', ! isset($page) ? NULL : $page->id)
 			->find();
+
+			if ($page->template !== NULL)
+				$template = $page->template;
+
+			if ($page->language !== NULL)
+				$language = $page->language;
 
 			if ( ! $page->loaded())
 				break;
@@ -84,6 +94,15 @@ class Model_Prime_Page extends Model_Prime {
 					return $last;
 				}
 			}
+		}
+
+		if ($page->loaded())
+		{
+			if ($page->template === NULL)
+				$page->template = $template;
+
+			if ($page->language === NULL)
+				$page->language = $language;
 		}
 
 		return $page;

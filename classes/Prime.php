@@ -58,7 +58,7 @@ class Prime {
 	/**
 	 * @var  boolean   Disable cache flag
 	 */
-	public static $nocache = FALSE;
+	public static $cache = TRUE;
 
 	/**
 	 * Singleton instance
@@ -94,7 +94,31 @@ class Prime {
 	{
 		if (intval($request->query('pageid')) > 0)
 		{
-			Prime::$selected_page = ORM::factory('Prime_Page', $request->query('pageid'));
+			$page = ORM::factory('Prime_Page', $request->query('pageid'));
+
+			// inherited values
+			if ($page->loaded())
+			{
+				$parent = $page;
+
+				while ($page->template === NULL OR $page->language === NULL)
+				{
+					$parent = ORM::factory('Prime_Page', $parent->parent_id);
+
+					if ($parent->template !== NULL AND $page->template === NULL)
+						$page->template = $parent->template;
+
+					if ($parent->language !== NULL AND $page->language === NULL)
+						$page->language = $parent->language;
+
+					if ($parent->parent_id === NULL)
+						break;
+				}
+			}
+
+			Prime::$selected_page = $page;
+
+			return Prime::$selected_page;
 		}
 		else
 		{

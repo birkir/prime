@@ -14,6 +14,39 @@
 // website requirements and design properly.
 
 CKEDITOR.stylesSet.add( 'default', [
+
+	{ name: 'Button',		element: 'button', attributes: { class: 'btn btn-default' } },
+	{ name: 'Primary',		element: 'button', attributes: { class: 'btn btn-primary' } },
+	{ name: 'Danger',		element: 'button', attributes: { class: 'btn btn-danger'  } },
+	{ name: 'Warning',		element: 'button', attributes: { class: 'btn btn-warning'  } },
+	{ name: 'Success',		element: 'button', attributes: { class: 'btn btn-success'  } },
+	{ name: 'Info',	 		element: 'button', attributes: { class: 'btn btn-info'  } },
+
+	{ name: 'Muted',		element: 'span',   attributes: { class: 'text-muted' } },
+	{ name: 'Primary',		element: 'span',   attributes: { class: 'text-primary' } },
+	{ name: 'Danger',		element: 'span',   attributes: { class: 'text-danger' } },
+	{ name: 'Warning',		element: 'span',   attributes: { class: 'text-warning' } },
+	{ name: 'Success',		element: 'span',   attributes: { class: 'text-success' } },
+	{ name: 'Info',			element: 'span',   attributes: { class: 'text-info' } },
+
+	{ name: 'Label',		element: 'span',   attributes: { class: 'label label-default' } },
+	{ name: 'Primary',		element: 'span',   attributes: { class: 'label label-primary' } },
+	{ name: 'Danger',		element: 'span',   attributes: { class: 'label label-danger' } },
+	{ name: 'Warning',		element: 'span',   attributes: { class: 'label label-warning' } },
+	{ name: 'Success',		element: 'span',   attributes: { class: 'label label-success' } },
+	{ name: 'Info',			element: 'span',   attributes: { class: 'label label-info' } },
+
+	{ name: 'Badge',		element: 'span',   attributes: { class: 'badge' } },
+
+	{ name: 'Well',	 		element: 'div', attributes: { class: 'well'  } },
+
+	{ name: 'Success',	 	element: 'div', attributes: { class: 'alert alert-success'  } },
+	{ name: 'Danger',	 	element: 'div', attributes: { class: 'alert alert-danger'  } },
+	{ name: 'Warning',	 	element: 'div', attributes: { class: 'alert alert-warning'  } },
+	{ name: 'Info',	 		element: 'div', attributes: { class: 'alert alert-info'  } },
+
+	{ name: 'Page header',	element: 'div', attributes: { class: 'page-header' } },	
+
 	/* Block Styles */
 
 	// These styles are already available in the "Format" combo ("format" plugin),
@@ -29,7 +62,7 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'Heading 6',		element: 'h6' },
 	{ name: 'Preformatted Text',element: 'pre' },
 	{ name: 'Address',			element: 'address' },
-	*/
+	
 
 	{ name: 'Italic Title',		element: 'h2', styles: { 'font-style': 'italic' } },
 	{ name: 'Subtitle',			element: 'h3', styles: { 'color': '#aaa', 'font-style': 'italic' } },
@@ -55,7 +88,7 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'Strikethrough',	element: 'strike' },
 	{ name: 'Subscript',		element: 'sub' },
 	{ name: 'Superscript',		element: 'sup' },
-	*/
+	
 
 	{ name: 'Marker',			element: 'span', attributes: { 'class': 'marker' } },
 
@@ -77,7 +110,7 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'Language: RTL',	element: 'span', attributes: { 'dir': 'rtl' } },
 	{ name: 'Language: LTR',	element: 'span', attributes: { 'dir': 'ltr' } },
 
-	/* Object Styles */
+	/* Object Styles 
 
 	{
 		name: 'Styled image (left)',
@@ -107,5 +140,6 @@ CKEDITOR.stylesSet.add( 'default', [
 
 	{ name: 'Borderless Table',		element: 'table',	styles: { 'border-style': 'hidden', 'background-color': '#E6E6FA' } },
 	{ name: 'Square Bulleted List',	element: 'ul',		styles: { 'list-style-type': 'square' } }
+	*/
 ]);
 

@@ -90,7 +90,7 @@ define(['jquery', 'jqueryUI'], function($) {
 
 			// set modal dialog width and padding
 			modal.find('.modal-dialog').css({
-				width: 640
+				width: 720
 			});
 
 			if (modal.find('textarea').hasClass('wysiwyg'))
@@ -117,9 +117,9 @@ define(['jquery', 'jqueryUI'], function($) {
 				if (wysiwyg) {
 					var editor = CKEDITOR.dom.element.get(modal.find('textarea')[0]).getEditor(),
 					    editor_data = editor.getData();
-					} else {
-						editor_data = modal.find('textarea').val();
-					}
+				} else {
+					editor_data = modal.find('.ace_editor')[0].env.editor.getValue();
+				}
 				$.ajax({
 					url: '/Prime/Module/Html/Save/' + region,
 					type: 'POST',

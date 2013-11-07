@@ -5,7 +5,7 @@
 
 CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here. For example:
-	config.language = 'is';
+	config.language = 'en';
     config.toolbar = [
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
         { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
@@ -18,6 +18,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
         { name: 'styles', items: [ 'Styles', 'Format' ] }
     ];
+
     // Toolbar groups configuration.
     config.toolbarGroups = [
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
@@ -37,7 +38,6 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.floatSpaceDockedOffsetY = 25;
 
-    config.filebrowserBrowseUrl = '/Prime/File/CKEditor';
-    config.filebrowserUploadUrl = '/Prime/File/Upload';
-
+    config.extraAllowedContent = '*[id](*)';
+    config.contentsCss = '/media/Prime/css/bootstrap.css';
 };

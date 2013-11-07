@@ -40,8 +40,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$file->parent_id = $this->request->param('id');
 		$file->type = 0;
 		$file->name = $this->request->post('name');
-		$file->created_at = DB::expr('NOW()');
-		$file->created_by = $this->user->id;
 		$file->save();
 
 		$view = Request::factory('Prime/File/Tree')->execute();
@@ -280,8 +278,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 				}
 
 				$item->filename = sha1($filename);
-				$item->created_at  = DB::expr('NOW()');
-				$item->created_by  = $this->user->id;
 				$item->save();
 			}
 

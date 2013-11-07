@@ -13,6 +13,7 @@
 				<?php foreach ($fields as $field): ?>
 					<td><?=$field->field->as_text($item);?></td>
 				<?php endforeach; ?>
+
 				<?php if ($page): ?>
 					<td>
 						<?=HTML::anchor($page.'/'.$item->id.URL::query(['page' => NULL]), __('more details')); ?>

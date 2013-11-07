@@ -16,16 +16,31 @@ class Controller_Prime_Frontend extends Controller {
 	 */
 	public function action_process()
 	{
+		$auth = Auth::instance();
+
 		// get uri
 		$uri = $this->request->param('query');
 
-		// set nocache flag
-		Prime::$nocache = (
+		// set cache engine
+		$cache = isset(Cache::$instances['apc']) ? Cache::instance('apc') : NULL;
+
+		// cache key
+		Prime::$cache = 'prime://'.$uri;
+
+		// make sure we dont cache requests not needing it
+		Prime::$cache = (
 			   isset($_GET['nocache'])
-			OR $this->request->query('mode') === 'design'
+			OR $cache === NULL
+			OR $auth->logged_in()
 			OR $this->request->method() !== HTTP_Request::GET
 			OR Kohana::$environment === Kohana::DEVELOPMENT
-		);
+		) ? FALSE : Prime::$cache;
+
+		// load cached page
+		if (Prime::$cache !== FALSE AND ($html = $cache->get(Prime::$cache, NULL)) !== NULL)
+		{
+			return $this->response->body($html);
+		}
 
 		// get selected page
 		$page = Prime::selected($this->request);
@@ -120,23 +135,24 @@ class Controller_Prime_Frontend extends Controller {
 		View::set_global('page', $page);
 		View::set_global('prime', Prime_Frontend::instance());
 		View::set_global('website', Prime::$config->website);
-		View::set_global('user', Auth::instance()->get_user());
+		View::set_global('user', $auth->get_user());
+
+		// check for cache flag
+		if (Prime::$cache !== FALSE)
+		{
+			$cache->set(Prime::$cache, $this->template->render(), 30);
+		}
 
 		// respond template
 		$this->response->body($this->template->render());
+	}
 
+	public function after()
+	{
 		// force internet explorer to latest version
 		$this->response->headers('x-ua-compatible', 'ie=edge, chrome=1');
 
-		// compress html output if available
-		if ($this->request->accept_encoding('gzip') AND !! $page->gzip)
-		{
-			// set headers
-			$this->response->headers('content-encoding', 'gzip');
-
-			// gzip body
-			$this->response->body(gzencode($this->response->body(), 6));
-		}
+		return parent::after();
 	}
 
 } // End Prime Frontend

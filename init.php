@@ -10,6 +10,7 @@ Cookie::$expiration = Date::WEEK;
 // Initialize prime cms
 Prime::init();
 
+
 // Media file serving router
 Route::set('media', 'media(/<file>)', array('file' => '.+'))
 	->defaults(array(

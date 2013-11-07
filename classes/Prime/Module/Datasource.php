@@ -114,7 +114,7 @@ class Prime_Module_Datasource extends Prime_Module {
 		if (empty($cfg['url']))
 			throw new Kohana_Exception('No url defined');
 
-		if ( ! $response = Kohana::cache('module.datasource:'.$cfg['url'], NULL, (intval($cfg['cache_timeout']) * 60)) OR ! Prime::$nocache)
+		if ( ! $response = Kohana::cache('module.datasource:'.$cfg['url'], NULL, (intval($cfg['cache_timeout']) * 60)))
 		{
 			$response = Request::factory(Arr::get($cfg, 'url'))
 			->execute()
