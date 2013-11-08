@@ -3,83 +3,21 @@ define(['jquery'], function($) {
 	var user = {};
 
 	/**
-	 * Calculate password strength score
-	 *
-	 * @param string String to calculate
-	 * @param object Element to attach visual appearence
-	 * @return void
-	 */
-	user.passwordStrength = function (str, element) {
-
-		// setup variables
-		var score = 0,
-		map = [
-			{ score: 1, regex: /[a-z]/ },
-			{ score: 3, regex: /[A-Z]/ },
-			{ score: 3, regex: /\d+/ },
-			{ score: 5, regex: /(.*[0-9].*[0-9].*[0-9])/ },
-			{ score: 3, regex: /.[!,@,#,$,%,\^,&,*,?,_,~]/ },
-			{ score: 5, regex: /(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/ },
-			{ score: 2, regex: /([a-z].*[A-Z])|([A-Z].*[a-z])/ }
-		];
-
-		// length check
-		score += Math.min(Math.pow(str.length, 1.25), 28);
-
-		// loop through regexes and add to score
-		for (var i = 0; i < map.length; i++) {
-			if (str.match(map[i].regex)) {
-				score += map[i].score;
-			}
-		}
-
-		// get a percentage of one hundred
-		score = (score * 2) / 100;
-
-		// when some password is entered
-		if (str.length > 0) {
-
-			// create progress bar if not exist
-			if ( ! element.progressBar) {
-				element.progressBar = $('<div/>', { class: 'progress password-strength' }).append($('<div/>', { class: 'progress-bar' }));
-				$(element).parent().prepend(element.progressBar);
-			}
-
-			// get bar
-			var bar = element.progressBar.find('.progress-bar');
-
-			// set bar width
-			bar.css({ width: score * 100 + '%' });
-
-			// set color
-			if (score < 0.26) bar.attr('class', 'progress-bar progress-bar-danger');
-			else if (score < 0.50) bar.attr('class', 'progress-bar progress-bar-warning');
-			else bar.attr('class', 'progress-bar progress-bar-success');
-		}
-
-		// else remove progress bar
-		else if (element.progressBar) {
-			element.progressBar.remove();
-			element.progressBar = null;
-		}
-	};
-
-	/**
 	 * Create new user modal window
 	 *
 	 * @return boolean
 	 */
-	user.create = function () {
+	user.create = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
-			cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' }),
+		var save = $('<button/>', { class: 'btn btn-primary', text: $(element).data('save') }),
+			cancel = $('<button/>', { class: 'btn btn-default', text: $(element).data('cancel'), 'data-dismiss': 'modal' }),
 			form;
 
 		// create dialog
 		var dialog = prime.dialog({
-			title: 'New user',
-			remote: '/Prime/User/Create',
+			title: $(element).data('title'),
+			remote: element.href,
 			buttons: [save, cancel]
 		},
 
@@ -100,7 +38,7 @@ define(['jquery'], function($) {
 				confirm[value.length > 0 ? 'addClass' : 'removeClass']('in');
 
 				// set password strength
-				user.passwordStrength(value, this);
+				prime.passwordStrength(value, this);
 			});
 
 			// validate and handle form submit
@@ -153,7 +91,6 @@ define(['jquery'], function($) {
 		a[0].context = $();
 
 		prime.rename({ href: null }, function (text) {
-			console.log(text);
 			$.ajax({
 				url: item.href,
 				type: 'POST',
@@ -246,7 +183,7 @@ define(['jquery'], function($) {
 	 *
 	 * @return boolean
 	 */
-	user.remove = function (element, role) {
+	user.delete = function (element, role) {
 
 		// set where
 		role = role || false;
@@ -270,6 +207,27 @@ define(['jquery'], function($) {
 		});
 
 		return false;
+	};
+
+	/** 
+	 * Rename role in tree
+	 *
+	 * @return boolean
+	 */
+	user.rename = function (element) {
+		return prime.rename(element, function (response, oldText, newText, node) {
+			try {
+				var data = JSON.parse(response);
+				if (data.status === false) {
+					prime.dialog({
+						alert: true,
+						title: 'Error',
+						body: data.message
+					});
+					node.children('span').contents().last()[0].textContent = ' ' + oldText;
+				}
+			} catch (error) {}
+		});
 	};
 
 	return user;

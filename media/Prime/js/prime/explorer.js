@@ -73,7 +73,7 @@ define(['jquery', 'ace', 'emmet', 'aceEmmet'], function($, _ace, _emmet, Emmet) 
 					prime.dialog({
 						alert: true,
 						title: 'Error',
-						body: 'There was an error while saving this file.<br><br><strong>Reason</strong><br>' + response.data
+						body: 'There was an error while saving this file.<br><br><strong>Reason</strong><br>' + response.message
 					});
 				}
 			});

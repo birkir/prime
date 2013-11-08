@@ -9,6 +9,9 @@
  */
 class Controller_Prime_Explorer extends Controller_Prime_Template {
 
+	/**
+	 * @var array JSON Response
+	 */
 	public $json = NULL;
 
 	/**
@@ -19,23 +22,25 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 	 */
 	public function action_tree()
 	{
-		// setup view
+		// Setup view
 		$this->view = View::factory('Prime/Explorer/Tree')
 		->bind('files', $files)
 		->set('open', json_decode(Arr::get($_COOKIE, 'tree-explorer', '{}'), TRUE));
 
-		// get list of files in application directory
+		// Get list of files in application directory
 		$files = Prime::list_files(NULL, [APPPATH]);
 
-		// no cache or logs please
+		// No cache or logs files please
 		unset($files['cache']);
 		unset($files['logs']);
 	}
 
-	public function action_index()
-	{
-		$this->view = 'Please select file';
-	}
+	/**
+	 * Default page
+	 *
+	 * @return void
+	 */
+	public function action_index() {}
 
 	/**
 	 * Edit action will choose which type of editor will be used.
@@ -44,20 +49,22 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 	 */
 	public function action_file()
 	{
-		// get file
+		// Get file
 		$file = $this->request->param('id');
 
-		// just sanity check
 		if ( ! file_exists(APPPATH.$file))
+		{
+			// Could not find file
 			throw new HTTP_Exception('Could not find file');
+		}
 
-		// export file info
+		// Export file info
 		$fileinfo = pathinfo($file);
 
-		// attach absolutepath
+		// Set file absolute path
 		$fileinfo['file'] = Kohana::find_file($fileinfo['dirname'], $fileinfo['filename'], $fileinfo['extension'], TRUE);
 
-		// lets ace this
+		// Show ace editor
 		$this->ace($fileinfo);
 	}
 
@@ -68,39 +75,42 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 	 */
 	public function action_save()
 	{
+		// Set JSON Response
 		$this->json = [
-			'status' => FALSE,
-			'data'   => __('Unknown error')
+			'status'  => FALSE,
+			'message' => __('Unknown error')
 		];
 
-		// get file
+		// Get file
 		$file = $this->request->param('id');
 
-		// sanity check
 		if ( ! file_exists(APPPATH.$file))
+		{
+			// Check if file exists
 			throw new HTTP_Exception('Could not find file');
+		}
 
-		// absolute path
+		// Get absolute path
 		$file = APPPATH.$file;
 
-		// is file is writable
 		if (is_writable($file))
 		{
-			// open file handler
+			// Open file handler
 			$fh = fopen($file, 'w');
 
-			// write request body contents to file
+			// Write request body contents to file
 			fwrite($fh, $this->request->body());
 
-			// close file handler
+			// Close file handler
 			fclose($fh);
 
-			// set status
+			// Set JSON Response status
 			$this->json['status'] = TRUE;
+			$this->json['message'] = __('File was saved.');
 		}
 		else
 		{
-			$this->json['data'] = __('Permission denied.');
+			$this->json['message'] = __('Permission denied.');
 		}
 	}
 

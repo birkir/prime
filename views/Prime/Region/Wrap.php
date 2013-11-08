@@ -15,7 +15,6 @@
 		<?php if (sizeof($items) === 0): ?>
 			<div class="prime-region-item prime-region-empty" data-id="0">
 				<div class="prime-drop prime-drop-above" style="display: none;"><?=__('Dropzone');?></div>
-				<div class="prime-drop prime-drop-below" style="display: none;"><?=__('Dropzone');?></div>
 			</div>
 		<?php endif; ?>
 

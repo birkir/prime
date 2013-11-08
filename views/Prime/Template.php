@@ -60,7 +60,7 @@
 					<?php $avatar = HTML::image('http://www.gravatar.com/avatar/'.md5(strtolower(trim($user->email))).'?s=24', array('alt' => 'Profile photo')); ?>
 					<?=HTML::anchor('#', $user->email.' '."\n".$avatar."\n".'<span class="caret"></span>', ['class' => 'dropdown-toggle nav-user', 'data-toggle' => 'dropdown']);?>
 					<ul class="dropdown-menu">
-						<li><?=HTML::anchor('Prime/Account', '<i class="fa fa-user"></i> '.__('Profile'));?></li>
+						<li><?=HTML::anchor('Prime/Account/Profile', '<i class="fa fa-user"></i> '.__('Profile'), ['onclick' => 'return prime.profile(this);']);?></li>
 						<li><?=HTML::anchor('Prime/Account/Logout', '<i class="fa fa-power-off"></i> '.__('Sign out'));?></li>
 					</ul>
 				</li>
@@ -80,6 +80,7 @@
 
 			</div>
 		</div>
+		<?=(isset($bottom) ? $bottom : NULL);?>
 		<script data-main="/media/Prime/js/prime.js" src="/media/Prime/js/lib/require.js"></script>
 	</body>
 </html>

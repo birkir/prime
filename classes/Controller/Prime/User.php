@@ -10,27 +10,9 @@
 class Controller_Prime_User extends Controller_Prime_Template {
 
 	/**
-	 * @var JSON data object
+	 * @var array JSON Response array
 	 */
-	public $json = NULL;
-
-	/**
-	 * Render fieldset tree
-	 * 
-	 * @return void
-	 */
-	public function action_tree()
-	{
-		// setup view
-		$this->view = View::factory('Prime/User/Tree')
-		->bind('nodes', $nodes)
-		->set('open', json_decode(Arr::get($_COOKIE, 'tree-user', '{}'), TRUE));
-
-		// get nodes
-		$nodes = ORM::factory('Role')
-		->order_by('name', 'ASC')
-		->find_all();
-	}
+	protected $json = NULL;
 
 	/**
 	 * Default page
@@ -39,178 +21,325 @@ class Controller_Prime_User extends Controller_Prime_Template {
 	 */
 	public function action_index()
 	{
-		// proxy action list
+		// Display list of Users
 		$this->action_list();
 	}
 
 	/**
-	 * List available users
+	 * Render fieldset tree
+	 * 
+	 * @return void
+	 */
+	public function action_tree()
+	{
+		// Setup tree view
+		$this->view = View::factory('Prime/User/Tree')
+		->bind('nodes', $nodes)
+		->set('open', json_decode(Arr::get($_COOKIE, 'tree-user', '{}'), TRUE));
+
+		// Get available Roles records
+		$nodes = ORM::factory('Role')
+		->order_by('name', 'ASC')
+		->find_all();
+	}
+
+	/**
+	 * List available users in group.
 	 *
-	 * @param id Role
 	 * @return void
 	 */
 	public function action_list()
 	{
-		// setup view
+		// Setup User list view
 		$this->view = View::factory('Prime/User/List')
 		->bind('role', $role)
 		->bind('items', $users);
 
-		// get role
+		// Find selected Role model
 		$role = ORM::factory('Role', $this->request->param('id'));
 
-		// make sure we find role
+		// Make sure we find the Role while defined
 		if ($this->request->param('id') AND ! $role->loaded())
+		{
 			throw HTTP_Exception::factory(404, 'User not found.');
+		}
 
-		// load users by role or all
+		// Load Role Users or all Users
 		$users = $role->loaded() ? $role->users : ORM::factory('User');
 
-		// order by email (default)
+		// Order by email address
 		$users = $users->order_by('email', 'ASC')
 		->find_all();
 	}
 
 	/**
-	 * Create new user
+	 * Display user fieldset and process the post data
+	 * when available.
 	 *
 	 * @return void
 	 */
 	public function action_create()
 	{
-		// setup view
-		$this->view = View::factory('Prime/User/Fieldset')
-		->bind('item', $item)
-		->bind('properties', $properties)
-		->bind('fields', $fields)
-		->bind('roles', $roles)
-		->bind('user_roles', $user_roles)
-		->set('action', 'Prime/User/Create');
-
-		// get base item
+		// Factory an user account ORM
 		$item = ORM::factory('User');
 
-		// get user roles
-		$user_roles = $item->roles->find_all();
+		// Let fieldset function handle the rest
+		$this->fieldset($item);
 
-		// get all roles
-		$roles = ORM::factory('Role')->find_all();
+		// Set form submit action
+		$this->view->action = 'Prime/User/Create';
 
-		// get properties fields
-		$fields = ORM::factory('Prime_Field')
-		->where('resource_type', '=', 'Role')
-		->where('resource_id', '=', 0)
-		->order_by('position', 'ASC')
-		->find_all();
-
-		// catch http post
-		$this->_save($item, $fields);
+		// Set selected Role
+		$this->view->role = ORM::factory('Role', $this->request->param('id'));
 	}
 
 	/**
-	 * Update user
+	 * Display user account fieldset and process the post data
+	 * when available.
 	 *
 	 * @return void
 	 */
 	public function action_edit()
 	{
-		// setup view
-		$this->view = View::factory('Prime/User/Fieldset')
-		->bind('item', $item)
-		->bind('properties', $properties)
-		->bind('roles', $roles)
-		->bind('user_roles', $user_roles)
-		->bind('fields', $fields);
-
-		// get base item
+		// Get user account ORM record
 		$item = ORM::factory('User', $this->request->param('id'));
 
-		// get all roles
-		$roles = ORM::factory('Role')->find_all();
-
-		// check if item is loaded
+		// Make sure the user account was found
 		if ( ! $item->loaded())
+		{
 			throw HTTP_Exception::factory(404, 'User not found.');
+		}
 
-		// get user roles
-		$user_roles = $item->roles->find_all();
-		$no_roles = count($user_roles) === 0;
+		// Let fieldset function handle the rest
+		$this->fieldset($item);
 
-		// get properties fields
-		$fields = ORM::factory('Prime_Field')
-		->where('resource_type', '=', 'Role')
-		->where('resource_id', $no_roles ? 'IS' : 'IN', $no_roles ? NULL : DB::expr('('.implode(',', $user_roles->as_array('name', 'id')).')'))
-		->order_by('position', 'ASC')
-		->find_all();
-
-		// extract properties
-		$properties = json_decode($item->data, TRUE);
-
-		// set action
-		$this->view->action = 'Prime/User/Edit/' . $item->id;
-
-		// catch http post
-		$this->_save($item, $fields);
+		// Set form submit action
+		$this->view->action = 'Prime/User/Edit/'.$item->id;
 	}
 
 	/**
-	 * Remove user
+	 * Setup fieldset view and bind needed parameters to it.
+	 * Attempt to save ORM model on POST method.
+	 *
+	 * @param  ORM   $item   User ORM to save
+	 * @return void
+	 */
+	private function fieldset(ORM $item = NULL)
+	{
+		// Setup view
+		$this->view = View::factory('Prime/User/Fieldset')
+
+		// Bind parameters
+		->bind('item',       $item)
+		->bind('properties', $properties)
+		->bind('roles',      $roles)
+		->bind('fields',     $fields)
+		->bind('errors',     $errors);
+
+		// Find all available Roles
+		$roles = ORM::factory('Role')->find_all();
+
+		// Get user account Roles
+		$u_roles = $item->loaded()
+		         ? $item->roles->find_all()->as_array('name', 'id')
+		         : array(0);
+
+		// Get properties for User Roles
+		$fields = ORM::factory('Prime_Field')
+		->where('resource_type', '=', 'Role')
+		->where('resource_id', 'IN', DB::expr('('.((count($u_roles) > 0) ? implode(',', $u_roles) : '0').')'))
+		->order_by('position', 'ASC')
+		->find_all();
+
+		// Extract properties from User model
+		$properties = json_decode($item->data, TRUE);
+
+		// Process POST data
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Store POST data array
+			$post = $this->request->post();
+
+			// Create JSON Response
+			$this->json = array(
+				'status'  => FALSE,
+				'data'    => NULL,
+				'message' => NULL
+			);
+
+			try
+			{
+				if ($item->loaded() AND empty($post['password']))
+				{
+					// Do not save Password while undefined
+					unset($post['password'], $post['password_confirm']);
+				}
+
+				// Initialize with Password validation
+				$validation = Model_User::get_password_validation($post);
+
+				foreach ($fields as $field)
+				{
+					// Prepare Field value for saving
+					$properties[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+
+					// Append field rules to Validation
+					$field->field->validation($validation);
+				}
+
+				// Copy the validation object with new data
+				$validation = $validation->copy(Arr::merge($post, $properties ? $properties : array()));
+
+				// Append values to User Model
+				$item->values($post, array('fullname', 'email', 'password'));
+
+				// Set User properties
+				$item->data = json_encode($properties);
+
+				// Save User model
+				$item->save($validation);
+
+				foreach ($item->roles->find_all() AS $role)
+				{
+					// Remove previous Roles
+					$item->remove('roles', $role);
+				}
+
+				foreach (Arr::get($post, 'roles', array()) AS $role)
+				{
+					// Add defined Roles
+					$item->add('roles', ORM::factory('Role', $role));
+				}
+
+				// Update JSON Response
+				$this->json = array(
+					'status'  => TRUE,
+					'data'    => $item->as_array(),
+					'message' => __('User was saved.')
+				);
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				// Flatten validation array
+				$errors = Arr::flatten($e->errors('models'));
+
+				// Update JSON Response
+				$this->json['status'] = FALSE;
+				$this->json['data'] = $errors;
+				$this->json['message'] = __('User was not saved.');
+			}
+		}
+	}
+
+	/**
+	 * Remove User and all relations to Roles
 	 *
 	 * @return void
 	 */
 	public function action_remove()
 	{
-		$this->json = ['status' => TRUE];
+		// Create JSON Response
+		$this->json = array(
+			'status'  => TRUE,
+			'message' => __('User was deleted.')
+		);
 
+		// Find defined User model
 		$user = ORM::factory('User', $this->request->param('id'));
+
+		if ( ! $user->loaded())
+		{
+			// Update JSON Response
+			$this->json = array(
+				'status'  => FALSE,
+				'message' => __('User was not found.')
+			);
+		}
 
 		foreach ($user->roles->find_all() as $role)
 		{
+			// Remove relation to Role
 			$user->remove('roles', $role);
 		}
 
+		// Finally delete the User
 		$user->delete();
 	}
 
 	/**
-	 * Check for email availability
+	 * Find User model by email address
 	 *
 	 * @return void
 	 */
 	public function action_available()
 	{
-		// get item by email
-		$item = ORM::factory('User', ['email' => $this->request->query('value')]);
+		// Get User by email address
+		$item = ORM::factory('User')
+		->where('email', '=', $this->request->query('value'));
 
-		// response
-		$this->json = [
-			'valid' => ! $item->loaded(),
+		if (intval($this->request->param('id')) > 0)
+		{
+			// Dont check the current email
+			$item->where('id', '!=', intval($this->request->param('id')));
+		}
+
+		// Find User
+		$item = $item->find();
+
+		// Create JSON Response
+		$this->json = array(
+			'status'  => ! $item->loaded(),
 			'message' => __('This email address is already in use.')
-		];
+		);
 	}
 
+
 	/**
-	 * Create role in tree
+	 * -------------------------------------------------------------
+	 *                             ROLES
+	 * =============================================================
+	 */
+
+
+	/**
+	 * Create new Role model
 	 *
 	 * @return void
 	 */
-	public function action_create_role()
+	public function action_role_create()
 	{
+		// Factory an Role model
 		$role = ORM::factory('Role');
+
+		// Set given Role name
 		$role->name = $this->request->post('name');
 
 		try 
 		{
-			$role->save();
+			try
+			{
+				// Save and validate Role
+				$role->save();
+			}
+			catch (Database_Exception $e)
+			{
+				// Update JSON Response
+				$this->json = array(
+					'status'  => FALSE,
+					'message' => __($e->getMessage())
+				);
+			}
 		}
 		catch (ORM_Validation_Exception $e)
 		{
-			$this->json = [
+			// Update JSON Response
+			$this->json = array(
+				'status'  => FALSE,
 				'message' => UTF8::ucfirst(implode(',', $e->errors('model')))
-			];
+			);
 		}
 
-		// display tree
+		// Display Roles tree
 		$this->action_tree();
 	}
 
@@ -219,11 +348,23 @@ class Controller_Prime_User extends Controller_Prime_Template {
 	 *
 	 * @return void
 	 */
-	public function action_rename_role()
+	public function action_role_rename()
 	{
-		$role = ORM::factory('Role', $this->request->param('id'));
-		$role->name = $this->request->post('name');
-		$role->save();
+		try 
+		{
+			// Find Role and rename
+			$role = ORM::factory('Role', $this->request->param('id'))
+			->values($this->request->post())
+			->save();
+		}
+		catch (ORM_Validation_Exception $e)
+		{
+			// Update JSON Response
+			$this->json = array(
+				'status'  => FALSE,
+				'message' => UTF8::ucfirst(implode(',', $e->errors('model')))
+			);
+		}
 	}
 
 	/**
@@ -231,121 +372,40 @@ class Controller_Prime_User extends Controller_Prime_Template {
 	 *
 	 * @return void
 	 */
-	public function action_remove_role()
+	public function action_role_delete()
 	{
-		$page = ORM::factory('Role', $this->request->param('id'));
-		$page->delete();
+		// Find Role and delete
+		$role = ORM::factory('Role', $this->request->param('id'))->delete();
 
+		// Display Roles Tree
 		$this->action_tree();
-	}
-
-	/**
-	 * Catch HTTP Post data and save user
-	 *
-	 * @return void
-	 */
-	private function _save(ORM $item = NULL, $fields = NULL)
-	{
-		// catch the http post
-		if ($this->request->method() === HTTP_Request::POST)
-		{
-			// get http post
-			$post = $this->request->post();
-
-			// setup response json
-			$this->json = [
-				'success' => FALSE,
-				'data' => NULL,
-				'message' => NULL
-			];
-
-			// set expected fields
-			$expected = ['fullname', 'email', 'password'];
-
-			// set properties field
-			$properties = [];
-
-			// loop through properties fields
-			foreach ($fields as $field)
-			{
-				$properties[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
-			}
-
-			try
-			{
-				if ($item->loaded() AND empty($post['password']))
-				{
-					unset($post['password'], $post['password_confirm']);
-				}
-
-				// validation for passwords
-				$password_validation = Model_User::get_password_validation($post);
-
-				// set values to model
-				$item->values($post, $expected);
-
-				// set properties
-				$item->data = json_encode($properties);
-
-				// save model
-				$item->save($password_validation);
-
-				foreach ($item->roles->find_all() AS $role)
-				{
-					$item->remove('roles', $role);
-				}
-
-				if (isset($post['roles']))
-				{
-					foreach (Arr::get($post, 'roles') AS $role)
-					{
-						$item->add('roles', ORM::factory('Role', $role));
-					}
-				}
-
-				// set successful
-				$this->json['success'] = TRUE;
-				$this->json['data'] = $item->as_array();
-				$this->json['message'] = __('User has been saved.');
-			}
-			catch (ORM_Validation_Exception $e)
-			{
-				// combine external validation messages with errors
-				$errors = $e->errors('models');
-				$external = Arr::get($errors, '_external', []);
-				unset($errors['_external']);
-
-				// set errors and message
-				$this->json['data'] = Arr::merge($errors, $external);
-				$this->json['message'] = __('User could not be saved.');
-			}
-		}
 	}
 
 	/**
 	 * Overload after controller execution method
 	 *
-	 * @return parent::after
+	 * @return parent
 	 */
 	public function after()
 	{
-		// check for asyncronous request
+		// Check for asyncronous request
 		if ($this->request->is_ajax() OR ! $this->request->is_initial())
 		{
-			// disable auto render
+			// Disable auto render
 			$this->auto_render = FALSE;
 
-			// render the view
+			// Render the view
 			return $this->response->body(isset($this->json) ? json_encode($this->json) : $this->view->render());
 		}
 		else
 		{
-			// always set tree
+			// Always display tree view
 			$this->template->left = Request::factory('Prime/User/Tree')
 			->execute();
 		}
 
+		// Call parent after
 		return parent::after();
 	}
 
-} // End Prime User
+}

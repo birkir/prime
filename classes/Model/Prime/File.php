@@ -25,9 +25,4 @@ class Model_Prime_File extends Model_Prime {
 		]
 	];
 
-	public function delete()
-	{
-
-	}
-
 } // End Prime File Model

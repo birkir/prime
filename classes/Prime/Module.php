@@ -127,6 +127,16 @@ class Prime_Module {
 	}
 
 	/**
+	 * Defaults to no params
+	 *
+	 * @return array
+	 */
+	public function params()
+	{
+		return array();
+	}
+
+	/**
 	 * Get module settings option
 	 *
 	 * @param string Option name

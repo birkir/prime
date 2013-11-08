@@ -22,7 +22,7 @@
 			<li{{#unless folder}} class="disabled"{{/unless}}><a href="/Prime/Explorer/New/{{id}}" tabindex="-1" onclick="return prime.explorer.create(this, 'folder');"><?=__('New folder...');?></a></li>
 			<li class="divider"></li>
 			<li class="{{#if root}} disabled{{/if}}"><a href="/Prime/Explorer/Remove/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this {{#if folder}}folder{{else}}file{{/if}}, are you sure?');?>" onclick="return prime.explorer.remove(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
-			<li class="{{#if root}} disabled{{/if}}"><a href="/Prime/Explorer/Rename/{{id}}" tabindex="-1" onclick=""><?=__('Rename');?></a></li>
+			<li class="{{#if root}} disabled{{/if}}"><a href="/Prime/Explorer/Rename/{{id}}" tabindex="-1" onclick=""><?=__('Rename...');?></a></li>
 			<li class="divider"></li>
 			<li class="{{#if folder}} disabled{{/if}}{{#if root}} disabled{{/if}}"><a href="/Prime/Field/Properties/Template:{{id}}" tabindex="-1" onclick="return prime.field.properties(this);"><?=__('Properties');?></a></li>
 		</ul>

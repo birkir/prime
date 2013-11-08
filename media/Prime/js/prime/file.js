@@ -100,7 +100,7 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 				$(this).css({ maxWidth: w - 20, maxHeight: h - 20 });
 				this.top = $(this).offset().top;
 			});
-			top = scrollable.height() + 50;
+			top = scrollable.height() + 200;
 
 			scrollable.trigger('scroll');
 		})
@@ -117,6 +117,12 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 				window.close();
 			});
 			$('.table-bind-template').after(closeBtn).remove();
+		}
+		else
+		{
+			$.cookie.json = false;
+			$.cookie('prime-files-id', $('.file-list').data('id'));
+			$.cookie.json = true;
 		}
 
 		// proxy thumbnails click to thumbnail checkbox toggle
@@ -157,6 +163,17 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 			$('.grid-group-item[data-id='+$(this).parent().parent().data('id')+']')[this.checked ? 'addClass' : 'removeClass']('selected');
 		});
 
+		$('.grid-group-item, .table tr').on('dblclick', function () {
+			if (ckbrowser) { window.close(); }
+			else { window.open('/Prime/File/Get/' + $(this).data('id'), '_blank'); }
+		})
+
+		$('#ckbrowser').each(function () {
+			$('.grid-group-item[data-id='+this._file+']').each(function () {
+				$(this).trigger('click');
+			});
+		});
+			
 		// initialize uploader dragndrop
 		prime.file.upload($(this).data('id'));
 
@@ -165,7 +182,7 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 
 		// set active in tree
 		$('.panel-left').find('.active').removeClass('active');
-		$('.panel-left [data-id='+$(this).data('id')+']').parent().addClass('active');
+		$('.panel-left [data-id='+$(this).data('id')+']').parent().addClass('active').parents('.has-children').addClass('open');
 	};
 
 	file.change_view = function(el)
@@ -352,6 +369,20 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 	prime.elementsExternal.push(function () {
 		$(this).find('.file-list').each(file.list);
 	});
+
+	$('#ckbrowser').each(function () {
+		var imgUrl = window.opener.CKEDITOR.dialog.getCurrent().getValueOf('info', 'txtUrl').split('/');
+
+		this._file  = imgUrl[imgUrl.length - 1];
+
+		if (parseInt(this._file, 0) > 0) {
+			prime.view('/Prime/File/List?file=' + this._file);
+		}
+	});
+
+	if ($('#ckbrowser').length === 0 && parseInt($.cookie('prime-files-id'), 0) > 0) {
+		prime.view('/Prime/File/List/' + $.cookie('prime-files-id'));
+	}
 
 	return file;
 });

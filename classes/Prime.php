@@ -61,6 +61,14 @@ class Prime {
 	public static $cache = TRUE;
 
 	/**
+	 * @var  array     Available languages
+	 */
+	public static $languages = array(
+		'en-us' => 'English',
+		'is-is' => 'Icelandic'
+	);
+
+	/**
 	 * Singleton instance
 	 */
 	public static function init(array $settings = NULL)

@@ -15,135 +15,145 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	public $auto_render = FALSE;
 
 	/**
-	 * Default page redirects to pages controller
+	 * Default page
 	 *
 	 * @return void
 	 */
 	public function action_index()
 	{
+		// Redirect to Pages
 		HTTP::redirect('Prime/Page');
 	}
 
 	/**
-	 * Add region to page
+	 * Add Region to Page
 	 *
 	 * @return void
 	 */
 	public function action_add()
 	{
-		// get parameters
-		$post = $this->request->post();
+		// Extract region and reference ids
+		list($id, $reference, $name, $page) = explode(':', $this->request->param('id'));
 
-		// create new region
+		// Create Region model
 		$region = ORM::factory('Prime_Region');
-		$region->prime_page_id = Arr::get($post, 'page');
-		$region->prime_module_id = Arr::get($post, 'module');
-		$region->name = Arr::get($post, 'region');
-		$region->settings = '{}';
 
-		// set position
-		$region->position(Arr::get($post, 'reference'));
+		// Set model values
+		$region->prime_page_id   = $page;
+		$region->prime_module_id = $id;
+		$region->name            = $name;
+		$region->settings        = '{}';
 
-		// save region
+		// Set Region position
+		$region->position($reference);
+
+		// Save Region
 		$region->save();
 
-		// execute display request
+		// Get Region display Response
 		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
 
-		// display region
+		// Set region view as Response body
 		$this->response->body('<div'.HTML::attributes(['class' => 'prime-region-item', 'data-id' => $region->id]).'>'.$output.'</div>');
 	}
 
 	/**
-	 * Move region above reference region
+	 * Move Region above Reference Region
 	 *
 	 * @return void
 	 */
-	public function action_reorder()
+	public function action_move()
 	{
-		list($id, $reference) = explode(':', $this->request->param('id'));
+		// Extract region and reference ids
+		list($id, $reference, $name, $page) = explode(':', $this->request->param('id'));
 
-		// region to move
-		$region = ORM::factory('Prime_Region', intval($id))
-		->position($reference)
+		// Load region record
+		$region = ORM::factory('Prime_Region', intval($id));
+
+		// Set model values
+		$region->prime_page_id = $page;
+		$region->name = $name;
+
+		// Execute movement query
+		$region->position($reference)
+
+		// Update region position
 		->save();
 	}
 
 	/**
-	 * Remove given region
+	 * Remove Region
 	 *
 	 * @return void
 	 */
 	public function action_remove()
 	{
-		// find region
-		$region = ORM::factory('Prime_Region', $this->request->param('id'));
-
-		// delete
-		$region->delete();
+		// Find and delete Region
+		$region = ORM::factory('Prime_Region', $this->request->param('id'))->delete();
 	}
 
 	/**
-	 * Display settings for region
+	 * Display settings popup for Region
 	 *
 	 * @return void
 	 */
 	public function action_settings()
 	{
-		// find region
+		// Find region
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
 
-		// make sure it was found
 		if ( ! $region->loaded())
-			throw HTTP_Exception::factory(404, 'Not found');
+		{
+			// We did not find region
+			throw HTTP_Exception::factory(404, 'Region was not found.');
+		}
 
-		// get region module
+		// Get region module
 		$module = $region->module();
 
-		// get module fields
+		// Get module fields
 		$fields = $module->params();
 
-		// setup view
+		// Setup region modal view
 		$view = View::factory('Prime/Region/Settings')
 		->set('fields', $fields)
 		->set('region', $region)
 		->set('data', $module->settings);
 
-		// handle form post
 		if ($this->request->method() === HTTP_Request::POST)
 		{
-			// save parameters
+			// Save module with POST data
 			$module->save($this->request->post());
 
-			// update region
+			// Re-render region
 			$view = Request::factory('Prime/Region/Display/'.$region->id)->execute();
 		}
 
-		// output view
+		// Set view as Response body
 		$this->response->body($view);
 	}
 
 	/**
-	 * Display region by id
+	 * Display region by ID in query string
 	 *
 	 * @return void
 	 */
 	public function action_display()
 	{
-		// find region
+		// Find region
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
 
-		// check if region is loaded
 		if ($region->loaded())
 		{
-			// proxy to frontpage
+			// Request frontpage with region id
 			$response = Request::factory('')
 			->query('region', $region->id)
 			->query('mode', 'design')
 			->execute();
 
-			// set requested response body
+			// Set proxied html as Response body
 			$this->response->body($response->body());
 		}
 	}
-} // End Controller Prime Region 
+
+}

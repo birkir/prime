@@ -1,67 +1,185 @@
-<?php
-
+<?php defined('SYSPATH') or die('No direct script access.');
+/**
+ * Prime Account Controller
+ *
+ * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
+ * @package Prime
+ * @category Controller
+ * @copyright (c) 2013 SOLID Productions
+ */
 class Controller_Prime_Account extends Controller_Prime_Template {
 
 	/**
-	 * @var Disable auto render
-	 */
-	public $auto_render = FALSE;
-
-	/**
-	 * Disable the need of authentication
+	 * @var boolean Disable the need of authentication
 	 */
 	public $authentication = FALSE;
 
-	public function action_index()
-	{
-		$this->auto_render = TRUE;
+	/**
+	 * Default page
+	 *
+	 * @return void
+	 */
+	public function action_index() {}
 
+	/**
+	 * Profile page
+	 *
+	 * @return void
+	 */
+	public function action_profile()
+	{
+		// Check for authentication
 		$this->check_auth();
 
-		$this->view = 'Hello world! my profile';
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		// Setup view
+		$view = View::factory('Prime/Account/Profile')
+		->bind('item', $item)
+		->bind('languages', $languages);
+
+		// Bind user
+		$item = $this->user;
+
+		// Bind languages
+		$languages = Prime::$languages;
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Get POST values
+			$post = $this->request->post();
+
+			// Get parameters that changes the interface
+			$lang = $item->language;
+
+			// Set model values
+			$item->values($post, array('fullname', 'password', 'language'));
+
+			try
+			{
+				// Save user model
+				$item->save();
+
+				// Update JSON Response
+				$json['status']  = TRUE;
+				$json['data']    = ($lang !== $item->language);
+				$json['message'] = __('Profile was saved.');
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				// Flatten validation array
+				$errors = Arr::flatten($e->errors('models'));
+
+				// Update JSON Response
+				$json['status']  = FALSE;
+				$json['data']    = $errors;
+				$json['message'] = __('Profile was not saved.');
+			}
+
+			// Set JSON Response body
+			$this->response->body(json_encode($json));
+
+			return;
+		}
+
+		// Output Response body
+		$this->response->body($view);
 	}
 
 	/**
-	 * Logs a user out
+	 * Translate string used by javascript
+	 *
+	 * @return void
+	 */
+	public function action_translation()
+	{
+		// Skip auto render
+		$this->auto_render = FALSE;
+
+		// Strings array
+		$strings = array(
+			'save' => __('Save'),
+			'ok' => __('Ok'),
+			'edit' => __('Edit'),
+			'cancel' => __('Cancel'),
+			'delete' => __('Delete'),
+			'addField' => __('Add field'),
+			'editField' => __('Edit field'),
+			'clear' => __('Clear'),
+			'select' => __('Select'),
+			'loading' => __('Loading...'),
+			'validate' => array(
+				'required' => __('This field is required.'),
+				'remote' => __('Please fix this field.'),
+				'email' => __('Please enter a valid email address.'),
+				'url' => __('Please enter a valid URL.'),
+				'date' => __('Please enter a valid date.'),
+				'dateISO' => __('Please enter a valid date (ISO).'),
+				'number' => __('Please enter a valid number.'),
+				'digits' => __('Please enter only digits.'),
+				'creditcard' => __('Please enter a valid credit card number.'),
+				'matches' => __('Please enter the same value again.'),
+				'maxlength' => __('Please enter no more than {0} characters.'),
+				'minlength' => __('Please enter at least {0} characters.'),
+				'rangelength' => __('Please enter a value between {0} and {1} characters long.'),
+				'range' => __('Please enter a value between {0} and {1}.'),
+				'max' => __('Please enter a value less than or equal to {0}.'),
+				'min' => __('Please enter a value greater than or equal to {0}')
+			)
+		);
+
+		// Set response mime type
+		$this->response->headers('content-type', 'text/javascript');
+
+		// Response body
+		$this->response->body('define([], function() { return '.json_encode($strings).'; });');
+	}
+
+	/**
+	 * User login page
+	 *
+	 * @return void
 	 */
 	public function action_login()
 	{
 		if (Auth::instance()->logged_in())
-			return HTTP::redirect('Prime/Account');
+		{
+			// Redirect user to Pages
+			HTTP::redirect('Prime/Page');
+		}
 
-		// do a template render
-		$this->auto_render = TRUE;
-
+		// Setup standalone template
 		$this->template = View::factory('Prime/Alternative');
 
-		// set template view
+		// Setup view
 		$this->view = View::factory('Prime/Account/Login')
 		->bind('message', $message)
 		->bind('post', $post);
 
-		// get post data
+		// Get post data
 		$post = $this->request->post();
 
-		// check for post method
 		if ($this->request->method() === HTTP_Request::POST)
 		{
-			// no direct output
-			$this->response->body(json_encode(['message' => 'Email or password incorrect.']));
-
-			// try login
 			if (Auth::instance()->login($post['email'], $post['password'], isset($post['remember'])))
 			{
+				// Redirect to Pages
 				return HTTP::redirect('Prime/Page');
 			}
 
-			$message = 'E-Mail or password incorrect, try again!';
+			// Set error message
+			$message = __('E-Mail or password incorrect.');
 		}
 	}
 
+	/**
+	 * Prompt forgot password
+	 *
+	 * @return void
+	 */
 	public function action_forgotpassword()
 	{
-		$this->auto_render = TRUE;
-
 		$this->template = View::factory('Prime/Alternative');
 
 		$this->view = View::factory('Prime/Account/ForgotPassword');
@@ -73,15 +191,17 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	}
 
 	/**
-	 * Logs a user out
+	 * User logout page
 	 * 
 	 * @return void
 	 */
 	public function action_logout()
 	{
+		// Logout authenticated user
 		Auth::instance()->logout();
 
+		// Redirect to login
 		return HTTP::redirect('Prime/Account/Login');
 	}
 
-} // End Prime Auth Controller
+}

@@ -43,15 +43,15 @@
     {{#unless nocontext}}
         <ul class="dropdown-menu" role="menu">
         {{#if roles}}
-        	<li><a href="/Prime/User/Create_Role" onclick="return prime.user.create_role(this);"><?=__('New role...');?></a></li>
+        	<li><a href="/Prime/User/Role_Create" onclick="return prime.user.create_role(this);"><?=__('New role...');?></a></li>
         {{else}}
         	<li><a href="/Prime/User/List/{{id}}" onclick="return prime.view(this.href);"><?=__('Open');?></a></li>
         	<li class="divider"></li>
             <li><a href="/Prime/Field/Properties/Role:{{id}}" onclick="return prime.field.properties(this, {{id}});"><?=__('Properties');?></a></li>
         	<li class="divider"></li>
-            <li><a href="/Prime/User/Rename_Role/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
+            <li><a href="/Prime/User/Role_Rename/{{id}}" tabindex="-1" onclick="return prime.user.rename(this);"><?=__('Rename...');?></a></li>
         	<li class="divider"></li>
-        	<li><a href="/Prime/User/Remove_Role/{{id}}" onclick="return prime.user.remove(this, true);" data-title="<?=__('Delete role');?>" data-message="<?=__('Are you sure you want to delete this role?');?>"><i class="fa fa-trash"></i> <?=__('Delete');?></a></li>
+        	<li><a href="/Prime/User/Role_Delete/{{id}}" onclick="return prime.user.delete(this, true);" data-title="<?=__('Delete role');?>" data-message="<?=__('Are you sure you want to delete this role?');?>"><i class="fa fa-trash"></i> <?=__('Delete');?></a></li>
         {{/if}}
 
         </ul>

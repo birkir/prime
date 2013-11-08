@@ -226,6 +226,34 @@ body > .fullscreen.with-panel-right > .panel-right {
 .select2-container .select2-choice {
 	font-weight: normal;
 }
+.select2-container-multi .select2-choices .select2-search-choice {
+	display: inline;
+	font-size: 75%;
+	font-weight: bold;
+	line-height: 21px;
+	color: #ffffff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25em;
+	background-color: #4787ed;
+	font-size: 85%;
+	border-radius: 0;
+	padding-right: 24px;
+}
+.select2-search-choice-close {
+	color: #fff;
+	top: 0;
+	right: 0;
+	height: 21px;
+	line-height: 21px;
+	width: 20px;
+	color: #fff;
+}
+.select2-search-choice-close:hover {
+	background: #3078eb;
+	color: #fff !important;
+}
 
 /** nav tree **/
 .nav-tree.scrollable {
@@ -397,4 +425,11 @@ body > .fullscreen.with-panel-right > .panel-right {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+.list-group-item.ui-draggable-dragging {
+	opacity: 0.85;
+}
+.list-group-item.ui-draggable-dragging .list-group-item-text {
+	display: none;
 }

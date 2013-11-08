@@ -1,10 +1,10 @@
 @import "font-awesome.css";
 .prime-region {
-	min-height: 40px;
+	min-height: 35px;
 }
 .prime-region-item {
 	position: relative;
-	min-height: 20px;
+	min-height: 35px;
 	outline: 1px dashed rgba(221, 75, 57, 0.15); /** outlines bearly visible **/
 }
 .prime-region-item:hover,

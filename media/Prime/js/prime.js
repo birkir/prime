@@ -20,7 +20,7 @@ var prime = (function () {
 			// create dom
 			this.loader = $('<div/>')
 			.addClass('alert alert-warning top-center')
-			.text('Loading...')
+			.text(prime.strings.loading)
 			.hide()
 			.appendTo('body');
 
@@ -148,25 +148,6 @@ var prime = (function () {
 		// create validation object
 		var validate = {};
 
-		// messages
-		validate.messages = {
-			required: "This field is required.",
-			remote: "Please fix this field.",
-			email: "Please enter a valid email address.",
-			url: "Please enter a valid URL.",
-			date: "Please enter a valid date.",
-			dateISO: "Please enter a valid date (ISO).",
-			number: "Please enter a valid number.",
-			digits: "Please enter only digits.",
-			creditcard: "Please enter a valid credit card number.",
-			matches: "Please enter the same value again.",
-			maxlength: "Please enter no more than {0} characters.",
-			minlength: "Please enter at least {0} characters.",
-			rangelength: "Please enter a value between {0} and {1} characters long.",
-			range: "Please enter a value between {0} and {1}.",
-			max: "Please enter a value less than or equal to {0}.",
-			min: "Please enter a value greater than or equal to {0}."
-		}
 
 		// format message with variables
 		validate.format = function (str, args) {
@@ -188,7 +169,7 @@ var prime = (function () {
 				if (typeof rule === 'function') {
 					if (rule(element.val(), element)) {
 						element.data('valid', false);
-						element.data('message', validate.format(validate.messages[name], messageArgs));
+						element.data('message', validate.format(prime.strings.validate[name], messageArgs));
 					}
 				}
 			};
@@ -284,7 +265,7 @@ var prime = (function () {
 				$.getJSON(element.data('remote')+'?value='+element.val(), function (data) {
 
 					// check if is valid
-					if (data.valid !== true)
+					if (data.status !== true)
 						element.data('valid', false).data('message', data.message);
 
 					// continue validation
@@ -320,8 +301,10 @@ var prime = (function () {
 				})
 				.done(function (response) {
 
+					var m = 0;
+
 					// check if errors were found in json data
-					if (response.success === false) {
+					if (response.status === false) {
 
 						// loop through errors
 						for (var key in response.data) {
@@ -330,6 +313,14 @@ var prime = (function () {
 							form.find('[name=' + key + ']').parents('.form-group').addClass('has-error').append(
 								$('<span/>', { class: 'help-block validate', html: response.data[key] })
 							);
+
+							if (m === 0) {
+								form.find('[name=' + key + ']').closest('.tab-pane').each(function () {
+									$(this).parent().parent().find('[data-toggle=tab][href="#'+$(this).attr('id')+'"]').trigger('click');
+								});
+							}
+
+							m++;
 						}
 
 						return;
@@ -379,9 +370,9 @@ var prime = (function () {
 	app.field.properties = function(item, id) {
 
 		// dialog buttons
-		var create = $('<button/>', { class: 'btn btn-success btn-sm ', html: 'Add field' }),
-		    edit   = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: 'Edit' }),
-		    remove = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: 'Delete' });
+		var create = $('<button/>', { class: 'btn btn-success btn-sm ', html: prime.strings.addField }),
+		    edit   = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.edit }),
+		    remove = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.delete });
 
 		// setup dialog
 		var dialog = prime.dialog({
@@ -409,14 +400,14 @@ var prime = (function () {
 			var fieldsetEvent = function () {
 
 				// dialog2 buttons
-				var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
-					cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' }),
+				var save = $('<button/>', { class: 'btn btn-primary', text: prime.strings.save }),
+					cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' }),
 					edit = ! $(this).hasClass('btn-success'),
 					sel = $(this).data('id') || selected[0];
 
 				// setup dialog
 				var dialog2 = prime.dialog({
-					title: edit ? 'Edit field' : 'Create field',
+					title: edit ? prime.strings.editField : prime.strings.addField,
 					remote: edit ? '/Prime/Field/Edit/' + sel : '/Prime/Field/Create/' + resource_type + ':' + resource_id,
 					buttons: [save, cancel]
 				}, function (modal) {
@@ -434,19 +425,17 @@ var prime = (function () {
 						$(this).parents('.form-group').removeClass('has-success');
 					});
 
+					prime.validate(dialog2.find('form'), function (response) {
+						dialog.find('.modal-body').html(response.data);
+						dialog.each(prime.elements);
+						dialog.find('table').on('changed', changedFn)
+						.find('tbody tr').on('dblclick', fieldsetEvent);
+						dialog2.modal('hide');
+					});
+
 					// attach save button event
 					save.on('click', function () {
-						$.ajax({
-							url: dialog2.find('form').attr('action'),
-							type: 'POST',
-							data: dialog2.find('form').serialize()
-						})
-						.done(function (response) {
-							dialog.find('.modal-body').html(response);
-							dialog.each(prime.elements);
-							dialog.find('table').on('changed', changedFn);
-							dialog2.modal('hide');
-						});
+						dialog2.find('form').trigger('submit');
 					});
 				});
 			};
@@ -477,11 +466,132 @@ var prime = (function () {
 						.done(function (response) {
 							dialog.find('.modal-body').html(response);
 							dialog.each(prime.elements);
-							dialog.find('table').on('changed', changedFn);
+							dialog.find('table').on('changed', changedFn)
+							.find('tbody tr').on('dblclick', fieldsetEvent);
 							dialog2.modal('hide');
 						});
 					}
 				});
+			});
+		});
+
+		return false;
+	};
+
+	/**
+	 * Calculate password strength score
+	 *
+	 * @param string String to calculate
+	 * @param object Element to attach visual appearence
+	 * @return void
+	 */
+	app.passwordStrength = function (str, element) {
+
+		// setup variables
+		var score = 0,
+		map = [
+			{ score: 1, regex: /[a-z]/ },
+			{ score: 3, regex: /[A-Z]/ },
+			{ score: 3, regex: /\d+/ },
+			{ score: 5, regex: /(.*[0-9].*[0-9].*[0-9])/ },
+			{ score: 3, regex: /.[!,@,#,$,%,\^,&,*,?,_,~]/ },
+			{ score: 5, regex: /(.*[!,@,#,$,%,\^,&,*,?,_,~].*[!,@,#,$,%,\^,&,*,?,_,~])/ },
+			{ score: 2, regex: /([a-z].*[A-Z])|([A-Z].*[a-z])/ }
+		];
+
+		// length check
+		score += Math.min(Math.pow(str.length, 1.25), 28);
+
+		// loop through regexes and add to score
+		for (var i = 0; i < map.length; i++) {
+			if (str.match(map[i].regex)) {
+				score += map[i].score;
+			}
+		}
+
+		// get a percentage of one hundred
+		score = (score * 2) / 100;
+
+		// when some password is entered
+		if (str.length > 0) {
+
+			// create progress bar if not exist
+			if ( ! element.progressBar) {
+				element.progressBar = $('<div/>', { class: 'progress password-strength' }).append($('<div/>', { class: 'progress-bar' }));
+				$(element).parent().prepend(element.progressBar);
+			}
+
+			// get bar
+			var bar = element.progressBar.find('.progress-bar');
+
+			// set bar width
+			bar.css({ width: score * 100 + '%' });
+
+			// set color
+			if (score < 0.26) bar.attr('class', 'progress-bar progress-bar-danger');
+			else if (score < 0.50) bar.attr('class', 'progress-bar progress-bar-warning');
+			else bar.attr('class', 'progress-bar progress-bar-success');
+		}
+
+		// else remove progress bar
+		else if (element.progressBar) {
+			element.progressBar.remove();
+			element.progressBar = null;
+		}
+	};
+
+	/**
+	 * Show profile dialog
+	 *
+	 * @return void
+	 */
+	app.profile = function (element) {
+
+		// create buttons
+		var save = $('<button/>', { class: 'btn btn-primary', text: prime.strings.save }),
+			cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' });
+
+		// create dialog
+		var dialog = prime.dialog({
+			title: $(element).text(),
+			remote: element.href,
+			buttons: [save, cancel]
+		},
+
+		// on modal ready
+		function (modal) {
+
+			// set form
+			form = modal.find('form');
+
+			// password onkeyup event
+			form.find('input[name=password]').on('keyup', function () {
+
+				// setup variables
+				var confirm = form.find('input[name=password_confirm]').parent('.collapse'),
+				    value = $(this).val();
+
+				// show or hide passwordconfirm
+				confirm[value.length > 0 ? 'addClass' : 'removeClass']('in');
+
+				// set password strength
+				prime.passwordStrength(value, this);
+			});
+
+			// validate and handle form submit
+			prime.validate(form, function (response) {
+
+				// hide dialog
+				dialog.modal('hide');
+
+				// reload page or not?
+				if (response.data === true) {
+					window.location.reload();
+				}
+			});
+
+			save.on('click', function () {
+				form.trigger('submit');
 			});
 		});
 
@@ -540,9 +650,9 @@ var prime = (function () {
 		var group    = $(el).parents('.form-group'),
             selected = group.find('input[type=hidden]'),
 		    visual   = group.find('.form-control'),
-		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: 'Clear' }),
-		    select   = $('<button/>', { class: 'btn btn-primary btn-sm', 'data-dismiss': 'modal', text: 'Select' }),
-		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: 'Cancel' });
+		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
+		    select   = $('<button/>', { class: 'btn btn-primary btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
 
 		// setup ajax dialog with page tree
 		var dialog = prime.dialog({
@@ -724,11 +834,14 @@ var prime = (function () {
 		})
 		.on('keyup', function (e) {
 			if (e.keyCode === 13) {
-				var newText = $(this).val().trim();
+				var newText = $(this).val().trim(),
+				    oldText = text;
 				if (newText !== text) {
 					if (element.href) {
 						$.ajax({ url: element.href, type: 'POST', data: { name: newText }})
-						.done(success);
+						.done(function (response) {
+							success(response, oldText, newText, node);
+						});
 					} else {
 						success(newText);
 					}
@@ -829,7 +942,8 @@ var prime = (function () {
 			aceEmmet: '../lib/ace/ext-emmet',
 			emmet: '../lib/emmet',
 			history: '../lib/history',
-			plupload: '../lib/plupload.full.min'
+			plupload: '../lib/plupload.full.min',
+			translation: '/Prime/Account/Translation?noext'
 		},
 		shim: {
 			bootstrap: { deps: ['jquery'] },
@@ -840,7 +954,7 @@ var prime = (function () {
 
 	// run when jquery has loaded
 	// --------------------------
-	define(['jquery', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($) {
+	define(['jquery', 'translation', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($, translation) {
 
 		// list available controllers
 		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file'];
@@ -877,6 +991,9 @@ var prime = (function () {
 
 		// history adapter
 		History.Adapter.bind(window, 'statechange', app.history);
+
+		// translation strings
+		prime.strings = translation;
 	});
 
 	// return app

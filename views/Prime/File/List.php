@@ -54,7 +54,7 @@
 			</thead>
 			<tbody>
 				<?php foreach ($items as $item): ?>
-					<tr data-id="<?=$item->id;?>" data-url="/Prime/File/Preview/<?=$item->id;?>">
+					<tr data-id="<?=$item->id;?>" data-url="/Prime/File/Get/<?=$item->id;?>">
 						<td width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></td>
 						<td><?=$item->name;?></td>
 						<td><?=$item->ext;?></td>

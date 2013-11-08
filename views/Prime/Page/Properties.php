@@ -31,7 +31,7 @@
 						<?=__('Generate slug');?>
 					</label>
 					<?=Form::label('formName', __('Page slug'), ['class' => 'control-label']);?>
-					<?=Form::input('slug', $page->slug, ['class' => 'form-control generate-slug', 'id' => 'formSlug', 'disabled' => 'disabled']);?>
+					<?=Form::input('slug', $page->slug, ['class' => 'form-control generate-slug disabled', 'id' => 'formSlug']);?>
 				</div>
 
 				<div class="form-group">

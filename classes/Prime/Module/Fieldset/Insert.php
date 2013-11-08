@@ -164,23 +164,18 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 			{
 				$data = [];
 
+				// setup validation
+				$validation = Validation::factory($data);
+
 				// loop through fieldset fields
 				foreach ($fieldset->fields() as $field)
 				{
 					$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+
+					$field->field->validation($validation);
 				}
 
-				// setup validation
-				$validation = Validation::factory($data);
-
-				// loop through fields (again)
-				foreach ($fieldset->fields() as $field)
-				{
-					if ((bool) $field->required)
-					{
-						$validation->rule($field->name, 'not_empty');
-					}
-				}
+				$validation = $validation->copy($data);
 
 				if ($validation->check())
 				{

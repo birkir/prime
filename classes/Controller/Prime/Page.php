@@ -10,48 +10,47 @@
 class Controller_Prime_Page extends Controller_Prime_Template {
 
 	/**
-	 * @var bool Disable auto render
+	 * Default page
+	 *
+	 * @return void
 	 */
-	public $auto_render = FALSE;
-
-	/**
-	 * @var array Available languages
-	 */
-	public $languages = array(
-		'en-us' => 'English',
-		'is-is' => 'Icelandic'
-	);
-
 	public function action_index()
 	{
+		// Display edit page view
 		$this->action_edit();
 	}
 
 	/**
-	 * Default page
+	 * Render page tree
+	 * 
+	 * @return void
+	 */
+	public function action_tree()
+	{
+		// Setup tree view
+		$this->view = View::factory('Prime/Page/Tree')
+		->bind('nodes', $nodes)
+		->set('request', $this->request)
+		->set('open', $this->request->is_ajax() ? [] : json_decode(Arr::get($_COOKIE, 'tree-page', '{}'), TRUE));
+
+		// Get available Page records 
+		$nodes = ORM::factory('Prime_Page')
+		->where('parent_id', 'IS', NULL);
+	}
+
+	/**
+	 * Edit page with modules on right and page
+	 * tree on left.
 	 *
 	 * @return void
 	 */
 	public function action_edit()
 	{
-		// disable auto render
-		$this->auto_render = TRUE;
-
-		// setup template views
-		$this->template->left = Request::factory('Prime/Page/Tree')->execute();
-
-		$this->template->right = View::factory('Prime/Page/Modules')
-		->bind('modules', $modules);
-
-		// get all nodes
+		// Get page by query string
 		$page = ORM::factory('Prime_Page', $this->request->param('id'))
 		->uri();
 
-		// get all modules
-		$modules = ORM::factory('Prime_Module')
-		->find_all();
-
-		// setup main view
+		// Show iframe view
 		$this->view = '<iframe'.HTML::attributes([
 			'src' => ($page ? $page : '/').'?mode=design',
 			'frameborder' => 0,
@@ -62,67 +61,35 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	}
 
 	/**
-	 * Render page tree
-	 * 
-	 * @return void
-	 */
-	public function action_tree()
-	{
-		$view = View::factory('Prime/Page/Tree')
-		->set('nodes', ORM::factory('Prime_Page')->where('parent_id', 'IS', NULL))
-		->bind('open', $open)
-		->set('request', $this->request);
-
-		$open = $this->request->is_ajax() ? [] : json_decode(Arr::get($_COOKIE, 'tree-page', '{}'), TRUE);
-
-		$this->response->body($view);
-	}
-
-	/**
 	 * Create new page
 	 *
 	 * @return void
 	 */
 	public function action_create()
 	{
-		// get parent page
+		// Get parent page
 		$parent = ORM::factory('Prime_Page', $this->request->param('id'));
 
-		// setup default values
-		$default = ORM::factory('Prime_Page');
-		$default->language = 'en-us';
-		$default->slug_auto = 1;
-		$default->noindex = 0;
-		$default->nofollow = 0;
-		$default->redirect = 0;
-		$default->protocol = 'both';
-		$default->method = 'all';
-		$default->ajax = 1;
-		$default->gzip = 1;
-		$default->visible = 1;
-		$default->disabled = 0;
+		// Factory an page model
+		$page = ORM::factory('Prime_Page');
 
-		// setup view
-		$view = View::factory('Prime/Page/Properties')
-		->set('page', $default)
-		->set('languages', $this->languages)
-		->set('action', '/Prime/Page/Create/' . $this->request->param('id'))
-		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
+		// Set model default values
+		$page->parent_id = $parent->id;
+		$page->slug_auto = 1;
+		$page->noindex   = 0;
+		$page->nofollow  = 0;
+		$page->redirect  = 0;
+		$page->protocol  = 'both';
+		$page->method    = 'all';
+		$page->ajax      = 1;
+		$page->visible   = 1;
+		$page->disabled  = 0;
 
-		if ($this->request->method() === HTTP_Request::POST)
-		{
-			// create new page
-			$page = ORM::factory('Prime_Page');
-			$page->values($this->request->post());
-			$page->parent_id = $parent->id;
-			$page->save();
+		// Let fieldset handle POST method
+		$this->fieldset($page);
 
-			// get new tree
-			$view = Request::factory('Prime/Page/Tree')->execute();
-		}
-
-		// show tree
-		$this->response->body($view);
+		// Set form action
+		$this->view->action = '/Prime/Page/Create/' . $this->request->param('id');
 	}
 
 	/**
@@ -135,50 +102,103 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// get requested page model
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
 
-		// setup view
-		$view = View::factory('Prime/Page/Properties')
-		->set('page', $page)
-		->set('languages', $this->languages)
-		->set('action', '/Prime/Page/Properties/' . $page->id)
-		->set('templates', Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
+		// Let fieldset handle POST data
+		$this->fieldset($page);
 
-		// process post values
-		if ($this->request->method() === HTTP_Request::POST)
-		{
-			// update page properties
-			$page->values($this->request->post());
-			$page->save();
-
-			// get new tree
-			$view = Request::factory('Prime/Page/Tree')->execute();
-		}
-
-		$this->response->body($view);
-	}
-
-	public function action_visible()
-	{
-		list ($page, $visible) = explode(':', $this->request->param('id'));
-
-		$page = ORM::factory('Prime_Page', $page);
-		$page->visible = $visible == 'true' ? 1 : 0;
-		$page->save();
-
-		// get new tree
-		$view = Request::factory('Prime/Page/Tree')->execute();
-
-		// output view
-		$this->response->body($view);
+		// Set form action
+		$this->view->action = '/Prime/Page/Properties/' . $page->id;
 	}
 
 	/**
-	 * Remove page
+	 * Setup fieldset view and bind needed parameters to it.
+	 * Attempt to save ORM model on POST method.
+	 *
+	 * @param  ORM   $item   Page model to save
+	 * @return void
+	 */
+	private function fieldset($page)
+	{
+		// Get templates and default selection
+		$templates = Arr::merge(array(NULL => ' - '.__('Inherit from parent page').' - '), Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
+
+		// Get languages and default selection
+		$languages = Arr::merge(array(NULL => ' - '.__('Inherit from parent page').' - '), Prime::$languages);
+
+		// Setup view
+		$this->view = View::factory('Prime/Page/Properties')
+		->set('page', $page)
+		->set('languages', $languages)
+		->set('templates', $templates);
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Store POST data array
+			$post = $this->request->post();
+
+			// Set inherit values to NULL
+			$post['template'] = empty($post['template']) ? NULL : $post['template'];
+			$post['language'] = empty($post['language']) ? NULL : $post['language'];
+
+			try 
+			{
+				// Set POST data to model
+				$page->values($post);
+
+				// Try saving
+				$page->save();
+
+				// Create JSON Response
+				$this->json = array(
+					'status'  => TRUE,
+					'data'    => Request::factory('Prime/Page/Tree')->execute()->body(),
+					'message' => __('Page was saved.')
+				);
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				// Flatten validation array
+				$errors = Arr::flatten($e->errors('models'));
+
+				// Update JSON Response
+				$this->json['status'] = FALSE;
+				$this->json['data'] = $errors;
+				$this->json['message'] = __('Page was not saved.');
+			}
+		}
+	}
+
+	/**
+	 * Toggle page visibility on or off
 	 *
 	 * @return void
 	 */
-	public function action_remove()
+	public function action_visible()
 	{
-		ORM::factory('Prime_Page', $this->request->param('id'))->delete();
+		// Extract page and toggle state
+		list ($page, $visible) = explode(':', $this->request->param('id'));
+
+		// Find page
+		$page = ORM::factory('Prime_Page', $page);
+		$page->visible = ($visible == 'true') ? 1 : 0;
+		$page->save();
+
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
+	}
+
+	/**
+	 * Delete page by parameter
+	 *
+	 * @return void
+	 */
+	public function action_delete()
+	{
+		// Find page and delete
+		ORM::factory('Prime_Page', $this->request->param('id'))
+		->delete();
+
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
 	}
 
 	/**
@@ -188,35 +208,32 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	 */
 	public function action_rename()
 	{
+		// Find page
 		$page = ORM::factory('Prime_Page', $this->request->param('id'));
 		$page->name = $this->request->post('name');
 		$page->save();
 
-		// get new tree
-		$view = Request::factory('Prime/Page/Tree')->execute();
-
-		// output view
-		$this->response->body($view);
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
 	}
 
 	/**
 	 * Move page
+	 *
+	 * @return void
 	 **/
 	public function action_move()
 	{
-		// get page and to
+		// Extract source and destination page
 		list ($page, $to) = explode(':', $this->request->param('id'));
 
-		// list pages
+		// Find page and update parent id
 		$page = ORM::factory('Prime_Page', $page);
 		$page->parent_id = $to;
 		$page->save();
 
-		// get new tree
-		$view = Request::factory('Prime/Page/Tree')->execute();
-
-		// output view
-		$this->response->body($view);
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
 	}
 
 	/**
@@ -226,13 +243,48 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	 */
 	public function action_reorder()
 	{
-		// get page and reference page
+		// Extract source and reference page
 		list($page, $reference) = explode(':', $this->request->param('id'));
 
-		// node to move
+		// Find page and re-position it
 		$page = ORM::factory('Prime_Page', $page)
 		->position($reference)
 		->save();
+	}
+
+	/**
+	 * Overload after controller execution method
+	 *
+	 * @return parent
+	 */
+	public function after()
+	{
+		// Check for asyncronous request
+		if ($this->request->is_ajax() OR ! $this->request->is_initial())
+		{
+			// Disable auto render
+			$this->auto_render = FALSE;
+
+			// Render the view
+			return $this->response->body(isset($this->json) ? json_encode($this->json) : $this->view);
+		}
+		else
+		{
+			// Always display tree view
+			$this->template->left = Request::factory('Prime/Page/Tree')
+			->execute();
+
+			// Always display right panel view
+			$this->template->right = View::factory('Prime/Page/Modules')
+			->bind('modules', $modules);
+		
+			// Get all modules available
+			$modules = ORM::factory('Prime_Module')
+			->find_all();
+		}
+
+		// Call parent after
+		return parent::after();
 	}
 
 } // End Prime Page

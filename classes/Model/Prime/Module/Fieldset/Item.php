@@ -27,7 +27,7 @@ class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 
 	public function get($column)
 	{
-		if (array_key_exists($column, Arr::get($this->_object, 'data', [])))
+		if ( isset($this->_object['data']) AND is_array($this->_object['data']) AND array_key_exists($column, Arr::get($this->_object, 'data', [])))
 		{
 			return $this->_object['data'][$column];
 		}

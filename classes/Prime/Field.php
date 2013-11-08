@@ -47,6 +47,16 @@ class Prime_Field {
 		return $this->field['default'];
 	}
 
+	public function validation(&$validation)
+	{
+		$field = $this->field;
+
+		if ((bool) Arr::get($field, 'required', FALSE))
+		{
+			$validation->rule($field['name'], 'not_empty');
+		}
+	}
+
 	/**
 	 * Factory
 	 *

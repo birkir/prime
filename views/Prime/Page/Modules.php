@@ -2,9 +2,9 @@
 <section class="prime-module-list">
 	<div class="list-group scrollable">
 		<?php foreach ($modules as $module): ?>
-			<a href="#" class="list-group-item" data-id="<?=$module->id;?>">
-				<h6 class="list-group-item-heading"><strong><?=$module->name;?></strong></h6>
-				<p class="list-group-item-text"><?=$module->description;?></p>
+			<a href="#" class="list-group-item" data-id="<?=$module->id;?>" data-js="<?=$module->js;?>" data-slug="<?=$module->slug;?>">
+				<h6 class="list-group-item-heading"><strong><?=__($module->name);?></strong></h6>
+				<p class="list-group-item-text"><?=__($module->description);?></p>
 			</a>
 		<?php endforeach; ?>
 	</div>

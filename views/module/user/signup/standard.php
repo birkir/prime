@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="form-group">
-			<?=Form::label('signupPasswordConfirm', __('Confirm password'));?>
+			<?=Form::label('signupPasswordConfirm', __('Re-type password'));?>
 			<?=Form::password('password_confirm', NULL, ['id' => 'signupPasswordConfirm', 'class' => 'form-control']);?>
 		</div>
 

@@ -54,4 +54,5 @@
 		<?=Form::label('fieldOptions', __('Options'), ['class' => 'control-label']);?>
 		<?=Form::textarea('options', $item->options, ['id' => 'fieldOptions', 'placeholder' => '{"foo":"bar"}', 'rows' => 3, 'class' => 'form-control']);?>
 	</div>
+	<input type="submit" class="sr-only" />
 <?=Form::close();?>

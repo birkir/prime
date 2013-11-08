@@ -95,7 +95,7 @@ class Prime_Module_Html extends Prime_Module {
 	{
 		return Arr::merge([
 			HTML::anchor('#', '<i'.HTML::attributes(['class' => 'fa fa-pencil']).'></i>', [
-				'onclick' => 'window.top.prime.page.module.html('.$this->_region->id.'); return false;'
+				'onclick' => 'window.top.prime.page.module.html.edit('.$this->_region->id.'); return false;'
 			])
 		], parent::actions());
 	}

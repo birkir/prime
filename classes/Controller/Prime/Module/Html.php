@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Module Fieldset Controller
+ * Prime Module Html Controller
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime/Module
@@ -21,10 +21,12 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 	 */
 	public function action_save()
 	{
+		// Get region
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
 
 		if ($region->loaded())
 		{
+			// Get region module
 			$module = $region->module();
 			$module->settings['content'] = $this->request->post('content');
 			$module->save();
@@ -32,21 +34,31 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 	}
 
 	/**
-	*
+	 * Load CK or Ace Editor in a popup
+	 *
 	 * @return void
 	 */
 	public function action_editor()
 	{
+		// Get region
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
-		if ( ! $region->loaded()) return;
 
+		if ( ! $region->loaded())
+		{
+			// Could not find region
+			throw new Kohana_Exception('Region not found.');
+		}
+
+		// Get region module
 		$module = $region->module();
 
+		// Load editor template
 		$view = View::factory('Prime/Module/Html/Editor')
 		->set('content', $module->settings['content'])
 		->set('editor_type', $module->settings['editor_type']);
 
+		// Render editor
 		$this->response->body($view->render());
 	}
 
-} // End Prime Module Html Controller
+}

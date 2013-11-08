@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Page Controller
+ * Prime Field Controller
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
@@ -10,43 +10,39 @@
 class Controller_Prime_Field extends Controller_Prime_Template {
 
 	/**
-	 * @var boolean Auto render
-	 */
-	public $auto_render = FALSE;
-
-	/**
-	 * List all fields by files available
+	 * List all available fields
 	 *
 	 * @return array
-	 **/
+	 */
 	private static function fields()
 	{
-		// fields array
+		// Fields array
 		$fields = array();
 
-		// list files
+		// List field files
 		$files = Kohana::list_files('classes/Prime/Field');
 
-		// loop through files
 		foreach ($files as $file => $path)
 		{
-			// work with filename
+			// Cut classes prefix
 			$file = substr($file, strlen('classes/'));
+
+			// Remove php file extension
 			$file = substr($file, 0, strlen($file) - 4);
+
+			// Replace slashes with underscore
 			$file = str_replace('/', '_', $file);
 
-			// make sure the class exists inside file
 			if (class_exists($file))
 			{
-				// call class
+				// Call field class
 				$field = call_user_func(array($file, 'factory'));
 
-				// push to array
+				// Push to fields array
 				$fields[$file] = $field->name;
 			}
 		}
 
-		// fields array
 		return $fields;
 	}
 
@@ -57,24 +53,21 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	 */
 	public function action_properties()
 	{
-		// extract type and id from request params
+		// Extract type and id from request params
 		list($type, $id) = explode(':', $this->request->param('id'));
 
-		// get fields by resource type and id 
+		// Get fields by resource type and id
 		$fields = ORM::factory('Prime_Field')
 		->where('resource_id', '=', $id)
 		->where('resource_type', '=', $type)
 		->order_by('position', 'ASC')
 		->find_all();
 
-		// setup view
-		$view = View::factory('Prime/Field/Editor/List')
+		// Setup view
+		$this->view = View::factory('Prime/Field/Editor/List')
 		->set('fields', $fields)
 		->set('type', $type)
 		->set('id', $id);
-
-		// render view
-		$this->response->body($view);
 	}
 
 	/**
@@ -84,37 +77,16 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	 */
 	public function action_create()
 	{
-		// extract type and id from request params
+		// Extract type and id from request params
 		list ($type, $id) = explode(':', $this->request->param('id'));
 
-		// create default field
+		// Create default field
 		$field = ORM::factory('Prime_Field');
+		$field->resource_id = $id;
+		$field->resource_type = $type;
 
-		// setup view
-		$view = View::factory('Prime/Field/Editor/Fieldset')
-		->set('item', $field)
-		->set('action', '/Prime/Field/Create/'.implode(':', [$type, $id]))
-		->set('id', $id)
-		->set('type', $type)
-		->set('fields', self::fields());
-
-		// process post values
-		if ($this->request->method() === HTTP_Request::POST)
-		{
-			// add post values to orm
-			$field->values($this->request->post());
-			$field->resource_id = $id;
-			$field->resource_type = $type;
-
-			// save fields
-			$field->save();
-
-			// get new properties view
-			$view = Request::factory('/Prime/Field/Properties/'.implode(':', [$type, $id]))->execute();
-		}
-
-		// render view
-		$this->response->body($view);
+		// Fieldset processor
+		$this->fieldset($field);
 	}
 
 	/**
@@ -124,54 +96,101 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	 */
 	public function action_edit()
 	{
-		// find field
+		// Find field by param
 		$field = ORM::factory('Prime_Field', $this->request->param('id'));
 
-		// make sure the field was found
 		if ( ! $field->loaded())
-			throw HTTP_Exception::factory(404, 'Not found');
-
-		// setup view
-		$view = View::factory('Prime/Field/Editor/Fieldset')
-		->set('item', $field)
-		->set('action', '/Prime/Field/Edit/'.$field->id)
-		->set('id', $field->resource_id)
-		->set('type', $field->resource_type)
-		->set('fields', self::fields());
-
-		// process post values
-		if ($this->request->method() === HTTP_Request::POST)
 		{
-			// add post values to orm and save
-			$field->values($this->request->post());
-			$field->save();
-
-			// get new properties view
-			$view = Request::factory('/Prime/Field/Properties/'.implode(':', [$field->resource_type, $field->resource_id]))->execute();
+			// Could not find field
+			throw HTTP_Exception::factory(404, 'Field not found.');
 		}
 
-		// render view
-		$this->response->body($view);
+		// Fieldset processor
+		$this->fieldset($field);
 	}
 
+	/**
+	 * Setup fieldset view and bind needed parameters to it.
+	 * Attempt to save ORM model on POST method.
+	 *
+	 * @param  ORM   $item   Field model to save
+	 * @return void
+	 */
+	public function fieldset($field)
+	{
+		// Set resource type and id
+		$resource_type_id = implode(':', array($field->resource_type, $field->resource_id));
+
+		// Setup view
+		$this->view = View::factory('Prime/Field/Editor/Fieldset')
+		->set('item', $field)
+		->set('id', $field->resource_id)
+		->set('type', $field->resource_type)
+		->set('fields', self::fields())
+		->set('action', '/Prime/Field/' . ($field->loaded() ? 'Edit/'.$field->id : 'Create/'.$resource_type_id));
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Add post values to orm
+			$field->values($this->request->post());
+
+			try
+			{
+				// Save fields
+				$field->save();
+
+				// Set JSON Response
+				$json = array(
+					'status'  => TRUE,
+					'data'    => $this->view = Request::factory('/Prime/Field/Properties/'.$resource_type_id)->execute()->body(),
+					'message' => __('Field was saved.')
+				);
+			}
+			catch (ORM_Validation_Exception $e)
+			{
+				// Flatten validation array
+				$errors = Arr::flatten($e->errors('models'));
+
+				// Setup JSON Response
+				$json = array(
+					'status'  => FALSE,
+					'data'    => $errors,
+					'message' => __('Field was not saved.')
+				);
+			}
+
+			// Set View
+			$this->view = json_encode($json);
+		}
+	}
+
+	/**
+	 * Delete field model(s)
+	 *
+	 * @return void
+	 */
 	public function action_delete()
 	{
+		// Get field ids from params
 		$fields = explode(':', $this->request->param('id'));
-		$view = NULL;
 
 		foreach ($fields as $field)
 		{
+			// Find field
 			$item = ORM::factory('Prime_Field', $field);
 
-			if ($item->loaded() AND $view === NULL)
+			if ($item->loaded() AND $this->view === NULL)
 			{
-				$view = Request::factory('/Prime/Field/Properties/'.implode(':', [$item->resource_type, $item->resource_id]));
+				// Setup view
+				$this->view = Request::factory('/Prime/Field/Properties/'.implode(':', [$item->resource_type, $item->resource_id]));
 			}
 
+			// Delete model
 			$item->delete();
 		}
 
-		$this->response->body($view->execute());
+		// Execute view Request
+		$this->view = $this->view->execute()->body();
 	}
 
 	/**
@@ -181,13 +200,33 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	 */
 	public function action_reorder()
 	{
-		// get page and reference page
+		// Get field and its reference
 		list($field, $reference) = explode(':', $this->request->param('id'));
 
-		// node to move
+		// Move field
 		$field = ORM::factory('Prime_Field', $field)
 		->position($reference)
 		->save();
 	}
 
-} // End Prime Field
+	/**
+	 * After action execution
+	 *
+	 * @return void
+	 */
+	public function after()
+	{
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		if (isset($this->view) AND $this->view !== NULL)
+		{
+			// Set Response body
+			$this->response->body($this->view);
+		}
+
+		// Call parent
+		parent::after();
+	}
+
+}

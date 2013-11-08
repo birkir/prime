@@ -31,71 +31,72 @@ class Controller_Prime_Template extends Controller {
 
 	/**
 	 * Before action
+	 *
 	 * @return void
 	 */
 	public function before()
 	{
-		// load template
+		// Load template
 		$this->template = View::factory($this->template);
 
-		// set r object
+		// Set Request as global object
 		View::set_global('r', $this->request);
 
-		// check for authentication
+		// Check for User authentication
 		$this->check_auth();
-
 	}
 
 	/**
-	 * Install Prime
+	 * Check if Prime Installation is needed and redirect
+	 * to installation page.
 	 *
 	 * @return void
 	 */
 	public function install()
 	{
-		// load prime configure
+		// Load Prime configuration
 		$prime = Kohana::$config->load('prime');
 
-		// check if no file has been generated
 		if (empty($prime->as_array()))
 		{
+			// Redirect to Installation page
 			HTTP::redirect('/Prime/Install');
 			exit;
 		}
 	}
 
 	/**
-	 * Check for authentication if needed
+	 * Check if authentication is needed
 	 *
 	 * @return void
 	 */
 	public function check_auth()
 	{
-		// check if user is logged in
-		$logged_in = Auth::instance()->logged_in('prime');
-
-		// install Prime 
+		// Check for Prime installation
 		$this->install();
 
-		// if we want authentication to be required
+		// Checks if User is logged in with Prime role
+		$logged_in = Auth::instance()->logged_in('prime');
+
 		if ($this->authentication AND ! $logged_in)
 		{
+			// Redirect User to Login page because he is not logged in
+			// TODO: logged in users that dont have prime role.
 			return HTTP::redirect('Prime/Account/Login');
 		}
 
-		// add user if available
 		if ($logged_in)
 		{
-			// get the user
+			// Get the user
 			$this->user = Auth::instance()->get_user();
 
-			//  set user in prime class
+			//  Set User in Prime facade
 			Prime::$user = $this->user;
 
-			// set language
+			// Set Users defined Prime Language
 			I18n::lang($this->user->language);
 
-			// add user to global view and vise versa
+			// Globally register User model to Views
 			View::set_global('user', $this->user);
 		}
 	}
@@ -107,15 +108,14 @@ class Controller_Prime_Template extends Controller {
 	 */
 	public function after()
 	{
-		// check for auto render flag
 		if ($this->auto_render === TRUE)
 		{
-			// assign view
+			// Assign view to main template
 			$this->template->view = $this->view;
 
-			// response body
+			// Attach template to Response body
 			$this->response->body($this->template->render());
 		}
 	}
 
-} // End Prime Template Controller
+}

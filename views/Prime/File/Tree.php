@@ -22,9 +22,9 @@
             <li class="divider"></li>
             <li><a href="#" onclick="return prime.file.create(this);"><?=__('New folder...');?></a></li>
             <li class="divider"></li>
-            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
+            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/Folder_Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
             <li class="divider"></li>
-            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/Remove_Folder/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this folder, are you sure?');?>" onclick="return prime.file.delete_folder(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
+            <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/Folder_Delete/{{id}}" tabindex="-1" data-message="<?=__('You are about to delete this folder, are you sure?');?>" onclick="return prime.file.delete_folder(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
         </ul>
     </script>
 <?php endif; ?>

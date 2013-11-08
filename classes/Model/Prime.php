@@ -228,10 +228,12 @@ class Model_Prime extends ORM {
 		{
 			if ( ! $this->_loaded)
 				throw new Kohana_Exception('Cannot delete :model model because it is not loaded.', array(':model' => $this->_object_name));
-	 
+
 			$this->deleted_at = DB::expr('NOW()');
 
-			$this->save();
+			$this->_valid = TRUE;
+
+			$this->update();
 
 			return $this->clear();
 		}
