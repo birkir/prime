@@ -15,9 +15,9 @@ class Model_Prime_Field extends Model_Prime {
 	protected $_sortable = ['resource_id', 'resource_type'];
 
 	/**
-	 * Define model rules
+	 * Rules for the field model
 	 *
-	 * @return array
+	 * @return array Rules
 	 */
 	public function rules()
 	{
@@ -85,33 +85,32 @@ class Model_Prime_Field extends Model_Prime {
 	 */
 	protected function _load_values(array $values)
 	{
-		// load values defaults
+		// Load values defaults
 		parent::_load_values($values);
 
-		// only on load
 		if ($this->loaded())
 		{
 			try
 			{
+				// Attempt to decode JSON data
 				$values['options'] = json_decode($values['options'], TRUE);
 			}
 			catch (Exception $e)
 			{
-				Kohana::$log->add(Log::ERROR, 'Failed loading options for field.');
+				Kohana::$log->add(Log::ERROR, 'Failed loading options for field [:field].', array(':field' => $this->id));
 			}
 
-			// set field as class
 			if ( ! class_exists($values['field']))
 			{
-				// kohana LOG
+				// Fallback to default Field
 				$values['field'] = 'Prime_Field';
 			}
-			
+
+			// Allow reference to field key in model
 			$this->_object['field'] = call_user_func_array([$values['field'], 'factory'], [$values]);
 		}
 
-		// return self
 		return $this;
 	}
 
-} // End Prime Field
+}

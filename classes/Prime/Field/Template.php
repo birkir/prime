@@ -12,7 +12,7 @@ class Prime_Field_Template extends Prime_Field {
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_as_input = 'Prime/Field/Template';
+	protected $_input_view = 'Prime/Field/Template';
 
 	/**
 	 * List templates by scope
@@ -44,7 +44,7 @@ class Prime_Field_Template extends Prime_Field {
 		return $ret;
 	}
 
-	public function prepare_value($str = NULL)
+	public function save($str = NULL)
 	{
 		$str = str_replace($this->field['options']['directory'].'/', NULL, $str);
 
@@ -58,10 +58,10 @@ class Prime_Field_Template extends Prime_Field {
 	 * @param  array Error list
 	 * @return View
 	 */
-	public function as_input($item, $errors = [])
+	public function input($item, $errors = [])
 	{
 		// get parent view
-		$view = parent::as_input($item, $errors);
+		$view = parent::input($item, $errors);
 
 		// set view templates list
 		$view->templates = $this->tree(Kohana::list_files('views/'.Arr::get($view->options, 'directory', NULL)));

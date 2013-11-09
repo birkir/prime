@@ -93,6 +93,9 @@ class Prime_Module_Navigation extends Prime_Module {
 		// set flags
 		$pages->where('disabled', '=', 0);
 
+		// order by position
+		$pages->order_by('position', 'ASC');
+
 		// process query
 		$pages = $pages->find_all();
 

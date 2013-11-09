@@ -12,7 +12,7 @@ class Prime_Field_Fieldset extends Prime_Field {
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_as_input = 'Prime/Field/Fieldset';
+	protected $_input_view = 'Prime/Field/Fieldset';
 
 	/**
 	 * Overload Field Data as Text
@@ -20,10 +20,10 @@ class Prime_Field_Fieldset extends Prime_Field {
 	 * @param  mixed  $item
 	 * @return string
 	 */
-	public function as_text($item)
+	public function text($item)
 	{
 		// get parent field
-		$str = parent::as_text($item);
+		$str = parent::text($item);
 
 		if (intval($str) === 0)
 			return __('No fieldset selected');
@@ -44,10 +44,10 @@ class Prime_Field_Fieldset extends Prime_Field {
 	 * @param  array Error list
 	 * @return View
 	 */
-	public function as_input($item, $errors = [])
+	public function input($item, $errors = [])
 	{
 		// get parent view
-		$view = parent::as_input($item, $errors);
+		$view = parent::input($item, $errors);
 
 		// set view fieldset orm
 		$view->fieldset = ORM::factory('Prime_Module_Fieldset', $view->value);

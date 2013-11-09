@@ -181,7 +181,7 @@ class Controller_Prime_User extends Controller_Prime_Template {
 				foreach ($fields as $field)
 				{
 					// Prepare Field value for saving
-					$properties[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+					$properties[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
 
 					// Append field rules to Validation
 					$field->field->validation($validation);

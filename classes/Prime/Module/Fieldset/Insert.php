@@ -170,7 +170,7 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 				// loop through fieldset fields
 				foreach ($fieldset->fields() as $field)
 				{
-					$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+					$data[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
 
 					$field->field->validation($validation);
 				}

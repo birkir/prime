@@ -1,4 +1,4 @@
-<?=Form::open();?>
+<?=Form::open(NULL, ['role' => 'form', 'enctype' => 'multipart/form-data']);?>
 
 	<?=Form::hidden('fieldset_id', $fieldset->id);?>
 
@@ -11,7 +11,7 @@
 
 	<?php foreach ($fields as $field): ?>
 
-		<?=$field->field->as_input($item, $errors);?>
+		<?=$field->field->input($item, $errors);?>
 
 	<?php endforeach; ?>
 

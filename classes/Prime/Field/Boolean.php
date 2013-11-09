@@ -12,7 +12,7 @@ class Prime_Field_Boolean extends Prime_Field {
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_as_input = 'Prime/Field/Boolean';
+	protected $_input_view = 'Prime/Field/Boolean';
 
 	/**
 	 * Overload Field Data as Text
@@ -20,10 +20,10 @@ class Prime_Field_Boolean extends Prime_Field {
 	 * @param  mixed  $item
 	 * @return string
 	 */
-	public function as_text($item)
+	public function text($item)
 	{
 		// get parent field
-		$str = parent::as_text($item);
+		$str = parent::text($item);
 
 		// just return true or false
 		return UTF8::ucfirst($str ? __('yes') : __('no'));

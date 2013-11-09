@@ -9,6 +9,11 @@
  */
 class Model_Prime_Module extends ORM {
 
+	/**
+	 * Always order by ascending position
+	 *
+	 * @return parent::find_all
+	 */
 	public function find_all()
 	{
 		$this->order_by('position', 'ASC');
@@ -16,4 +21,4 @@ class Model_Prime_Module extends ORM {
 		return parent::find_all();
 	}
 
-} // End Prime Page
+}

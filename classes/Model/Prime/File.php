@@ -17,12 +17,12 @@ class Model_Prime_File extends Model_Prime {
 	/**
 	 * @var array Has many relationships
 	 */
-	protected $_has_many = [
-		'files' => [
+	protected $_has_many = array(
+		'files' => array(
 			'model'       => 'Prime_File',
 			'foreign_key' => 'parent_id',
 			'far_key'     => 'id'
-		]
-	];
+		)
+	);
 
-} // End Prime File Model
+}

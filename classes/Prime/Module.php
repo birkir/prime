@@ -198,7 +198,7 @@ class Prime_Module {
 						$class = call_user_func_array(array($field['field'], 'factory'), array($field));
 
 						// process its save state
-						$this->settings[$field['name']] = $class->prepare_value($params[$field['name']]);
+						$this->settings[$field['name']] = $class->save($params[$field['name']]);
 					}
 				}
 			}

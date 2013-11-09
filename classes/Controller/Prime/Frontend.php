@@ -142,7 +142,7 @@ class Controller_Prime_Frontend extends Controller {
 	}
 
 	/**
-	 * After method
+	 * Called method after action
 	 *
 	 * @return void
 	 */
@@ -151,6 +151,7 @@ class Controller_Prime_Frontend extends Controller {
 		// Force internet explorer to render in edge
 		$this->response->headers('x-ua-compatible', 'ie=edge, chrome=1');
 
+		// Call function parent
 		return parent::after();
 	}
 

@@ -9,6 +9,6 @@
  */
 class Prime_Field_String extends Prime_Field {
 
-	protected $_as_input = 'Prime/Field/String';
+	protected $_input_view = 'Prime/Field/String';
 
 } // End Priem Field String

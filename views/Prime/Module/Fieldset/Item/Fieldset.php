@@ -23,7 +23,7 @@
 		</div>
 		<div class="scrollable">
 			<?php foreach ($fieldset->fields() as $field): ?>
-				<?=$field->field->as_input($item);?>
+				<?=$field->field->input($item);?>
 			<?php endforeach; ?>
 		</div>
 	<?=Form::close();?>

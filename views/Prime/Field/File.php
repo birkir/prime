@@ -1,7 +1,12 @@
-<div class="form-group <?php if ($error): ?> has-error<?php endif; ?>">
+<div class="<?=$groupClasses;?>">
 	<?=Form::label($id, $field['caption'], ['class' => 'control-label']);?>
-	<div>FIELD IN PROGRESS...</div>
-	<?php if ($error): ?>
-		<span class="help-inline"><?=$error;?></span>
-	<?php endif; ?>
+	<div class="controls">
+		<?=Form::file($field['name'].(Arr::get($options, 'multiple', FALSE) ? '[]' : NULL), array(
+			'class' => 'form-control',
+			Arr::get($options, 'multiple', FALSE) ? 'multiple' : NULL => Arr::get($options, 'multiple', FALSE) ? 'multiple' : NULL
+		));?>
+		<?php if ($error): ?>
+			<span class="help-inline"><?=$error;?></span>
+		<?php endif; ?>
+	</div>
 </div>

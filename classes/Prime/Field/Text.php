@@ -9,6 +9,6 @@
  */
 class Prime_Field_Text extends Prime_Field {
 
-	protected $_as_input = 'Prime/Field/Text';
+	protected $_input_view = 'Prime/Field/Text';
 
 } // End Priem Field Text

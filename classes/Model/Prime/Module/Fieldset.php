@@ -37,15 +37,16 @@ class Model_Prime_Module_Fieldset extends ORM {
 
 	public function base()
 	{
-		// order by item position ascending
+		// Order by item position ascending
 		$this->order_by('position', 'ASC');
 
-		// return ORM for further process
+		// Return ORM for further process
 		return $this;
 	}
 
 	/**
 	 * Recursivly find sub pages of loaded record
+	 *
 	 * @return ORM
 	 */
 	public function recursive()
@@ -55,4 +56,4 @@ class Model_Prime_Module_Fieldset extends ORM {
 		->where('parent_id', $this->loaded() ? '=' : 'IS', $this->loaded() ? $this->id : NULL);
 	}
 
-} // End Prime Module Fieldset
+}

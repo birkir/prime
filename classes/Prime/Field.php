@@ -94,7 +94,7 @@ class Prime_Field {
 	 *
 	 * @return mixed
 	 */
-	public function prepare_value($value = NULL)
+	public function save($value = NULL)
 	{
 		return $value;
 	}
@@ -104,7 +104,7 @@ class Prime_Field {
 	 *
 	 * @return string
 	 */
-	public function as_text($item)
+	public function text($item)
 	{
 		return $this->value($item);
 	}
@@ -114,10 +114,10 @@ class Prime_Field {
 	 *
 	 * @return View
 	 */
-	public function as_input($item, $errors = [])
+	public function input($item, $errors = [])
 	{
 		// setup view
-		$view = View::factory($this->_as_input);
+		$view = View::factory($this->_input_view);
 
 		// set called field object
 		$view->field = $this->field;
@@ -133,6 +133,12 @@ class Prime_Field {
 
 		// set options if found
 		$view->options = Arr::get($this->field, 'options', []);
+
+		// Set group classes
+		$view->groupClasses = 'form-group'.($view->error ? ' has-error' : NULL);
+
+		if (Arr::get($view->options, 'hidden', FALSE))
+			return;
 
 		// return view
 		return $view;

@@ -11,7 +11,7 @@
 		<?php foreach ($items as $item): ?>
 			<tr>
 				<?php foreach ($fields as $field): ?>
-					<td><?=$field->field->as_text($item);?></td>
+					<td><?=$field->field->text($item);?></td>
 				<?php endforeach; ?>
 
 				<?php if ($page): ?>

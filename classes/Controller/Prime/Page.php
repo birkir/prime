@@ -287,4 +287,4 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		return parent::after();
 	}
 
-} // End Prime Page
+}

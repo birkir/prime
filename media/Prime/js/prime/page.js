@@ -622,6 +622,41 @@ define(['jquery', 'jqueryUI'], function($) {
 		.draggable(page.draggableConfig)
 		.droppable(page.droppableConfig);
 
+		function addDesignMode(str_ori) {
+			var loc = window.location,
+			    host = loc.protocol + '//' + loc.hostname,
+			    str  = str_ori.indexOf(host) >= 0 ? str_ori.substr(host.length) : str_ori;
+			if (str[0] !== '/') return str_ori;
+
+			var href  = str,
+			    query = href.indexOf('?'),
+			    hash  = href.indexOf('#'),
+			    uri   = href.substr(0, (query >= 0) ? query : ((hash >= 0) ? hash : href.length)),
+			    query = query >= 0 ? href.substr(query + 1, hash >= 0 ? hash - query - 1 : href.length).split('&') : [],
+			    querystring = {};
+			for (key in query) {
+				querystring[query[key].split('=')[0]] = query[key].split('=')[1];
+			}
+			querystring.mode = 'design';
+			query = [];
+			for (key in querystring) {
+				query.push(key+'='+querystring[key]);
+			}
+			return uri + '?' + query.join('&') + (hash >= 0 ? href.substr(hash) : '');
+		};
+
+		// find all links and forms on page
+		doc.find('a').each(function () {
+			this.href = addDesignMode(this.href);
+		});
+		doc.find('form').each(function () {
+			if (this.method === 'get') {
+				$(this).append($('<input/>', {type: 'hidden', name: 'mode', value: 'design'}));
+			} else {
+				this.action = addDesignMode(this.action);
+			}
+		})
+
 	});
 
 

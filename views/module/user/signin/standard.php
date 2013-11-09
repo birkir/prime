@@ -1,8 +1,8 @@
 <?=Form::open(NULL, ['role' => 'form']);?>
 
-	<?php if ($user->loaded()): ?>
+	<?php if (isset($user) AND $user !== NULL AND $user->loaded()): ?>
 
-		<p><?=__('Welcome :user', array(':user' => $user->fullname));?></p>
+		<p><?=__('Welcome :user', array(':user' => $_user->fullname));?></p>
 		<?=Form::button('logout', __('Sign out'), ['class' => 'btn btn-default', 'type' => 'submit']);?>
 
 	<?php else: ?>

@@ -21,8 +21,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	 */
 	public function action_index()
 	{
-		// Display latest files
-
 		if ($this->request->query('CKEditorFuncNum'))
 		{
 			// CKEditor callback
@@ -92,7 +90,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	}
 
 	/**
-	 * Preview file
+	 * Generate and load file preview
 	 *
 	 * @return void
 	 */
@@ -194,6 +192,11 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$this->response->headers('expires', gmdate('D, d M Y H:i:s', time() + (86400 * 14)));
 	}
 
+	/**
+	 * Get file contents
+	 *
+	 * @return void
+	 */
 	public function action_get()
 	{
 		// Disable auto render
@@ -243,8 +246,11 @@ class Controller_Prime_File extends Controller_Prime_Template {
 			// Get filename
 			$filename = isset($_REQUEST['name']) ? $_REQUEST['name'] : ( ! empty($_FILES) ? $_FILES['file']['name'] : uniqid('file_'));
 
+			// Set directory
+			$directory = APPPATH.'cache/files';
+
 			// Set filepath
-			$filepath = APPPATH.'cache/files/'.sha1($filename);
+			$filepath = $directory.DIRECTORY_SEPARATOR.sha1($filename);
 
 			// Chunking might be enabled
 			$chunk = Arr::get($_REQUEST, 'chunk', 0);
@@ -253,29 +259,26 @@ class Controller_Prime_File extends Controller_Prime_Template {
 			// Set error message
 			$error = FALSE;
 
-			if ( ! $out = @fopen($filepath.'.part', $chunks ? 'ab' : 'wb'))
+			try
 			{
-				$error = array('code' => 102, 'message' => 'Failed to open output stream.');
-			}
-			else if ( ! empty($_FILES) AND ($_FILES['file']['error'] OR ! is_uploaded_file($_FILES['file']['tmp_name'])))
-			{
-				$error = array('code' => 103, 'message' => 'Failed to move uploaded file.');
-			}
-			else if ( ! isset($_FILES['file']['tmp_name']) OR ! $in = @fopen($_FILES['file']['tmp_name'], 'rb'))
-			{
-				$error = array('code' => 101, 'message' => 'Failed to open input stream.');
-			}
-			else if ( ! $in = @fopen('php://input', 'rb'))
-			{
-				$error = array('code' => 101, 'message' => 'Failed to open input stream.');
-			}
+				if ( ! Upload::save($_FILES['file'], sha1($filename).'.part', $directory))
+				{
+					// Set output handler
+					$output = fopen($filepath.'.part', $chunks ? 'ab' : 'wb');
 
-			if ($error !== FALSE)
+					// Set input handler
+					fwrite($output, $this->request->body());
+
+					// Close output handler
+					fclose($output);
+				}
+			}
+			catch (ErrorException $e)
 			{
 				// Setup JSON Response
 				$response = array(
 					'jsonrpc' => '2.0',
-					'error'   => $error,
+					'error'   => $e->getMessage(),
 					'id'      => 'id'
 				);
 
@@ -284,17 +287,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 				return;
 			}
 
-			while ($buff = fread($in, 4096))
-			{
-				// Write input buffer to output buffer
-				fwrite($out, $buff);
-			}
-
-			// Close buffers
-			@fclose($out);
-			@fclose($in);
-
-			if ( ! $chunks || $chunk === $chunks - 1)
+			if ( ! $chunks OR ($chunk === $chunks - 1))
 			{
 				// Strip the temp .part suffix off 
 				rename($filepath.'.part', $filepath);
@@ -380,6 +373,159 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		// Find file record
 		$file = ORM::factory('Prime_File', $this->request->param('id'))
 		->delete();
+	}
+
+	/**
+	 * Dynamic Image Transformation
+	 *
+	 * @return void
+	 */
+	public function action_transform()
+	{
+		// Setup params
+		$uri   = explode('/', $this->request->param('id'));
+		$fits  = array('clip', 'crop', 'scale', 'fill');
+		$crops = array('center', 'top', 'right', 'bottom', 'left', 'face');
+		$dpis  = array('ldpi' => 0.75, 'mdpi' => 1, 'hdpi' => 1.5, 'xhdpi' => 2);
+		$flips = array('h', 'v', 'hv');
+
+		// Find file
+		$file = ORM::factory('Prime_File', end($uri));
+
+		// Get last updated time
+		$updated = strtotime($file->updated_at);
+
+		// Get filename
+		$filename = APPPATH.'cache/files/'.$file->filename;
+
+		if ( ! $file->loaded() OR ! file_exists($filename))
+		{
+			// Could not find file
+			throw new Kohana_Exception('File not found.');
+		}
+
+		// Set default values
+		$fit = 'clip';
+		$dpi = 1;
+
+		// Get cached filename
+		$cached = APPPATH.'cache/files/transform-'.sha1($this->request->param('id').'/'.$file->filename).'.jpg';
+
+		if ( ! file_exists($cached) OR (filemtime($cached) < $updated) OR isset($_GET['nocache']))
+		{
+			// Load image
+			$image = Image::factory($filename);
+
+			foreach ($uri as $i => $part)
+			{
+				if (isset($dpis[$part]))
+				{
+					// Set dpi flag
+					$dpi = $dpis[$part];
+				}
+
+				if (preg_match('/[0-9]+x[0-9]+/', $part))
+				{
+					// Extract resize width and height
+					$sizes  = explode('x', $part);
+
+					// Max them out at 2000 pixels
+					$resize = array(min(2000, intval($sizes[0])), min(2000, intval($sizes[1])));
+
+					// Set dpi width and height
+					$width = $resize[0] * $dpi;
+					$height = $resize[1] * $dpi;
+
+					if ($file->width > $width AND $file->height > $height)
+					{
+						// Resize image
+						$image->resize($width, $height, (($fit === 'crop') ? Image::INVERSE : (($fit === 'scale') ? Image::NONE : Image::AUTO)));
+					}
+				}
+
+				if ($part === 'face')
+				{
+					/*
+					// Get face detection library
+					require_once Kohana::find_file('vendor/FaceDetector', 'FaceDetector');
+
+					// Create Face Detector and load data file
+					$detector = new FaceDetector(Kohana::find_file('vendor/FaceDetector', 'detection', 'dat'));
+
+					// Detect image
+					$detector->faceDetect($filename);
+
+					if ($face = $detector->getFace())
+					{
+						$face['x'] *= ($image->width / $file->width);
+						$face['y'] *= ($image->height / $file->height);
+						$face['w'] *= ($image->width / $file->width);
+
+						$image->crop($face['w'], $face['w'], $face['x'], $face['y']);
+					}
+					*/
+				}
+
+				if (in_array($part, $crops))
+				{
+					// Set crop flag
+					$crop = $part;
+
+					if ($fit === 'crop' AND ($crop !== 'center' AND $crop !== 'face'))
+					{
+						// Set X and Y crop offset
+						$x = (($crop === 'left') ? 0 : (($crop === 'right' ) ? TRUE : NULL));
+						$y = (($crop === 'top' ) ? 0 : (($crop === 'bottom') ? TRUE : NULL));
+
+						// Execute crop function
+						$image->crop($resize[0] * $dpi, $resize[1] * $dpi, $x, $y);
+					}
+				}
+
+				if (preg_match('/rotate\-?\+?[0-9]+/', $part))
+				{
+					// Rotate image by number of degrees
+					$image->rotate(intval(str_replace('rotate', '', $part)));
+				}
+
+				if (in_array($part, $fits))
+				{
+					// Set fit flag
+					$fit = $part;
+				}
+
+				if (in_array($part, $flips))
+				{
+					if ($part === 'h' OR $part === 'hv')
+					{
+						// Flip image horizontal
+						$image->flip(Image::HORIZONTAL);
+					}
+					else if($part === 'v' OR $part === 'hv')
+					{
+						// Flip image vertical
+						$image->flip(Image::VERTICAL);
+					}
+				}
+			}
+
+			// Save image to cache
+			$image->save($cached, 100);
+		}
+
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		// Check for cache
+		$this->check_cache(sha1($this->request->uri()).$updated);
+
+		// Set Response body
+		$this->response->body(file_get_contents($cached));
+
+		// Set Response headers
+		$this->response->headers('content-type', 'image/jpeg');
+		$this->response->headers('last-modified', date('r', $updated));
+		$this->response->headers('expires', gmdate('D, d M Y H:i:s', time() + (86400 * 14)));
 	}
 
 	/**

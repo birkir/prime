@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Frontend Class
+ * Prime Frontend
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
@@ -10,7 +10,7 @@
 class Prime_Frontend {
 
 	/**
-	 * Instance
+	 * Get new frontend instance
 	 *
 	 * @return Prime_Frontend
 	 */
@@ -20,7 +20,7 @@ class Prime_Frontend {
 	}
 
 	/**
-	 * Constructor
+	 * Load new instance of frontend
 	 *
 	 * @return self
 	 */
@@ -30,27 +30,27 @@ class Prime_Frontend {
 	}
 
 	/**
-	 * Module
+	 * Append module to template with slugs.
 	 *
 	 * @return Prime_Frontend
 	 */
 	public static function module($name = NULL, array $options = array())
 	{
+		// Find module by slug
 		$module = ORM::factory('Prime_Module', ['slug' => $name]);
 
 		if ( ! $module->loaded())
 			return '<!-- Module not found -->';
 
-		// fake region with settings json encoded
+		// Setup region with generated JSON options
 		$region = (object) [
 			'settings' => json_encode($options)
 		];
 
-		// call module
+		// Call module controller
 		$module = call_user_func_array([$module->controller, 'factory'], [$region]);
 
-		// return its render function
 		return $module->render();
 	}
 
-} // End Prime Frontend
+}

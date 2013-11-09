@@ -13,7 +13,7 @@
 				<div class="tab-pane<?=($i === 0 ? ' active' : NULL);?>" id="region_<?=$region->id;?>_<?=$i;?>">
 					<?php foreach ($group as $field): ?>
 						<?php $fieldClass = call_user_func_array([$field['field'], 'factory'], [$field]); ?>
-						<?=$fieldClass->as_input($data); ?>
+						<?=$fieldClass->input($data); ?>
 					<?php endforeach; ?>
 				</div>
 				<?php $i++; ?>

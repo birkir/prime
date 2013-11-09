@@ -124,7 +124,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 			// loop through fieldset fields
 			foreach ($fieldset->fields() as $field)
 			{
-				$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+				$data[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
 			}
 
 			// set item data
@@ -168,7 +168,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 			// loop through fieldset fields
 			foreach ($fieldset->fields() as $field)
 			{
-				$data[$field->name] = $field->field->prepare_value(Arr::get($post, $field->name, NULL));
+				$data[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
 			}
 
 			$item->data = json_encode($data);

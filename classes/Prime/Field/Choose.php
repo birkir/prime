@@ -12,7 +12,7 @@ class Prime_Field_Choose extends Prime_Field {
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_as_input = 'Prime/Field/Choose';
+	protected $_input_view = 'Prime/Field/Choose';
 
 	/**
 	 * Overload Field Data as Text
@@ -20,10 +20,10 @@ class Prime_Field_Choose extends Prime_Field {
 	 * @param  mixed  $item
 	 * @return string
 	 */
-	public function as_text($item)
+	public function text($item)
 	{
 		// get parent field
-		$str = parent::as_text($item);
+		$str = parent::text($item);
 
 		// get options
 		$options = Arr::get($this->field, 'options', []);

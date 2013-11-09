@@ -40,7 +40,7 @@
 						<p class="text-center text-muted"><?=__('No fields defined for user roles.');?></p>
 					<?php else: ?>
 						<?php foreach ($fields as $field): ?>
-							<?=$field->field->as_input($properties, $errors);?>
+							<?=$field->field->input($properties, $errors);?>
 						<?php endforeach; ?>
 					<?php endif; ?>
 				</div>

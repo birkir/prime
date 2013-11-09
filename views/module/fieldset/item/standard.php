@@ -3,7 +3,7 @@
 <dl class="dl-horizontal">
 	<?php foreach ($fields as $field): ?>
 		<dt><?=$field->caption;?></dt>
-		<dd><?=$field->field->as_text($item);?></dd>
+		<dd><?=$field->field->text($item);?></dd>
 	<?php endforeach; ?>
 </dl>
 

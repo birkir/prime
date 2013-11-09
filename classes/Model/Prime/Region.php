@@ -16,7 +16,8 @@ class Model_Prime_Region extends Model_Prime {
 
 	/**
 	 * Belongs to relationships
-	 * @var array
+	 *
+	 * @var array Relationships
 	 */
 	protected $_belongs_to = [
 		'module' => [
@@ -35,9 +36,9 @@ class Model_Prime_Region extends Model_Prime {
 		if ( ! $this->loaded())
 			return;
 
-		// check if the class exists
 		if ( ! class_exists($this->module->controller))
 		{
+			// Could not find module class 
 			Kohana::$log->add(Log::ERROR, 'Class [:module] was not found', array(
 				':module' => $this->module->controller
 			));
@@ -45,8 +46,8 @@ class Model_Prime_Region extends Model_Prime {
 			return $this;
 		}
 
-		// call the module
+		// Call the module
 		return call_user_func_array(array($this->module->controller, 'factory'), array($this));
 	}
 
-} // End Prime Region
+}

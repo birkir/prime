@@ -196,4 +196,18 @@ class Model_Prime_Page extends Model_Prime {
 		return parent::save($validation);
 	}
 
+	public function lucene(Zend_Search_Lucene_Document $document, $score = 0.0)
+	{
+		foreach ($document->getFieldNames() as $name)
+		{
+			// Set search result title etc.
+			$this->_object[$name] = $document->getFieldValue($name);
+		}
+
+		// Set search result score
+		$this->_object['score'] = $score;
+
+		return $this;
+	}
+
 } // End Prime Page

@@ -110,12 +110,19 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		}
 		else
 		{
+			// Set JSON Response status
 			$this->json['message'] = __('Permission denied.');
 		}
 	}
 
+	/**
+	 * Show ace editor
+	 *
+	 * @return void
+	 */
 	public function ace(array $file)
 	{
+		// Setup view
 		$this->view = View::factory('Prime/Explorer/Ace/Ace')
 		->bind('content', $content)
 		->bind('filename', $filename)
@@ -126,15 +133,16 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		->set('modes', Prime::$config->modes)
 		->set('themes', Prime::$config->themes);
 
+		// Set file as end of file
 		$file['file'] = end($file['file']);
 
-		// set theme and handpick github if none is set
+		// Set theme and handpick github if none is set
 		$theme = Arr::get($_COOKIE, 'ace-theme', 'github');
 
-		// set emmet flag
+		// Set emmet flag
 		$emmet = (bool) Arr::get($_COOKIE, 'ace-emmet', TRUE);
 
-		// convert extension to correct mode
+		// Convert extension to correct mode
 		switch ($file['extension'])
 		{
 			case 'js': $mode = 'javascript'; break;
@@ -149,11 +157,41 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 			default: $mode = $file['extension'];
 		}
 
-		// set filename
+		// Set filename
 		$filename = $file['basename'];
 
-		// set content
+		// Set content
 		$content = file_get_contents($file['file']);
+	}
+
+	/**
+	 * Create file or folder
+	 *
+	 * @return void
+	 */
+	public function action_create()
+	{
+
+	}
+
+	/**
+	 * Rename file or folder
+	 *
+	 * @return void
+	 */
+	public function action_rename()
+	{
+
+	}
+
+	/**
+	 * Delete file or folder
+	 *
+	 * @return void
+	 */
+	public function action_delete()
+	{
+
 	}
 
 	/**
@@ -163,18 +201,18 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 	 */
 	public function after()
 	{
-		// check for asyncronous request
+		// Check for asyncronous request
 		if ($this->request->is_ajax() OR ! $this->request->is_initial())
 		{
-			// disable auto render
+			// Disable auto render
 			$this->auto_render = FALSE;
 
-			// render the view
+			// Render the view
 			return $this->response->body(isset($this->json) ? json_encode($this->json) : $this->view->render());
 		}
 		else
 		{
-			// always set tree
+			// Always set tree
 			$this->template->left = Request::factory('Prime/Explorer/Tree')
 			->execute();
 		}
@@ -182,4 +220,4 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		return parent::after();
 	}
 
-} // End Explorer
+}

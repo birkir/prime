@@ -10,8 +10,11 @@
 class Task_Search extends Minion_Task
 {
 	protected $_defaults = array(
-		'scan'      => FALSE,
-		'optimize'  => FALSE
+		'mode' => FALSE
+	);
+
+	protected $_options = array(
+		'mode'
 	);
 
 	protected $index;
@@ -76,28 +79,60 @@ class Task_Search extends Minion_Task
 	{
 		$this->initialize();
 
-		// loop through websites
-		$pages = ORM::factory('Prime_Page')
-		->find_all();
+		$mode = Arr::get($params, 'mode', NULL);
 
-		foreach ($pages as $page)
+		if ($mode === 'stats')
 		{
-			$hits = $this->index->find('page:'.$page->id);
+			Minion_CLI::write('Total '.$this->index->numDocs().' documents in index');
+		}
 
-			foreach ($hits as $hit)
+		if ($mode === 'scan')
+		{
+			Minion_CLI::write('Crawling website pages for index...');
+
+			$begin = $this->index->numDocs();
+
+			// loop through websites
+			$pages = ORM::factory('Prime_Page')
+			->find_all();
+
+			foreach ($pages as $i => $page)
 			{
-				$this->index->delete($hit->id);
+				$percent = Minion_CLI::color(floor(($i / count($pages)) * 100).'%', 'red');
+
+				Minion_CLI::write_replace('['.$percent.'] Scanning page ' . $page->name .'...', ($i === (count($pages) - 1)));
+
+				$hits = $this->index->find('page:'.$page->id);
+
+				foreach ($hits as $hit)
+				{
+					$this->index->delete($hit->id);
+				}
+
+				$response = Request::factory('/')
+				->query(['pageid' => $page->id])
+				->execute();
+
+				$doc = Zend_Search_Lucene_Document_Html::loadHTML($response->body());
+				$doc->addField(Zend_Search_Lucene_Field::Keyword('page', $page->id));
+
+				// add document to index
+				$this->index->addDocument($doc);
 			}
 
-			$response = Request::factory('/')
-			->query(['pageid' => $page->id])
-			->execute();
+			Minion_CLI::write('Done indexing '.($this->index->numDocs()-$begin));
 
-			$doc = Zend_Search_Lucene_Document_Html::loadHTML($response->body());
-			$doc->addField(Zend_Search_Lucene_Field::Keyword('page', $page->id));
+			Minion_CLI::write('Total '.$this->index->numDocs().' documents of maximum '.$this->index->maxDoc().' in index');
 
-			// add document to index
-			$this->index->addDocument($doc);
+		}
+		
+		if ($mode === 'optimize')
+		{
+			Minion_CLI::write('Optimizing Lucene index...');
+
+			$this->index->optimize();
+
+			Minion_CLI::write('Done');
 		}
 	}
 }

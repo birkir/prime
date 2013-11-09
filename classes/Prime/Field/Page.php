@@ -12,7 +12,7 @@ class Prime_Field_Page extends Prime_Field {
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_as_input = 'Prime/Field/Page';
+	protected $_input_view = 'Prime/Field/Page';
 
 	/**
 	 * Overload Field Data as Text
@@ -20,10 +20,10 @@ class Prime_Field_Page extends Prime_Field {
 	 * @param  mixed  $item
 	 * @return string
 	 */
-	public function as_text($item)
+	public function text($item)
 	{
 		// get parent field
-		$str = parent::as_text($item);
+		$str = parent::text($item);
 
 		if (intval($str) === 0)
 			return __('No page selected');
@@ -44,10 +44,10 @@ class Prime_Field_Page extends Prime_Field {
 	 * @param  array Error list
 	 * @return View
 	 */
-	public function as_input($item, $errors = [])
+	public function input($item, $errors = [])
 	{
 		// get parent view
-		$view = parent::as_input($item, $errors);
+		$view = parent::input($item, $errors);
 
 		// set view page orm
 		$view->page = ORM::factory('Prime_Page', $view->value);

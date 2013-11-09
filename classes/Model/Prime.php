@@ -9,6 +9,9 @@
  */
 class Model_Prime extends ORM {
 
+	/**
+	 * @var boolean Force update position
+	 */
 	private $_update_position = FALSE;
 
 	/**
@@ -36,32 +39,32 @@ class Model_Prime extends ORM {
 	{
 		if ($this->_updatable AND isset(Prime::$user->id))
 		{
-			// set current user as updating user
+			// Set current user as updating user
 			$this->updated_by = Prime::$user->id;
 		}
 
 		if ($this->_sortable !== FALSE AND $this->position === NULL)
 		{
-			// setup query
+			// Setup query
 			$query = DB::select([DB::expr('MAX(`position`)'), 'pos'])
 			->from($this->_table_name);
 
-			// loop through sortable keys
+			// Loop through sortable keys
 			foreach ($this->_sortable as $key)
 			{
 				$query->where($key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
 			}
 
-			// set position
+			// Set position
 			$this->position = $query->limit(1)->execute()->get('pos') + 10;
 		}
 
-		// call parent class
+		// Call parent class
 		$parent = parent::save($validation);
 
 		if ($this->_sortable !== FALSE)
 		{
-			// reorder position index
+			// Reorder position index
 			$this->reorder($this->_sortable);
 		}
 
@@ -75,67 +78,61 @@ class Model_Prime extends ORM {
 	 */
 	public function reorder(array $keys = array())
 	{
-		// position caret
+		// Position caret
 		$pos = 'SET @pos:=-10;';
 
-		// get values before updated
+		// Get values before updated
 		$old = $this->original_values();
 
-		// should we reorder old keys
+		// Should we reorder old keys
 		$reorder_old = FALSE;
 
-		// loop through keys
 		foreach ($keys as $key)
 		{
-			// check if new key has changed
 			if ($old[$key] != $this->{$key})
 			{
-				// lets reorder!
+				// Reorder old keys
 				$reorder_old = TRUE;
 				break;
 			}
 		}
 
-		// setup update query
+		// Setup update query
 		$update = DB::update($this->_table_name)
-		->set(array(
-			'position' => DB::expr('@pos:=@pos + 10')
-		))
+		->set(array('position' => DB::expr('@pos:=@pos + 10')))
 		->order_by('position', 'ASC');
 
-		// setup mysqli driver
+		// Setup mysqli driver
 		$db = Database::instance();
 
-		// reorder old list
 		if ($reorder_old)
 		{
-			// clone original update query
+			// Clone original update query
 			$query = $update;
 
-			// loop through keys
 			foreach ($keys as $key)
 			{
+				// Add old keys as where to update query
 				$query->where($key, $old[$key] === NULL ? 'IS' : '=', $old[$key]);
 			}
 
-			// update position index
+			// Update position index
 			$db->multiquery($pos.$update);
 		}
 
-		// reorder new list
 		if (intval($old['position']) !== intval($this->position) OR intval($this->position) < 0 OR $this->_update_position)
 		{
-			// loop through keys
 			foreach ($keys as $key)
 			{
+				// Reorder new keys
 				$update->where($key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
 			}
 
-			// update position index
+			// Update position index
 			$db->multiquery($pos.$update);
 		}
 
-		// reset update position flag
+		// Reset update position flag
 		$this->_update_position = FALSE;
 	}
 
@@ -147,16 +144,15 @@ class Model_Prime extends ORM {
 	 */
 	public function position($reference_id = NULL)
 	{
-		// reset position
+		// Reset position
 		$this->position = NULL;
 
-		// hard re-order
+		// Hard re-order
 		$this->_update_position = TRUE;
 
-		// check if reference id is greater than zero
 		if (intval($reference_id) > 0)
 		{
-			// set new position
+			// Set new position
 			$this->position = DB::select('position')
 				->from($this->_table_name)
 				->where('id', '=', intval($reference_id))
@@ -165,7 +161,6 @@ class Model_Prime extends ORM {
 				->get('position') - 5;
 		}
 
-		// singleton
 		return $this;
 	}
 
@@ -178,10 +173,11 @@ class Model_Prime extends ORM {
 	{
 		if ($this->_deletable)
 		{
+			// Add deleted at where
 			$this->where('deleted_at', 'IS', NULL);
 		}
 
-		// return parent function
+		// Return parent function
 		return parent::find();
 	}
 
@@ -194,10 +190,11 @@ class Model_Prime extends ORM {
 	{
 		if ($this->_deletable)
 		{
+			// Add deleted at where
 			$this->where('deleted_at', 'IS', NULL);
 		}
 
-		// return parent function
+		// Return parent function
 		return parent::count_all();
 	}
 
@@ -210,10 +207,11 @@ class Model_Prime extends ORM {
 	{
 		if ($this->_deletable)
 		{
+			// Add deleted at where
 			$this->where('deleted_at', 'IS', NULL);
 		}
 
-		// return parent function
+		// Return parent function
 		return parent::find_all();
 	}
 
@@ -229,16 +227,21 @@ class Model_Prime extends ORM {
 			if ( ! $this->_loaded)
 				throw new Kohana_Exception('Cannot delete :model model because it is not loaded.', array(':model' => $this->_object_name));
 
+			// Set deleted at value
 			$this->deleted_at = DB::expr('NOW()');
 
+			// Always valid
 			$this->_valid = TRUE;
 
+			// Update model
 			$this->update();
 
+			// Clear it
 			return $this->clear();
 		}
 
+		// Call parent function
 		return parent::delete();
 	}
 
-} // End Model Prime
+}

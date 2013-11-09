@@ -35,7 +35,7 @@
 					<tr ondblclick="prime.view('/Prime/Module/Fieldset/Edit/<?=$item->id;?>');" onselectstart="return false;" data-id="<?=$item->id;?>">
 						<td class="text-center"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></td>
 						<?php foreach ($fields as $field): ?>
-							<td><?=$field->field->as_text($item);?></td>
+							<td><?=$field->field->text($item);?></td>
 						<?php endforeach; ?>
 						<td class="reorder-handle"><i class="fa fa-reorder"></i></td>
 					</tr>
