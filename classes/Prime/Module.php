@@ -10,7 +10,7 @@
 class Prime_Module {
 
 	/**
-	 * @var ORM Region container
+	 * @var ORM    Region container
 	 */
 	public $_region;
 
@@ -20,16 +20,16 @@ class Prime_Module {
 	public $settings;
 
 	/**
-	 * Factory
+	 * Initialize module class
 	 *
 	 * @return Prime_Module
 	 */
 	public static function factory($region)
 	{
-		// get called class name
+		// Get called class name
 		$class_name = get_called_class();
 
-		// return new instance of class
+		// Return new instance of class
 		return new $class_name($region);
 	}
 
@@ -41,24 +41,24 @@ class Prime_Module {
 	 */
 	public function __construct($region)
 	{
-		// set region global
+		// Set region global
 		$this->_region = $region;
 
-		// get defaults
+		// Get defaults
 		$this->settings = [];
 
-		// add params to settings array
 		foreach ($this->params() as $group)
 		{
 			foreach ($group as $name => $param)
 			{
+				// Add params to settings array
 				$this->settings[$param['name']] = isset($param['default']) ? $param['default'] : NULL;
 			}
 		}
 
-		// decode settings json
 		try
 		{
+			// Decode settings json
 			$this->settings = Arr::merge($this->settings, json_decode($region->settings, TRUE));
 		}
 		catch (Exception $e)
@@ -68,7 +68,6 @@ class Prime_Module {
 			));
 		}
 
-		// singleton
 		return $this;
 	}
 
@@ -98,6 +97,7 @@ class Prime_Module {
 	/**
 	 * Check url for internal module route
 	 * 
+	 * @param  string  URI to parse
 	 * @return boolean
 	 */
 	public function route($uri = NULL)
@@ -127,7 +127,7 @@ class Prime_Module {
 	}
 
 	/**
-	 * Defaults to no params
+	 * Parameters to configure this module
 	 *
 	 * @return array
 	 */
@@ -145,7 +145,7 @@ class Prime_Module {
 	 */
 	public function option($option, $default = NULL)
 	{
-		// find option in settings
+		// Find option in settings
 		return Arr::get($this->settings, $option, $default);
 	}
 
@@ -159,7 +159,6 @@ class Prime_Module {
 	 */
 	public function load_view($directory = NULL, $template = NULL, $fallback = 'standard')
 	{
-		// set default template if template not found.
 		if ( ! Kohana::find_file('views/'.$directory, $template))
 		{
 			if ( ! Kohana::find_file('views/'.$directory, 'standard'))
@@ -170,10 +169,10 @@ class Prime_Module {
 				));
 			}
 
+			// Set fallback template
 			$template = $fallback;
 		}
 
-		// return template
 		return View::factory($directory.'/'.$template);
 	}
 
@@ -187,35 +186,39 @@ class Prime_Module {
 	{
 		if ($params)
 		{
-			// loop through module params
 			foreach ($this->params() as $group => $fields)
 			{
 				foreach ($fields as $field)
 				{
 					if (isset($params[$field['name']]))
 					{
-						// call field
+						// Call field
 						$class = call_user_func_array(array($field['field'], 'factory'), array($field));
 
-						// process its save state
+						// Process its save state
 						$this->settings[$field['name']] = $class->save($params[$field['name']]);
 					}
 				}
 			}
 		}
 
-		// update settings item
+		// Update settings item
 		$this->_region->settings = json_encode($this->settings);
 
-		// save region
+		// Save region
 		$this->_region->save();
 	}
 
+	/**
+	 * Render module on website but show prettier
+	 * message on exception.
+	 *
+	 * @return string
+	 */
 	public function output_for_web()
 	{
-		$output = NULL;
-
-		try {
+		try
+		{
 			$output = $this->render();
 		}
 		catch (Kohana_Exception $e)
@@ -226,4 +229,4 @@ class Prime_Module {
 		return $output;
 	}
 
-} // End Prime Module
+}

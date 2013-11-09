@@ -43,9 +43,9 @@ class Prime_Frontend {
 			return '<!-- Module not found -->';
 
 		// Setup region with generated JSON options
-		$region = (object) [
+		$region = (object) array(
 			'settings' => json_encode($options)
-		];
+		);
 
 		// Call module controller
 		$module = call_user_func_array([$module->controller, 'factory'], [$region]);

@@ -32,17 +32,15 @@ class Prime_Region {
 	 */
 	public function attach($item = NULL)
 	{
-		// check if region name exists
 		if ( ! isset($this->items[$item->name]))
 		{
-			// create array instance
+			// Create array instance
 			$this->items[$item->name] = array();
 		}
 
-		// attach module to region
+		// Attach module to region
 		$this->items[$item->name][$item->id] = $item->module();
 
-		// singleton
 		return $this;
 	}
 
@@ -55,7 +53,6 @@ class Prime_Region {
 	 */
 	public function __get($name)
 	{
-		// render its view through region iterator
 		return View::factory('Prime/Region/Wrap')
 		->set('items', isset($this->items[$name]) ? $this->items[$name] : array())
 		->set('name', $name);
