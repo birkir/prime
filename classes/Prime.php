@@ -102,34 +102,44 @@ class Prime {
 	{
 		if (intval($request->query('pageid')) > 0)
 		{
+			// Find page by pageid query string
 			$page = ORM::factory('Prime_Page', $request->query('pageid'));
 
-			// inherited values
 			if ($page->loaded())
 			{
+				// Set parent page
 				$parent = $page;
 
 				while ($page->template === NULL OR $page->language === NULL)
 				{
+					// Set parent page
 					$parent = ORM::factory('Prime_Page', $parent->parent_id);
 
 					if ($parent->template !== NULL AND $page->template === NULL)
+					{
+						// Inherit page template
 						$page->template = $parent->template;
+					}
 
 					if ($parent->language !== NULL AND $page->language === NULL)
+					{
+						// Inherit page language
 						$page->language = $parent->language;
+					}
 
 					if ($parent->parent_id === NULL)
 						break;
 				}
 			}
 
+			// Set static Page model
 			Prime::$selected_page = $page;
 
 			return Prime::$selected_page;
 		}
 		else
 		{
+			// Get selected by Page model
 			Prime::$selected_page = ORM::factory('Prime_Page')
 			->selected($request->param('query'));
 		}
@@ -145,26 +155,26 @@ class Prime {
 	 */
 	public static function treeselect($nodes, $mask = 'views/', $level = 1)
 	{
-		// list buffer
+		// List buffer
 		$list = [];
 
-		// loop through nodes
 		foreach ($nodes as $node)
 		{
-			// process recursive
 			if (is_array($node))
 			{
-				// combine to list
+				// Combine to list
 				$list = Arr::merge($list, Prime::treeselect($node, $mask, ++$level));
 			}
 			else
 			{
+				// Fix node name
 				$node = str_replace(MODPATH.'prime/'.$mask, 'prime:', $node);
 				$node = str_replace(MODPATH.'prime/'.$mask, NULL, $node);
 				$node = str_replace([APPPATH, MODPATH, SYSPATH], NULL, $node);
 				$node = substr($node, 0, strlen($mask)) === $mask ? substr($node, strlen($mask)) : $node;
 				$node = substr($node, 0, strrpos($node, '.'));
 
+				// Push to list array
 				$list[str_replace('prime:', NULL, $node)] = $node;
 			}
 		}
@@ -235,6 +245,7 @@ class Prime {
 						}
 						else
 						{
+							// Initialize sub-directory key
 							$found[$key] = [];
 						}
 					}
@@ -256,28 +267,36 @@ class Prime {
 		return $found;
 	}
 
+	/**
+	 * Quickly send E-Mail message to address
+	 *
+	 * @param  string  $subject E-Mail subject
+	 * @param  string  $body    E-Mail html body
+	 * @param  string  $from    From address
+	 * @param  string  $to      To address
+	 * @return boolean
+	 */
 	public static function email($subject, $body, $from, $to)
 	{
-		// load Swift Mailer
+		// Load Swift Mailer
 		if ( ! class_exists('Swift_Mailer', FALSE))
 		{
 			require Kohana::find_file('vendor', 'swift/swift_required');
 		}
 
-		// setup transport
+		// Setup transport
 		$transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
 
-		// setup swift mailer
+		// Setup swift mailer
 		$mailer = Swift_Mailer::newInstance($transport);
 
-		// create message
+		// Create message
 		$message = new Swift_Message($subject, $body, 'text/html', 'utf-8');
 
-		// set recipents and sender
+		// Set recipents and sender
 		$message->setFrom($from);
 		$message->setTo($to);
 
-		// return Swift Mailer
 		return $mailer->send($message);
 	}
 
@@ -310,4 +329,4 @@ class Prime {
 		return 'Prime '.Prime::VERSION.' ('.Prime::CODENAME.')';
 	}
 
-} // End Prime
+}
