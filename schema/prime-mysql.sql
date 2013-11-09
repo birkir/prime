@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `prime_fields` (
   PRIMARY KEY (`id`),
   KEY `resource_id` (`resource_id`),
   KEY `resource_type` (`resource_type`),
-  KEY `position`(`position`),
+  KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -70,20 +70,21 @@ CREATE TABLE IF NOT EXISTS `prime_modules` (
   `name` varchar(128) NOT NULL,
   `description` varchar(128) NOT NULL,
   `version` varchar(16) NOT NULL,
+  `js` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `position` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `position` (`position`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `prime_modules` (`controller`, `slug`, `name`, `description`, `version`, `position`) VALUES
-('Prime_Module_Fieldset_List',   'prime.fieldset.list',   'Fieldset List',      'Displays a list of items from the selected Fieldset List', '1.0', 3),
-('Prime_Module_Fieldset_Insert', 'prime.fieldset.insert', 'Fieldset Insert',    'Displays an input form for entering data into the selected Fieldset List', '1.0', 5),
-('Prime_Module_Fieldset_Item',   'prime.fieldset.item',   'Fieldset Item',      'Displays a single item from a Fieldset List', '1.0', 4),
-('Prime_Module_Navigation',      'prime.navigation',      'Navigation',         'Displays the navigation of a website', '1.0', 0),
-('Prime_Module_Html',            'prime.html',            'HTML Content',       'Allows free editing of HTML with WYSIWYG capabilities', '1.0', 1),
-('Prime_Module_Multiview',       'prime.multiview',       'Multi View',         'Displays a control which can contain other content', '1.0', 2),
-('Prime_Module_Datasource',      'prime.datasource',      'Remote Data-Source', 'Get remote data from datasource. Includes authentication.', '1.0', 6),
-('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',       'Allows users to sign-in to the website.', '1.0', 7);
+INSERT INTO `prime_modules` (`controller`, `slug`, `name`, `description`, `version`, `js`, `position`) VALUES
+('Prime_Module_Fieldset_List',   'prime.fieldset.list',   'Fieldset List',      'Displays a list of items from the selected Fieldset List', '1.0', 0, 3),
+('Prime_Module_Fieldset_Insert', 'prime.fieldset.insert', 'Fieldset Insert',    'Displays an input form for entering data into the selected Fieldset List', '1.0', 0, 5),
+('Prime_Module_Fieldset_Item',   'prime.fieldset.item',   'Fieldset Item',      'Displays a single item from a Fieldset List', '1.0', 0, 4),
+('Prime_Module_Navigation',      'prime.navigation',      'Navigation',         'Displays the navigation of a website', '1.0', 0, 0),
+('Prime_Module_Html',            'prime.html',            'HTML Content',       'Allows free editing of HTML with WYSIWYG capabilities', '1.0', 1, 1),
+('Prime_Module_Multiview',       'prime.multiview',       'Multi View',         'Displays a control which can contain other content', '1.0', 0, 2),
+('Prime_Module_Datasource',      'prime.datasource',      'Remote Data-Source', 'Get remote data from datasource. Includes authentication.', '1.0', 0, 6),
+('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',       'Allows users to sign-in to the website.', '1.0', 0, 7);
 
 --
 -- Table structure for table `prime_module_fieldsets`
@@ -100,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `prime_module_fieldsets` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent_id` (`parent_id`),
-  KEY `position`(`position`),
+  KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -119,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `prime_module_fieldset_items` (
   `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `prime_module_fieldset_id` (`prime_module_fieldset_id`),
-  KEY `position`(`position`),
+  KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -131,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `prime_module_fieldset_items` (
 CREATE TABLE IF NOT EXISTS `prime_pages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) unsigned DEFAULT NULL,
-  `language` VARCHAR(16) NOT NULL DEFAULT 'en-us',
+  `language` varchar(16) NOT NULL DEFAULT 'en-us',
   `name` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `slug_auto` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -155,13 +156,13 @@ CREATE TABLE IF NOT EXISTS `prime_pages` (
   KEY `parent_id` (`parent_id`),
   KEY `slug` (`slug`),
   KEY `visible` (`visible`),
-  KEY `position`(`position`),
+  KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `prime_pages`
+-- Table structure for table `prime_regions`
 --
 
 CREATE TABLE IF NOT EXISTS `prime_regions` (
@@ -177,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `prime_regions` (
   PRIMARY KEY (`id`),
   KEY `page_id` (`prime_page_id`),
   KEY `prime_module_id` (`prime_module_id`),
-  KEY `position`(`position`),
+  KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

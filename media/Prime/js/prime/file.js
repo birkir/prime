@@ -1,4 +1,4 @@
-define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
+define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 
 	var file = {};
 
@@ -165,7 +165,22 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 
 		$('.grid-group-item, .table tr').on('dblclick', function () {
 			if (ckbrowser) { window.close(); }
-			else { window.open('/Prime/File/Get/' + $(this).data('id'), '_blank'); }
+			else { 
+				// window.open(, '_blank');
+				prime.dialog({
+					backdrop: true,
+					body: $('<img/>', { src: '/Prime/File/Transform/800x800/' + $(this).data('id'), style: 'max-width:100%;max-height:800px;' }).on('load', function () {
+						$(this).closest('.modal-dialog').css({ width: Math.min(800, $(this).width()) });
+					})
+				}, function (modal) {
+					modal.find('.modal-header').css({ border: 'none', position: 'absolute', zIndex: 5, right: 0 });
+					modal.find('.modal-body').css({ margin: -20 });
+					modal.find('.close').css({ color: '#fff', opacity: 0.9, 'text-shadow': '0px 2px rgba(0,0,0,0.33)' });
+					modal.on('click', function () {
+						modal.modal('hide');
+					});
+				});
+			}
 		})
 
 		$('#ckbrowser').each(function () {
@@ -183,6 +198,24 @@ define(['jquery', 'plupload'], function($, _ace, _emmet, Emmet) {
 		// set active in tree
 		$('.panel-left').find('.active').removeClass('active');
 		$('.panel-left [data-id='+$(this).data('id')+']').parent().addClass('active').parents('.has-children').addClass('open');
+
+		// How about jquery ui selectable
+		$('.grid-group, .table-selection').selectable({
+			delay: 50,
+			selected: function (event, ui) {
+				$(ui.selected).filter('.grid-group-item-selection, tr').find('input').each(function () {
+					this.checked = true;
+					$(this).trigger('change');
+				});
+			},
+			unselected: function (event, ui) {
+				$(ui.selected).filter('.grid-group-item-selection, tr').find('input').each(function () {
+					this.checked = false;
+					$(this).trigger('change');
+				});
+			}
+		});
+
 	};
 
 	file.change_view = function(el)

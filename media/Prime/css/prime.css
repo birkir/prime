@@ -426,10 +426,20 @@ body > .fullscreen.with-panel-right > .panel-right {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-
 .list-group-item.ui-draggable-dragging {
 	opacity: 0.85;
 }
 .list-group-item.ui-draggable-dragging .list-group-item-text {
 	display: none;
+}
+
+/** ui selectable **/
+.ui-selectable-helper {
+	position: absolute;
+	z-index: 100;
+	border: 1px dotted #f6ebae;
+	background: rgba(246, 235, 174, 0.5);
+}
+.grid-group-item.ui-selecting .grid-group-item-selection {
+	outline: 1px solid #4d90f0;
 }
