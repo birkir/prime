@@ -819,8 +819,8 @@ var prime = (function () {
 			input = $('<input/>', { type: 'text', value: text}).css({ display: 'inline', width: '75%', border: 'none', marginLeft: '4px', padding: 0 }).data('changed', false);
 
 		success = success || function (response) {
-			var active = $('.panel-left .active').children('a').data('id')
-			$('.panel-left').html(response).find('[data-id='+active+']').addClass('active');
+			var active = $('.panel-left .active').children('a').data('id');
+			$('.panel-left').html(response).find('[data-id='+active+']').parent().addClass('active');
 		};
 
 		// add icon and input

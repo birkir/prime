@@ -361,6 +361,11 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$file->type = 0;
 		$file->name = $this->request->post('name');
 		$file->save();
+
+		// Set tree view
+		$this->view = Request::factory('Prime/File/Tree')
+		->execute()
+		->body();
 	}
 
 	/**
@@ -373,6 +378,40 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		// Find file record
 		$file = ORM::factory('Prime_File', $this->request->param('id'))
 		->delete();
+
+		// Set tree view
+		$this->view = Request::factory('Prime/File/Tree')
+		->execute()
+		->body();
+	}
+
+	/**
+	 * Rename folder
+	 *
+	 * @return void
+	 */
+	public function action_folder_rename()
+	{
+		try 
+		{
+			// Find Folder and rename
+			$role = ORM::factory('Prime_File', $this->request->param('id'))
+			->values($this->request->post())
+			->save();
+		}
+		catch (ORM_Validation_Exception $e)
+		{
+			// Update JSON Response
+			$this->json = array(
+				'status'  => FALSE,
+				'message' => UTF8::ucfirst(implode(',', $e->errors('model')))
+			);
+		}
+
+		// Set tree view
+		$this->view = Request::factory('Prime/File/Tree')
+		->execute()
+		->body();
 	}
 
 	/**

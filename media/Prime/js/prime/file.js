@@ -36,7 +36,7 @@ define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 			var parent_id = node.children('a').data('id');
 			parent_id = parent_id || '';
 			$.ajax({
-				url: '/Prime/File/Create/' + parent_id,
+				url: '/Prime/File/Folder_Create/' + parent_id,
 				type: 'POST',
 				data: {
 					name: text

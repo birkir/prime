@@ -20,7 +20,7 @@
         <ul class="dropdown-menu" role="menu">
             <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/List/{{id}}" onclick="return prime.view(this.href);" tabindex="-1"><?=__('Open');?></a></li>
             <li class="divider"></li>
-            <li><a href="#" onclick="return prime.file.create(this);"><?=__('New folder...');?></a></li>
+            <li><a href="/Prime/File/Folder_Create" onclick="return prime.file.create(this);"><?=__('New folder...');?></a></li>
             <li class="divider"></li>
             <li class="{{#if root}}disabled{{/if}}"><a href="/Prime/File/Folder_Rename/{{id}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
             <li class="divider"></li>
