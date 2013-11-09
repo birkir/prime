@@ -249,6 +249,23 @@ class Controller_Prime_File extends Controller_Prime_Template {
 			// Set directory
 			$directory = APPPATH.'cache/files';
 
+			if ( ! is_dir($directory))
+			{
+				try
+				{
+					// Create the cache directory
+					mkdir($directory, 0755, TRUE);
+					
+					// Set permissions (must be manually set to fix umask issues)
+					chmod($directory, 0755);
+				}
+				catch (Exception $e)
+				{
+					throw new Kohana_Exception('Could not create cache directory :dir',
+						array(':dir' => Debug::path($directory)));
+				}
+			}
+
 			// Set filepath
 			$filepath = $directory.DIRECTORY_SEPARATOR.sha1($filename);
 
