@@ -19,11 +19,8 @@ class Controller_Prime_Install extends Controller {
 		// call parent before
 		parent::before();
 
-		// load prime configure
-		$prime = Kohana::$config->load('prime');
-
 		// check if no file has been generated
-		if ( ! empty($prime->as_array()))
+		if (file_exists(APPPATH.'install.prime'))
 		{
 			HTTP::redirect('Prime');
 			exit;
@@ -224,6 +221,7 @@ class Controller_Prime_Install extends Controller {
 			{
 				// throw errors finer...
 				$error = Debug::vars($e->errors());
+				exit;
 			}
 
 			// write prime configure
@@ -240,6 +238,9 @@ class Controller_Prime_Install extends Controller {
 
 			// write prime config
 			$this->write_config('prime', $prime);
+
+			// cant access install anymore
+			touch(APPPATH.'install.prime');
 
 			// redirect to login
 			HTTP::redirect('Prime');

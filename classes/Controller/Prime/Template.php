@@ -54,10 +54,7 @@ class Controller_Prime_Template extends Controller {
 	 */
 	public function install()
 	{
-		// Load Prime configuration
-		$prime = Kohana::$config->load('prime');
-
-		if (empty($prime->as_array()))
+		if ( ! file_exists(APPPATH.'install.prime'))
 		{
 			// Redirect to Installation page
 			HTTP::redirect('/Prime/Install');
