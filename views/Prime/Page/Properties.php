@@ -105,10 +105,6 @@
 						<?=Form::checkbox('ajax', 1, (bool) $page->ajax, ['id' => 'formAllowAjax']);?>
 						<?=__('Allow asynchronous requests (ajax)');?>
 					</label>
-					<label for="formAllowGzip" class="checkbox" style="font-weight: normal;">
-						<?=Form::checkbox('gzip', 1, (bool) $page->gzip, ['id' => 'formAllowGzip']);?>
-						<?=__('Compress response for compatible clients (gzip)');?>
-					</label>
 				</div>
 			</div>
 		</div>
