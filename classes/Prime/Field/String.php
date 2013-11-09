@@ -1,6 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Field String
+ * ### String Field
+ * Field input with text input in one line (<input/>)
+ *
+ * Parameter | Options                          | Default value
+ * ----------| ---------------------------------| -------------
+ * type      | string (text,url,date,etc.)      | text
+ * hidden    | boolean                          | false
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
@@ -9,6 +15,9 @@
  */
 class Prime_Field_String extends Prime_Field {
 
+	/**
+	 * @var string Template to show field as input
+	 */
 	protected $_input_view = 'Prime/Field/String';
 
-} // End Priem Field String
+}

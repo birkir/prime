@@ -1,6 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Field Boolean
+ * ### Boolean Field
+ * Field input with checkbox, radio options or dropdown.
+ *
+ * Parameter | Options                          | Default value
+ * ----------| ---------------------------------| -------------
+ * type      | string (checkbox, radio, select) | checkbox
+ * hidden    | boolean                          | false
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime

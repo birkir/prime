@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Module Html
+ * ### HTML Content
+ * Allows free editing of HTML content with WYSIWYG capabilities
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime/Module
@@ -10,17 +11,19 @@
 class Prime_Module_Html extends Prime_Module {
 
 	/**
-	 * Extend attributes for output
+	 * Extend attributes for wrap output
 	 *
 	 * @param string $name
 	 * @return array 
 	 */
 	public function attrs($name = NULL)
 	{
+		// Get wrap attributes
 		$attrs = parent::attrs($name);
 
 		if ($name === 'content' AND $this->option('editor_type', 'plaintext') === 'wysiwyg')
 		{
+			// Text will have WYSIWYG editor
 			$attrs['contenteditable'] = 'true';
 		}
 
@@ -80,7 +83,7 @@ class Prime_Module_Html extends Prime_Module {
 	 */
 	public function save(array $params = NULL)
 	{
-		// never save content
+		// Dont save content directly
 		unset($params['content']);
 
 		return parent::save($params);
@@ -107,10 +110,8 @@ class Prime_Module_Html extends Prime_Module {
 	 */
 	public function render()
 	{
-		$view = self::load_view('module/html', self::option('template'))
+		return self::load_view('module/html', self::option('template'))
 		->set('content', self::option('content'));
-
-		return $view;
 	}
 
-} // End Prime Module HTML
+}

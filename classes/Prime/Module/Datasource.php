@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Module Datasource
+ * ### Remote Data-Source
+ * Get remote data from datasource with authentication built in.
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime/Module
