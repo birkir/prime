@@ -84,7 +84,11 @@ INSERT INTO `prime_modules` (`controller`, `slug`, `name`, `description`, `versi
 ('Prime_Module_Html',            'prime.html',            'HTML Content',       'Allows free editing of HTML with WYSIWYG capabilities', '1.0', 1, 1),
 ('Prime_Module_Multiview',       'prime.multiview',       'Multi View',         'Displays a control which can contain other content', '1.0', 0, 2),
 ('Prime_Module_Datasource',      'prime.datasource',      'Remote Data-Source', 'Get remote data from datasource. Includes authentication.', '1.0', 0, 6),
-('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',       'Allows users to sign-in to the website.', '1.0', 0, 7);
+('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',       'Allows users to sign-in to the website.', '1.0', 0, 7),
+('Prime_Module_User_Forgot',     'prime.user.forgot',     'User Forgot Password', 'Enables user to reset his password through email address.', '1.0', 0, 8),
+('Prime_Module_User_Signup',     'prime.user.signup',     'User Sign Up', 'Allows users to sign-up to the website.', '1.0', 0, 9),
+('Prime_Module_Search',          'prime.search',          'Search Results', 'Display search results for specified query string', '1.0', 0, 10);
+
 
 --
 -- Table structure for table `prime_module_fieldsets`
