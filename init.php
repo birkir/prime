@@ -10,9 +10,8 @@ Cookie::$expiration = Date::WEEK;
 // Initialize prime cms
 Prime::init();
 
-
 // Media file serving router
-Route::set('media', 'media(/<file>)', array('file' => '.+'))
+Route::set('Prime_Media', 'media(/<file>)', array('file' => '.+'))
 	->defaults(array(
 		'controller' => 'Media',
 		'action'     => 'serve',
@@ -37,6 +36,19 @@ Route::set('Prime', 'Prime(/<controller>(/<action>(/<id>)))', array('id' => '.*'
 
 // Web routing
 Route::set('Prime_Web', '<query>', array('query' => '.*'))
+	->filter(function ($route, $params, $request) {
+
+		// Check for design mode
+		Prime::$design_mode = ((Arr::get($_GET, 'mode') === 'design') AND Auth::instance()->logged_in('prime'));
+
+		// Get selected page
+		$page = Prime::selected($request, $params['query']);
+
+		if ( ! $page->loaded() OR ($page->disabled AND ! Prime::$design_mode))
+		{
+			return FALSE;
+		}
+	})
 	->defaults(array(
 		'directory'  => 'Prime',
 		'controller' => 'Frontend',

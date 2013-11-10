@@ -85,9 +85,6 @@ class Prime {
 		// Load region controller
 		Prime::$region = new Prime_Region;
 
-		// Check for design mode
-		Prime::$design_mode = (bool) (Arr::get($_GET, 'mode', 'frontend') === 'design');
-
 		// Prime is now initialized
 		Prime::$_init = TRUE;
 	}
@@ -98,7 +95,7 @@ class Prime {
 	 * @param HTTP_Request The HTTP Request to use for detection
 	 * @return Prime_Page Selected Page or NULL
 	 */
-	public static function selected(HTTP_Request $request)
+	public static function selected(HTTP_Request $request, $uri = NULL)
 	{
 		if (intval($request->query('pageid')) > 0)
 		{
@@ -141,7 +138,7 @@ class Prime {
 		{
 			// Get selected by Page model
 			Prime::$selected_page = ORM::factory('Prime_Page')
-			->selected($request->param('query'));
+			->selected($uri);
 		}
 
 		return Prime::$selected_page;

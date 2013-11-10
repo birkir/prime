@@ -16,6 +16,9 @@ class Controller_Prime_Frontend extends Controller {
 	 */
 	public function action_process()
 	{
+		// Get selected page
+		$page = Prime::$selected_page;
+
 		// Create authentication instance
 		$auth = Auth::instance();
 
@@ -39,14 +42,6 @@ class Controller_Prime_Frontend extends Controller {
 			return $this->response->body($html);
 		}
 
-		// Get selected page
-		$page = Prime::selected($this->request);
-
-		if ( ! $page->loaded() OR ($page->disabled AND ! Prime::$design_mode))
-		{
-			throw HTTP_Exception::factory(404, 'Not found');
-		}
-
 		if ($page->redirect)
 		{
 			// Redirect client to Page redirect URL
@@ -54,7 +49,7 @@ class Controller_Prime_Frontend extends Controller {
 		}
 
 		if (($page->protocol === 'http'  AND $this->request->protocol() !== 'HTTP')
-		OR ($page->protocol === 'https' AND $this->request->protocol() !== 'HTTPS'))
+		OR  ($page->protocol === 'https' AND $this->request->protocol() !== 'HTTPS'))
 		{
 			// Allow client only to use specific protocols
 			throw new Kohana_Exception('The :protocol protocol is required. You are using :using', array(
