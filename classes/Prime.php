@@ -65,7 +65,7 @@ class Prime {
 	 */
 	public static $languages = array(
 		'en-us' => 'English',
-		'is-is' => 'Icelandic'
+		'is-is' => 'Íslenska'
 	);
 
 	/**
