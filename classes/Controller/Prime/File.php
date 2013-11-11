@@ -17,7 +17,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	/**
 	 * @var array Actions allowed without authentication
 	 */
-	public $auto_actions = array('get')
+	public $auto_actions = array('get');
 
 	/**
 	 * Default page
