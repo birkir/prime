@@ -221,7 +221,7 @@ class Controller_Prime_Install extends Controller {
 			{
 				// throw errors finer...
 				$error = Debug::vars($e->errors());
-				exit;
+				return;
 			}
 
 			// write prime configure
