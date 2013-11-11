@@ -76,44 +76,52 @@ define(['jquery'], function($) {
 		// --------------------
 		if (table.hasClass('table-sortable')) {
 
-			if (table.parents('.modal-body').length === 0) {
-				var thead = table.children('thead').css({ opacity: 0 }),
-					containment = table.parent(),
-					fixed = thead
-				.clone()
-				.css({ top: containment.offset().top})
-				.addClass('header-fixed')
-				.on('change', 'input[type=checkbox].s', function () {
-					var checkbox = thead.find('input[type=checkbox].s');
-					checkbox[0].checked = this.checked;
-					checkbox.trigger('change');
-				})
-				.appendTo(table);
-				containment.on('scroll', function () {
-					if (containment.scrollTop() > 0) table.addClass('scrolled');
-					else table.removeClass('scrolled');
+			var thead = table.children('thead').css({ opacity: 0 }),
+				containment = table.parent(),
+				fixed = thead
+			.clone()
+			.css({ top: containment.offset().top})
+			.addClass('header-fixed')
+			.on('change', 'input[type=checkbox].s', function () {
+				var checkbox = thead.find('input[type=checkbox].s');
+				checkbox[0].checked = this.checked;
+				checkbox.trigger('change');
+			})
+			.appendTo(table);
+			containment.on('scroll', function () {
+				if (containment.scrollTop() > 0) table.addClass('scrolled');
+				else table.removeClass('scrolled');
+			});
+			$(window).on('resize', function () {
+				fixed
+				.find('tr > th')
+				.each(function (i, item) {
+					$(this).css('width', thead.find('tr > th:eq(' + i + ')').outerWidth());
 				});
-				fixed.find('input[type=checkbox]').on('click', function () {
-					console.log('foobar');
-				});
-				$(window).on('resize', function () {
-					fixed
-					.find('tr > th')
-					.each(function (i, item) {
-						$(this).css('width', thead.find('tr > th:eq(' + i + ')').outerWidth());
-					});
-				}).trigger('resize');
-			}
+			}).trigger('resize');
 
 			require(['../lib/tablesorter.min'], function (tablesorter) {
-				table.tablesorter({
+				var tsConf = {
 					headerTemplate: '{content} {icon}',
-					selectorHeaders: 'thead.header-fixed tr th',
+					selectorHeaders: 'thead tr th',
 					tableClass: 'table-sortable',
 					cssAsc: 'table-header-asc',
 					cssDesc: 'table-header-desc',
-					cssIcon: 'fa fa-chevron-down pull-right'
-				});
+					cssIcon: 'fa fa-chevron-down pull-right',
+					widthFixed: true,
+					widgets: [],
+					widgetOptions: {}
+				}
+				if (table.hasClass('table-filter')) {
+					tsConf.widgets.push('filter');
+					tsConf.widgetOptions.filter_anyMatch = true;
+					tsConf.widgetOptions.filter_columnFilters = false;
+					tsConf.widgetOptions.filter_reset = '.tablesorter-reset-button';
+				}
+				table.tablesorter(tsConf);
+				if (table.hasClass('table-filter')) {
+					$.tablesorter.filter.bindSearch(table, $('.tablesorter-filter-input'));
+				}
 			});
 		}
 
