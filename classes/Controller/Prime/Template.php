@@ -78,12 +78,14 @@ class Controller_Prime_Template extends Controller {
 		$this->install();
 
 		// Checks if User is logged in with Prime role
-		$logged_in = (Auth::instance()->logged_in('prime') OR in_array(strtolower($this->request->action()), $this->auth_actions));
+		$logged_in = (Auth::instance()->logged_in('prime'));
 
-		if ($this->authentication AND ! $logged_in)
+		// Checks if client is allowed to pass authentication
+		$pass = in_array(strtolower($this->request->action()), $this->auth_actions);
+
+		if ($this->authentication AND ! ($logged_in OR $pass))
 		{
 			// Redirect User to Login page because he is not logged in
-			// TODO: logged in users that dont have prime role.
 			return HTTP::redirect('Prime/Account/Login');
 		}
 
