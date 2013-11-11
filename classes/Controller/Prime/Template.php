@@ -30,6 +30,11 @@ class Controller_Prime_Template extends Controller {
 	public $authentication = TRUE;
 
 	/**
+	 * @var array Actions allowed without authentication
+	 */
+	public $auth_actions = array();
+
+	/**
 	 * Before action
 	 *
 	 * @return void
@@ -73,7 +78,7 @@ class Controller_Prime_Template extends Controller {
 		$this->install();
 
 		// Checks if User is logged in with Prime role
-		$logged_in = Auth::instance()->logged_in('prime');
+		$logged_in = (Auth::instance()->logged_in('prime') OR in_array(strtolower($this->request->action()), $this->auth_actions));
 
 		if ($this->authentication AND ! $logged_in)
 		{
