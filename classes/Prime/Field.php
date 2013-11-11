@@ -20,6 +20,14 @@ class Prime_Field {
 	protected $_defaults = [];
 
 	/**
+	 * Field params
+	 */
+	public function params()
+	{
+		return array();
+	}
+
+	/**
 	 * Get value for field
 	 *
 	 * @return string

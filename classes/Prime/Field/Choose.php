@@ -15,6 +15,50 @@ class Prime_Field_Choose extends Prime_Field {
 	protected $_input_view = 'Prime/Field/Choose';
 
 	/**
+	 * Field fields
+	 *
+	 * @return void
+	 */
+	public function params()
+	{
+		return array(
+			array(
+				'name'        => 'items',
+				'caption'     => 'Items',
+				'field'       => 'Prime_Field_Text',
+				'default'     => NULL,
+				'options'     => array(
+					'placeholder' => 'eg. foo: bar \\n',
+					'rows' => 5
+				)
+			)
+		);
+	}
+
+	public static function items($text = NULL)
+	{
+		if (is_array($text)) return $text;
+
+		// get option items
+		$items = array();
+		$lines = explode("\n", $text);
+
+		foreach ($lines as $line)
+		{
+			$key = substr($line, 0, strpos($line, ':'));
+			$val = substr($line, strpos($line, ':') + 1);
+			$items[UTF8::trim($key)] = UTF8::trim($val);
+		}
+
+		if (count($items) === 0)
+		{
+			$items[] = __('no options');
+		}
+
+		return $items;
+	}
+
+	/**
 	 * Overload Field Data as Text
 	 *
 	 * @param  mixed  $item
@@ -28,11 +72,36 @@ class Prime_Field_Choose extends Prime_Field {
 		// get options
 		$options = Arr::get($this->field, 'options', []);
 
-		// get option items
-		$items = Arr::get($options, 'items', []);
+		// get items as array
+		$items = self::items(Arr::get($options, 'items'));
 
 		// find selected value in options
 		return Arr::get($items, $str, NULL);
 	}
 
-} // End Priem Field Choose
+	/**
+	 * Overload as input method
+	 *
+	 * @param  ORM   Field object
+	 * @param  array Error list
+	 * @return View
+	 */
+	public function input($item, $errors = [])
+	{
+		// get options
+		$options = Arr::get($this->field, 'options', []);
+
+		// get items as array
+		$items = self::items(Arr::get($options, 'items'));
+
+		// get parent view
+		$view = parent::input($item, $errors);
+
+		// set view fieldset orm
+		$view->items = $items;
+
+		// return view
+		return $view;
+	}
+
+}

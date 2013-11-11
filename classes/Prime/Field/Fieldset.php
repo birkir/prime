@@ -15,6 +15,54 @@ class Prime_Field_Fieldset extends Prime_Field {
 	protected $_input_view = 'Prime/Field/Fieldset';
 
 	/**
+	 * Field fields
+	 *
+	 * @return void
+	 */
+	public function params()
+	{
+		return array(
+			array(
+				'name'    => 'type',
+				'caption' => 'Type',
+				'field'   => 'Prime_Field_Choose',
+				'default' => 'list',
+				'options' => array(
+					'items' => array(
+						'list' => 'Fieldset List',
+						'item' => 'Fieldset Item'
+					)
+				)
+			),
+			array(
+				'name'    => 'fieldset',
+				'caption' => 'Fieldset',
+				'field'   => 'Prime_Field_Fieldset',
+				'default' => NULL
+			),
+			array(
+				'name'    => 'multiple',
+				'caption' => 'Multiple',
+				'field'   => 'Prime_Field_Boolean',
+				'default' => FALSE
+			)
+		);
+	}
+
+	/**
+	 * Construct the field
+	 *
+	 * @return self
+	 */
+	public function __construct($field)
+	{
+		// construct the parent
+		parent::__construct($field);
+
+		return $this;
+	}
+
+	/**
 	 * Overload Field Data as Text
 	 *
 	 * @param  mixed  $item
@@ -22,19 +70,41 @@ class Prime_Field_Fieldset extends Prime_Field {
 	 */
 	public function text($item)
 	{
+		$options = Arr::get($this->field, 'options', []);
+
+		// Get field type
+		$type = Arr::get($options, 'type', 'list');
+
 		// get parent field
 		$str = parent::text($item);
 
 		if (intval($str) === 0)
-			return __('No fieldset selected');
+		{
+			return __('No fieldset'.($type === 'item' ? ' item' : NULL).' selected');
+		}
 
-		// get page
-		$fieldset = ORM::factory('Prime_Module_Fieldset', $str);
+		if ($type === 'item')
+		{
+			$item = ORM::factory('Prime_Module_Fieldset_Item', $str);
 
-		if ($fieldset->loaded())
-			return $fieldset->name;
+			if ($item->loaded())
+			{
+				$data = $item->data;
+				return reset($data);
+			}
+			else
+			{
+				return __('Invalid fieldset item');
+			}
+		}
 		else
-			return __('Invalid fieldset');
+		{
+			// get fieldset
+			$fieldset = ORM::factory('Prime_Module_Fieldset', $str);
+
+			return $fieldset->loaded() ? $fieldset->name : __('Invalid fieldset');
+		}
+
 	}
 
 	/**
@@ -46,14 +116,22 @@ class Prime_Field_Fieldset extends Prime_Field {
 	 */
 	public function input($item, $errors = [])
 	{
+		$options = Arr::get($this->field, 'options', []);
+
 		// get parent view
 		$view = parent::input($item, $errors);
 
-		// set view fieldset orm
-		$view->fieldset = ORM::factory('Prime_Module_Fieldset', $view->value);
+		// Get field type
+		$view->type = Arr::get($options, 'type', 'list');
+
+		// Get selected fieldset
+		$view->fieldset = ORM::factory('Prime_Module_Fieldset', Arr::get($options, 'fieldset'));
+
+		// Get field item
+		$view->item = ORM::factory('Prime_Module_Fieldset'.($view->type === 'item' ? '_Item' : NULL), $view->value);
 
 		// return view
 		return $view;
 	}
 
-} // End Priem Field Fieldset
+}

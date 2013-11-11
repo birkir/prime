@@ -93,6 +93,27 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		}
 	}
 
+	public function action_select_list()
+	{
+		// load fieldset
+		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
+
+		// throw error if fieldset was not found
+		if ( ! $fieldset->loaded())
+			throw HTTP_Exception::factory(404, 'Fieldset not found');
+
+		// setup view
+		$this->view = View::factory('Prime/Module/Fieldset/SelectList')
+		->set('fieldset', $fieldset)
+		->set('fields', $fieldset->fields());
+
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		// Response body
+		$this->response->body($this->view);
+	}
+
 	/**
 	 * Create new fieldset
 	 *

@@ -412,6 +412,18 @@ var prime = (function () {
 					buttons: [save, cancel]
 				}, function (modal) {
 
+					modal.find('.field-options').find('input, textarea, select').each(function () {
+						$(this).attr('name', 'option-'+$(this).attr('name'));
+					});
+
+					modal.find('select[name=field]').on('change', function () {
+						var selected = $(this).find('option:selected').text();
+						console.log(selected);
+						modal.find('.field-options').addClass('hide').find('input, textarea, select').attr('disabled', 'disabled');
+						modal.find('.field-options#f' + selected).removeClass('hide').find('input, textarea, select').removeAttr('disabled');
+					})
+					.trigger('change');
+
 					modal.find('#fieldOptions').on('keyup', function () {
 						var value = $(this).val(),
 						    formGroup = $(this).parents('.form-group');
@@ -710,6 +722,80 @@ var prime = (function () {
 
 				// visually set icon and node name
 				visual.html('<i class="icon-file" style="font-size: 14px; color: #555;"></i> ' + modal.find('.active > a').text().trim());
+			});
+		});
+	};
+
+	app.select_list = function (el, url, nothing_selected) {
+
+		// setup variables with objects and dom
+		var group    = $(el).parents('.form-group'),
+            selected = group.find('input[type=hidden]'),
+		    visual   = group.find('.form-control'),
+		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
+		    filter   = $('<input/>', { class: 'form-control input-sm pull-left tablesorter-filter-input', placeholder: prime.strings.filter }).css({ marginLeft: 10, width: 100 }),
+		    reset    = $('<button/>', { class: 'btn btn-default btn-sm pull-left tablesorter-reset-button', text: prime.strings.reset }),
+		    select   = $('<button/>', { class: 'btn btn-primary btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
+
+		// setup ajax dialog with page tree
+		var dialog = prime.dialog({
+			remote: url,
+			buttons: [clear, filter, reset, select, cancel]
+		},
+
+		// process modal once loaded
+		function (modal) {
+
+			modal.find('table')
+
+			// set modal dialog width and padding
+			modal.find('.modal-dialog').css({
+				width: 640,
+				paddingTop: 90
+			});
+
+			// remove modal header
+			modal.find('.modal-header').remove();
+
+			modal.find('tbody tr[data-id=' + (selected.val()) + ']').each(function () {
+				$(this).addClass('warning');
+			});
+
+			// change item
+			modal.find('tbody tr').on('click', function () {
+				modal.find('tbody tr.warning').removeClass('warning');
+				$(this).addClass('warning');
+			})
+			.on('dblclick', function () {
+				select.trigger('click');
+			});
+
+			// attach event handler to clear button
+			clear.on('click', function () {
+
+				// set selected page value to null
+				selected.val('');
+
+				// set visually no page selected
+				visual.html('<span class="text-muted">' + nothing_selected + '</span>');
+			});
+
+			// attach click handler to select button
+			select.on('click', function () {
+
+				var tr = modal.find('tbody tr.warning'),
+				    name = tr.find('td').eq(0).text().trim();
+
+				// set selected page id as value
+				selected.val(tr.data('id'));
+
+				// visually set icon and node name
+				visual.html('<i class="icon-file" style="font-size: 14px; color: #555;"></i> (id: ' + tr.data('id') + ') ' + name);
+			});
+
+			reset.on('click', function () {
+				filter.val('');
 			});
 		});
 	};

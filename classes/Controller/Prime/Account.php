@@ -109,6 +109,8 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 			'clear' => __('Clear'),
 			'select' => __('Select'),
 			'loading' => __('Loading...'),
+			'filter' => __('Filter'),
+			'reset' => __('Reset'),
 			'validate' => array(
 				'required' => __('This field is required.'),
 				'remote' => __('Please fix this field.'),

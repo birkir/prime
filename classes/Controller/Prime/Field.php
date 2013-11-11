@@ -17,7 +17,10 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	private static function fields()
 	{
 		// Fields array
-		$fields = array();
+		$fields = array(
+			'select' => array(),
+			'items' => array()
+		);
 
 		// List field files
 		$files = Kohana::list_files('classes/Prime/Field');
@@ -39,7 +42,8 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 				$field = call_user_func(array($file, 'factory'));
 
 				// Push to fields array
-				$fields[$file] = $field->name;
+				$fields['select'][$file] = $field->name;
+				$fields['items'][$file]  = $field;
 			}
 		}
 
@@ -121,18 +125,51 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 		// Set resource type and id
 		$resource_type_id = implode(':', array($field->resource_type, $field->resource_id));
 
+		// Get fields
+		$fields = self::fields();
+
+		// Sort fields messy function
+		uasort($fields['select'], function ($a, $b) {
+			$fieldSort = array('String' => 1,'Text' => 2,'Choose' => 3,'Boolean' => 4);
+			if (isset($fieldSort[$a])) {
+				if (isset($fieldSort[$b])) {
+					return strcmp($fieldSort[$a], $fieldSort[$b]);
+				} else {
+					return -1;
+				}
+			} else if (isset($fieldSort[$b])) {
+				return 1;
+			} else {
+				return strcmp($a, $b);
+			}
+		});
+
 		// Setup view
 		$this->view = View::factory('Prime/Field/Editor/Fieldset')
 		->set('item', $field)
 		->set('id', $field->resource_id)
 		->set('type', $field->resource_type)
-		->set('fields', self::fields())
+		->set('fields', $fields)
 		->set('action', '/Prime/Field/' . ($field->loaded() ? 'Edit/'.$field->id : 'Create/'.$resource_type_id));
 
 		if ($this->request->method() === HTTP_Request::POST)
 		{
+			$post = $this->request->post();
+			$options = [];
+
+			foreach ($post as $key => $value)
+			{
+				if (substr($key, 0, strlen('option-')) === 'option-')
+				{
+					$options[substr($key, strlen('option-'))] = $value;
+				}
+			}
+
+			$post['options'] = json_encode($options);
+			$post['options'] = $post['options'] === '[]' ? '' : $post['options'];
+
 			// Add post values to orm
-			$field->values($this->request->post());
+			$field->values($post);
 
 			try
 			{

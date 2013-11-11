@@ -21,6 +21,30 @@ class Prime_Field_Boolean extends Prime_Field {
 	protected $_input_view = 'Prime/Field/Boolean';
 
 	/**
+	 * Field fields
+	 *
+	 * @return void
+	 */
+	public function params()
+	{
+		return array(
+			array(
+				'name'        => 'type',
+				'caption'     => 'Type',
+				'field'       => 'Prime_Field_Choose',
+				'default'     => 'checkbox',
+				'options'     => array(
+					'items' => array(
+						'checkbox' => 'Checkbox',
+						'radio'    => 'Radio',
+						'select'   => 'Dropdown'
+					)
+				)
+			)
+		);
+	}
+
+	/**
 	 * Overload Field Data as Text
 	 *
 	 * @param  mixed  $item
