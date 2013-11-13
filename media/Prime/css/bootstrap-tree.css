@@ -100,3 +100,11 @@
 .nav-tree .list-group-item.disabled > b {
     opacity: 0.5;
 }
+
+.nav-tree .list-group-item > i.right {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    opacity: 0.5;
+    font-size: 12px;
+}

@@ -194,6 +194,13 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 
 			$item->data = json_encode($data);
 			$item->save();
+
+			Cookie::set('prime-publish-on-save', isset($post['_publish']));
+
+			if (isset($post['_publish']))
+			{
+				$item->publish();
+			}
 		}
 
 		// render view
@@ -217,6 +224,28 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 			}
 
 			$item->delete();
+		}
+
+		$this->response->body($view->execute());
+	}
+
+	public function action_publish()
+	{
+		$this->auto_render = FALSE;
+
+		$fields = explode(':', $this->request->param('id'));
+		$view = NULL;
+
+		foreach ($fields as $field)
+		{
+			$item = ORM::factory('Prime_Module_Fieldset_Item', $field);
+
+			if ($item->loaded() AND $view === NULL)
+			{
+				$view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
+			}
+
+			$item->publish();
 		}
 
 		$this->response->body($view->execute());
@@ -253,7 +282,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		// node to move
 		$item = ORM::factory('Prime_Module_Fieldset_Item', $item)
 		->position($reference)
-		->save();
+		->reorder();
 	}
 
 } // End Prime Module Fieldset

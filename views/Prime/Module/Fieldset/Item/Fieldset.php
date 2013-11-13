@@ -8,9 +8,9 @@
 		<div class="navbar navbar-toolbar navbar-default">
 			<div class="btn-toolbar">
 				<div class="btn-group">
-					<?=Form::button(NULL, __('Save'), [
+					<?=Form::button(NULL, __('Save changes'), [
 						'type' => 'submit',
-						'class' => 'btn btn-primary'
+						'class' => 'btn btn-danger'
 					]);?>
 				</div>
 				<div class="btn-group">
@@ -18,6 +18,12 @@
 						'class' => 'btn btn-default',
 						'onclick' => 'return prime.view(this.href);'
 					]);?>
+				</div>
+				<div class="btn-group">
+					<label for="publishOnSave" class="checkbox-inline" style="padding-top: 10px;">
+						<?=Form::checkbox('_publish', 1, (bool) Cookie::get('prime-publish-on-save', FALSE), array('id' => 'publishOnSave'));?>
+						<?=__('Publish on save');?>
+					</label>
 				</div>
 			</div>
 		</div>

@@ -165,14 +165,14 @@ class Prime {
 			else
 			{
 				// Fix node name
-				$node = str_replace(MODPATH.'prime/'.$mask, 'prime:', $node);
+				// $node = str_replace(MODPATH.'prime/'.$mask, 'prime:', $node);
 				$node = str_replace(MODPATH.'prime/'.$mask, NULL, $node);
 				$node = str_replace([APPPATH, MODPATH, SYSPATH], NULL, $node);
 				$node = substr($node, 0, strlen($mask)) === $mask ? substr($node, strlen($mask)) : $node;
 				$node = substr($node, 0, strrpos($node, '.'));
 
 				// Push to list array
-				$list[str_replace('prime:', NULL, $node)] = $node;
+				$list[$node] = $node;
 			}
 		}
 
@@ -181,7 +181,7 @@ class Prime {
 
 	/**
 	 * Recursively finds all of the files in the specified directory at any location in the
-	 * [Cascading Filesystem], and returns an array of all the files found, sorted alphabetically.
+	 * [Cascading Filesystem], and returns an array of all the files found, sorted alphabetically, folders first.
 	 *
 	 * @param string Directory name
 	 * @param array  List of paths to search
@@ -198,11 +198,11 @@ class Prime {
 		if ($paths === NULL)
 		{
 			// Use the default paths
-			$paths = Kohana::$_paths;
+			$paths = array(APPPATH, MODPATH, SYSPATH);
 		}
 
 		// Create an array for the files
-		$found = array();
+		$tree = array();
 
 		foreach ($paths as $path)
 		{
@@ -213,7 +213,6 @@ class Prime {
 
 				foreach ($dir as $file)
 				{
-					// Get the file name
 					$filename = $file->getFilename();
 
 					if ($filename[0] === '.' OR $filename[strlen($filename)-1] === '~')
@@ -222,46 +221,24 @@ class Prime {
 						continue;
 					}
 
-					// Relative filename is the array key
-					$key = $directory.$filename;
-	 
-					if ($file->isDir())
+					$node = array(
+						'file'     => $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),
+						'folder'   => $file->isDir(),
+						'children' => array()
+					);
+
+					if ($file->isDir() AND ($children = Prime::list_files($directory.$filename, $paths)))
 					{
-						if ($sub_dir = Kohana::list_files($key, $paths))
-						{
-							if (isset($found[$key]))
-							{
-								// Append the sub-directory list
-								$found[$key] += $sub_dir;
-							}
-							else
-							{
-								// Create a new sub-directory list
-								$found[$key] = $sub_dir;
-							}
-						}
-						else
-						{
-							// Initialize sub-directory key
-							$found[$key] = [];
-						}
+						$node['children'] = $children;
 					}
-					else
-					{
-						if ( ! isset($found[$key]))
-						{
-							// Add new files to the list
-							$found[$key] = realpath($file->getPathName());
-						}
-					}
+
+					// Attach node to tree
+					$tree[$directory.$filename] = $node;
 				}
 			}
 		}
 
-		// Sort the results alphabetically
-		ksort($found);
-
-		return $found;
+		return $tree;
 	}
 
 	/**

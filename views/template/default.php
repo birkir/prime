@@ -40,14 +40,7 @@
 		</div>
 
 		<div class="container">
-			<div class="row">
-				<div class="col-sm-6">
-					<?=$region->content;?>
-				</div>
-				<div class="col-sm-6">
-					<?=$region->foobar;?>
-				</div>
-			</div>
+			<?=$region->content;?>
 		</div>
 
 		<script src="/media/Prime/js/lib/jquery-2.0.3.min.js"></script>

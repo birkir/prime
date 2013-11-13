@@ -10,6 +10,16 @@
 class Model_Prime_Module extends ORM {
 
 	/**
+	 * @var boolean Model is not sortable
+	 */
+	protected $_sortable = FALSE;
+
+	/**
+	 * @var boolean Model is not revision controlled
+	 */
+	protected $_revision = FALSE;
+
+	/**
 	 * Always order by ascending position
 	 *
 	 * @return parent::find_all

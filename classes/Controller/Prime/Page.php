@@ -168,6 +168,35 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	}
 
 	/**
+	 * Publish the pagea and all of its regions
+	 *
+	 * @return void
+	 */
+	public function action_publish()
+	{
+		// Get page
+		$page = ORM::factory('Prime_Page', $this->request->param('id'));
+
+		foreach ($page->regions->find_all() as $region)
+		{
+			if ($region->published !== $region->revision)
+			{
+				// Publish region
+				$region->publish();
+			}
+		}
+
+		if ($page->published !== $page->revision)
+		{
+			// Publish page
+			$page->publish();
+		}
+
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
+	}
+
+	/**
 	 * Toggle page visibility on or off
 	 *
 	 * @return void
@@ -249,7 +278,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// Find page and re-position it
 		$page = ORM::factory('Prime_Page', $page)
 		->position($reference)
-		->save();
+		->reorder();
 	}
 
 	/**

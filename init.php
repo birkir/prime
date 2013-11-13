@@ -39,7 +39,7 @@ Route::set('Prime_Web', '<query>', array('query' => '.*'))
 	->filter(function ($route, $params, $request) {
 
 		// Check for design mode
-		Prime::$design_mode = ((Arr::get($_GET, 'mode') === 'design') AND Auth::instance()->logged_in('prime'));
+		Prime::$design_mode = Model_Prime::$_draft = ((Arr::get($_GET, 'mode') === 'design') AND Auth::instance()->logged_in('prime'));
 
 		// Get selected page
 		$page = Prime::selected($request, $params['query']);

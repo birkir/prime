@@ -1,8 +1,11 @@
 <?php if ( ! $request->is_initial()): ?>
-	<span class="list-group-header"><?=__('Site Tree');?></span>
+	<div class="visible-xs">
+		<button class="pull-right btn btn-default btn-block" onclick="$(this).parent().next().next().toggleClass('hidden-xs');">Open Site Tree</button>
+	</div>
+	<span class="list-group-header hidden-xs"><?=__('Site Tree');?></span>
 <?php endif; ?>
 
-<ul class="nav-tree list-group scrollable" <?php if ($request->is_initial()): ?>style="margin: -20px;border: none;overflow: auto;max-height: 220px;"<?php else: ?>data-identifier="page"<?php endif; ?>>
+<ul class="nav-tree list-group scrollable hidden-xs" <?php if ($request->is_initial()): ?>style="margin: -20px;border: none;overflow: auto;max-height: 220px;"<?php else: ?>data-identifier="page"<?php endif; ?>>
 
 	<li class="list-group-item has-children open">
 
@@ -26,6 +29,7 @@
 				<li{{#if visible}} class="enabled"{{/if}}><a href="/Prime/Page/Visible/{{id}}:{{#if visible}}false{{else}}true{{/if}}" data-id="{{id}}" tabindex="1" onclick="return prime.page.visible(this);"><i class="icon-checkmark"></i><?=__('Visible in menu');?></a></li>
 				<li><a href="/Prime/Page/Properties/{{id}}" tabindex="-1" data-id="{{id}}" onclick="return prime.page.properties(this);"><?=__('Properties');?></a></li>
 				<li class="divider"></li>
+				<li><a href="/Prime/Page/Publish/{{id}}" tabindex="-1" data-id="{{id}}" onclick="return prime.page.publish(this);"><i class="fa fa-sign-out"></i><?=__('Publish');?></a></li>
 				<li><a href="/Prime/Page/Move/{{id}}" tabindex="-1" data-id="{{id}}" onclick="return prime.page.move(this);"><i class="fa fa-folderalt"></i><?=__('Move to...');?></a></li>
 				<li><a href="/Prime/Page/Rename/{{id}}" tabindex="-1" onclick="return prime.page.rename(this);"><?=__('Rename...');?></a></li>
 				<li class="divider"></li>

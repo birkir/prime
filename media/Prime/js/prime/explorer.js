@@ -157,35 +157,109 @@ define(['jquery', 'ace', 'emmet', 'aceEmmet'], function($, _ace, _emmet, Emmet) 
 		element.editor = editor;
 	};
 
-	explorer.arritor = function () {
-		var form = $(this).find('form').on('submit', function () {
+	explorer.create = function (element, type) {
+
+		// get node
+		var node = $('.has-context').parent(),
+		    id = node.children('a').data('id'),
+		    icon = type === 'folder' ? 'icon-folder-close' : 'icon-file';
+
+		var li = $('<li/>', { class: 'list-group-item' }),
+		    b  = $('<b/>', { class: 'caret', onselectstart: 'return false;' }).appendTo(li),
+		    a  = $('<a/>', { href: '#', class: 'has-context' }).appendTo(li),
+		    span = $('<span/>', { html: '<i class="'+icon+'"></i> ' + (type === 'folder' ? 'Folder' : 'File') + ' name...' }).appendTo(a);
+
+		// add ul to node if needed
+		if ( ! node.hasClass('has-children')) {
+			$('<ul/>', { class: 'list-group' }).appendTo(node);
+			node.addClass('has-children');
+		}
+
+		// open node
+		node.addClass('open');
+
+		// append list item to ul
+		node.children('ul').append(li);
+		node.children('a').removeClass('has-context');
+		$('.open.tree-context').remove();
+
+		// fake context menu
+		a[0].context = $();
+
+		prime.rename({ href: null }, function (text) {
 			$.ajax({
-				url: $(this).attr('action'),
-				data: $(this).serialize(),
-				type: 'POST'
+				url: element.href,
+				dataType: 'json',
+				type: 'POST',
+				data: {
+					parent: node.children('a').data('path') || null,
+					name: text,
+					type: type
+				}
 			})
 			.done(function (response) {
-				console.log(response);
+				if (response.status === true) {
+					$('.panel-left').html(response.data).find('[data-id=' + id + ']').parent().addClass('open');
+				} else {
+					li.remove();
+					if (node.children('ul').children('li').length === 0) {
+						node.removeClass('has-children open').children('ul').remove();
+					}
+					prime.dialog({
+						alert: true,
+						title: 'Error',
+						body: response.message
+					});
+				}
 			});
-			return false;
+		}, function () {
+			li.remove();
+			if (node.children('ul').children('li').length === 0) {
+				node.removeClass('has-children open').children('ul').remove();
+			}
 		});
 
-		$(this).find('.arritor-save').on('click', function () {
-			form.trigger('submit');
-		});
+		return false;
 	};
+
+	explorer.delete = function (item) {
+
+		// create confirm dialog
+		var dialog = prime.dialog({
+			backdrop: true,
+			title: $(item).data('title'),
+			body: $(item).data('message'),
+			confirm: function () {
+				$.ajax({
+					url: item.href,
+					dataType: 'json'
+				})
+				.done(function (response) {
+					if (response.status === true) {
+						$('.panel-left').html(response.data);
+					} else {
+						prime.dialog({
+							alert: true,
+							title: 'Error',
+							body: response.message
+						});
+					}
+				});
+			}
+		});
+
+		return false;
+	}
 
 	/**
 	 * Extend elements list
 	 */
 	prime.elementsExternal.push(function () {
 		$(this).find('.ace-editor').each(explorer.editor);
-		$(this).find('.arritor').each(explorer.arritor);
 	});
 
 	// run editors
 	$('.ace-editor').each(explorer.editor);
-	$('.arritor').each(explorer.editor);
 
 	return explorer;
 

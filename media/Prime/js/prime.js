@@ -117,7 +117,7 @@ var prime = (function () {
 			});
 
 			if (options.confirm !== false) {
-				modalBtnYes.on('click', options.confirm);
+				modalBtnYes.on('click', options.confirm).trigger('focus');
 			}
 
 			// do callback if set
@@ -370,15 +370,16 @@ var prime = (function () {
 	app.field.properties = function(item, id) {
 
 		// dialog buttons
-		var create = $('<button/>', { class: 'btn btn-success btn-sm ', html: prime.strings.addField }),
-		    edit   = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.edit }),
-		    remove = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.delete });
+		var create  = $('<button/>', { class: 'btn btn-danger btn-sm create', html: prime.strings.addField }),
+		    edit    = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.edit }),
+		    remove  = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.delete }),
+		    publish = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: 'Publish' });
 
 		// setup dialog
 		var dialog = prime.dialog({
 			title:  $(item).text(),
 			remote: item.href,
-			buttons: [edit, remove, create]
+			buttons: [edit, remove, publish, create]
 		}, function (modal) {
 
 			var resource_id = dialog.find('[data-resource-id]').data('resource-id'),
@@ -388,6 +389,7 @@ var prime = (function () {
 					var which = (this.selected.length === 0 ? 'addClass' : 'removeClass');
 					edit[which]('disabled');
 					remove[which]('disabled');
+					publish[which]('disabled');
 					if (this.selected.length > 1) {
 						edit.addClass('disabled');
 					}
@@ -400,10 +402,10 @@ var prime = (function () {
 			var fieldsetEvent = function () {
 
 				// dialog2 buttons
-				var save = $('<button/>', { class: 'btn btn-primary', text: prime.strings.save }),
+				var save = $('<button/>', { class: 'btn btn-danger', text: prime.strings.save }),
 					cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' }),
-					edit = ! $(this).hasClass('btn-success'),
-					sel = $(this).data('id') || selected[0];
+					sel = $(this).data('id') || selected[0],
+					edit = ! $(this).hasClass('create');
 
 				// setup dialog
 				var dialog2 = prime.dialog({
@@ -418,7 +420,6 @@ var prime = (function () {
 
 					modal.find('select[name=field]').on('change', function () {
 						var selected = $(this).find('option:selected').text();
-						console.log(selected);
 						modal.find('.field-options').addClass('hide').find('input, textarea, select').attr('disabled', 'disabled');
 						modal.find('.field-options#f' + selected).removeClass('hide').find('input, textarea, select').removeAttr('disabled');
 					})
@@ -450,6 +451,8 @@ var prime = (function () {
 						dialog2.find('form').trigger('submit');
 					});
 				});
+
+				return false;
 			};
 
 			// table changed
@@ -460,6 +463,21 @@ var prime = (function () {
 
 			// attach edit button event
 			edit.on('click', fieldsetEvent);
+
+			// attach publish button event
+			publish.on('click', function () {
+				$.ajax({
+					url: '/Prime/Field/Publish/' + selected.join(':')
+				})
+				.done(function (response) {
+					// reload view
+					dialog.find('.modal-body').html(response);
+					dialog.each(prime.elements);
+					dialog.find('table').on('changed', changedFn)
+				});
+
+				return false;
+			});
 
 			// attach doubleclick event
 			dialog.find('table tbody tr').on('dblclick', fieldsetEvent);
@@ -811,7 +829,7 @@ var prime = (function () {
 
 		// tree node click
 		// ---------------
-		.on('click', '.nav-tree a:not([unselectable])', function () {
+		.on('click', '.nav-tree a:not([unselectable])', function (e) {
 			$(this).closest('.nav-tree').find('li').removeClass('active');
 			$(this).parent('li').addClass('active');
 		})
@@ -938,6 +956,10 @@ var prime = (function () {
 			if (e.keyCode === 27) {
 				$(this).trigger('blur');
 			}
+		})
+		.on('click', function (e) {
+			e.preventDefault();
+			return false;
 		})
 		.trigger('focus');
 

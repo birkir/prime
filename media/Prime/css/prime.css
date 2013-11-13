@@ -192,6 +192,7 @@ body > .fullscreen.with-panel-right > .panel-right {
 .table .reorder-handle { cursor: move; font-size: 14px; color: #888; text-align: center; padding-right: 15px; }
 .table .reorder-handle:hover { color: #333; }
 .table .noreorder { color: #ddd; cursor: move; font-size: 14px; text-align: center; padding-right: 15px; }
+.table-sortable colgroup { display: none !important; }
 
 /** module list **/
 .prime-module-list { margin: 0 -10px; }
@@ -214,6 +215,13 @@ body > .fullscreen.with-panel-right > .panel-right {
 }
 .nav-tree .list-group-item:last-child {
 	margin-bottom: -1px;
+}
+.nav-tree .list-group-item.primefile a {
+	color: #A05551;
+	opacity: 0.9;
+}
+.nav-tree .list-group-item.primefile a span i {
+	color: #A05551;
 }
 .ui-droppable-placeholder { font-weight: bold; }
 
@@ -280,61 +288,68 @@ body > .fullscreen.with-panel-right > .panel-right {
 
 
 /** vertical tabs **/
-.tabs-left > .nav-tabs {
-  border-bottom: 0;
-}
-.tabs-left > .nav-tabs > li {
-  float: none;
-}
-.tabs-left > .nav-tabs > li > a {
-  min-width: 130px;
-  margin-right: 0;
-  margin-bottom: 3px;
-}
-.tabs-left > .nav-tabs,
-.tabs-left > .nav-pills {
-  float: left;
-  margin-right: 19px;
-  border-right: 1px solid #ddd;
-}
-
-.tabs-left > .nav-tabs > li > a,
-.tabs-left > .nav-pills > li > a {
-  margin-right: -1px;
-}
-
-.tabs-left > .nav-tabs > li > a:hover,
-.tabs-left > .nav-tabs > li > a:focus {
-  border-color: #eeeeee #dddddd #eeeeee #eeeeee;
-}
-.tabs-left > .nav-tabs .active > a,
-.tabs-left > .nav-tabs .active > a:hover,
-.tabs-left > .nav-tabs .active > a:focus {
-  border-color: #ddd transparent #ddd #ddd;
-}
 .modal-body .tabbable {
 	margin: -20px;
 }
 .modal-body .tabs-left > .nav-tabs {
-  margin-top: -1px;
-  width: 140px;
-}
-.modal-body .tabs-left > .nav-tabs .active > a,
-.modal-body .tabs-left > .nav-tabs .active > a:hover,
-.modal-body .tabs-left > .nav-tabs .active > a:focus {
-	border-left: 0;
+	margin-top: -1px;
 }
 .modal-body .tabbable .tab-content > .active {
 	padding: 20px;
 }
-.modal-body .tabbable .tab-content > .active .checkbox,
-.modal-body .tabbable .tab-content > .active .radio {
-	margin-top: 0;
-}
-.modal-body .tabbable .tab-content {
-	margin-left: 139px;
-	min-height: 240px;
-	border-left: 1px solid #ddd;
+@media screen and (min-width: 768px) {
+	.tabs-left > .nav-tabs {
+	  border-bottom: 0;
+	}
+	.tabs-left > .nav-tabs > li {
+	  float: none;
+	}
+	.tabs-left > .nav-tabs > li > a {
+	  min-width: 130px;
+	  margin-right: 0;
+	  margin-bottom: 3px;
+	}
+	.tabs-left > .nav-tabs,
+	.tabs-left > .nav-pills {
+	  float: left;
+	  margin-right: 19px;
+	  border-right: 1px solid #ddd;
+	}
+
+	.tabs-left > .nav-tabs > li > a,
+	.tabs-left > .nav-pills > li > a {
+	  margin-right: -1px;
+	}
+
+	.tabs-left > .nav-tabs > li > a:hover,
+	.tabs-left > .nav-tabs > li > a:focus {
+	  border-color: #eeeeee #dddddd #eeeeee #eeeeee;
+	}
+	.tabs-left > .nav-tabs .active > a,
+	.tabs-left > .nav-tabs .active > a:hover,
+	.tabs-left > .nav-tabs .active > a:focus {
+	  border-color: #ddd transparent #ddd #ddd;
+	}
+	.modal-dialog {
+		width: 640px;
+	}
+	.modal-body .tabs-left > .nav-tabs {
+	  width: 140px;
+	}
+	.modal-body .tabs-left > .nav-tabs .active > a,
+	.modal-body .tabs-left > .nav-tabs .active > a:hover,
+	.modal-body .tabs-left > .nav-tabs .active > a:focus {
+		border-left: 0;
+	}
+	.modal-body .tabbable .tab-content > .active .checkbox,
+	.modal-body .tabbable .tab-content > .active .radio {
+		margin-top: 0;
+	}
+	.modal-body .tabbable .tab-content {
+		margin-left: 139px;
+		min-height: 240px;
+		border-left: 1px solid #ddd;
+	}
 }
 .modal .modal-title {
 	margin-bottom: 0;
@@ -442,4 +457,50 @@ body > .fullscreen.with-panel-right > .panel-right {
 }
 .grid-group-item.ui-selecting .grid-group-item-selection {
 	outline: 1px solid #4d90f0;
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+	body > .fullscreen.with-panel-left > .panel-left {
+		width: auto;
+		position: relative;
+		height: auto;
+		margin-bottom: 0;
+	}
+	body > .fullscreen.with-panel-right > .panel-right {
+		display: none;
+	}
+	body > .fullscreen.with-panel-left > .panel-center {
+		position: relative;
+		height: auto;
+		padding: 0;
+		margin: 0;
+	}
+	body > .fullscreen.with-panel-left > .panel-center iframe {
+		min-height: 320px;
+	}
+	.fullscreen-ui {
+		height: auto;
+	}
+	.fullscreen-ui .navbar-toolbar {
+		margin-bottom: 0;
+	}
+	.fullscreen-ui > .scrollable {
+		position: relative;
+		top: auto;
+		bottom: auto;
+		left: auto;
+		right: auto;
+	}
+	.table .header-fixed {
+		display: none;
+	}
+	.table thead {
+		opacity: 1 !important;
+	}
+	.modal-dialog {
+		width: auto !important;
+	}
 }

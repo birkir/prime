@@ -30,6 +30,9 @@ class Controller_Prime_Module_Html extends Controller_Prime_Template {
 			$module = $region->module();
 			$module->settings['content'] = $this->request->post('content');
 			$module->save();
+
+			// Bump the page revision
+			ORM::factory('Prime_Page', $region->prime_page_id)->save();
 		}
 	}
 

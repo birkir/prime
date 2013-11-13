@@ -44,11 +44,11 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->name            = $name;
 		$region->settings        = '{}';
 
-		// Set Region position
-		$region->position($reference);
-
 		// Save Region
 		$region->save();
+
+		// Set Region position
+		$region->position($reference)->reorder();
 
 		// Get Region display Response
 		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
@@ -74,11 +74,12 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->prime_page_id = $page;
 		$region->name = $name;
 
-		// Execute movement query
-		$region->position($reference)
-
 		// Update region position
-		->save();
+		$region->save();
+
+		// Execute movement query
+		$region->position($reference)->reorder();
+
 	}
 
 	/**
@@ -124,6 +125,9 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		{
 			// Save module with POST data
 			$module->save($this->request->post());
+
+			// Bump the page revision
+			ORM::factory('Prime_Page', $region->prime_page_id)->save();
 
 			// Re-render region
 			$view = Request::factory('Prime/Region/Display/'.$region->id)->execute();

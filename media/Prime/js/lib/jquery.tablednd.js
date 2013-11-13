@@ -78,7 +78,8 @@ jQuery.tableDnD = {
                 onDragStyle: options.onDragStyle,
                 onDropStyle: options.onDropStyle,
 				// Add in the default class for whileDragging
-				onDragClass: options.onDragClass ? options.onDragClass : "success",
+//				onDragClass: options.onDragClass ? options.onDragClass : "tDnD_whileDrag",
+		onDragClass: 'success',
                 onDrop: options.onDrop,
                 onDragStart: options.onDragStart,
                 scrollAmount: options.scrollAmount ? options.scrollAmount : 5
@@ -99,22 +100,35 @@ jQuery.tableDnD = {
 
     /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
     makeDraggable: function(table) {
-
+        // Now initialise the rows
+        var rows = table.rows; //getElementsByTagName("tr")
         var config = table.tableDnDConfig;
+        for (var i=0; i<rows.length; i++) {
+            // To make non-draggable rows, add the nodrag class (eg for Category and Header rows) 
+			// inspired by John Tarr and Famic
+            var nodrag = $(rows[i]).hasClass("nodrag");
+            if (! nodrag) { //There is no NoDnD attribute on rows I want to drag
+                jQuery(rows[i]).mousedown(function(ev) {
+		
+		    // Prime 3.3
+		    if ($(ev.target).parents('.reorder-handle').length === 1 || $(ev.target).hasClass('reorder-handle')) {
 
-        $(table).find('tbody tr').each(function () {
-            $(this).on('mousedown', function (e) {
-                if ($(e.target).parents('.reorder-handle').length === 1 || $(e.target).hasClass('reorder-handle')) {
-                    jQuery.tableDnD.dragObject = this;
-                    jQuery.tableDnD.currentTable = table;
-                    jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, e);
-                    if (config.onDragStart) {
-                        config.onDragStart(table, this);
+//                      if (ev.target.tagName == "TD") {
+
+                        jQuery.tableDnD.dragObject = this;
+                        jQuery.tableDnD.currentTable = table;
+                        jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                        if (config.onDragStart) {
+                            // Call the onDrop method if there is one
+                            config.onDragStart(table, this);
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
-        });
+                });
+		// Prime 3.3
+		// .css("cursor", "move"); // Store the tableDnD object
+            }
+        }
     },
 
     /** Get the mouse coordinates from the event (allowing for browser differences) */
@@ -214,11 +228,16 @@ jQuery.tableDnD = {
             // If we're over a row then move the dragged row to there so that the user sees the
             // effect dynamically
             var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
-            if (currentRow) {
+
+	    // Prime 3.3:
+            if (currentRow && ! $(currentRow).hasClass('nodrag')) {
+
+//   	    if (currentRow) {
+
                 // TODO worry about what happens when there are multiple TBODIES
-                if (movingDown && currentRow.nextSibling && jQuery.tableDnD.dragObject != currentRow) {
+                if (movingDown && jQuery.tableDnD.dragObject != currentRow) {
                     jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow.nextSibling);
-                } else if (! movingDown && jQuery.tableDnD.dragObject.parentNode && jQuery.tableDnD.dragObject != currentRow) {
+                } else if (! movingDown && jQuery.tableDnD.dragObject != currentRow) {
                     jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow);
                 }
             }
@@ -230,7 +249,6 @@ jQuery.tableDnD = {
     /** We're only worried about the y position really, because we can only move rows up and down */
     findDropTargetRow: function(draggedRow, y) {
         var rows = jQuery.tableDnD.currentTable.rows;
-        var rows = $(jQuery.tableDnD.currentTable).find('tbody tr');
         for (var i=0; i<rows.length; i++) {
             var row = rows[i];
             var rowY    = this.getPosition(row).y;

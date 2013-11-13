@@ -2,6 +2,12 @@
 	<div class="well">
 		<h3>Create admin</h3>
 
+		<?php if ( ! empty($error)): ?>
+			<div class="alert alert-warning">
+				<p><strong>Error:</strong> <?=$error;?></p>
+			</div>
+		<?php endif; ?>
+
 		<div class="form-group">
 			<?=Form::label('formEmail', __('Email address'), ['class' => 'control-label']);?>
 			<?=Form::input('email', NULL, ['class' => 'form-control', 'id' => 'formEmail', 'autocomplete' => 'off']);?>

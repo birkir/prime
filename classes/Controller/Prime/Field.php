@@ -231,6 +231,35 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 	}
 
 	/**
+	 * Publish field model(s)
+	 *
+	 * @return void
+	 */
+	public function action_publish()
+	{
+		// Get field ids from params
+		$fields = explode(':', $this->request->param('id'));
+
+		foreach ($fields as $field)
+		{
+			// Find field
+			$item = ORM::factory('Prime_Field', $field);
+
+			if ($item->loaded() AND $this->view === NULL)
+			{
+				// Setup view
+				$this->view = Request::factory('/Prime/Field/Properties/'.implode(':', [$item->resource_type, $item->resource_id]));
+			}
+
+			// Publish model
+			$item->publish();
+		}
+
+		// Execute view Request
+		$this->view = $this->view->execute()->body();
+	}
+
+	/**
 	 * Re-order field by resource type and id
 	 *
 	 * @return void
@@ -243,7 +272,7 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 		// Move field
 		$field = ORM::factory('Prime_Field', $field)
 		->position($reference)
-		->save();
+		->reorder();
 	}
 
 	/**

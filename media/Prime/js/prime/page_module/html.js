@@ -69,6 +69,7 @@ define(['jquery'], function($) {
 						$('.prime-live-iframe').contents().find('.prime-region-item[data-id='+region+'] .prime-region-item-content').html(editor_data);
 					}
 					modal.modal('hide');
+					page.unpublished();
 				});
 			});
 		});

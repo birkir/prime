@@ -15,6 +15,11 @@ class Model_Prime_File extends Model_Prime {
 	protected $_sortable = FALSE;
 
 	/**
+	 * @var boolean Model is not revision controlled
+	 */
+	protected $_revision = FALSE;
+
+	/**
 	 * @var array Has many relationships
 	 */
 	protected $_has_many = array(

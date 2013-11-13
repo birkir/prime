@@ -32,3 +32,9 @@
 		<div style="width: 100%; height: 100%; white-space: pre;" class="ace-editor" data-id="<?=$id;?>"><?=htmlentities($content);?></div>
 	</div>
 </div>
+<?php if ($primefile): ?>
+	<div class="alert alert-danger top-center" style="top: 61px; margin-left: -130px;">
+		<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+		<strong><?=__('Warning');?>!</strong> <?=__('Saving this file will overwrite its origin to your application file system.');?>&nbsp;&nbsp;
+	</div>
+<?php endif; ?>

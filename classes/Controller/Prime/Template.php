@@ -102,6 +102,9 @@ class Controller_Prime_Template extends Controller {
 
 			// Globally register User model to Views
 			View::set_global('user', $this->user);
+
+			// Work with drafts
+			Model_Prime::$_draft = TRUE;
 		}
 	}
 

@@ -97,6 +97,18 @@ define(['jquery'], function($) {
 		return false;
 	};
 
+	fieldset.publish = function (item) {
+
+		$.ajax({
+			url: item.href
+		})
+		.done(function (response) {
+			$('.panel-center').html(response).each(prime.elements);
+		});
+
+		return false;
+	};
+
 	fieldset.save = function (form) {
 		$.ajax({
 			url: $(form).attr('action'),

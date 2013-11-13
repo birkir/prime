@@ -15,6 +15,16 @@ class Model_Prime_Module_Fieldset extends ORM {
 	protected $_fields;
 
 	/**
+	 * @var boolean Model is not sortable
+	 */
+	protected $_sortable = FALSE;
+
+	/**
+	 * @var boolean Model is not revision controlled
+	 */
+	protected $_revision = FALSE;
+
+	/**
 	 * @var array Has many relationships
 	 */
 	protected $_has_many = [

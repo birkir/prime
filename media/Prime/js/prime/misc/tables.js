@@ -22,7 +22,7 @@ define(['jquery'], function($) {
 			t.selected = [];
 
 			// check all
-			thbox.on('change', function () {
+			table.on('change', 'thead tr input[type=checkbox]', function () {
 				var that = this;
 				tbbox.each(function () { this.checked = that.checked; }).eq(0).trigger('change');
 			});
@@ -61,9 +61,10 @@ define(['jquery'], function($) {
 			})
 		}
 
+		// dont allow reorder on table sorting change
 		table.bind('sortEnd', function (e, table) {
 			var sort = table.config.sortList[0],
-				index = $(table).data('reorder');
+			    index = $(table).data('reorder');
 
 			if (sort[0] === index && sort[1] === 0) {
 				$(table).find('tbody .noreorder').removeClass('noreorder').addClass('reorder-handle');

@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `prime_fields` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
---
+-- Table structure for table `prime_files`
 --
 
 CREATE TABLE IF NOT EXISTS `prime_files` (
@@ -282,3 +282,68 @@ ALTER TABLE `roles_users`
 
 ALTER TABLE `user_tokens`
   ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+
+--
+-- Revision Control
+--
+
+-- prile_fields
+
+CREATE TABLE `prime_fields_rev` LIKE `prime_fields`;
+
+ALTER TABLE  `prime_fields_rev`
+  CHANGE `id` `id` int(11) unsigned NOT NULL,
+  DROP PRIMARY KEY,
+  ADD `revision` bigint unsigned NOT NULL auto_increment PRIMARY KEY first,
+  ADD INDEX `org_primary` (`id`);
+
+ALTER TABLE `prime_fields`
+  ADD `published` bigint unsigned NULL,
+  ADD `revision` bigint unsigned NULL,
+  ADD UNIQUE INDEX (`revision`);
+
+-- prime_module_fieldset_items
+
+CREATE TABLE `prime_module_fieldset_items_rev` LIKE `prime_module_fieldset_items`;
+
+ALTER TABLE  `prime_module_fieldset_items_rev`
+  CHANGE `id` `id` int(11) unsigned NOT NULL,
+  DROP PRIMARY KEY,
+  ADD `revision` bigint unsigned NOT NULL auto_increment PRIMARY KEY first,
+  ADD INDEX `org_primary` (`id`);
+
+ALTER TABLE `prime_module_fieldset_items`
+  ADD `published` bigint unsigned NULL,
+  ADD `revision` bigint unsigned NULL,
+  ADD UNIQUE INDEX (`revision`);
+
+-- prime_pages
+
+CREATE TABLE `prime_pages_rev` LIKE `prime_pages`;
+
+ALTER TABLE  `prime_pages_rev`
+  CHANGE `id` `id` int(11) unsigned NOT NULL,
+  DROP PRIMARY KEY,
+  ADD `revision` bigint unsigned NOT NULL auto_increment PRIMARY KEY first,
+  ADD INDEX `org_primary` (`id`);
+
+ALTER TABLE `prime_pages`
+  ADD `published` bigint unsigned NULL,
+  ADD `revision` bigint unsigned NULL,
+  ADD UNIQUE INDEX (`revision`);
+
+-- prime_regions
+
+CREATE TABLE `prime_regions_rev` LIKE `prime_regions`;
+
+ALTER TABLE  `prime_regions_rev`
+  CHANGE `id` `id` int(11) unsigned NOT NULL,
+  DROP PRIMARY KEY,
+  ADD `revision` bigint unsigned NOT NULL auto_increment PRIMARY KEY first,
+  ADD INDEX `org_primary` (`id`);
+
+ALTER TABLE `prime_regions`
+  ADD `published` bigint unsigned NULL,
+  ADD `revision` bigint unsigned NULL,
+  ADD UNIQUE INDEX (`revision`);

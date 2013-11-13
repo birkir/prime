@@ -7,6 +7,19 @@ define(['jquery', 'jqueryUI'], function($) {
 	// find current page id
 	page.id = doc.find('[data-pageid]:eq(0)').data('pageid');
 
+	page.publish = function (element) {
+		var active = $('.panel-left li.active').children('a').data('id');
+		$.ajax({
+			url: element.href,
+		})
+		.done(function (response) {
+			$('.panel-left').html(response);
+			page.tree(active);
+		});
+
+		return false;
+	};
+
 	// sortable tree function
 	page.tree = function (active_node) {
 		$('.panel-left .nav-tree .list-group').sortable({
@@ -411,6 +424,15 @@ define(['jquery', 'jqueryUI'], function($) {
 		}
 	};
 
+	page.unpublished = function () {
+		var node   = $('.panel-left li.active'),
+			state  = $('<i/>', { class: 'fa fa-pencil right text-info' });
+
+		if (node.children('i').length === 0) {
+		    node.children('b').after(state);
+		}
+	}
+
 	// region object
 	page.region = {
 		init: function () {
@@ -443,6 +465,8 @@ define(['jquery', 'jqueryUI'], function($) {
 				if (reference.hasClass('prime-region-empty')) {
 					reference.remove();
 				}
+
+				page.unpublished();
 			});
 
 			// we dont want any OOPses here ...
@@ -453,6 +477,7 @@ define(['jquery', 'jqueryUI'], function($) {
 			$.ajax({
 				url: '/Prime/Region/Reorder/' + [region_id,reference_id,page_id,name].join(':')
 			});
+			page.unpublished();
 		},
 		remove: function (id) {
 			prime.dialog({
@@ -473,6 +498,7 @@ define(['jquery', 'jqueryUI'], function($) {
 							.droppable(page.droppableConfig);
 						}
 						region_item.remove();
+						page.unpublished();
 					});
 				}
 			}, function (modal) {
@@ -503,6 +529,7 @@ define(['jquery', 'jqueryUI'], function($) {
 
 						dialog.modal('hide');
 					});
+					page.unpublished();
 					return false;
 				});
 				save.on('click', function () {
@@ -588,6 +615,7 @@ define(['jquery', 'jqueryUI'], function($) {
 							})
 							.done(function () {
 								editor.changed = false;
+								page.unpublished();
 							});
 						});
 						editor.on('focus', function (e) {
