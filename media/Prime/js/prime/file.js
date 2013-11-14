@@ -184,7 +184,7 @@ define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 		})
 
 		$('#ckbrowser').each(function () {
-			$('.grid-group-item[data-id='+this._file+']').each(function () {
+			$('.grid-group-item[data-id="'+this._file+'"]').each(function () {
 				$(this).trigger('click');
 			});
 		});

@@ -95,3 +95,6 @@
 .cke_editable {
 	outline: none !important;
 }
+input.cke_dialog_ui_input_text, input.cke_dialog_ui_input_password, textarea.cke_dialog_ui_input_textarea {
+	color: #333 !important;
+}
