@@ -75,7 +75,7 @@ class Controller_Prime_Explorer extends Controller_Prime_Template {
 		if ( ! file_exists($fileinfo['file']))
 		{
 			// Could not find file
-			throw new HTTP_Exception('Could not find file');
+			throw HTTP_Exception::factory(404, 'Could not find file');
 		}
 
 		// Show ace editor

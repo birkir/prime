@@ -264,6 +264,8 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
 		$fieldset->name = $this->request->post('name');
 		$fieldset->save();
+
+		$this->view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 	}
 
 	public function action_reorder()
