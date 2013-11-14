@@ -11,26 +11,6 @@
 class Prime_Module_Html extends Prime_Module {
 
 	/**
-	 * Extend attributes for wrap output
-	 *
-	 * @param string $name
-	 * @return array 
-	 */
-	public function attrs($name = NULL)
-	{
-		// Get wrap attributes
-		$attrs = parent::attrs($name);
-
-		if ($name === 'content' AND $this->option('editor_type', 'plaintext') === 'wysiwyg')
-		{
-			// Text will have WYSIWYG editor
-			$attrs['contenteditable'] = 'true';
-		}
-
-		return $attrs;
-	}
-
-	/**
 	 * Parameters to configure module
 	 * 
 	 * @return array
@@ -110,8 +90,15 @@ class Prime_Module_Html extends Prime_Module {
 	 */
 	public function render()
 	{
+		$content = self::option('content');
+
+		if ($this->option('editor_type', 'plaintext') === 'wysiwyg')
+		{
+			$content = '<div contenteditable="true">'.$content.'</div>';
+		}
+
 		return self::load_view('module/html', self::option('template'))
-		->set('content', self::option('content'));
+		->set('content', $content);
 	}
 
 }

@@ -600,7 +600,7 @@ define(['jquery', 'jqueryUI'], function($) {
 					doc.find('[contenteditable]').each(function () {
 						if (frame[0].contentWindow.CKEDITOR === undefined) return;
 						var editor = frame[0].contentWindow.CKEDITOR.dom.element.get(this).getEditor(),
-						    region = $(this).parent();
+						    region = $(this).closest('.prime-region-item');
 						editor.changed = false;
 						editor.on('change', function () {
 							this.changed = true;
