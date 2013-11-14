@@ -151,7 +151,10 @@ define(['jquery', 'ace', 'emmet', 'aceEmmet'], function($, _ace, _emmet, Emmet) 
 			$.cookie('ace-options', editor.options, { expires: 365 });
 
 			return false;
-		})
+		});
+
+		$('.panel-left').find('.active').removeClass('active');
+		$('.panel-left [data-id='+$('.fullscreen-ui').data('id')+']').parent().addClass('active').parents('.has-children').addClass('open');
 
 		// scope editor
 		element.editor = editor;

@@ -15,6 +15,25 @@ class Prime_Field_Template extends Prime_Field {
 	protected $_input_view = 'Prime/Field/Template';
 
 	/**
+	 * Field fields
+	 *
+	 * @return void
+	 */
+	public function params()
+	{
+		return array(
+			array(
+				'name'    => 'directory',
+				'caption' => 'Directory scope',
+				'field'   => 'Prime_Field_String',
+				'default' => '',
+				'options' => array(
+					'placeholder' => 'eg. module/subfolder'
+				)
+			)
+		);
+	}
+	/**
 	 * List templates by scope
 	 * 
 	 * @param  string $scope Scope to find

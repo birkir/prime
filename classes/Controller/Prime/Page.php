@@ -192,6 +192,27 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 			$page->publish();
 		}
 
+		// Load Lucene Engine
+		$lucene = Prime::lucene();
+
+		foreach ($lucene->find('page:'.$page->id) as $hit)
+		{
+			// Delete the page
+			$hit->delete();
+		}
+
+		// Get page body
+		$body = Request::factory('/')->query(['pageid' => $page->id])->execute()->body();
+
+		// Load document body html
+		$doc = Zend_Search_Lucene_Document_Html::loadHTML($body);
+
+		// Add page id as identifiable keyword
+		$doc->addField(Zend_Search_Lucene_Field::Keyword('page', $page->id));
+
+		// Add document to index
+		$lucene->addDocument($doc);
+
 		// Show tree
 		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
 	}
@@ -275,10 +296,10 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// Extract source and reference page
 		list($page, $reference) = explode(':', $this->request->param('id'));
 
-		// Find page and re-position it
+		// Find page and re-position it (public and drafts)
 		$page = ORM::factory('Prime_Page', $page)
 		->position($reference)
-		->reorder();
+		->position($reference, FALSE);
 	}
 
 	/**

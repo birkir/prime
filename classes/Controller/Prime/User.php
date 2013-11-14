@@ -73,6 +73,27 @@ class Controller_Prime_User extends Controller_Prime_Template {
 	}
 
 	/**
+	 * List all users in database
+	 *
+	 * @return void
+	 */
+	public function action_select_list()
+	{
+		// load fieldset
+		$users = ORM::factory('User');
+
+		// setup view
+		$this->view = View::factory('Prime/User/SelectList')
+		->set('users', $users);
+
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		// Response body
+		$this->response->body($this->view);
+	}
+
+	/**
 	 * Display user fieldset and process the post data
 	 * when available.
 	 *

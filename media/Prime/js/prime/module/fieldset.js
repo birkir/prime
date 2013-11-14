@@ -122,5 +122,14 @@ define(['jquery'], function($) {
 		return false;
 	};
 
+	fieldset.selectNode = function () {
+		$('.panel-left').find('.active').removeClass('active');
+		$('.panel-left [data-id='+$(this).data('fieldset-id')+']').parent().addClass('active').parents('.has-children').addClass('open');
+	};
+	prime.elementsExternal.push(function () {
+		$(this).find('[data-fieldset-id]').each(fieldset.selectNode);
+	});
+	$('[data-fieldset-id]').each(fieldset.selectNode);
+
 	return fieldset;
 });

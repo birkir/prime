@@ -1,4 +1,4 @@
-<div class="fullscreen-ui">
+<div class="fullscreen-ui" data-id="<?=sha1($id);?>">
 	<div class="navbar navbar-toolbar navbar-default navbar-static-top">
 		<div class="navbar-brand navbar-left"><?=$filename;?></div>
 		<div class="navbar-form navbar-right">

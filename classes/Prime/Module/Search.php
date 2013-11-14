@@ -94,52 +94,16 @@ class Prime_Module_Search extends Prime_Module {
 	}
 
 	/**
-	 * Initialize Lucene Search Engine
-	 *
-	 * @return void
-	 **/
-	public function initialize()
-	{
-		if ($path = Kohana::find_file('vendor', 'Zend/Loader'))
-		{
-			// Set include path for Zend
-			ini_set('include_path', ini_get('include_path').PATH_SEPARATOR.dirname(dirname($path)));
-		}
-
-		// Require lucene autoload files
-		require_once Kohana::find_file('vendor/Zend/Loader', 'Autoloader');
-
-		// Autoload
-		Zend_Loader_Autoloader::getInstance();
-
-		// Set correct analaysis analizer
-		Zend_Search_Lucene_Analysis_Analyzer::setDefault(new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8Num_CaseInsensitive());
-
-		// Set lucene cache path
-		$cache = APPPATH.'cache/lucene';
-
-		try
-		{
-			$this->index = Zend_Search_Lucene::open($cache);
-		}
-		catch (Zend_Search_Lucene_Exception $e)
-		{
-			$this->index = Zend_Search_Lucene::create($cache);
-		}
-	}
-
-	/**
 	 * Render module contents
 	 * 
 	 * @return View
 	 */
 	public function render()
 	{
-		// Initialize Zend
-		$this->initialize();
-
 		// Get query string
 		$querystring = Request::current()->query($this->option('querystring'));
+
+		$lucene = Prime::lucene();
 
 		// Build Search Query
 		$query = Zend_Search_Lucene_Search_QueryParser::parse($querystring);
@@ -148,11 +112,12 @@ class Prime_Module_Search extends Prime_Module {
 		$sorter = $this->option('orderby', 'score');
 
 		// Execute search
-		$hits = $this->index->find($query, $sorter, ($sorter === 'score') ? SORT_NUMERIC : SORT_STRING, SORT_DESC);
+		$hits = $lucene->find($query, $sorter, ($sorter === 'score') ? SORT_NUMERIC : SORT_STRING, SORT_DESC);
 
 		// Setup view
 		$view = self::load_view('module/search', self::option('template'))
 		->bind('results', $results)
+		->bind('pagination', $paging)
 		->set('count', count($hits))
 		->set('query', $querystring);
 
@@ -186,9 +151,6 @@ class Prime_Module_Search extends Prime_Module {
 			// setup items
 			$offset = $paging->offset;
 			$display = min($paging->total_items, $paging->offset + $paging->items_per_page);
-
-			// attach pagination to view
-			$view->pagination = $paging;
 		}
 
 		// Set found pages to array

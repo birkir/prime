@@ -1,4 +1,4 @@
-<div class="fullscreen-ui">
+<div class="fullscreen-ui" data-fieldset-id="<?=$fieldset->id;?>">
 	<div class="navbar navbar-toolbar">
 		<div class="btn-toolbar">
 			<?=HTML::anchor('Prime/Module/Fieldset/Create/'.$fieldset->id, __('Create'), [

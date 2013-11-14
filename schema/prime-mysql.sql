@@ -2,7 +2,6 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
 --
 -- Table structure for table `prime_fields`
 --
@@ -39,7 +38,6 @@ CREATE TABLE IF NOT EXISTS `prime_files` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ext` varchar(16) DEFAULT NULL,
   `mime` varchar(32) DEFAULT NULL,
@@ -58,6 +56,12 @@ CREATE TABLE IF NOT EXISTS `prime_files` (
   KEY `deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+--
+-- Add folders to `prime_files`
+--
+INSERT INTO `prime_files` (`parent_id`, `name`, `type`, `ext`, `mime`, `size`, `width`, `height`, `bits`, `channels`, `filename`, `updated_at`, `updated_by`, `deleted_at`) VALUES
+(NULL, 'Images',    0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NOW(), NULL, NULL),
+(NULL, 'Documents', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NOW(), NULL, NULL);
 
 --
 -- Table structure and data for table `prime_modules`
@@ -77,17 +81,17 @@ CREATE TABLE IF NOT EXISTS `prime_modules` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `prime_modules` (`controller`, `slug`, `name`, `description`, `version`, `js`, `position`) VALUES
-('Prime_Module_Fieldset_List',   'prime.fieldset.list',   'Fieldset List',      'Displays a list of items from the selected Fieldset List', '1.0', 0, 3),
-('Prime_Module_Fieldset_Insert', 'prime.fieldset.insert', 'Fieldset Insert',    'Displays an input form for entering data into the selected Fieldset List', '1.0', 0, 5),
-('Prime_Module_Fieldset_Item',   'prime.fieldset.item',   'Fieldset Item',      'Displays a single item from a Fieldset List', '1.0', 0, 4),
-('Prime_Module_Navigation',      'prime.navigation',      'Navigation',         'Displays the navigation of a website', '1.0', 0, 0),
-('Prime_Module_Html',            'prime.html',            'HTML Content',       'Allows free editing of HTML with WYSIWYG capabilities', '1.0', 1, 1),
-('Prime_Module_Multiview',       'prime.multiview',       'Multi View',         'Displays a control which can contain other content', '1.0', 0, 2),
-('Prime_Module_Datasource',      'prime.datasource',      'Remote Data-Source', 'Get remote data from datasource. Includes authentication.', '1.0', 0, 6),
-('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',       'Allows users to sign-in to the website.', '1.0', 0, 7),
+('Prime_Module_Fieldset_List',   'prime.fieldset.list',   'Fieldset List',        'Displays a list of items from the selected Fieldset List', '1.0', 0, 3),
+('Prime_Module_Fieldset_Insert', 'prime.fieldset.insert', 'Fieldset Insert',      'Displays an input form for entering data into the selected Fieldset List', '1.0', 0, 5),
+('Prime_Module_Fieldset_Item',   'prime.fieldset.item',   'Fieldset Item',        'Displays a single item from a Fieldset List', '1.0', 0, 4),
+('Prime_Module_Navigation',      'prime.navigation',      'Navigation',           'Displays the navigation of a website', '1.0', 0, 0),
+('Prime_Module_Html',            'prime.html',            'HTML Content',         'Allows free editing of HTML with WYSIWYG capabilities', '1.0', 1, 1),
+('Prime_Module_Multiview',       'prime.multiview',       'Multi View',           'Displays a control which can contain other content', '1.0', 0, 2),
+('Prime_Module_Datasource',      'prime.datasource',      'Remote Data-Source',   'Get remote data from datasource. Includes authentication.', '1.0', 0, 6),
+('Prime_Module_User_Signin',     'prime.user.signin',     'User Sign-in',         'Allows users to sign-in to the website.', '1.0', 0, 7),
 ('Prime_Module_User_Forgot',     'prime.user.forgot',     'User Forgot Password', 'Enables user to reset his password through email address.', '1.0', 0, 8),
-('Prime_Module_User_Signup',     'prime.user.signup',     'User Sign Up', 'Allows users to sign-up to the website.', '1.0', 0, 9),
-('Prime_Module_Search',          'prime.search',          'Search Results', 'Display search results for specified query string', '1.0', 0, 10);
+('Prime_Module_User_Signup',     'prime.user.signup',     'User Sign Up',         'Allows users to sign-up to the website.', '1.0', 0, 9),
+('Prime_Module_Search',          'prime.search',          'Search Results',       'Display search results for specified query string', '1.0', 0, 10);
 
 
 --
@@ -182,6 +186,7 @@ CREATE TABLE IF NOT EXISTS `prime_regions` (
   PRIMARY KEY (`id`),
   KEY `page_id` (`prime_page_id`),
   KEY `prime_module_id` (`prime_module_id`),
+  KEY `name` (`name`),
   KEY `position` (`position`),
   KEY `updated_by` (`updated_by`),
   KEY `deleted_at` (`deleted_at`)
@@ -258,7 +263,6 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
   KEY `expires` (`expires`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-
 --
 -- Table constraints defenitions
 --
@@ -282,7 +286,6 @@ ALTER TABLE `roles_users`
 
 ALTER TABLE `user_tokens`
   ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
 
 --
 -- Revision Control

@@ -16,10 +16,8 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	 */
 	public function action_tree()
 	{
-		$this->auto_render = FALSE;
-
 		// setup view
-		$view = View::factory('Prime/Module/Fieldset/Tree')
+		$this->view = View::factory('Prime/Module/Fieldset/Tree')
 		->bind('nodes', $nodes)
 		->bind('open', $open)
 		->set('request', $this->request);
@@ -28,23 +26,17 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 
 		// get nodes
 		$nodes = ORM::factory('Prime_Module_Fieldset');
-
-		$this->response->body($view);
 	}
 
 	public function action_new()
 	{
-		$this->auto_render = FALSE;
-
 		$fieldset = ORM::factory('Prime_Module_Fieldset');
 		$fieldset->parent_id = $this->request->param('id');
 		$fieldset->name = $this->request->post('name');
 		$fieldset->type = $this->request->post('type');
 		$fieldset->save();
 
-		$view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
-
-		$this->response->body($view);
+		$this->view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 	}
 
 	/**
@@ -77,20 +69,44 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		if ( ! $fieldset->loaded())
 			throw HTTP_Exception::factory(404, 'Not found');
 
+		// Get fieldset fields
+		$fields = $fieldset->fields();
+
+		// Offer list of pre-defined fieldset structure templates
+		$templates = array(
+			array('name' => 'News', 'fields' => array(
+				array('title',    'Title',     'General', 'Prime_Field_String', NULL, TRUE,  TRUE,  ''),
+				array('abstract', 'Abstract',  'General', 'Prime_Field_Text',   NULL, FALSE, TRUE,  ''),
+				array('article',  'Article',   'General', 'Prime_Field_Text',   NULL, FALSE, TRUE,  ''),
+				array('pictures', 'Pictures',  'General', 'Prime_Field_File',   NULL, FALSE, FALSE, '')
+			)),
+			array('name' => 'Employee List', 'fields' => array(
+				array('first_name', 'First name', 'General', 'Prime_Field_String', NULL, TRUE,  TRUE,  ''),
+				array('last_name',  'Last name',  'General', 'Prime_Field_String', NULL, TRUE,  TRUE,  ''),
+				array('birth',      'Birth date', 'General', 'Prime_Field_String', NULL, TRUE,  TRUE,  ''),
+				array('email'),
+				array('phone'),
+				array('photo'),
+				array('title'),
+				array('department')
+			)),
+			array('name' => 'Contact Form', 'fields' => array(
+				array('name'),
+				array('email'),
+				array('phone'),
+				array('message')
+			)),
+			array('name' => 'FAQ', 'fields' => array(
+				array('question'),
+				array('answer')
+			))
+		);
+
 		// setup view
 		$this->view = View::factory('Prime/Module/Fieldset/List')
 		->set('fieldset', $fieldset)
-		->set('fields', $fieldset->fields());
-
-		// just view for ajax requests
-		if ($this->request->is_ajax() OR ! $this->request->is_external())
-		{
-			// disable auto render
-			$this->auto_render = FALSE;
-
-			// output center view
-			$this->response->body($this->view);
-		}
+		->set('fields', $fields)
+		->set('templates', $templates);
 	}
 
 	public function action_select_list()
@@ -106,12 +122,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$this->view = View::factory('Prime/Module/Fieldset/SelectList')
 		->set('fieldset', $fieldset)
 		->set('fields', $fieldset->fields());
-
-		// Disable auto render
-		$this->auto_render = FALSE;
-
-		// Response body
-		$this->response->body($this->view);
 	}
 
 	/**
@@ -121,8 +131,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	 */
 	public function action_create()
 	{
-		$this->auto_render = FALSE;
-
 		// create fieldset record
 		$item = ORM::factory('Prime_Module_Fieldset_Item');
 
@@ -130,7 +138,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
 
 		// setup view
-		$view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
+		$this->view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
 		->set('action', 'Prime/Module/Fieldset/Create/'.$fieldset->id)
 		->set('fieldset', $fieldset)
 		->set('item', $item);
@@ -153,9 +161,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 			$item->data = json_encode($data);
 			$item->save();
 		}
-
-		// render view
-		$this->response->body($view);
 	}
 
 	/**
@@ -165,8 +170,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 	 */
 	public function action_edit()
 	{
-		$this->auto_render = FALSE;
-
 		// create fieldset record
 		$item = ORM::factory('Prime_Module_Fieldset_Item', $this->request->param('id'));
 
@@ -174,7 +177,7 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $item->prime_module_fieldset_id);
 
 		// setup view
-		$view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
+		$this->view = View::factory('Prime/Module/Fieldset/Item/Fieldset')
 		->set('action', 'Prime/Module/Fieldset/Edit/'.$item->id)
 		->set('fieldset', $fieldset)
 		->set('item', $item);
@@ -202,9 +205,6 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 				$item->publish();
 			}
 		}
-
-		// render view
-		$this->response->body($view);
 	}
 
 	public function action_delete()
@@ -212,21 +212,21 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$this->auto_render = FALSE;
 
 		$fields = explode(':', $this->request->param('id'));
-		$view = NULL;
 
 		foreach ($fields as $field)
 		{
 			$item = ORM::factory('Prime_Module_Fieldset_Item', $field);
 
-			if ($item->loaded() AND $view === NULL)
+			if ($item->loaded() AND $this->view === NULL)
 			{
-				$view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
+				$this->view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
 			}
 
 			$item->delete();
 		}
 
-		$this->response->body($view->execute());
+		// Execute Tree Request
+		$this->view = $this->view->execute();
 	}
 
 	public function action_publish()
@@ -234,39 +234,33 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 		$this->auto_render = FALSE;
 
 		$fields = explode(':', $this->request->param('id'));
-		$view = NULL;
 
 		foreach ($fields as $field)
 		{
 			$item = ORM::factory('Prime_Module_Fieldset_Item', $field);
 
-			if ($item->loaded() AND $view === NULL)
+			if ($item->loaded() AND $this->view === NULL)
 			{
-				$view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
+				$this->view = Request::factory('/Prime/Module/Fieldset/List/'.$item->prime_module_fieldset_id);
 			}
 
 			$item->publish();
 		}
 
-		$this->response->body($view->execute());
+		// Execute Tree Request
+		$this->view = $this->view->execute();
 	}
 
 	public function action_remove()
 	{
-		$this->auto_render = FALSE;
-
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
 		$fieldset->delete();
 
-		$view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
-
-		$this->response->body($view);
+		$this->view = Request::factory('Prime/Module/Fieldset/Tree')->execute();
 	}
 
 	public function action_rename()
 	{
-		$this->auto_render = FALSE;
-
 		$fieldset = ORM::factory('Prime_Module_Fieldset', $this->request->param('id'));
 		$fieldset->name = $this->request->post('name');
 		$fieldset->save();
@@ -274,15 +268,40 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 
 	public function action_reorder()
 	{
-		$this->auto_render = FALSE;
-
 		// get page and reference page
 		list($item, $reference) = explode(':', $this->request->param('id'));
 
 		// node to move
 		$item = ORM::factory('Prime_Module_Fieldset_Item', $item)
 		->position($reference)
-		->reorder();
+		->position($reference, FALSE);
 	}
 
-} // End Prime Module Fieldset
+	/**
+	 * Overload after controller execution method
+	 *
+	 * @return parent
+	 */
+	public function after()
+	{
+		// Check for asyncronous request
+		if ($this->request->is_ajax() OR ! $this->request->is_initial())
+		{
+			// Disable auto render
+			$this->auto_render = FALSE;
+
+			// Render the view
+			return $this->response->body(isset($this->json) ? json_encode($this->json) : $this->view);
+		}
+		else
+		{
+			// Always display tree view
+			$this->template->left = Request::factory('Prime/Module/Fieldset/Tree')
+			->execute();
+		}
+
+		// Call parent after
+		return parent::after();
+	}
+
+}

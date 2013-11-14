@@ -1,18 +1,18 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Prime Field Page
+ * Prime Field User
  *
  * @author Birkir Gudjonsson (birkir.gudjonsson@gmail.com)
  * @package Prime
  * @category Fields
  * @copyright (c) 2013 SOLID Productions
  */
-class Prime_Field_Page extends Prime_Field {
+class Prime_Field_User extends Prime_Field {
 
 	/**
 	 * @var string Template to show field as input
 	 */
-	protected $_input_view = 'Prime/Field/Page';
+	protected $_input_view = 'Prime/Field/User';
 
 	/**
 	 * Field fields
@@ -43,15 +43,15 @@ class Prime_Field_Page extends Prime_Field {
 		$str = parent::text($item);
 
 		if (intval($str) === 0)
-			return __('No page selected');
+			return __('No user selected');
 
 		// get page
-		$page = ORM::factory('Prime_Page', $str);
+		$user = ORM::factory('User', $str);
 
-		if ($page->loaded())
-			return $page->name;
+		if ($user->loaded())
+			return $user->email;
 		else
-			return __('Invalid page');
+			return __('Invalid user');
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Prime_Field_Page extends Prime_Field {
 		$view = parent::input($item, $errors);
 
 		// set view page orm
-		$view->page = ORM::factory('Prime_Page', $view->value);
+		$view->user = ORM::factory('User', $view->value);
 
 		// return view
 		return $view;

@@ -97,7 +97,7 @@ define(['jquery', 'jqueryUI'], function($) {
 		var moving = parseInt($(el).data('id')) || 0,
 			to = 0;
 
-		var select   = $('<button/>', { class: 'btn btn-primary btn-sm disabled', text: 'Select' }),
+		var select   = $('<button/>', { class: 'btn btn-danger btn-sm disabled', text: 'Select' }),
 		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: 'Cancel' });
 
 		// setup ajax dialog with page tree
@@ -170,7 +170,7 @@ define(['jquery', 'jqueryUI'], function($) {
 	page.create = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: 'Save' }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' });
 
 		// create dialog
@@ -232,7 +232,7 @@ define(['jquery', 'jqueryUI'], function($) {
 	page.properties = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: 'Save' }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' });
 
 		// create dialog
@@ -502,11 +502,11 @@ define(['jquery', 'jqueryUI'], function($) {
 					});
 				}
 			}, function (modal) {
-				modal.find('.btn.btn-primary').trigger('focus');
+				modal.find('.btn.btn-danger').trigger('focus');
 			});
 		},
 		settings: function (id) {
-			var save = $('<button/>').addClass('btn btn-primary').text('Save'),
+			var save = $('<button/>').addClass('btn btn-danger').text('Save'),
 				cancel = $('<button/>').addClass('btn btn-default').text('Cancel').attr('data-dismiss', 'modal');
 
 			var dialog = prime.dialog({
@@ -565,11 +565,14 @@ define(['jquery', 'jqueryUI'], function($) {
 
 		page.id = doc.find('[data-pageid]:eq(0)').data('pageid');
 
+		prime.changingView = true;
+
 		// Lets push to history
 		History.pushState({
 			type: 'page',
-			page: page.id
-		}, 'Prime 3.3/master', '/Prime/Page/Edit/' + page.id);
+			page: page.id,
+			src:  this.src
+		}, window.document.title, '/Prime/Page/Edit/' + page.id);
 
 		// add active class to current page
 		$('.panel-left .nav-tree [data-id=' + page.id + ']').parent().addClass('active').parents('.has-children:not(.open)').each(function () {

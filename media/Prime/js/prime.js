@@ -65,7 +65,7 @@ var prime = (function () {
 			modalTitle   = $('<h4/>',  { class: 'modal-title', text: options.title }),
 			modalBody    = $('<div/>', { class: 'modal-body'    }).appendTo(modalContent),
 			modalFooter  = $('<div/>', { class: 'modal-footer'  }).appendTo(modalContent),
-			modalBtnYes  = $('<button/>', { class: 'btn btn-primary', 'data-dismiss': 'modal', html: 'Ok' }),
+			modalBtnYes  = $('<button/>', { class: 'btn btn-danger', 'data-dismiss': 'modal', html: 'Ok' }),
 			modalBtnNo   = $('<button/>', { class: 'btn btn-default', 'data-dismiss': 'modal', html: 'Cancel' });
 
 		// append title if set
@@ -578,7 +578,7 @@ var prime = (function () {
 	app.profile = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: prime.strings.save }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: prime.strings.save }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' });
 
 		// create dialog
@@ -641,6 +641,13 @@ var prime = (function () {
 		// get absolute destination
 		destination = destination || $('.panel-center');
 
+		if (destination.hasClass('panel-center')) {
+			app.changingView = true;
+			History.pushState({
+				type: 'view'
+			}, window.document.title, url);
+		}
+
 		// attach url or ajax configuration object
 		$.ajax(typeof url === 'string' ? { url: url } : url)
 
@@ -668,7 +675,17 @@ var prime = (function () {
 	 */
 	app.history = function () {
 		// yes sir!
-		// console.log(History.getState());
+		if ( ! app.changingView) {
+			var state = History.getState();
+			if (state.data.type !== 'page') {
+				prime.view(state.url);
+			} else if(state.data.type === 'page') {
+				prime.loading(true);
+				$('.prime-live-iframe').attr('src', state.data.src);
+			}
+		}
+
+		app.changingView = false;
 	};
 
 	/**
@@ -681,7 +698,7 @@ var prime = (function () {
             selected = group.find('input[type=hidden]'),
 		    visual   = group.find('.form-control'),
 		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
-		    select   = $('<button/>', { class: 'btn btn-primary btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    select   = $('<button/>', { class: 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
 		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
 
 		// setup ajax dialog with page tree
@@ -753,7 +770,7 @@ var prime = (function () {
 		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
 		    filter   = $('<input/>', { class: 'form-control input-sm pull-left tablesorter-filter-input', placeholder: prime.strings.filter }).css({ marginLeft: 10, width: 100 }),
 		    reset    = $('<button/>', { class: 'btn btn-default btn-sm pull-left tablesorter-reset-button', text: prime.strings.reset }),
-		    select   = $('<button/>', { class: 'btn btn-primary btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    select   = $('<button/>', { class: 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
 		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
 
 		// setup ajax dialog with page tree

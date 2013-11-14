@@ -10,7 +10,7 @@ define(['jquery'], function($) {
 	user.create = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: $(element).data('save') }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: $(element).data('save') }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: $(element).data('cancel'), 'data-dismiss': 'modal' }),
 			form;
 
@@ -129,7 +129,7 @@ define(['jquery'], function($) {
 		var id = $(element).data('id');
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: 'Save' }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' }),
 			form;
 

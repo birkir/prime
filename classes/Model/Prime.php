@@ -106,107 +106,15 @@ class Model_Prime extends ORM {
 	}
 
 	/**
-	 * Update node position
-	 *
-	 * @return ORM
-	 */
-	public function reorder($keys = NULL)
-	{
-		if ($keys === NULL)
-		{
-			// Get sortable keys
-			$keys = $this->_sortable;
-		}
-
-		// Position caret
-		$pos = 'SET @pos:=0;';
-
-		// Get values before updated
-		$old = $this->original_values();
-
-		// Should we reorder old keys
-		$reorder_old = FALSE;
-
-		foreach ($keys as $key)
-		{
-			if ($old[$key] != $this->{$key})
-			{
-				// Reorder old keys
-				$reorder_old = TRUE;
-				break;
-			}
-		}
-
-		// Are we working with drafts
-		$draft = (Model_Prime::$_draft === TRUE AND $this->_revision);
-
-		if ($draft)
-		{
-			// Setup update query
-			$update = DB::update($this->_table_name.'_rev')
-			->where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))->limit(1))
-			->set(array('position' => DB::expr('@pos:=@pos + 10')))
-			->order_by('position', 'ASC');
-		}
-		else
-		{
-			// Setup update query
-			$update = DB::update($this->_table_name)
-			->set(array('position' => DB::expr('@pos:=@pos + 10')))
-			->order_by('position', 'ASC');
-		}
-
-
-		// Setup mysqli driver
-		$db = Database::instance();
-
-		if ($reorder_old)
-		{
-			// Clone original update query
-			$query = $update;
-
-			foreach ($keys as $key)
-			{
-				// Add old keys as where to update query
-				$query->where($this->_table_name.($draft ? '_rev' : NULL).'.'.$key, $old[$key] === NULL ? 'IS' : '=', $old[$key]);
-			}
-
-			// Update position index
-			$db->multiquery($pos.$update);
-		}
-
-		if (intval($old['position']) !== intval($this->position) OR intval($this->position) < 0 OR $this->_update_position)
-		{
-			foreach ($keys as $key)
-			{
-				// Reorder new keys
-				$update->where($this->_table_name.($draft ? '_rev' : NULL).'.'.$key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
-			}
-
-			// Update position index
-			$db->multiquery($pos.$update);
-		}
-
-		// Reset update position flag
-		$this->_update_position = FALSE;
-	}
-
-	/**
 	 * Update record position
 	 *
 	 * @param integer Reference ID
 	 * @return void
 	 */
-	public function position($reference_id = NULL)
+	public function position($reference_id = NULL, $drafts = TRUE)
 	{
-		// Reset position
-		$this->position = NULL;
-
-		// Hard re-order
-		$this->_update_position = TRUE;
-
 		// Are we working with drafts
-		$draft = (Model_Prime::$_draft === TRUE AND $this->_revision);
+		$draft = ($drafts === TRUE AND $this->_revision);
 
 		if (intval($reference_id) > 0)
 		{
@@ -261,6 +169,37 @@ class Model_Prime extends ORM {
 
 		// Execute update query
 		$query->execute();
+
+		// Position caret
+		$pos = 'SET @pos:=0;';
+
+		if ($draft)
+		{
+			// Setup update query
+			$update = DB::update($this->_table_name.'_rev')
+			->where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))->limit(1))
+			->set(array('position' => DB::expr('@pos:=@pos + 10')))
+			->order_by('position', 'ASC');
+		}
+		else
+		{
+			// Setup update query
+			$update = DB::update($this->_table_name)
+			->set(array('position' => DB::expr('@pos:=@pos + 10')))
+			->order_by('position', 'ASC');
+		}
+
+		// Setup mysqli driver
+		$db = Database::instance();
+
+		foreach ($this->_sortable as $key)
+		{
+			// Reorder new keys
+			$update->where($this->_table_name.($draft ? '_rev' : NULL).'.'.$key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
+		}
+
+		// Update position index
+		$db->multiquery($pos.$update);
 
 		return $this;
 	}

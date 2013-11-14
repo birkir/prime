@@ -104,7 +104,6 @@ class Prime_Field_Fieldset extends Prime_Field {
 
 			return $fieldset->loaded() ? $fieldset->name : __('Invalid fieldset');
 		}
-
 	}
 
 	/**

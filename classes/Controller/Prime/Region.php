@@ -48,7 +48,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->save();
 
 		// Set Region position
-		$region->position($reference)->reorder();
+		$region->position($reference);
 
 		// Get Region display Response
 		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
@@ -78,7 +78,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->save();
 
 		// Execute movement query
-		$region->position($reference)->reorder();
+		$region->position($reference);
 
 	}
 

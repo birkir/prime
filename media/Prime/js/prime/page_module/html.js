@@ -5,7 +5,7 @@ define(['jquery'], function($) {
 	exports.edit = function (region) {
 
 		// setup buttons and scope form
-		var save = $('<button/>', { class: 'btn btn-primary', text: 'Save' }),
+		var save = $('<button/>', { class: 'btn btn-danger', text: 'Save' }),
 			cancel = $('<button/>', { class: 'btn btn-default', text: 'Cancel', 'data-dismiss': 'modal' }),
 			form;
 

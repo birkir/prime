@@ -1,4 +1,4 @@
-<div class="fullscreen-ui">
+<div class="fullscreen-ui" data-fieldset-id="<?=$fieldset->id;?>">
 	<?=Form::open($action, [
 		'role'     => 'form',
 		'class'    => 'form-fieldset',

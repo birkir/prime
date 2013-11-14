@@ -46,7 +46,7 @@
 						<?=HTML::anchor('Prime', '<i class="fa fa-edit"></i> '.__('Content').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']); ?>
 						<ul class="dropdown-menu">
 							<li><?=HTML::anchor('Prime/Page', '<i class="fa fa-file"></i> '.__('Pages')); ?></li>
-							<li><?=HTML::anchor('Prime/File', '<i class="fa fa-th"></i> '.__('Files')); ?></li>
+							<li><?=HTML::anchor('Prime/File', '<i class="fa fa-picture-o"></i> '.__('Files')); ?></li>
 						</ul>
 					</li>
 					<li class="dropdown">

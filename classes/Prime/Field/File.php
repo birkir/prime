@@ -15,11 +15,33 @@ class Prime_Field_File extends Prime_Field {
 	protected $_input_view = 'Prime/Field/File';
 
 	/**
-	 * Parameters
-	 * 
-	 * - multiple (boolean)
-	 * - folder (integer), (boolean)
+	 * Field fields
+	 *
+	 * @return void
 	 */
+	public function params()
+	{
+		return array(
+			array(
+				'name'    => 'allowed',
+				'caption' => 'Allowed file types',
+				'field'   => 'Prime_Field_String',
+				'default' => '*.*'
+			),
+			array(
+				'name'    => 'max_size',
+				'caption' => 'Max file size',
+				'field'   => 'Prime_Field_String',
+				'default' => 10240
+			),
+			array(
+				'name'    => 'multiple',
+				'caption' => 'Multiple',
+				'field'   => 'Prime_Field_Boolean',
+				'default' => FALSE
+			)
+		);
+	}
 
 	/**
 	 * Process field for saving (and validating)

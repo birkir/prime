@@ -275,6 +275,48 @@ class Prime {
 	}
 
 	/**
+	 * Create instance of Lucene Indexer
+	 *
+	 * @return Lucene
+	 */
+	public static function lucene()
+	{
+		if ($path = Kohana::find_file('vendor', 'Zend/Loader'))
+		{
+			// Set include path for Zend
+			ini_set('include_path', ini_get('include_path').PATH_SEPARATOR.dirname(dirname($path)));
+		}
+
+		// Require Zend autoloader
+		require_once Kohana::find_file('vendor/Zend/Loader', 'Autoloader');
+
+		// Get Zend Autoloader instance
+		Zend_Loader_Autoloader::getInstance();
+
+		// Set correct analaysis analizer
+		Zend_Search_Lucene_Analysis_Analyzer::setDefault(new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8Num_CaseInsensitive());
+
+		// Set lucene cache path
+		$cache = APPPATH.'cache/lucene';
+
+		try
+		{
+			// Get lucene
+			$indexer = Zend_Search_Lucene::open($cache);
+		}
+		catch (Zend_Search_Lucene_Exception $e)
+		{
+			// Create lucene
+			$indexer = Zend_Search_Lucene::create($cache);
+
+			// Chmod the cache directory manually
+			chmod($cache, 0777);
+		}
+
+		return $indexer;
+	}
+
+	/**
 	 * Cleans up the environment:
 	 *
 	 * - Destroy the Prime::$website and Prime::$page objects
