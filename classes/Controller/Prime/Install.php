@@ -203,6 +203,8 @@ class Controller_Prime_Install extends Controller {
 				$user->add('roles', ORM::factory('Role', ['name' => 'login']));
 				$user->add('roles', ORM::factory('Role', ['name' => 'prime']));
 
+				Model_Prime::$_draft = TRUE;
+
 				// create default page
 				$page = ORM::factory('Prime_Page')
 				->values([
@@ -215,7 +217,8 @@ class Controller_Prime_Install extends Controller {
 					'method' => 'get,post',
 					'position' => 0
 				])
-				->save();
+				->save()
+				->publish();
 			}
 			catch (ORM_Validation_Exception $e)
 			{

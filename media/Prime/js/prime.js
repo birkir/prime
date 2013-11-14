@@ -882,6 +882,7 @@ var prime = (function () {
 		// -----------------
 		.on('contextmenu', '.nav-tree a', function (e) {
 			if ($(this).parents('.nav-tree:eq(0)').find('.context').length === 0) return;
+			$('.tree-context.open').remove();
 
 			var source = $(this).parents('.nav-tree').find('.context').html(),
 				template = Handlebars.compile(source),

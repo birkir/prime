@@ -3,7 +3,7 @@
 	<?php $children = ORM::factory('Prime_Page')->where('parent_id', '=', $node->id)->count_all() > 0; ?>
 	<?php $path = $url.'/'.$node->slug; ?>
 
-	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$node->id]) ? ' open' : ''.($node->visible ? '' : ' disabled'))]);?>>
+	<li<?=HTML::attributes(['class' => 'list-group-item'.($children ? ' has-children' : '').(isset($open[$node->id]) ? ' open' : '').($node->visible ? '' : ' disabled')]);?>>
 
 		<b class="caret" onselectstart="return false;"></b>
 	

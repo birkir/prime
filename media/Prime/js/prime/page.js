@@ -15,6 +15,7 @@ define(['jquery', 'jqueryUI'], function($) {
 		.done(function (response) {
 			$('.panel-left').html(response);
 			page.tree(active);
+			$('.tree-context.open').remove();
 		});
 
 		return false;
@@ -618,7 +619,7 @@ define(['jquery', 'jqueryUI'], function($) {
 							})
 							.done(function () {
 								editor.changed = false;
-								page.unpublished();
+								prime.page.unpublished();
 							});
 						});
 						editor.on('focus', function (e) {
