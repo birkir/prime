@@ -198,7 +198,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		foreach ($lucene->find('page:'.$page->id) as $hit)
 		{
 			// Delete the page
-			$hit->delete();
+			$lucene->delete($hit->id);
 		}
 
 		// Get page body
