@@ -33,14 +33,13 @@ body > .fullscreen > .panel-center {
 	top: auto;
 	width: auto;
 	opacity: 1;
-	margin-top: -3px;
-	padding-top: 3px;
+	overflow: hidden;
 }
 body > .fullscreen.with-panel-left > .panel-center {
-	padding-left: 220px;
+	margin-left: 220px;
 }
 body > .fullscreen.with-panel-right > .panel-center {
-	padding-right: 220px;
+	margin-right: 220px;
 }
 
 /** left panel **/

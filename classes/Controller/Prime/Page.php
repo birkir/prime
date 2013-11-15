@@ -51,13 +51,8 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		->uri();
 
 		// Show iframe view
-		$this->view = '<iframe'.HTML::attributes([
-			'src' => ($page ? $page : '/').'?mode=design',
-			'frameborder' => 0,
-			'class' => 'scrollable prime-live-iframe',
-			'style' => 'width: 100%; height: 100%;',
-			'name' => 'PrimeLive'
-		]).'></iframe>';
+		$this->view = View::factory('Prime/Page/Edit')
+		->set('url', ($page ? $page : '/').'?mode=design');
 	}
 
 	/**
@@ -192,29 +187,63 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 			$page->publish();
 		}
 
+		$this->index_page($page->id);
+
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
+	}
+
+	/**
+	 * Cancel draft changes
+	 *
+	 * @return void
+	 */
+	public function action_discard()
+	{
+		// Get page
+		$page = ORM::factory('Prime_Page', $this->request->param('id'));
+
+		foreach ($page->regions->find_all() as $region)
+		{
+			if ($region->published !== $region->revision)
+			{
+				$region->discard();
+			}
+		}
+
+		if ($page->published !== $page->revision)
+		{
+			$page->discard();
+		}
+
+		$this->index_page($page->id);
+
+		// Show tree
+		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
+	}
+
+	public function index_page($page = NULL)
+	{
 		// Load Lucene Engine
 		$lucene = Prime::lucene();
 
-		foreach ($lucene->find('page:'.$page->id) as $hit)
+		foreach ($lucene->find('page:'.$page) as $hit)
 		{
 			// Delete the page
 			$lucene->delete($hit->id);
 		}
 
 		// Get page body
-		$body = Request::factory('/')->query(['pageid' => $page->id])->execute()->body();
+		$body = Request::factory('/')->query(['pageid' => $page])->execute()->body();
 
 		// Load document body html
 		$doc = Zend_Search_Lucene_Document_Html::loadHTML($body);
 
 		// Add page id as identifiable keyword
-		$doc->addField(Zend_Search_Lucene_Field::Keyword('page', $page->id));
+		$doc->addField(Zend_Search_Lucene_Field::Keyword('page', $page));
 
 		// Add document to index
 		$lucene->addDocument($doc);
-
-		// Show tree
-		$this->view = Request::factory('Prime/Page/Tree')->execute()->body();
 	}
 
 	/**

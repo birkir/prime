@@ -86,6 +86,25 @@ class Model_Prime extends ORM {
 	}
 
 	/**
+	 * Discard loaded object
+	 *
+	 * @return ORM
+	 */
+	public function discard()
+	{
+		if ( ! $this->_loaded)
+			throw new Kohana_Exception('Cannot publish :model model because it is not loaded.', array(':model' => $this->_object_name));
+
+		if ( ! $this->_revision)
+			throw new Kohana_Exception('Cannot publish :model model because its not revision controlled.', array(':model' => $this->_object_name));
+
+		DB::update($this->_table_name)
+		->set(array('revision' => DB::expr('`published`')))
+		->where('id', '=', $this->id)
+		->execute();
+	}
+
+	/**
 	 * Overwrite page save with validation
 	 *
 	 * @param  Validation Validation object
@@ -153,7 +172,9 @@ class Model_Prime extends ORM {
 			}
 
 			// Set position
-			$position = $query->limit(1)->execute()->get('pos') + 10;
+			$query = $query->limit(1);
+
+			$position = $query->execute()->get('pos') + 10;
 		}
 
 		// Update row position
@@ -161,7 +182,7 @@ class Model_Prime extends ORM {
 		->set(array('position' => $position))
 		->where('id', '=', $this->id);
 
-		if ($draft)
+		if ($draft AND $this->revision !== NULL)
 		{
 			// Where revision = draft
 			$query->where('revision', '=', $this->revision);

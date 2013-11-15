@@ -7,7 +7,7 @@ define(['jquery', 'jqueryUI'], function($) {
 	// find current page id
 	page.id = doc.find('[data-pageid]:eq(0)').data('pageid');
 
-	page.publish = function (element) {
+	page.publish = function (element, discard) {
 		var active = $('.panel-left li.active').children('a').data('id');
 		$.ajax({
 			url: element.href,
@@ -16,6 +16,10 @@ define(['jquery', 'jqueryUI'], function($) {
 			$('.panel-left').html(response);
 			page.tree(active);
 			$('.tree-context.open').remove();
+			$('.pchanges').addClass('hide');
+			if (discard) {
+				$('.panel-left li.active > a').trigger('click');
+			}
 		});
 
 		return false;
@@ -255,7 +259,7 @@ define(['jquery', 'jqueryUI'], function($) {
 					page.tree(active);
 
 					if ($(element).data('id') == active) {
-						$('.prime-live-iframe')[0].contentWindow.location.reload();
+						$('.panel-left li.active > a').trigger('click');
 					}
 				}
 			});
@@ -363,6 +367,8 @@ define(['jquery', 'jqueryUI'], function($) {
 					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':')
 				});
 
+				page.unpublished();
+
 				// Create Empty Dropzone
 				if (oldRegion.children().length === 0) {
 
@@ -396,6 +402,8 @@ define(['jquery', 'jqueryUI'], function($) {
 					if (reference.hasClass('prime-region-empty')) {
 						reference.remove();
 					}
+
+					page.unpublished();
 				});
 			}
 
@@ -430,8 +438,10 @@ define(['jquery', 'jqueryUI'], function($) {
 			state  = $('<i/>', { class: 'fa fa-pencil right text-info' });
 
 		if (node.children('i').length === 0) {
-		    node.children('b').after(state);
+		    node.addClass('unpublished').children('b').after(state);
 		}
+
+		$('.pchanges').removeClass('hide');
 	}
 
 	// region object
@@ -444,41 +454,6 @@ define(['jquery', 'jqueryUI'], function($) {
 				$('.prime-live-iframe')[0].contentWindow.CKEDITOR.inline(this);
 				// $(this).trigger('focus');
 			});
-		},
-		addDelay: false,
-		add: function(module_id, reference_id, name, page_id, above, sticky) {
-			if (page.addDelay) return;
-
-			$.ajax({
-				url: '/Prime/Region/Add/' + [module_id,reference_id,name,page_id,sticky].join(':')
-			})
-			.done(function (response) {
-				var reference = $('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + reference_id + ']'),
-				    region = $(response);
-
-				// append to dom
-				reference[above ? 'before' : 'after'](region);
-
-				// initialize the region
-				region.each(page.region.init);
-
-				// remove reference if empty
-				if (reference.hasClass('prime-region-empty')) {
-					reference.remove();
-				}
-
-				page.unpublished();
-			});
-
-			// we dont want any OOPses here ...
-			page.addDelay = true;
-			setTimeout(function() { page.addDelay = false; }, 330);
-		},
-		move: function (region_id, reference_id, name, page_id, sticky) {
-			$.ajax({
-				url: '/Prime/Region/Reorder/' + [region_id,reference_id,page_id,name,sticky].join(':')
-			});
-			page.unpublished();
 		},
 		remove: function (id) {
 			prime.dialog({
@@ -579,6 +554,9 @@ define(['jquery', 'jqueryUI'], function($) {
 		$('.panel-left .nav-tree [data-id=' + page.id + ']').parent().addClass('active').parents('.has-children:not(.open)').each(function () {
 			$(this).children('b.caret').trigger('click');
 		});
+
+		// are unpublished changes on page?		
+		$('.pchanges')[$('.panel-left li.active').hasClass('unpublished') ? 'removeClass' : 'addClass']('hide');
 
 		// make sure this event has not already loaded
 		if (doc.find('#primeFrontend').length === 1)
@@ -723,6 +701,18 @@ define(['jquery', 'jqueryUI'], function($) {
 	$(document).on('mouseup', function () {
 		prime.active_dropzone = $('.prime-live-iframe').contents().find('.prime-drop-active');
 	})
+
+	$('.pchanges')
+	.on('click', '.btn', function () {
+		var discard = $(this).hasClass('discard'),
+		    publish = $(this).hasClass('publish'),
+		    element = { href: '/Prime/Page/'+(publish ? 'Publish' : 'Discard')+'/' + prime.page.id }
+
+		// Trigger
+		prime.page.publish(element, discard);
+
+		return false;
+	});
 
 	frame.trigger('load');
 
