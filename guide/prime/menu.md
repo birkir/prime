@@ -3,3 +3,5 @@
 - [Basic usage](using)
 - [Upgrading](upgrading)
 - [Fields](fields)
+- [Templates](templates)
+- [Files](files)
