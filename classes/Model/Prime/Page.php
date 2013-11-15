@@ -62,14 +62,14 @@ class Model_Prime_Page extends Model_Prime {
 			->where('parent_id', ! isset($page) ? 'IS' : '=', ! isset($page) ? NULL : $page->id)
 			->find();
 
+			if ( ! $page->loaded())
+				break;
+
 			if ($page->template !== NULL)
 				$template = $page->template;
 
 			if ($page->language !== NULL)
 				$language = $page->language;
-
-			if ( ! $page->loaded())
-				break;
 
 			// set last page
 			$last = $page;
@@ -89,6 +89,15 @@ class Model_Prime_Page extends Model_Prime {
 				{
 					// set overload uri
 					Prime::$page_overload_uri = $uri;
+
+					if ($last->loaded())
+					{
+						if ($last->template === NULL)
+							$last->template = $template;
+
+						if ($last->language === NULL)
+							$last->language = $language;
+					}
 
 					// return last loaded page
 					return $last;

@@ -12,7 +12,7 @@ class Model_Prime_Region extends Model_Prime {
 	/**
 	 * @var boolean Add sortable with specific keys
 	 */
-	protected $_sortable = ['prime_page_id', 'name'];
+	protected $_sortable = ['prime_page_id', 'name', 'sticky'];
 
 	/**
 	 * Belongs to relationships

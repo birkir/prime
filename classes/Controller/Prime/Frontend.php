@@ -108,16 +108,28 @@ class Controller_Prime_Frontend extends Controller {
 			$this->template = View::factory('template/'.$page->template)
 
 			// Bind regions
-			->bind('region', $regions);
+			->bind('region', $regions)
+
+			// Bind sticky regions
+			->bind('sticky', $sticky);
 
 			// Get page region class
 			$regions = Prime::$region;
+			$sticky  = clone $regions;
+			$sticky->sticky();
 
-			foreach ($page->regions->order_by('position', 'ASC')->find_all() as $region)
+			foreach ($page->regions->where('sticky', '=', 0)->order_by('position', 'ASC')->find_all() as $region)
 			{
 				// Attach region models
 			 	$regions->attach($region);
 			}
+
+			foreach (ORM::factory('Prime_Region')->where('sticky', '=', 1)->order_by('position', 'ASC')->find_all() as $region)
+			{
+				// Attach sticky regions
+				$sticky->attach($region);
+			}
+
 		}
 
 		// Set global view parameters

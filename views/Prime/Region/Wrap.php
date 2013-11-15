@@ -1,6 +1,6 @@
 <?php if (Prime::$design_mode): ?>
 
-	<div<?=HTML::attributes(['class' => 'prime-region', 'data-name' => $name, 'data-pageid' => $page->id]);?>>
+	<div<?=HTML::attributes(['class' => 'prime-region', 'data-sticky' => $sticky, 'data-name' => $name, 'data-pageid' => $page->id]);?>>
 
 		<?php foreach ($items as $i => $item): ?>
 

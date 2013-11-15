@@ -33,7 +33,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	public function action_add()
 	{
 		// Extract region and reference ids
-		list($id, $reference, $name, $page) = explode(':', $this->request->param('id'));
+		list($id, $reference, $name, $page, $sticky) = explode(':', $this->request->param('id'));
 
 		// Create Region model
 		$region = ORM::factory('Prime_Region');
@@ -43,6 +43,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region->prime_module_id = $id;
 		$region->name            = $name;
 		$region->settings        = '{}';
+		$region->sticky          = $sticky;
 
 		// Save Region
 		$region->save();
@@ -65,14 +66,15 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	public function action_move()
 	{
 		// Extract region and reference ids
-		list($id, $reference, $name, $page) = explode(':', $this->request->param('id'));
+		list($id, $reference, $name, $page, $sticky) = explode(':', $this->request->param('id'));
 
 		// Load region record
 		$region = ORM::factory('Prime_Region', intval($id));
 
 		// Set model values
 		$region->prime_page_id = $page;
-		$region->name = $name;
+		$region->name          = $name;
+		$region->sticky        = $sticky;
 
 		// Update region position
 		$region->save();

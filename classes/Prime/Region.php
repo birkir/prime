@@ -15,6 +15,11 @@ class Prime_Region {
 	private $items = array();
 
 	/**
+	 * @var boolean Sticky or not
+	 */
+	protected $_sticky = FALSE;
+
+	/**
 	 * Class constructor, singleton method
 	 *
 	 * @return self
@@ -22,6 +27,11 @@ class Prime_Region {
 	public function __construct()
 	{
 		return $this;
+	}
+
+	public function sticky()
+	{
+		$this->_sticky = TRUE;
 	}
 
 	/**
@@ -55,7 +65,8 @@ class Prime_Region {
 	{
 		return View::factory('Prime/Region/Wrap')
 		->set('items', isset($this->items[$name]) ? $this->items[$name] : array())
-		->set('name', $name);
+		->set('name', $name)
+		->set('sticky', $this->_sticky === TRUE ? 1 : 0);
 	}
 
 } // End Prime Region
