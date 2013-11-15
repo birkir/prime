@@ -92,7 +92,7 @@ class Prime_Module_Html extends Prime_Module {
 	{
 		$content = self::option('content');
 
-		if ($this->option('editor_type', 'plaintext') === 'wysiwyg')
+		if ($this->option('editor_type', 'plaintext') === 'wysiwyg' AND Prime::$design_mode)
 		{
 			$content = '<div contenteditable="true">'.$content.'</div>';
 		}
