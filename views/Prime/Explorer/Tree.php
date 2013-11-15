@@ -24,7 +24,7 @@
 			<li class="{{#if root}} disabled{{/if}}{{#unless yours}} disabled{{/unless}}"><a href="/Prime/Explorer/Delete/{{path}}" tabindex="-1" data-title="<?=__('Delete {{#if folder}}folder{{else}}file{{/if}}');?>" data-message="<?=__('You are about to delete this {{#if folder}}folder and all its children{{else}}file{{/if}}, are you sure?');?>" onclick="return prime.explorer.delete(this);"><i class="fa fa-trash-o"></i><?=__('Delete');?></a></li>
 			<li class="{{#if root}} disabled{{/if}}{{#unless yours}} disabled{{/unless}}"><a href="/Prime/Explorer/Rename/{{path}}" tabindex="-1" onclick="return prime.rename(this);"><?=__('Rename...');?></a></li>
 			<li class="divider"></li>
-			<li class="{{#if folder}} disabled{{/if}}{{#if root}} disabled{{/if}}{{#unless yours}} disabled{{/unless}}"><a href="/Prime/Field/Properties/Template:{{path}}" tabindex="-1" onclick="return prime.field.properties(this);"><?=__('Properties');?></a></li>
+			<li class="{{#if folder}} disabled{{/if}}{{#if root}} disabled{{/if}}{{#unless yours}} disabled{{/unless}}"><a href="/Prime/Field/Properties/Template:{{crc}}" tabindex="-1" onclick="return prime.field.properties(this);"><?=__('Properties');?></a></li>
 		</ul>
 	</script>
 </ul>

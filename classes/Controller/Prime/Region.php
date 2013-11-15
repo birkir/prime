@@ -54,6 +54,9 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		// Get Region display Response
 		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
 
+		// Bump the page revision
+		ORM::factory('Prime_Page', $region->prime_page_id)->save();
+
 		// Set region view as Response body
 		$this->response->body('<div'.HTML::attributes(['class' => 'prime-region-item', 'data-id' => $region->id]).'>'.$output.'</div>');
 	}
@@ -82,6 +85,8 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		// Execute movement query
 		$region->position($reference);
 
+		// Bump the page revision
+		ORM::factory('Prime_Page', $region->prime_page_id)->save();
 	}
 
 	/**
@@ -92,7 +97,13 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	public function action_remove()
 	{
 		// Find and delete Region
-		$region = ORM::factory('Prime_Region', $this->request->param('id'))->delete();
+		$region = ORM::factory('Prime_Region', $this->request->param('id'));
+
+		// Bump the page revision
+		ORM::factory('Prime_Page', $region->prime_page_id)->save();
+
+		// Delete
+		$region->delete();
 	}
 
 	/**

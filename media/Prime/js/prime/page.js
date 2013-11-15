@@ -364,7 +364,7 @@ define(['jquery', 'jqueryUI'], function($) {
 				drop.parent()[above ? 'before' : 'after'](ui.draggable);
 
 				$.ajax({
-					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':')
+					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':') + '?mode=design'
 				});
 
 				page.unpublished();
@@ -383,7 +383,7 @@ define(['jquery', 'jqueryUI'], function($) {
 			else
 			{
 				$.ajax({
-					url: '/Prime/Region/Add/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':')
+					url: '/Prime/Region/Add/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':') + '?mode=design'
 				})
 				.done(function (response) {
 

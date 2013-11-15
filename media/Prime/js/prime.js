@@ -509,6 +509,33 @@ var prime = (function () {
 	};
 
 	/**
+	 * CRC32 used for calculating integer for filename
+	 *
+	 * @param string
+	 * @return integer
+	 */
+	app.crc32 = function (str) {
+
+	    var crc = 0 ^ (-1),
+	        table = [],
+	        c;
+
+		for (var n = 0; n < 256; n++) {
+			c = n;
+			for (var k = 0; k < 8; k++) {
+				c = ((c&1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+			}
+			table[n] = c;
+		}
+
+		for (var i = 0; i < str.length; i++ ) {
+			crc = (crc >>> 8) ^ table[(crc ^ str.charCodeAt(i)) & 0xFF];
+		}
+
+		return (crc ^ (-1)) >>> 0;
+	};
+
+	/**
 	 * Calculate password strength score
 	 *
 	 * @param string String to calculate

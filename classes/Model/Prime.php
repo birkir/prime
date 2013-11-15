@@ -404,7 +404,7 @@ class Model_Prime extends ORM {
 		{
 			// Update a single record
 			DB::update($this->_table_name)
-			->set($data)
+			->set($this->_object)
 			->where($this->_primary_key, '=', $this->pk())
 			->execute($this->_db);
 

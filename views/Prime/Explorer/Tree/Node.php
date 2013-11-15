@@ -21,6 +21,7 @@
 		<?=HTML::anchor('/Prime/Explorer/File/'.$key, '<span><i class="fa fa-'.($folder ? 'folder' : 'file').'"></i> '.basename($file).'</span>', [
 			'onclick'      => $folder ? 'return false;' : 'return prime.view(this.href);',
 			'data-id'      => sha1($key),
+			'data-crc'     => sprintf('%u', crc32($key)),
 			'data-path'    => $key,
 			'data-folder'  => (bool) $folder,
 			'data-yours'   => (bool) $yours,

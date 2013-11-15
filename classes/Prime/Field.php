@@ -139,6 +139,8 @@ class Prime_Field {
 		// Set item field value 
 		$view->value = $this->value($item);
 
+		$view->raw = $item;
+
 		// Set field id
 		$view->id = implode('_', Arr::extract($this->field, ['resource_type', 'resource_id', 'name']));
 

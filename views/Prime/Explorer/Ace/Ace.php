@@ -33,7 +33,7 @@
 	</div>
 </div>
 <?php if ($primefile): ?>
-	<div class="alert alert-danger top-center" style="top: 61px; margin-left: -130px;">
+	<div class="alert alert-danger top-center" style="top: 58px;margin-left: -250px;">
 		<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
 		<strong><?=__('Warning');?>!</strong> <?=__('Saving this file will overwrite its origin to your application file system.');?>&nbsp;&nbsp;
 	</div>

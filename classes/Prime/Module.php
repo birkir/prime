@@ -173,7 +173,17 @@ class Prime_Module {
 			$template = $fallback;
 		}
 
-		return View::factory($directory.'/'.$template);
+		// Get filename crc32
+		$crc = sprintf('%u', crc32('views'.DIRECTORY_SEPARATOR.$directory.DIRECTORY_SEPARATOR.$template.'.php'));
+
+		// Find template fields
+		$fields = ORM::factory('Prime_Field')
+		->where('resource_type', '=', 'Template')
+		->where('resource_id', '=', $crc)
+		->order_by('position', 'ASC')
+		->find_all();
+
+		return View::factory($directory.DIRECTORY_SEPARATOR.$template);
 	}
 
 	/**
