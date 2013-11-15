@@ -150,7 +150,7 @@ class Prime_Module_Navigation extends Prime_Module {
 			}
 
 			// stop recursive if level exceeds to_level
-			if ($to_level <= ($level + 1))
+			if ($to_level !== -1 AND $to_level <= ($level + 1))
 			{
 				$node['pages'] = [];
 			}

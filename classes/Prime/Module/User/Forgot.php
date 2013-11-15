@@ -41,23 +41,25 @@ class Prime_Module_User_Forgot extends Prime_Module {
 					'default' => 'type_password',
 					'options' => [
 						'items' => [
-							'type_password'     => 'User types new password',
-							'generate_password' => 'Prime generates password'
+							'type_password'     => __('User types new password'),
+							'generate_password' => __('Prime generates password')
 						]
 					]
+				],
+				[
+					'name'    => 'login_page',
+					'caption' => 'Login page',
+					'field'   => 'Prime_Field_Page',
+					'default' => NULL
 				],
 				[
 					'name'    => 'captcha',
 					'caption' => 'Enable captcha',
 					'field'   => 'Prime_Field_Boolean',
 					'default' => TRUE
-				],
-				[
-					'name'    => 'login_page',
-					'caption' => 'Login page',
-					'field'   => 'Prime_Field_Page',
-					'default' => ''
-				],
+				]
+			],
+			'Layout' => [
 				[
 					'name'    => 'template',
 					'caption' => 'Template',

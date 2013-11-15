@@ -17,6 +17,10 @@
 			</div>
 		<?php endif; ?>
 
+		<?php foreach ($roles as $role): ?>
+			<?=Form::hidden('roles[]', $role);?>
+		<?php endforeach; ?>
+
 		<div class="form-group">
 			<?=Form::label('signupEmail', __('Email address'));?>
 			<?=Form::input('email', Arr::get($post, 'email'), ['id' => 'signupEmail', 'class' => 'form-control', 'autofocus' => 'autofocus']);?>
@@ -31,6 +35,13 @@
 			<?=Form::label('signupPasswordConfirm', __('Re-type password'));?>
 			<?=Form::password('password_confirm', NULL, ['id' => 'signupPasswordConfirm', 'class' => 'form-control']);?>
 		</div>
+
+		<?php if ($captcha): ?>
+			<div class="form-group">
+				<?=Form::label('signupCaptcha', __('Type answer'));?>
+				<?=$captcha;?>
+			</div>
+		<?php endif; ?>
 
 		<div class="form-group">
 			<?=Form::button(NULL, __('Sign up'), ['class' => 'btn btn-default', 'type' => 'submit']);?>

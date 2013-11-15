@@ -360,7 +360,7 @@ define(['jquery', 'jqueryUI'], function($) {
 				drop.parent()[above ? 'before' : 'after'](ui.draggable);
 
 				$.ajax({
-					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid')].join(':')
+					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':')
 				});
 
 				// Create Empty Dropzone
@@ -377,7 +377,7 @@ define(['jquery', 'jqueryUI'], function($) {
 			else
 			{
 				$.ajax({
-					url: '/Prime/Region/Add/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid')].join(':')
+					url: '/Prime/Region/Add/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':')
 				})
 				.done(function (response) {
 
@@ -442,15 +442,15 @@ define(['jquery', 'jqueryUI'], function($) {
 			.addClass('prime-region-item-active');
 			$(this).find('[contenteditable]').each(function () {
 				$('.prime-live-iframe')[0].contentWindow.CKEDITOR.inline(this);
-				$(this).trigger('focus');
+				// $(this).trigger('focus');
 			});
 		},
 		addDelay: false,
-		add: function(module_id, reference_id, name, page_id, above) {
+		add: function(module_id, reference_id, name, page_id, above, sticky) {
 			if (page.addDelay) return;
 
 			$.ajax({
-				url: '/Prime/Region/Add/' + [module_id,reference_id,name,page_id].join(':')
+				url: '/Prime/Region/Add/' + [module_id,reference_id,name,page_id,sticky].join(':')
 			})
 			.done(function (response) {
 				var reference = $('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + reference_id + ']'),
@@ -474,9 +474,9 @@ define(['jquery', 'jqueryUI'], function($) {
 			page.addDelay = true;
 			setTimeout(function() { page.addDelay = false; }, 330);
 		},
-		move: function (region_id, reference_id, name, page_id) {
+		move: function (region_id, reference_id, name, page_id, sticky) {
 			$.ajax({
-				url: '/Prime/Region/Reorder/' + [region_id,reference_id,page_id,name].join(':')
+				url: '/Prime/Region/Reorder/' + [region_id,reference_id,page_id,name,sticky].join(':')
 			});
 			page.unpublished();
 		},

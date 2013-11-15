@@ -44,7 +44,9 @@ class Prime_Module_User_Signup extends Prime_Module {
 					'caption' => 'Enable captcha',
 					'field'   => 'Prime_Field_Boolean',
 					'default' => TRUE
-				],
+				]
+			],
+			'Layout' => [
 				[
 					'name'    => 'template',
 					'caption' => 'Template',
@@ -81,13 +83,14 @@ class Prime_Module_User_Signup extends Prime_Module {
 		$view->bind('status', $status);
 		$view->bind('errors', $errors);
 		$view->bind('post', $post);
+		$view->bind('roles', $roles);
 		$view->bind('return_url', $return_url);
 
 		$return_url = ORM::factory('Prime_Page', $this->option('return_page', 0))->uri();
 
 		$post = Request::current()->post();
 
-		$roles = explode(',', $this->option('roles'));
+		$roles = explode(',', $this->option('allowed_roles'));
 		foreach ($roles as $i => $_role) $roles[$i] = trim($_role);
 
 		if (Request::current()->method() === HTTP_Request::POST)
@@ -99,21 +102,21 @@ class Prime_Module_User_Signup extends Prime_Module {
 				->values($post)
 				->save();
 
-				foreach (Arr::get($post, 'roles', []) as $role)
+				foreach (Arr::get($post, 'roles', array()) as $role)
 				{
-					$role = ORM::factory('Role', $role);
+					// Get role
+					$role = ORM::factory('Role', array('name' => $role));
 
 					if (in_array($role->name, $roles))
 					{
+						// Add role to created User
 						$user->add('roles', $role);
 					}
 				}
 
-				// todo: add fields data to user
-				// next time!
-
 				if ( ! empty($return_url))
 				{
+					// Redirect to Return_URL
 					header('Location: '.$return_url);
 					exit;
 				}
@@ -130,4 +133,4 @@ class Prime_Module_User_Signup extends Prime_Module {
 		return $view;
 	}
 
-} // End Prime User Signup Module
+}

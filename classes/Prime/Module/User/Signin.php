@@ -49,7 +49,7 @@ class Prime_Module_User_Signin extends Prime_Module {
 	{
 		// load the view
 		$view = self::load_view('module/user/signin', self::option('template'))
-		->set('user', Auth::instance()->get_user())
+		->bind('user', $user)
 		->bind('data', $data)
 		->bind('success', $success)
 		->bind('error', $error);
@@ -74,6 +74,7 @@ class Prime_Module_User_Signin extends Prime_Module {
 			{
 				// log the user out
 				Auth::instance()->logout();
+
 			}
 
 			// try login
@@ -93,6 +94,9 @@ class Prime_Module_User_Signin extends Prime_Module {
 				$error = __('E-Mail or password incorrect, try again!');
 			}
 		}
+
+		// Get user
+		$user = Auth::instance()->get_user();
 
 		// get template
 		return $view;
