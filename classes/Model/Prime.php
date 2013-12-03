@@ -191,23 +191,21 @@ class Model_Prime extends ORM {
 		// Execute update query
 		$query->execute();
 
-		// Position caret
-		$pos = 'SET @pos:=0;';
-
 		if ($draft)
 		{
 			// Setup update query
 			$update = DB::update($this->_table_name.'_rev')
-			->where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))->limit(1))
-			->set(array('position' => DB::expr('@pos:=@pos + 10')))
-			->order_by('position', 'ASC');
+			->or_where(DB::expr('(SELECT @pos := 0)'), DB::expr(NULL), DB::expr(NULL))
+			->or_where_open()
+				->and_where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))->limit(1));
+			
 		}
 		else
 		{
 			// Setup update query
 			$update = DB::update($this->_table_name)
-			->set(array('position' => DB::expr('@pos:=@pos + 10')))
-			->order_by('position', 'ASC');
+			->or_where(DB::expr('(SELECT @pos := 0)'), DB::expr(NULL), DB::expr(NULL))
+				->or_where_open();
 		}
 
 		// Setup mysqli driver
@@ -216,11 +214,13 @@ class Model_Prime extends ORM {
 		foreach ($this->_sortable as $key)
 		{
 			// Reorder new keys
-			$update->where($this->_table_name.($draft ? '_rev' : NULL).'.'.$key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
+			$update->and_where($this->_table_name.($draft ? '_rev' : NULL).'.'.$key, $this->{$key} === NULL ? 'IS' : '=', $this->{$key});
 		}
 
+		$update = $update->or_where_close()->set(array('position' => DB::expr('@pos:=@pos + 10')))->order_by('position', 'ASC');
+
 		// Update position index
-		$db->multiquery($pos.$update);
+		$db->query(Database::UPDATE, $update);
 
 		return $this;
 	}
