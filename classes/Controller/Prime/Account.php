@@ -21,6 +21,20 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_index() {}
 
+	/** 
+	 * Checks if user is authenticated with prime role
+	 *
+	 * @return void
+	 */
+	public function authenticated()
+	{
+		if (Auth::instance()->logged_in('prime'))
+		{
+			// Redirect user to Pages
+			HTTP::redirect('Prime/Page');
+		}
+	}
+
 	/**
 	 * Profile page
 	 *
@@ -145,11 +159,8 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_login()
 	{
-		if (Auth::instance()->logged_in('prime'))
-		{
-			// Redirect user to Pages
-			HTTP::redirect('Prime/Page');
-		}
+		// Are we already authenticated
+		$this->authenticated();
 
 		// Setup standalone template
 		$this->template = View::factory('Prime/Alternative');
@@ -182,6 +193,9 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_forgotpassword()
 	{
+		// Are we already authenticated
+		$this->authenticated();
+
 		$this->template = View::factory('Prime/Alternative');
 
 		$this->view = View::factory('Prime/Account/ForgotPassword');
@@ -199,6 +213,9 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_logout()
 	{
+		// Are we already authenticated
+		$this->authenticated();
+
 		// Logout authenticated user
 		Auth::instance()->logout();
 
