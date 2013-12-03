@@ -301,6 +301,15 @@ class Model_Prime extends ORM {
 			->where('id', '=', $this->id)
 			->execute();
 
+			// Delete revision also
+			if ($this->_revision)
+			{
+				DB::update($this->_table_name.'_rev')
+				->set(array('deleted_at' => DB::expr('NOW()')))
+				->where('revision', '=', $this->revision)
+				->execute();
+			}
+
 			// Clear it
 			return $this->clear();
 		}

@@ -59,7 +59,7 @@ class Prime_Module_Fieldset_Item extends Prime_Module {
 		$item = ORM::factory('Prime_Module_Fieldset_Item', intval($uri));
 
 		// check if fieldset item is loaded and matches given fieldset
-		if ($item->loaded() AND $item->prime_module_fieldset_id === $fieldset->id)
+		if ($item->loaded())
 			return TRUE;
 
 		return FALSE;

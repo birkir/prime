@@ -33,9 +33,6 @@ class Model_Prime_Region extends Model_Prime {
 	 */
 	public function module()
 	{
-		if ( ! $this->loaded())
-			return;
-
 		if ( ! class_exists($this->module->controller))
 		{
 			// Could not find module class 

@@ -33,14 +33,35 @@ class Model_Prime_Module_Fieldset extends ORM {
 		]
 	];
 
+	/** 
+	 * Find fieldset fields inherited.
+	 *
+	 * @return Database_Result
+	 */
 	public function fields()
 	{
 		if ( ! $this->loaded())
 			return;
 
+		// Use current fieldset as base
+		$inherited = array($this->id);
+		$parent    = $this;
+
+		while ($parent->loaded() AND $parent->parent_id !== NULL)
+		{
+			// Append to inherited array
+			$inherited[] = $parent->parent_id;
+
+			// Load the parent node
+			$parent = ORM::factory('Prime_Module_Fieldset')
+			->where('id', '=', $this->parent_id)
+			->where('type', '=', 1)
+			->find();
+		}
+
 		return ORM::factory('Prime_Field')
 		->where('resource_type', '=', 'Module_Fieldset')
-		->where('resource_id', '=', $this->id)
+		->where('resource_id', 'IN', $inherited)
 		->order_by('position', 'ASC')
 		->find_all();
 	}

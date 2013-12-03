@@ -145,7 +145,7 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_login()
 	{
-		if (Auth::instance()->logged_in())
+		if (Auth::instance()->logged_in('prime'))
 		{
 			// Redirect user to Pages
 			HTTP::redirect('Prime/Page');

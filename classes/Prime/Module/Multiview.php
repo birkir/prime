@@ -35,7 +35,7 @@ class Prime_Module_MultiView extends Prime_Module {
 					'name'    => 'views',
 					'caption' => 'View names',
 					'field'   => 'Prime_Field_String',
-					'default' => 'span6, span6',
+					'default' => 'col-sm-6, col-sm-6',
 					'options' => [
 						'placeholder' => 'ex. tab1, tab2'
 					]

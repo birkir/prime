@@ -27,7 +27,9 @@
 					<th width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></th>
 					<th width="1"></th>
 					<?php foreach ($fields as $field): ?>
-						<th><?=$field->caption;?></th>
+						<?php if ($field->visible): ?>
+							<th><?=$field->caption;?></th>
+						<?php endif; ?>
 					<?php endforeach; ?>
 					<th width="70"><?=__('Order');?></th>
 				</tr>
@@ -44,9 +46,11 @@
 							<?php endif; ?>
 						</td>
 						<?php foreach ($fields as $f => $field): ?>
-							<td>
-								<?=$field->field->text($item);?>
-							</td>
+							<?php if ($field->visible): ?>
+								<td>
+									<?=$field->field->text($item);?>
+								</td>
+							<?php endif; ?>
 						<?php endforeach; ?>
 						<td class="reorder-handle"><span class="sr-only"><?=$i;?></span><i class="fa fa-reorder"></i></td>
 					</tr>

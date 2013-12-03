@@ -179,10 +179,22 @@ class Prime_Module_Fieldset_Insert extends Prime_Module {
 
 				if ($validation->check())
 				{
-					// set item data
+					// Get old flag
+					$was_draft = Model_Prime::$_draft;
+
+					// Set draft flag
+					Model_Prime::$_draft = TRUE;
+
+					// Set item data
 					$item->prime_module_fieldset_id = $fieldset->id;
 					$item->data = json_encode($data);
 					$item->save();
+
+					// Publish item
+					ORM::factory('Prime_Module_Fieldset_Item', $item->id)->publish();
+
+					// Set draft flag
+					Model_Prime::$_draft = $was_draft;
 
 					// send mail if set
 					if (Arr::get($cfg, 'enable_email', FALSE))

@@ -160,6 +160,13 @@ class Controller_Prime_Module_Fieldset extends Controller_Prime_Template {
 			$item->prime_module_fieldset_id = $fieldset->id;
 			$item->data = json_encode($data);
 			$item->save();
+
+			Cookie::set('prime-publish-on-save', isset($post['_publish']));
+
+			if (isset($post['_publish']))
+			{
+				ORM::factory('Prime_Module_Fieldset_Item', $item->id)->publish();
+			}
 		}
 	}
 

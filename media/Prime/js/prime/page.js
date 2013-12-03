@@ -447,13 +447,14 @@ define(['jquery', 'jqueryUI'], function($) {
 	// region object
 	page.region = {
 		init: function () {
+			frame.contents().find('.prime-region-item-active').removeClass('prime-region-item-active');
 			$(this).draggable(page.draggableConfig)
 			.droppable(page.droppableConfig)
 			.addClass('prime-region-item-active');
 			$(this).find('[contenteditable]').each(function () {
 				$('.prime-live-iframe')[0].contentWindow.CKEDITOR.inline(this);
-				// $(this).trigger('focus');
 			});
+			$(this).find('.prime-region-item').draggable(page.draggableConfig).droppable(page.droppableConfig);
 		},
 		remove: function (id) {
 			prime.dialog({
