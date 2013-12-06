@@ -484,12 +484,12 @@ define(['jquery', 'jqueryUI'], function($) {
 		},
 		settings: function (id) {
 			var save = $('<button/>').addClass('btn btn-danger').text('Save'),
-				cancel = $('<button/>').addClass('btn btn-default').text('Cancel').attr('data-dismiss', 'modal');
+				close = $('<button/>').addClass('btn btn-default').text('Close').attr('data-dismiss', 'modal');
 
 			var dialog = prime.dialog({
 				title: 'Settings',
 				remote: '/Prime/Region/Settings/' + id,
-				buttons: [save, cancel]
+				buttons: [save, close]
 			},
 			function (modal) {
 				form = modal.find('form');
@@ -503,8 +503,6 @@ define(['jquery', 'jqueryUI'], function($) {
 						var region_item = $(response);
 						$('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + id + ']').html(region_item);
 						region_item.parent().each(page.region.init);
-
-						dialog.modal('hide');
 					});
 					page.unpublished();
 					return false;
