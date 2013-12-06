@@ -127,6 +127,11 @@ var prime = (function () {
 
 			// elements
 			modal.each(prime.elements);
+
+			// add draggable handler to header
+			modal.find('.modal-content').draggable({
+				handle: '.modal-header'
+			});
 		};
 
 		// remotely get modal body with ajax
@@ -1107,7 +1112,7 @@ var prime = (function () {
 
 	// run when jquery has loaded
 	// --------------------------
-	define(['jquery', 'translation', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($, translation) {
+	define(['jquery', 'translation', 'jqueryUI', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($, translation) {
 
 		// list available controllers
 		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file'];

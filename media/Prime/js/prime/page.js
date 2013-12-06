@@ -343,6 +343,7 @@ define(['jquery', 'jqueryUI'], function($) {
 	page.droppableConfig = {
 		greedy: true,
 		hoverClass: 'ui-state-active',
+		accept: '.list-group-item, .prime-region-item',
 		drop: function (e, ui) {
 
 			// drop point
@@ -426,6 +427,7 @@ define(['jquery', 'jqueryUI'], function($) {
 			ui.draggable.data('region', this.location);
 		},
 		out: function (e, ui) {
+
 			this.location.above.removeClass('prime-drop-active');
 			this.location.below.removeClass('prime-drop-active');
 
