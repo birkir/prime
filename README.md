@@ -27,12 +27,12 @@ Kohana::modules(array(
 5. Open up http://yourdomain/Prime and hit install. 
 6. You are good to go!
 
-
 ## Quick Up & Running
 
 ~~~
 git clone git@github.com:kohana/kohana.git .
-git submodule update --init
+git submodule add git@github.com:morgan/kohana-storage.git modules/storage
+git submodule update --init --recursive
 git clone git@github.com:birkir/prime.git modules/prime
 chmod -R 0777 application
 sed -i -e "s/\/\/ 'auth'/'auth'   /g" application/bootstrap.php

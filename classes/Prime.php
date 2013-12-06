@@ -85,6 +85,9 @@ class Prime {
 		// Load region controller
 		Prime::$region = new Prime_Region;
 
+		// Set storage driver
+		Storage_Connection::$driver = Arr::get(Prime::$config, 'storage', 'local');
+
 		// Prime is now initialized
 		Prime::$_init = TRUE;
 	}

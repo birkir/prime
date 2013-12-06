@@ -165,11 +165,15 @@ define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 
 		$('.grid-group-item, .table tr').on('dblclick', function () {
 			if (ckbrowser) { window.close(); }
-			else { 
-				// window.open(, '_blank');
+			else {
+				if ($(this).find('img').data('original')) {
+					window.open($(this).find('img').data('original'))
+					return;
+				}
+
 				prime.dialog({
 					backdrop: true,
-					body: $('<img/>', { src: '/Prime/File/Transform/800x800/' + $(this).data('id'), style: 'max-width:100%;max-height:800px;' }).on('load', function () {
+					body: $('<img/>', { src: $(this).find('img').data('preview'), style: 'max-width:100%;max-height:800px;' }).on('load', function () {
 						$(this).closest('.modal-dialog').css({ width: Math.min(800, $(this).width()) });
 					})
 				}, function (modal) {

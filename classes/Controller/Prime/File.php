@@ -15,11 +15,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	protected $json = NULL;
 
 	/**
-	 * @var array Actions allowed without authentication
-	 */
-	public $auth_actions = array('get');
-
-	/**
 	 * Default page
 	 *
 	 * @return void
@@ -65,8 +60,12 @@ class Controller_Prime_File extends Controller_Prime_Template {
 
 		if (isset($_GET['file']))
 		{
+			$_file = pathinfo($this->request->query('file'));
+
 			// Find reference file
-			$file = ORM::factory('Prime_File', $this->request->query('file'));
+			$file = ORM::factory('Prime_File')
+			->where('filename', '=', $_file['filename'])
+			->find();
 			
 			// Set folder id
 			$id = $file->parent_id;
@@ -95,135 +94,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	}
 
 	/**
-	 * Generate and load file preview
-	 *
-	 * @return void
-	 */
-	public function action_preview()
-	{
-		// Disable auto render
-		$this->auto_render = FALSE;
-
-		// Find file
-		$file = ORM::factory('Prime_File', $this->request->param('id'));
-
-		if ( ! $file->loaded())
-		{
-			// Could not find file
-			throw HTTP_Exception::factory(404, 'File not found.');
-		}
-
-		// Get file last updated time
-		$updated = strtotime($file->updated_at);
-
-		try 
-		{
-			// Set cached filename
-			$cache = APPPATH.'cache/files/'.$file->filename.'@256x256';
-
-			if ( ! file_exists($cache) OR filemtime($cache) < $updated OR isset($_GET['nocache']))
-			{
-				if ($file->mime === 'application/pdf') 
-				{
-					// Yes we can generate PDF previews
-					$image = new Imagick(APPPATH.'cache/files/'.$file->filename.'[0]');
-					$image->setResolution(300, 300);
-					$image->setImageFormat('png');
-					$width  = $image->getImageWidth();
-					$height = $image->getImageHeight();
-					$image->scaleImage($width < $height ? NULL : 256, $height < $width ? NULL : 256);
-					$image->writeImage($cache);
-				}
-				else
-				{
-					// Find image in upload folder
-					$image = Image::factory(APPPATH.'cache/files/'.$file->filename);
-
-					if ($image->width > 256)
-					{
-						// Resize image to max width/height
-						$image->resize(256, 256, Image::AUTO);
-					}
-
-					// Attempt to save to filepath
-					$image->save($cache);
-				}
-			}
-
-			// Setup response MIME-Type
-			$this->response->headers('content-type', ($file->mime === 'application/pdf') ? 'image/png' : $file->mime);
-
-			// Render image
-			$body = file_get_contents($cache);
-		}
-		catch (Kohana_Exception $e)
-		{
-			// Default image
-			$image = 'thumbnail-file-generic';
-
-			// Spreadsheets mime list
-			$spreadsheets = ['application/vnd.ms-excel', 'application/vnd.oasis.opendocument.spreadsheet'];
-
-			// Image mime list
-			$images = ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png', 'image/svg+xml', 'image/tiff'];
-
-			if (in_array($file->mime, $spreadsheets))
-			{
-				// Set spreadsheet image 
-				$image = 'thumbnail-file-spreadsheet';
-			}
-
-			if (in_array($file->mime, $images))
-			{
-				// Set image image
-				$image = 'thumbnail-file-image';
-			}
-
-			// Display file
-			$body = file_get_contents(Kohana::find_file('media', 'Prime/img/'.$image, 'png'));
-
-			// Set png mime type
-			$this->response->headers('content-type', 'image/png');
-		}
-
-		// Check for cache
-		$this->check_cache(sha1($this->request->uri()).$updated);
-
-		// Set Response body
-		$this->response->body($body);
-
-		// Set Response headers
-		$this->response->headers('last-modified', date('r', $updated));
-		$this->response->headers('expires', gmdate('D, d M Y H:i:s', time() + (86400 * 14)));
-	}
-
-	/**
-	 * Get file contents
-	 *
-	 * @return void
-	 */
-	public function action_get()
-	{
-		// Disable auto render
-		$this->auto_render = FALSE;
-
-		// Find file
-		$file = ORM::factory('Prime_File', $this->request->param('id'));
-
-		if ( ! $file->loaded())
-		{
-			// Could not find file
-			throw HTTP_Exception::factory(404, 'File not found.');
-		}
-
-		// Add mime types
-		$this->response->headers('content-type', $file->mime);
-
-		// Set response body
-		$this->response->body(file_get_contents(APPPATH.'cache/files/'.$file->filename));
-	}
-
-	/**
 	 * Handle upload files
 	 *
 	 * @return void
@@ -232,6 +102,9 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	{
 		// Setup upload view
 		$this->view = View::factory('Prime/File/Upload');
+
+		// Setup storage
+		$storage = Storage::factory();
 
 		if ($this->request->method() === HTTP_Request::POST)
 		{
@@ -317,6 +190,12 @@ class Controller_Prime_File extends Controller_Prime_Template {
 				// Get fileinfo
 				$fileinfo = pathinfo($filename);
 
+				// Create hashed filename for reference
+				$hashname = sha1_file($filepath);
+
+				// Store the file
+				$storage->set($hashname.'.'.$fileinfo['extension'], file_get_contents($filepath));
+
 				// Create file record
 				$item = ORM::factory('Prime_File');
 				$item->parent_id = $this->request->param('id');
@@ -325,7 +204,7 @@ class Controller_Prime_File extends Controller_Prime_Template {
 				$item->ext  = $fileinfo['extension'];
 				$item->mime = File::mime_by_ext($fileinfo['extension']);
 				$item->size = filesize($filepath);
-				$item->filename = sha1($filename);
+				$item->filename = $hashname;
 
 				// Parse image files
 				if ($image = @getimagesize($filepath))
@@ -340,6 +219,9 @@ class Controller_Prime_File extends Controller_Prime_Template {
 						case 3: $item->channels = 'RGB'; break;
 						case 4: $item->channels = 'CMYK'; break;
 					}
+
+					$storage->set($hashname.'thumb.'.$fileinfo['extension'], Image::factory($filepath)->resize(256, 256)->render(NULL, 85));
+					$storage->set($hashname.'preview.'.$fileinfo['extension'], Image::factory($filepath)->resize(1024, 768)->render(NULL, 100));
 				}
 
 				// Save record
@@ -434,159 +316,6 @@ class Controller_Prime_File extends Controller_Prime_Template {
 		$this->view = Request::factory('Prime/File/Tree')
 		->execute()
 		->body();
-	}
-
-	/**
-	 * Dynamic Image Transformation
-	 *
-	 * @return void
-	 */
-	public function action_transform()
-	{
-		// Setup params
-		$uri   = explode('/', $this->request->param('id'));
-		$fits  = array('clip', 'crop', 'scale', 'fill');
-		$crops = array('center', 'top', 'right', 'bottom', 'left', 'face');
-		$dpis  = array('ldpi' => 0.75, 'mdpi' => 1, 'hdpi' => 1.5, 'xhdpi' => 2);
-		$flips = array('h', 'v', 'hv');
-
-		// Find file
-		$file = ORM::factory('Prime_File', end($uri));
-
-		// Get last updated time
-		$updated = strtotime($file->updated_at);
-
-		// Get filename
-		$filename = APPPATH.'cache/files/'.$file->filename;
-
-		if ( ! $file->loaded() OR ! file_exists($filename))
-		{
-			// Could not find file
-			throw new Kohana_Exception('File not found.');
-		}
-
-		// Set default values
-		$fit = 'clip';
-		$dpi = 1;
-
-		// Get cached filename
-		$cached = APPPATH.'cache/files/transform-'.sha1($this->request->param('id').'/'.$file->filename).'.jpg';
-
-		if ( ! file_exists($cached) OR (filemtime($cached) < $updated) OR isset($_GET['nocache']))
-		{
-			// Load image
-			$image = Image::factory($filename);
-
-			foreach ($uri as $i => $part)
-			{
-				if (isset($dpis[$part]))
-				{
-					// Set dpi flag
-					$dpi = $dpis[$part];
-				}
-
-				if (preg_match('/[0-9]+x[0-9]+/', $part))
-				{
-					// Extract resize width and height
-					$sizes  = explode('x', $part);
-
-					// Max them out at 2000 pixels
-					$resize = array(min(2000, intval($sizes[0])), min(2000, intval($sizes[1])));
-
-					// Set dpi width and height
-					$width = $resize[0] * $dpi;
-					$height = $resize[1] * $dpi;
-
-					if ($file->width > $width AND $file->height > $height)
-					{
-						// Resize image
-						$image->resize($width, $height, (($fit === 'crop') ? Image::INVERSE : (($fit === 'scale') ? Image::NONE : Image::AUTO)));
-					}
-				}
-
-				if ($part === 'face')
-				{
-					/*
-					// Get face detection library
-					require_once Kohana::find_file('vendor/FaceDetector', 'FaceDetector');
-
-					// Create Face Detector and load data file
-					$detector = new FaceDetector(Kohana::find_file('vendor/FaceDetector', 'detection', 'dat'));
-
-					// Detect image
-					$detector->faceDetect($filename);
-
-					if ($face = $detector->getFace())
-					{
-						$face['x'] *= ($image->width / $file->width);
-						$face['y'] *= ($image->height / $file->height);
-						$face['w'] *= ($image->width / $file->width);
-
-						$image->crop($face['w'], $face['w'], $face['x'], $face['y']);
-					}
-					*/
-				}
-
-				if (in_array($part, $crops))
-				{
-					// Set crop flag
-					$crop = $part;
-
-					if ($fit === 'crop' AND ($crop !== 'center' AND $crop !== 'face'))
-					{
-						// Set X and Y crop offset
-						$x = (($crop === 'left') ? 0 : (($crop === 'right' ) ? TRUE : NULL));
-						$y = (($crop === 'top' ) ? 0 : (($crop === 'bottom') ? TRUE : NULL));
-
-						// Execute crop function
-						$image->crop($resize[0] * $dpi, $resize[1] * $dpi, $x, $y);
-					}
-				}
-
-				if (preg_match('/rotate\-?\+?[0-9]+/', $part))
-				{
-					// Rotate image by number of degrees
-					$image->rotate(intval(str_replace('rotate', '', $part)));
-				}
-
-				if (in_array($part, $fits))
-				{
-					// Set fit flag
-					$fit = $part;
-				}
-
-				if (in_array($part, $flips))
-				{
-					if ($part === 'h' OR $part === 'hv')
-					{
-						// Flip image horizontal
-						$image->flip(Image::HORIZONTAL);
-					}
-					else if($part === 'v' OR $part === 'hv')
-					{
-						// Flip image vertical
-						$image->flip(Image::VERTICAL);
-					}
-				}
-			}
-
-			// Save image to cache
-			$image->save($cached, 100);
-		}
-
-		// Disable auto render
-		$this->auto_render = FALSE;
-
-		// Check for cache
-		$this->check_cache(sha1($this->request->uri()).$updated);
-
-		// Set Response body
-		$this->response->body(file_get_contents($cached));
-
-		// Set Response headers
-		$this->response->headers('content-type', 'image/jpeg');
-		$this->response->headers('last-modified', date('r', $updated));
-		$this->response->headers('expires', gmdate('D, d M Y H:i:s', time() + (86400 * 14)));
 	}
 
 	/**

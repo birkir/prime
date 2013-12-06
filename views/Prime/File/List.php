@@ -26,13 +26,22 @@
 	</div>
 	<div class="scrollable">
 
+		<?php $storage = Storage::factory(); ?>
+
 		<div class="grid-group<?=$viewtype === 'thumbnails' ? NULL : ' hidden';?>">
 			<?php foreach ($items as $item): ?>
 				<div class="grid-group-item" data-id="<?=$item->id;?>">
 					<div class="grid-group-item-bottom">
 						<a href="#" class="grid-group-item-selection">
 							<input type="checkbox">
-							<img src="" data-src="/Prime/File/Preview/<?=$item->id;?>" alt="">
+							<?php if ($item->width !== NULL): ?>
+								<img src="" data-src="<?=$storage->url($item->filename).'thumb.'.$item->ext;?>" alt="" data-preview="<?=$storage->url($item->filename).'preview.'.$item->ext;?>">
+							<?php else: ?>
+                        		<?php $image = 'thumbnail-file-generic'; ?>
+								<?php $image = (in_array($item->mime, ['application/vnd.ms-excel', 'text/x-comma-separated-values', 'application/excel', 'application/vnd.oasis.opendocument.spreadsheet']) ? 'thumbnail-file-spreadsheet' : $image); ?>
+								<?php $image = (in_array($item->mime, ['image/gif', 'image/jpeg', 'image/pjpeg', 'image/png', 'image/svg+xml', 'image/tiff']) ? 'thumbnail-file-image' : $image); ?>
+								<img src="/media/Prime/img/<?=$image;?>.png" alt="" data-original="<?=$storage->url($item->filename).'.'.$item->ext;?>">
+							<?php endif; ?>
 						</a>
 					</div>
 					<span class="grid-group-item-caption"><span class="text-overflow"><?=$item->name;?></span></span>
@@ -54,7 +63,7 @@
 			</thead>
 			<tbody>
 				<?php foreach ($items as $item): ?>
-					<tr data-id="<?=$item->id;?>" data-url="/Prime/File/Get/<?=$item->id;?>">
+					<tr data-id="<?=$item->id;?>" data-url="<?=$storage->url($item->filename).'.'.$item->ext;?>">
 						<td width="30" class="text-center" data-sorter="false"><?=Form::checkbox(NULL, NULL, FALSE, ['class' => 's']);?></td>
 						<td><?=$item->name;?></td>
 						<td><?=$item->ext;?></td>
