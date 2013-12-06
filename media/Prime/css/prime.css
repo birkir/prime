@@ -135,7 +135,7 @@ body > .fullscreen.with-panel-right > .panel-right {
 /** fullscreen application **/
 .fullscreen-ui { position: relative; width: 100%; height: 100%; }
 .fullscreen-ui .navbar-toolbar { border-width: 1px 0; border-radius: 0; padding: 10px 20px; border-color: #ebebeb; }
-.fullscreen-ui > .scrollable { position: absolute; top: 58px; left: 0; right: 0; bottom: 0; overflow: auto; }
+.fullscreen-ui .scrollable { position: absolute; top: 58px; left: 0; right: 0; bottom: 0; overflow: auto; }
 .fullscreen-ui .navbar-toolbar .select2-container { margin-top: 4px; }
 
 /** form small **/
