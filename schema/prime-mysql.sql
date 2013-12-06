@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `prime_module_fieldsets` (
 
 CREATE TABLE IF NOT EXISTS `prime_module_fieldset_items` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `prime_module_fieldset_id` int(11) unsigned NOT NULL,
+  `prime_module_fieldset_id` int(11) unsigned DEFAULT NULL,
   `data` text NOT NULL,
   `position` int(11) unsigned NOT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `prime_pages` (
 CREATE TABLE IF NOT EXISTS `prime_regions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `prime_page_id` int(11) unsigned NOT NULL,
-  `prime_module_id` int(11) unsigned NOT NULL,
+  `prime_module_id` int(11) unsigned DEFAULT NULL,
   `sticky` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL,
   `settings` text NOT NULL,
@@ -269,24 +269,24 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 --
 
 ALTER TABLE `prime_module_fieldsets`
-  ADD CONSTRAINT `prime_module_fieldsets_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `prime_module_fieldsets` (`id`);
+  ADD CONSTRAINT `prime_module_fieldsets_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `prime_module_fieldsets` (`id`) ON DELETE SET NULL;
 
 ALTER TABLE `prime_module_fieldset_items`
-  ADD CONSTRAINT `prime_module_fieldset_items_ibfk_2` FOREIGN KEY (`prime_module_fieldset_id`) REFERENCES `prime_module_fieldsets` (`id`);
+  ADD CONSTRAINT `prime_module_fieldset_items_ibfk_2` FOREIGN KEY (`prime_module_fieldset_id`) REFERENCES `prime_module_fieldsets` (`id`) ON DELETE SET NULL;
 
 ALTER TABLE `prime_pages`
-  ADD CONSTRAINT `prime_pages_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `prime_pages` (`id`);
+  ADD CONSTRAINT `prime_pages_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `prime_pages` (`id`) ON DELETE SET NULL;
 
 ALTER TABLE `prime_regions`
-  ADD CONSTRAINT `prime_regions_ibfk_2` FOREIGN KEY (`prime_module_id`) REFERENCES `prime_modules` (`id`),
-  ADD CONSTRAINT `prime_regions_ibfk_1` FOREIGN KEY (`prime_page_id`) REFERENCES `prime_pages` (`id`);
+  ADD CONSTRAINT `prime_regions_ibfk_2` FOREIGN KEY (`prime_module_id`) REFERENCES `prime_modules` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `prime_regions_ibfk_1` FOREIGN KEY (`prime_page_id`) REFERENCES `prime_pages` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `roles_users`
-  ADD CONSTRAINT `roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
+  ADD CONSTRAINT `roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
 
 ALTER TABLE `user_tokens`
-  ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Revision Control
