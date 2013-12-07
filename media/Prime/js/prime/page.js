@@ -517,7 +517,35 @@ define(['jquery', 'jqueryUI'], function($) {
 					return false;
 				});
 				save.on('click', function () {
-					form.trigger('submit');
+					modal.find('form').trigger('submit');
+				});
+			});
+		},
+		template_settings: function (el, key_name, crc32) {
+			
+			var region = $(el).closest('form').data('region'),
+			    save = $('<button/>').addClass('btn btn-danger').text('Save'),
+				close = $('<button/>').addClass('btn btn-default').text('Close').attr('data-dismiss', 'modal');
+
+			var dialog = prime.dialog({
+				title: 'Template Settings',
+				remote: '/Prime/Region/Template_Settings/' + region + ':' + crc32 + ':' + key_name,
+				buttons: [save, close]
+			},
+			function (modal) {
+				form = modal.find('form');
+				form.on('submit', function () {
+					$.ajax({
+						url: '/Prime/Region/Template_Settings/' + region + ':' + crc32 + ':' + key_name,
+						type: 'POST',
+						data: $(this).serialize()
+					})
+					.done(function (response) {
+					});
+					return false;
+				});
+				save.on('click', function () {
+					modal.find('form').trigger('submit');
 				});
 			});
 		}

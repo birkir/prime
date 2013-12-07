@@ -178,6 +178,93 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 	}
 
 	/**
+	 * Set template settings and store in region
+	 *
+	 * @return void
+	 */
+	public function action_template_settings()
+	{
+		// Extract region and template from params
+		list ($region, $template, $key) = explode(':', $this->request->param('id'));
+
+		// Find region
+		$region = ORM::factory('Prime_Region', $region);
+
+		if ( ! $region->loaded())
+		{
+			// We did not find region
+			throw HTTP_Exception::factory(404, 'Region was not found.');
+		}
+
+		// Find fields for template
+		$fields = ORM::factory('Prime_Field')
+		->where('resource_type', '=', 'Template')
+		->where('resource_id', '=', $template)
+		->order_by('position', 'ASC')
+		->find_all();
+
+		// Setup groups
+		$groups = array();
+
+		// Attach fields to its own group
+		foreach ($fields as $field)
+		{
+			$group = ! empty($group) ? $group : 'General';
+
+			if ( ! isset($groups[$group]))
+				$groups[$group] = array();
+
+			$groups[$group][] = $field;
+		}
+
+		// Decode settings
+		$settings = json_decode($region->settings, TRUE);
+
+		// Locate template properties
+		$tpl = Arr::get($settings, '_'.$key, array());
+
+		// Setup view
+		$view = View::factory('Prime/Region/Template_Settings')
+		->set('fields', $groups)
+		->set('tpl', $template)
+		->set('data', $tpl);
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Get post array
+			$post = $this->request->post();
+
+			// Overwrite them with post data
+			foreach ($fields as $field)
+			{
+				$tpl[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
+			}
+
+			// Re-associate array to settings
+			$settings['_'.$key] = $tpl;
+
+			// Dump encoded data to settings column
+			$region->settings = json_encode($settings);
+
+			// Save settings
+			$region->save();
+
+			if (intval($region->prime_page_id) > 0)
+			{
+				// Bump the page revision
+				ORM::factory('Prime_Page', $region->prime_page_id)->save();
+			}
+			else
+			{
+				ORM::factory('Prime_Region', $region->id)->publish();
+			}
+		}
+
+		// Set view as Response body
+		$this->response->body($view);
+	}
+
+	/**
 	 * Display region by ID in query string
 	 *
 	 * @return void
