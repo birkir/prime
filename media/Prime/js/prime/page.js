@@ -511,7 +511,7 @@ define(['jquery', 'jqueryUI'], function($) {
 						region_item.parent().each(page.region.init);
 					});
 
-					if (region_item.parent('.prime-region').data('sticky') != '1')
+					if ($('.prime-region-item[data-id=' + id + ']').parent().data('sticky') != '1')
 						page.unpublished();
 
 					return false;

@@ -159,7 +159,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 			// Save module with POST data
 			$module->save($this->request->post());
 
-			if ( ! empty($region->prime_page_id))
+			if (intval($region->prime_page_id) > 0)
 			{
 				// Bump the page revision
 				ORM::factory('Prime_Page', $region->prime_page_id)->save();
