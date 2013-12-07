@@ -368,7 +368,8 @@ define(['jquery', 'jqueryUI'], function($) {
 					url: '/Prime/Region/Move/' + [ui.draggable.data('id'), reference.data('id'), region.data('name'), region.data('pageid'), region.data('sticky')].join(':') + '?mode=design'
 				});
 
-				page.unpublished();
+				if (region.data('sticky') != '1')
+					page.unpublished();
 
 				// Create Empty Dropzone
 				if (oldRegion.children().length === 0) {
@@ -404,7 +405,8 @@ define(['jquery', 'jqueryUI'], function($) {
 						reference.remove();
 					}
 
-					page.unpublished();
+					if (region.data('sticky') != '1')
+						page.unpublished();
 				});
 			}
 
@@ -477,7 +479,9 @@ define(['jquery', 'jqueryUI'], function($) {
 							.droppable(page.droppableConfig);
 						}
 						region_item.remove();
-						page.unpublished();
+
+						if (region.data('sticky') != '1')
+							page.unpublished();
 					});
 				}
 			}, function (modal) {
@@ -506,7 +510,10 @@ define(['jquery', 'jqueryUI'], function($) {
 						$('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + id + ']').html(region_item);
 						region_item.parent().each(page.region.init);
 					});
-					page.unpublished();
+
+					if (region_item.parent('.prime-region').data('sticky') != '1')
+						page.unpublished();
+
 					return false;
 				});
 				save.on('click', function () {
@@ -598,7 +605,8 @@ define(['jquery', 'jqueryUI'], function($) {
 							})
 							.done(function () {
 								editor.changed = false;
-								prime.page.unpublished();
+								if (region.parent('.prime-region').data('sticky') != '1')
+									prime.page.unpublished();
 							});
 						});
 						editor.on('focus', function (e) {

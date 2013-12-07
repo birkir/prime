@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `prime_pages` (
 
 CREATE TABLE IF NOT EXISTS `prime_regions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `prime_page_id` int(11) unsigned NOT NULL,
+  `prime_page_id` int(11) unsigned DEFAULT NULL,
   `prime_module_id` int(11) unsigned DEFAULT NULL,
   `sticky` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL,

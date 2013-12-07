@@ -39,7 +39,7 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region = ORM::factory('Prime_Region');
 
 		// Set model values
-		$region->prime_page_id   = $page;
+		$region->prime_page_id   = (intval($sticky) === 1) ? NULL : $page;
 		$region->prime_module_id = $id;
 		$region->name            = $name;
 		$region->settings        = '{}';
@@ -54,8 +54,15 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		// Get Region display Response
 		$output = Request::factory('Prime/Region/Display/'.$region->id)->execute();
 
-		// Bump the page revision
-		ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		if ( ! empty($region->prime_page_id))
+		{
+			// Bump the page revision
+			ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		}
+		else
+		{
+			ORM::factory('Prime_Region', $region->id)->publish();
+		}
 
 		// Set region view as Response body
 		$this->response->body('<div'.HTML::attributes(['class' => 'prime-region-item', 'data-id' => $region->id]).'>'.$output.'</div>');
@@ -75,18 +82,22 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		$region = ORM::factory('Prime_Region', intval($id));
 
 		// Set model values
-		$region->prime_page_id = $page;
+		$region->prime_page_id = (intval($sticky) === 1) ? NULL : $page;
 		$region->name          = $name;
 		$region->sticky        = $sticky;
-
-		// Update region position
-		$region->save();
 
 		// Execute movement query
 		$region->position($reference);
 
-		// Bump the page revision
-		ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		if ( ! empty($region->prime_page_id))
+		{
+			// Update region position
+			ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		}
+		else
+		{
+			ORM::factory('Prime_Region', $region->id)->publish();
+		}
 	}
 
 	/**
@@ -99,11 +110,20 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 		// Find and delete Region
 		$region = ORM::factory('Prime_Region', $this->request->param('id'));
 
-		// Bump the page revision
-		ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		if ( ! empty($region->prime_page_id))
+		{
+			// Bump the page revision
+			ORM::factory('Prime_Page', $region->prime_page_id)->save();
+		}
 
 		// Delete
+		$region_copy = clone $region;
 		$region->delete();
+
+		if (empty($region->prime_page_id))
+		{
+			$region_copy->publish();
+		}
 	}
 
 	/**
@@ -139,8 +159,15 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 			// Save module with POST data
 			$module->save($this->request->post());
 
-			// Bump the page revision
-			ORM::factory('Prime_Page', $region->prime_page_id)->save();
+			if ( ! empty($region->prime_page_id))
+			{
+				// Bump the page revision
+				ORM::factory('Prime_Page', $region->prime_page_id)->save();
+			}
+			else
+			{
+				ORM::factory('Prime_Region', $region->id)->publish();
+			}
 
 			// Re-render region
 			$view = Request::factory('Prime/Region/Display/'.$region->id)->execute();
