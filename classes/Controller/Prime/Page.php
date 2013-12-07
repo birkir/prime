@@ -81,7 +81,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page->disabled  = 0;
 
 		// Let fieldset handle POST method
-		$this->fieldset($page);
+		$this->fieldset($page, TRUE);
 
 		// Set form action
 		$this->view->action = '/Prime/Page/Create/' . $this->request->param('id');
@@ -111,7 +111,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 	 * @param  ORM   $item   Page model to save
 	 * @return void
 	 */
-	private function fieldset($page)
+	private function fieldset($page, $set_pos = FALSE)
 	{
 		// Get templates and default selection
 		$templates = Arr::merge(array(NULL => ' - '.__('Inherit from parent page').' - '), Prime::treeselect(Kohana::list_files('views/template'), 'views/template/'));
@@ -141,6 +141,12 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 
 				// Try saving
 				$page->save();
+
+				if ($set_pos)
+				{
+					// Set last position
+					$page->position(0);
+				}
 
 				// Create JSON Response
 				$this->json = array(
