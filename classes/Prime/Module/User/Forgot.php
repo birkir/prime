@@ -108,7 +108,7 @@ class Prime_Module_User_Forgot extends Prime_Module {
 	{
 		$encrypt = new Encrypt($this->_encrypt_key, MCRYPT_MODE_NOFB,MCRYPT_RIJNDAEL_128);
 
-		$view = self::load_view('module/user/forgot', self::option('template'));
+		$view = self::load_view('module/user/forgot', 'template');
 
 		$view->captcha = $this->captcha();
 

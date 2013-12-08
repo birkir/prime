@@ -536,12 +536,19 @@ define(['jquery', 'jqueryUI'], function($) {
 				form = modal.find('form');
 				form.on('submit', function () {
 					$.ajax({
-						url: '/Prime/Region/Template_Settings/' + region + ':' + crc32 + ':' + key_name,
+						url: '/Prime/Region/Template_Settings/' + region + ':' + crc32 + ':' + key_name + '?mode=design',
 						type: 'POST',
 						data: $(this).serialize()
 					})
 					.done(function (response) {
+						var region_item = $(response);
+						$('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + region + ']').html(region_item);
+						region_item.parent().each(page.region.init);
 					});
+
+					if ($('.prime-live-iframe').contents().find('.prime-region-item[data-id=' + region + ']').parent().data('sticky') != '1')
+						page.unpublished();
+
 					return false;
 				});
 				save.on('click', function () {

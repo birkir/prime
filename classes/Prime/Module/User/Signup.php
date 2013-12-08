@@ -77,7 +77,7 @@ class Prime_Module_User_Signup extends Prime_Module {
 	 */
 	public function render()
 	{
-		$view = self::load_view('module/user/signup', self::option('template'));
+		$view = self::load_view('module/user/signup', 'template');
 
 		$view->captcha = $this->captcha();
 		$view->bind('status', $status);

@@ -258,6 +258,9 @@ class Controller_Prime_Region extends Controller_Prime_Template {
 			{
 				ORM::factory('Prime_Region', $region->id)->publish();
 			}
+
+			// Re-render region
+			$view = Request::factory('Prime/Region/Display/'.$region->id)->execute();
 		}
 
 		// Set view as Response body

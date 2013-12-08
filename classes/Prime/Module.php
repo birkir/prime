@@ -157,8 +157,11 @@ class Prime_Module {
 	 * @param string Fallback
 	 * @return View
 	 */
-	public function load_view($directory = NULL, $template = NULL, $fallback = 'standard')
+	public function load_view($directory = NULL, $template_name = NULL, $fallback = 'standard')
 	{
+		// Get template filename
+		$template = self::option($template_name);
+
 		if ( ! Kohana::find_file('views/'.$directory, $template))
 		{
 			if ( ! Kohana::find_file('views/'.$directory, 'standard'))
@@ -183,7 +186,13 @@ class Prime_Module {
 		->order_by('position', 'ASC')
 		->find_all();
 
-		return View::factory($directory.DIRECTORY_SEPARATOR.$template);
+		// Setup view
+		$view = View::factory($directory.DIRECTORY_SEPARATOR.$template);
+
+		// Set view properties
+		$view->properties = Arr::get($this->settings, '_'.$template_name);
+
+		return $view;
 	}
 
 	/**

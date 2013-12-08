@@ -48,7 +48,7 @@ class Prime_Module_User_Signin extends Prime_Module {
 	public function render()
 	{
 		// load the view
-		$view = self::load_view('module/user/signin', self::option('template'))
+		$view = self::load_view('module/user/signin', 'template')
 		->bind('user', $user)
 		->bind('data', $data)
 		->bind('success', $success)

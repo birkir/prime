@@ -115,7 +115,7 @@ class Prime_Module_Search extends Prime_Module {
 		$hits = $lucene->find($query, $sorter, ($sorter === 'score') ? SORT_NUMERIC : SORT_STRING, SORT_DESC);
 
 		// Setup view
-		$view = self::load_view('module/search', self::option('template'))
+		$view = self::load_view('module/search', 'template')
 		->bind('results', $results)
 		->bind('pagination', $paging)
 		->set('count', count($hits))
@@ -133,7 +133,7 @@ class Prime_Module_Search extends Prime_Module {
 			$current_page = Arr::get($_GET, $this->option('paging_query'), 1);
 
 			// Setup paging view
-			$paging = self::load_view('module/paging', self::option('paging_template'));
+			$paging = self::load_view('module/paging', 'paging_template');
 
 			// setup pagination object
 			$paging->total_items        = (int) max(0, $display);

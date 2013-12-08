@@ -97,7 +97,7 @@ class Prime_Module_Html extends Prime_Module {
 			$content = '<div contenteditable="true">'.$content.'</div>';
 		}
 
-		return self::load_view('module/html', self::option('template'))
+		return self::load_view('module/html', 'template')
 		->set('content', $content);
 	}
 
