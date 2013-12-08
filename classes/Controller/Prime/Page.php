@@ -69,16 +69,17 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page = ORM::factory('Prime_Page');
 
 		// Set model default values
-		$page->parent_id = $parent->id;
-		$page->slug_auto = 1;
-		$page->noindex   = 0;
-		$page->nofollow  = 0;
-		$page->redirect  = 0;
-		$page->protocol  = 'both';
-		$page->method    = 'all';
-		$page->ajax      = 1;
-		$page->visible   = 1;
-		$page->disabled  = 0;
+		$page->parent_id  = $parent->id;
+		$page->slug_auto  = 1;
+		$page->noindex    = 0;
+		$page->nofollow   = 0;
+		$page->redirect   = 0;
+		$page->protocol   = 'both';
+		$page->method     = 'all';
+		$page->ajax       = 1;
+		$page->visible    = 1;
+		$page->disabled   = 0;
+		$page->properties = '{}';
 
 		// Let fieldset handle POST method
 		$this->fieldset($page, TRUE);
@@ -119,11 +120,49 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		// Get languages and default selection
 		$languages = Arr::merge(array(NULL => ' - '.__('Inherit from parent page').' - '), Prime::$languages);
 
+		// Get real template
+		$parent        = $page;
+		$real_template = NULL;
+		$default_page  = Arr::get(Prime::$config, 'default_page_id', NULL);
+
+		while ($real_template === NULL)
+		{
+			// Set parent page
+			$parent = ORM::factory('Prime_Page', $parent->parent_id);
+
+			if ($parent->template !== NULL AND $real_template === NULL)
+			{
+				// Inherit page template
+				$real_template = $parent->template;
+			}
+
+			if ($parent->parent_id === NULL AND $real_template === NULL AND $default_page !== NULL)
+			{
+				// Get default page
+				$parent = ORM::factory('Prime_Page', $default_page);
+
+				// Set default page as NULL for no further investigation
+				$default_page = NULL;
+
+				// Inherit page template
+				$real_template = $parent->template;
+			}
+
+			if ($parent->parent_id === NULL)
+			{
+				if ($real_template === NULL)
+					$real_template = $page->template;
+
+				break;
+			}
+		}
+
 		// Setup view
 		$this->view = View::factory('Prime/Page/Properties')
 		->set('page', $page)
 		->set('languages', $languages)
-		->set('templates', $templates);
+		->set('templates', $templates)
+		->set('real_template', $real_template);
 
 		if ($this->request->method() === HTTP_Request::POST)
 		{
@@ -166,6 +205,76 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 				$this->json['message'] = __('Page was not saved.');
 			}
 		}
+	}
+
+	public function action_template_settings()
+	{
+		list ($id, $template) = explode(':', $this->request->param('id'));
+
+		// Find page
+		$page = ORM::factory('Prime_Page', $id);
+
+		if ( ! $page->loaded())
+		{
+			// We did not find region
+			throw HTTP_Exception::factory(404, 'Page was not found.');
+		}
+
+		// Find fields for template
+		$fields = ORM::factory('Prime_Field')
+		->where('resource_type', '=', 'Template')
+		->where('resource_id', '=', $template)
+		->order_by('position', 'ASC')
+		->find_all();
+
+		// Setup groups
+		$groups = array();
+
+		// Attach fields to its own group
+		foreach ($fields as $field)
+		{
+			$group = ! empty($group) ? $group : 'General';
+
+			if ( ! isset($groups[$group]))
+				$groups[$group] = array();
+
+			$groups[$group][] = $field;
+		}
+
+		$data = json_decode($page->properties, TRUE);
+
+		// Setup view
+		$view = View::factory('Prime/Region/Template_Settings')
+		->set('fields', $groups)
+		->set('tpl', $template)
+		->set('data', $data);
+
+		if ($this->request->method() === HTTP_Request::POST)
+		{
+			// Get post array
+			$post = $this->request->post();
+
+			// Overwrite them with post data
+			foreach ($fields as $field)
+			{
+				$data[$field->name] = $field->field->save(Arr::get($post, $field->name, NULL));
+			}
+
+			// Dump encoded data to settings column
+			$page->properties = json_encode($data);
+
+			// Save settings
+			$page->save();
+
+			// Bump the page revision
+			ORM::factory('Prime_Page', $page->id)->save();
+
+			// Re-render page tree
+			$view = Request::factory('Prime/Page/Tree')->execute()->body();
+		}
+
+		// Set view as Response body
+		$this->response->body($view);
 	}
 
 	/**

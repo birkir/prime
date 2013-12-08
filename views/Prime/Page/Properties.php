@@ -19,12 +19,21 @@
 					<?=Form::label('formName', __('Page name'), ['class' => 'control-label']);?>
 					<?=Form::input('name', $page->name, ['class' => 'form-control', 'id' => 'formName', ($page->loaded() ? 'no' : 'autofocus') => 'autofocus']);?>
 				</div>
-
 				<div class="form-group">
 					<?=Form::label('formTemplate', __('Template'), ['class' => 'control-label']);?>
-					<?=Form::select('template', $templates, $page->template, ['class' => 'form-control', 'id' => 'formTemplate']);?>
+					<div class="input-group">
+						<?=Form::select('template', $templates, $page->template, [
+							'id' => 'formTemplate',
+							'class' => 'form-control',
+							'onchange' => '$(this).next().val(\'views/template/\' + (this.value == \'\' ? \''.$real_template.'\' : this.value));'
+						]); ?>
+						<input type="hidden" name="real_template" value="views/template/<?=$page->template ? $page->template : $real_template;?>">
+						<div class="input-group-btn">
+							<a href="/Prime/Explorer/File/views/template/<?=$page->template ? $page->template : $real_template;?>.php" target="_blank" class="btn btn-default" style="margin: -2px 0 0 4px; padding: 4px 12px; border-radius: 2px;"><?=__('Edit');?></a>
+							<a href="#" onclick="return prime.page.template_settings(this, '<?=$page->id;?>', prime.crc32($(this).parent().prev().val()+'.php'));" class="btn btn-default" style="margin: -2px 0 0 0px; padding: 4px 12px; border-radius: 2px;"><?=__('Settings');?></a>
+						</div>
+					</div>
 				</div>
-
 				<div class="form-group">
 					<label for="formAutoSlug" class="checkbox-inline pull-right">
 						<?=Form::checkbox('slug_auto', 1, (bool) $page->slug_auto, ['id' => 'formAutoSlug']);?>

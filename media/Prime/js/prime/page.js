@@ -448,6 +448,44 @@ define(['jquery', 'jqueryUI'], function($) {
 		$('.pchanges').removeClass('hide');
 	}
 
+	page.template_settings = function (el, pid, template) {
+
+		var region = $(el).closest('form').data('region'),
+		    save = $('<button/>').addClass('btn btn-danger').text('Save'),
+			close = $('<button/>').addClass('btn btn-default').text('Close').attr('data-dismiss', 'modal');
+
+		var dialog = prime.dialog({
+			title: 'Template Settings',
+			remote: '/Prime/Page/Template_Settings/' + pid + ':' + template,
+			buttons: [save, close]
+		},
+		function (modal) {
+			var active = $('.panel-left li.active').children('a').data('id');
+			form = modal.find('form');
+			form.on('submit', function () {
+				$.ajax({
+					url: '/Prime/Page/Template_Settings/' + pid + ':' + template + '?mode=design',
+					type: 'POST',
+					data: $(this).serialize()
+				})
+				.done(function (response) {
+					$('.panel-left').html(response);
+					page.tree(active);
+
+					if (pid == active) {
+						$('.panel-left li.active > a').trigger('click');
+					}
+				});
+
+				return false;
+			});
+			save.on('click', function () {
+				modal.find('form').trigger('submit');
+			});
+		});
+		return false;
+	};
+
 	// region object
 	page.region = {
 		init: function () {

@@ -130,6 +130,8 @@ class Controller_Prime_Frontend extends Controller {
 				$sticky->attach($region);
 			}
 
+			// Decode template properties
+			$this->template->properties = json_decode($page->properties, TRUE);
 		}
 
 		// Set global view parameters
