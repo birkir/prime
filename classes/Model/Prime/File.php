@@ -30,4 +30,25 @@ class Model_Prime_File extends Model_Prime {
 		)
 	);
 
+	protected $_table_columns = array(
+		'id' => array(),
+		'parent_id' => array(),
+		'name' => array(),
+		'slug' => array(),
+		'type' => array(),
+		'ext' => array(),
+		'mime' => array(),
+		'size' => array(),
+		'width' => array(),
+		'height' => array(),
+		'bits' => array(),
+		'channels' => array(),
+		'filename' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array(),
+		'published' => array(),
+		'revision' => array()
+	);
+
 }

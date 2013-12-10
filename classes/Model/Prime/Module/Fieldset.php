@@ -7,7 +7,7 @@
  * @category Fieldset
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Module_Fieldset extends ORM {
+class Model_Prime_Module_Fieldset extends Model_Prime {
 
 	/**
 	 * @var array Fields container
@@ -24,6 +24,8 @@ class Model_Prime_Module_Fieldset extends ORM {
 	 */
 	protected $_revision = FALSE;
 
+	protected $_deletable = FALSE;
+
 	/**
 	 * @var array Has many relationships
 	 */
@@ -32,6 +34,17 @@ class Model_Prime_Module_Fieldset extends ORM {
 			'model' => 'Prime_Module_Fieldset_Item'
 		]
 	];
+
+	protected $_table_columns = array (
+		'id' => array(),
+		'parent_id' => array(),
+		'name' => array(),
+		'type' => array(),
+		'position' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array()
+	);
 
 	/** 
 	 * Find fieldset fields inherited.

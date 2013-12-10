@@ -27,6 +27,18 @@ class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 		)
 	);
 
+	protected $_table_columns = array(
+		'id' => array(),
+		'prime_module_fieldset_id' => array(),
+		'data' => array(),
+		'position' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array(),
+		'published' => array(),
+		'revision' => array()
+	);
+
 	/**
 	 * Overload model getter for extraction of data JSON field.
 	 *
@@ -54,10 +66,10 @@ class Model_Prime_Module_Fieldset_Item extends Model_Prime {
 		foreach ($columns as $column)
 		{
 			$this->select([DB::expr(
-				  'SUBSTRING(REPLACE(REPLACE(REPLACE(`'.$this->_object_name.'`.`data`,\'{\',\'\'),\'}\',\',\'),\'"\',\'\'),'
-				. 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE(`'.$this->_object_name.'`.`data`,\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')),'
-        		. 'LOCATE(\',\',SUBSTRING(REPLACE(REPLACE(REPLACE(`'.$this->_object_name.'`.`data`,\'{\',\'\'),\'}\',\',\'),\'"\',\'\'),'
-                . 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE(`'.$this->_object_name.'`.`data`,\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')))) - 1)'
+				  'SUBSTRING(REPLACE(REPLACE(REPLACE('.$this->_db->quote_column($this->_object_name.'.data').',\'{\',\'\'),\'}\',\',\'),\'"\',\'\'),'
+				. 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE('.$this->_db->quote_column($this->_object_name.'.data').',\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')),'
+        		. 'LOCATE(\',\',SUBSTRING(REPLACE(REPLACE(REPLACE('.$this->_db->quote_column($this->_object_name.'.data').',\'{\',\'\'),\'}\',\',\'),\'"\',\'\'),'
+                . 'LOCATE(CONCAT(:column,\':\'),REPLACE(REPLACE(REPLACE('.$this->_db->quote_column($this->_object_name.'.data').',\'{\',\'\'),\'}\',\',\'),\'"\',\'\')) + CHAR_LENGTH(CONCAT(:column,\':\')))) - 1)'
 			, [':column' => $column]), 'data_'.$column]);
 		}
 

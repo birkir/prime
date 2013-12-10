@@ -7,7 +7,7 @@
  * @category Model
  * @copyright (c) 2013 SOLID Productions
  */
-class Model_Prime_Module extends ORM {
+class Model_Prime_Module extends Model_Prime {
 
 	/**
 	 * @var boolean Model is not sortable
@@ -18,6 +18,18 @@ class Model_Prime_Module extends ORM {
 	 * @var boolean Model is not revision controlled
 	 */
 	protected $_revision = FALSE;
+	protected $_deletable = FALSE;
+
+	protected $_table_columns = array (
+		'id' => array(),
+		'controller' => array(),
+		'slug' => array(),
+		'name' => array(),
+		'description' => array(),
+		'version' => array(),
+		'js' => array(),
+		'position' => array()
+	);
 
 	/**
 	 * Always order by ascending position

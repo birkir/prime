@@ -18,4 +18,16 @@ class Model_Prime_Url extends Model_Prime {
 	 * @var boolean Model is not revision controlled
 	 */
 	protected $_revision = FALSE;
+
+	protected $_table_columns = array (
+		'id' => array(),
+		'uri' => array(),
+		'redirect_enabled' => array(),
+		'redirect' => array(),
+		'prime_page_id' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array()
+	);
+
 }

@@ -25,6 +25,34 @@ class Model_Prime_Page extends Model_Prime {
 		]
 	];
 
+	protected $_table_columns = array(
+		'id' => array(),
+		'parent_id' => array(),
+		'language' => array(),
+		'name' => array(),
+		'slug' => array(),
+		'slug_auto' => array(),
+		'template' => array(),
+		'properties' => array(),
+		'description' => array(),
+		'keywords' => array(),
+		'noindex' => array(),
+		'nofollow' => array(),
+		'redirect' => array(),
+		'redirect_url' => array(),
+		'protocol' => array(),
+		'method' => array(),
+		'ajax' => array(),
+		'visible' => array(),
+		'disabled' => array(),
+		'position' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array(),
+		'published' => array(),
+		'revision' => array()
+	);
+
 	/**
 	 * Get selected page by URI
 	 *

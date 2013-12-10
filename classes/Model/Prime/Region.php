@@ -26,6 +26,21 @@ class Model_Prime_Region extends Model_Prime {
 		]
 	];
 
+	protected $_table_columns = array(
+		'id' => array(),
+		'prime_page_id' => array(),
+		'prime_module_id' => array(),
+		'sticky' => array(),
+		'name' => array(),
+		'settings' => array(),
+		'position' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array(),
+		'published' => array(),
+		'revision' => array()
+	);
+
 	/**
 	 * Get region module
 	 *

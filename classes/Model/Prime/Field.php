@@ -14,6 +14,26 @@ class Model_Prime_Field extends Model_Prime {
 	 */
 	protected $_sortable = ['resource_id', 'resource_type'];
 
+	protected $_table_columns = array(
+		'id' => array(),
+		'resource_id' => array(),
+		'resource_type' => array(),
+		'name' => array(),
+		'caption' => array(),
+		'group' => array(),
+		'field' => array(),
+		'default' => array(),
+		'visible' => array(),
+		'required' => array(),
+		'options' => array(),
+		'position' => array(),
+		'updated_at' => array(),
+		'updated_by' => array(),
+		'deleted_at' => array(),
+		'published' => array(),
+		'revision' => array()
+	);
+
 	/**
 	 * Rules for the field model
 	 *

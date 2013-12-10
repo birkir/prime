@@ -65,15 +65,15 @@ class Model_Prime extends ORM {
 		foreach ($columns as $column => $_)
 		{
 			// Append revisioned columns to 
-			$sets[] = '`'.$this->_table_name.'`.`'.$column.'` = `'.$this->_table_name.'_rev`.`'.$column.'`';
+			$sets[] = $this->_db->quote_column($this->_table_name.'.'.$column).' = '.$this->_db->quote_column($this->_table_name.'_rev.'.$column);
 		}
 
 		// Create transfer query
-		$query = ' UPDATE	`'.$this->_table_name.'`'.PHP_EOL
-		       . ' JOIN     `'.$this->_table_name.'_rev`'.PHP_EOL
-		       . ' ON       `'.$this->_table_name.'_rev`.`revision` = `'.$this->_table_name.'`.`revision`'.PHP_EOL
+		$query = ' UPDATE	'.$this->_db->quote_column($this->_table_name).PHP_EOL
+		       . ' JOIN     '.$this->_db->quote_column($this->_table_name.'_rev').PHP_EOL
+		       . ' ON       '.$this->_db->quote_column($this->_table_name.'_rev.revision').' = '.$this->_db->quote_column($this->_table_name.'.revision').PHP_EOL
 		       . ' SET      '.implode(', ', $sets).PHP_EOL
-		       . ' WHERE    `'.$this->_table_name.'`.`id` ='.$this->id;
+		       . ' WHERE    '.$this->_db->quote_column($this->_table_name.'.id').' = '.$this->id;
 
 		// Load draft row into published row
 		DB::query(Database::UPDATE, $query)->execute();
@@ -99,7 +99,7 @@ class Model_Prime extends ORM {
 			throw new Kohana_Exception('Cannot publish :model model because its not revision controlled.', array(':model' => $this->_object_name));
 
 		DB::update($this->_table_name)
-		->set(array('revision' => DB::expr('`published`')))
+		->set(array('revision' => DB::expr($this->_db->quote_column('published'))))
 		->where('id', '=', $this->id)
 		->execute();
 	}
@@ -140,7 +140,7 @@ class Model_Prime extends ORM {
 			// Get new position
 			$sel = $draft ? DB::select('position')
 			->from($this->_table_name.'_rev')
-			->where($this->_table_name.'_rev.revision', '=', DB::expr('`'.$this->_table_name.'`.`revision`'))
+			->where($this->_table_name.'_rev.revision', '=', DB::expr($this->_db->quote_column($this->_table_name.'.revision')))
 			->limit(1) : 'position';
 
 			// Set new position
@@ -154,7 +154,7 @@ class Model_Prime extends ORM {
 		else
 		{
 			// Setup query
-			$query = DB::select([DB::expr('MAX(`position`)'), 'pos'])
+			$query = DB::select([DB::expr('MAX('.$this->_db->quote_column('position').')'), 'pos'])
 			->from($this->_table_name.($draft ? '_rev' : NULL));
 
 			foreach ($this->_sortable as $key)
@@ -167,7 +167,7 @@ class Model_Prime extends ORM {
 			{
 				$query->where('revision', '=', DB::select('revision')
 					->from($this->_table_name)
-					->where($this->_table_name.'.id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))
+					->where($this->_table_name.'.id', '=', DB::expr($this->_db->quote_column($this->_table_name.'_rev.id')))
 					->limit(1));
 			}
 
@@ -197,7 +197,7 @@ class Model_Prime extends ORM {
 			$update = DB::update($this->_table_name.'_rev')
 			->or_where(DB::expr('(SELECT @pos := 0)'), DB::expr(NULL), DB::expr(NULL))
 			->or_where_open()
-				->and_where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr('`'.$this->_table_name.'_rev`.`id`'))->limit(1));
+				->and_where('revision', '=', DB::select('revision')->from($this->_table_name)->where('id', '=', DB::expr($this->_db->quote_column($this->_table_name.'_rev.id')))->limit(1));
 			
 		}
 		else
@@ -259,7 +259,7 @@ class Model_Prime extends ORM {
 		{
 			// Append join statement
 			$this->join(array($this->_table_name.'_rev', $this->_object_name.'_rev'))
-			->on($this->_object_name.'_rev.revision', '=', DB::expr('`'.$this->_object_name.'`.`revision`'));
+			->on($this->_object_name.'_rev.revision', '=', DB::expr($this->_db->quote_column($this->_object_name.'.revision')));
 		}
 
 		// Return parent function
@@ -337,14 +337,14 @@ class Model_Prime extends ORM {
 			}
 
 			// Get columns to transfer
-			$columns = '`'.implode('`, `', array_keys($this->_revision)).'`';
+			$columns = implode(', ', array_map(function ($column) { return $this->_db->quote_column($column); }, array_keys($this->_revision)));
 
 			// Build query
-			$query = 'INSERT INTO       `'.$this->_table_name.'_rev`'.PHP_EOL
+			$query = ' INSERT INTO       '.$this->_db->quote_column($this->_table_name.'_rev').PHP_EOL
 			       . '                  ('.$columns.')'.PHP_EOL
-			       . 'SELECT            '.$columns.PHP_EOL
-			       . 'FROM              `'.$this->_table_name.'`'.PHP_EOL
-			       . 'WHERE             `id` = '.$this->id;
+			       . ' SELECT            '.$columns.PHP_EOL
+			       . ' FROM              '.$this->_db->quote_column($this->_table_name).PHP_EOL
+			       . ' WHERE             '.$this->_db->quote_column('id').' = '.intval($this->id);
 
 			// Get inserted id
 			list($id, $rows) = DB::query(Database::INSERT, $query)->execute();
@@ -490,9 +490,7 @@ class Model_Prime extends ORM {
 			// Append join statement
 			$this->_db_builder
 			->join(array($this->_table_name.'_rev', $this->_object_name.'_rev'))
-			->on($this->_object_name.'_rev.revision', '=', DB::expr('`'.$this->_object_name.'`.`revision`'));
-
-			// TODO: skip or alter join when `revision` IS NULL.
+			->on($this->_object_name.'_rev.revision', '=', DB::expr($this->_db->quote_column($this->_object_name.'.revision')));
 
 			if ( ! is_array($this->_revision))
 			{

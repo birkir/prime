@@ -80,6 +80,7 @@ class Controller_Prime_Page extends Controller_Prime_Template {
 		$page->visible    = 1;
 		$page->disabled   = 0;
 		$page->properties = '{}';
+		$page->position   = 0;
 
 		// Let fieldset handle POST method
 		$this->fieldset($page, TRUE);
