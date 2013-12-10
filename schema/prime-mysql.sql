@@ -1,7 +1,3 @@
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
 --
 -- Table structure for table `prime_fields`
 --
@@ -207,8 +203,6 @@ CREATE TABLE IF NOT EXISTS `prime_urls` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_key` (`uri`, `deleted_at`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
 
 --
 -- Table structure and data for table `roles`
