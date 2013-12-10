@@ -272,7 +272,7 @@ class Controller_Prime_Field extends Controller_Prime_Template {
 		// Move field
 		$field = ORM::factory('Prime_Field', $field)
 		->position($reference)
-		->reorder();
+		->position($reference, FALSE);
 	}
 
 	/**

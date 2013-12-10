@@ -7,14 +7,15 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<!-- Errorception -->
+		<!-- Rollbar -->
 		<script>
-			(function(_,e,rr,s){_errs=[s];var c=_.onerror;_.onerror=function(){var a=arguments;_errs.push(a);
-			c&&c.apply(this,a)};var b=function(){var c=e.createElement(rr),b=e.getElementsByTagName(rr)[0];
-			c.src="//beacon.errorception.com/"+s+".js";c.async=!0;b.parentNode.insertBefore(c,b)};
-			_.addEventListener?_.addEventListener("load",b,!1):_.attachEvent("onload",b)})
-			(window,document,"script","526135e8db03cad121000085");
-    	</script>
+		var _rollbarParams = {"server.environment": "development"};
+		_rollbarParams["notifier.snippet_version"] = "2"; var _rollbar=["d5cfdad9616c44d9b5eae9a98cca3fcc", _rollbarParams]; var _ratchet=_rollbar;
+		(function(w,d){w.onerror=function(e,u,l,c,err){_rollbar.push({_t:'uncaught',e:e,u:u,l:l,c:c,err:err});};var i=function(){var s=d.createElement("script");var 
+		f=d.getElementsByTagName("script")[0];s.src="//d37gvrvc0wt4s1.cloudfront.net/js/1/rollbar.min.js";s.async=!0;
+		f.parentNode.insertBefore(s,f);};if(w.addEventListener){w.addEventListener("load",i,!1);}else{w.attachEvent("onload",i);}})(window,document);
+		</script>
+
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -60,6 +61,7 @@
 						<?=HTML::anchor('#', '<i class="fa fa-wrench"></i> '.__('System').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']);?>
 						<ul class="dropdown-menu">
 							<li><?=HTML::anchor('Prime/Log', '<i class="fa fa-tasks"></i> '.__('Event Log'));?></li>
+							<li><?=HTML::anchor('Prime/Url', '<i class="fa fa-random"></i> '.__('URL Mapping'));?></li>
 							<li><?=HTML::anchor('Prime/User', '<i class="fa fa-group"></i> '.__('Users'));?></li>
 						</ul>
 					</li>
@@ -91,6 +93,14 @@
 			</div>
 		</div>
 		<?=(isset($bottom) ? $bottom : NULL);?>
+		<script>
+		if (navigator.appName.indexOf('Internet Explorer') !== -1) {
+			if (navigator.appVersion.indexOf('MSIE 8') !== -1 || navigator.appVersion.indexOf('MSIE 7') !== -1 || navigator.appVersion.indexOf('MSIE 6') !== -1) {
+				document.getElementsByTagName('body')[0].innerHTML = '';
+				alert('Please upgrade your browser or use Google Chrome.');
+			}
+		}
+		</script>
 		<script data-main="/media/Prime/js/prime.js" src="/media/Prime/js/lib/require.js"></script>
 	</body>
 </html>

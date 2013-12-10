@@ -41,6 +41,15 @@ Route::set('Prime_Web', '<query>', array('query' => '.*'))
 		// Check for design mode
 		Prime::$design_mode = Model_Prime::$_draft = ((Arr::get($_GET, 'mode') === 'design') AND Auth::instance()->logged_in('prime'));
 
+		// Get mapped url
+		$mapped = ORM::factory('Prime_Url', array('uri' => '/'.$params['query'].URL::query()));
+
+		if ($mapped->loaded())
+		{
+			header('Location: ' . ( ! empty($mapped->redirect) ? $mapped->redirect : ORM::factory('Prime_Page', $mapped->prime_page_id)->uri()));
+			exit;
+		}
+
 		// Get selected page
 		$page = Prime::selected($request, $params['query']);
 

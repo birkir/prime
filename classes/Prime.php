@@ -108,7 +108,8 @@ class Prime {
 			if ($page->loaded())
 			{
 				// Set parent page
-				$parent = $page;
+				$parent       = $page;
+				$default_page = Arr::get(Prime::$config, 'default_page_id', NULL);
 
 				while ($page->template === NULL OR $page->language === NULL)
 				{
@@ -125,6 +126,13 @@ class Prime {
 					{
 						// Inherit page language
 						$page->language = $parent->language;
+					}
+
+					if ($parent->parent_id === NULL AND $default_page !== NULL AND $page->template === NULL)
+					{
+						$parent = ORM::factory('Prime_Page', $default_page);
+						$default_page = NULL;
+						$page->template = $parent->template;
 					}
 
 					if ($parent->parent_id === NULL)

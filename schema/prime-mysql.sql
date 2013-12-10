@@ -194,6 +194,23 @@ CREATE TABLE IF NOT EXISTS `prime_regions` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `prime_urls`
+--
+CREATE TABLE IF NOT EXISTS `prime_urls` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uri` varchar(255) NOT NULL,
+  `redirect` varchar(255) DEFAULT NULL,
+  `prime_page_id` int(11) unsigned DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` int(11) unsigned DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_key` (`uri`, `deleted_at`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
+--
 -- Table structure and data for table `roles`
 --
 
@@ -263,6 +280,7 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
   KEY `user_id` (`user_id`),
   KEY `expires` (`expires`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 
 --
 -- Table constraints defenitions

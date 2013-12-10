@@ -58,15 +58,15 @@ var prime = (function () {
 		options = $.extend({}, defaults, options);
 
 		// define and create DOM
-		var modal        = $('<div/>', { class: 'modal' + (options.animate === true ? ' fade' : '')    }).appendTo('body'),
-			modalDialog  = $('<div/>', { class: 'modal-dialog'  }).appendTo(modal),
-			modalContent = $('<div/>', { class: 'modal-content' }).appendTo(modalDialog),
-			modalHeader  = $('<div/>', { class: 'modal-header'  }).appendTo(modalContent),
-			modalTitle   = $('<h4/>',  { class: 'modal-title', text: options.title }),
-			modalBody    = $('<div/>', { class: 'modal-body'    }).appendTo(modalContent),
-			modalFooter  = $('<div/>', { class: 'modal-footer'  }).appendTo(modalContent),
-			modalBtnYes  = $('<button/>', { class: 'btn btn-danger', 'data-dismiss': 'modal', html: 'Ok' }),
-			modalBtnNo   = $('<button/>', { class: 'btn btn-default', 'data-dismiss': 'modal', html: 'Cancel' });
+		var modal        = $('<div/>', { 'class': 'modal' + (options.animate === true ? ' fade' : '')    }).appendTo('body'),
+			modalDialog  = $('<div/>', { 'class': 'modal-dialog'  }).appendTo(modal),
+			modalContent = $('<div/>', { 'class': 'modal-content' }).appendTo(modalDialog),
+			modalHeader  = $('<div/>', { 'class': 'modal-header'  }).appendTo(modalContent),
+			modalTitle   = $('<h4/>',  { 'class': 'modal-title', text: options.title }),
+			modalBody    = $('<div/>', { 'class': 'modal-body'    }).appendTo(modalContent),
+			modalFooter  = $('<div/>', { 'class': 'modal-footer'  }).appendTo(modalContent),
+			modalBtnYes  = $('<button/>', { 'class': 'btn btn-danger', 'data-dismiss': 'modal', 'html': 'Ok' }),
+			modalBtnNo   = $('<button/>', { 'class': 'btn btn-default', 'data-dismiss': 'modal', 'html': 'Cancel' });
 
 		// append title if set
 		if (options.title && options.title !== undefined || options.closeButton === false) {
@@ -75,7 +75,7 @@ var prime = (function () {
 
 		// attach close button if wanted
 		if (options.closeButton === true) {
-			$('<button/>', { class: 'close', html: '&times;', 'data-dismiss': 'modal', 'aria-hidden': 'true' }).prependTo(modalHeader);
+			$('<button/>', { 'class': 'close', 'html': '&times;', 'data-dismiss': 'modal', 'aria-hidden': 'true' }).prependTo(modalHeader);
 		}
 
 		// if confirm is not false
@@ -243,7 +243,7 @@ var prime = (function () {
 
 				// add has-error and message
 				element.parents('.form-group').addClass('has-error').append(
-					$('<span/>', { class: 'help-block validate', html: element.data('message') })
+					$('<span/>', { 'class': 'help-block validate', 'html': element.data('message') })
 				);
 
 				// validate tab panes
@@ -316,7 +316,7 @@ var prime = (function () {
 
 							// set error classes and message
 							form.find('[name=' + key + ']').parents('.form-group').addClass('has-error').append(
-								$('<span/>', { class: 'help-block validate', html: response.data[key] })
+								$('<span/>', { 'class': 'help-block validate', 'html': response.data[key] })
 							);
 
 							if (m === 0) {
@@ -375,10 +375,10 @@ var prime = (function () {
 	app.field.properties = function(item, id) {
 
 		// dialog buttons
-		var create  = $('<button/>', { class: 'btn btn-danger btn-sm create', html: prime.strings.addField }),
-		    edit    = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.edit }),
-		    remove  = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: prime.strings.delete }),
-		    publish = $('<button/>', { class: 'btn btn-default btn-sm disabled pull-left', html: 'Publish' });
+		var create  = $('<button/>', { 'class': 'btn btn-danger btn-sm create', 'html': prime.strings.addField }),
+		    edit    = $('<button/>', { 'class': 'btn btn-default btn-sm disabled pull-left', 'html': prime.strings.edit }),
+		    remove  = $('<button/>', { 'class': 'btn btn-default btn-sm disabled pull-left', 'html': prime.strings.delete }),
+		    publish = $('<button/>', { 'class': 'btn btn-default btn-sm disabled pull-left', 'html': 'Publish' });
 
 		// setup dialog
 		var dialog = prime.dialog({
@@ -407,8 +407,8 @@ var prime = (function () {
 			var fieldsetEvent = function () {
 
 				// dialog2 buttons
-				var save = $('<button/>', { class: 'btn btn-danger', text: prime.strings.save }),
-					cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' }),
+				var save = $('<button/>', { 'class': 'btn btn-danger', text: prime.strings.save }),
+					cancel = $('<button/>', { 'class': 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' }),
 					sel = $(this).data('id') || selected[0],
 					edit = ! $(this).hasClass('create');
 
@@ -579,7 +579,7 @@ var prime = (function () {
 
 			// create progress bar if not exist
 			if ( ! element.progressBar) {
-				element.progressBar = $('<div/>', { class: 'progress password-strength' }).append($('<div/>', { class: 'progress-bar' }));
+				element.progressBar = $('<div/>', { 'class': 'progress password-strength' }).append($('<div/>', { 'class': 'progress-bar' }));
 				$(element).parent().prepend(element.progressBar);
 			}
 
@@ -610,8 +610,8 @@ var prime = (function () {
 	app.profile = function (element) {
 
 		// create buttons
-		var save = $('<button/>', { class: 'btn btn-danger', text: prime.strings.save }),
-			cancel = $('<button/>', { class: 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' });
+		var save = $('<button/>', { 'class': 'btn btn-danger', text: prime.strings.save }),
+			cancel = $('<button/>', { 'class': 'btn btn-default', text: prime.strings.cancel, 'data-dismiss': 'modal' });
 
 		// create dialog
 		var dialog = prime.dialog({
@@ -729,9 +729,9 @@ var prime = (function () {
 		var group    = $(el).parents('.form-group'),
             selected = group.find('input[type=hidden]'),
 		    visual   = group.find('.form-control'),
-		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
-		    select   = $('<button/>', { class: 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
-		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
+		    clear    = $('<button/>', { 'class': 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
+		    select   = $('<button/>', { 'class': 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    cancel   = $('<button/>', { 'class': 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
 
 		// setup ajax dialog with page tree
 		var dialog = prime.dialog({
@@ -799,11 +799,11 @@ var prime = (function () {
 		var group    = $(el).parents('.form-group'),
             selected = group.find('input[type=hidden]'),
 		    visual   = group.find('.form-control'),
-		    clear    = $('<button/>', { class: 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
-		    filter   = $('<input/>', { class: 'form-control input-sm pull-left tablesorter-filter-input', placeholder: prime.strings.filter }).css({ marginLeft: 10, width: 100 }),
-		    reset    = $('<button/>', { class: 'btn btn-default btn-sm pull-left tablesorter-reset-button', text: prime.strings.reset }),
-		    select   = $('<button/>', { class: 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
-		    cancel   = $('<button/>', { class: 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
+		    clear    = $('<button/>', { 'class': 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
+		    filter   = $('<input/>', { 'class': 'form-control input-sm pull-left tablesorter-filter-input', placeholder: prime.strings.filter }).css({ marginLeft: 10, width: 100 }),
+		    reset    = $('<button/>', { 'class': 'btn btn-default btn-sm pull-left tablesorter-reset-button', text: prime.strings.reset }),
+		    select   = $('<button/>', { 'class': 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
+		    cancel   = $('<button/>', { 'class': 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
 
 		// setup ajax dialog with page tree
 		var dialog = prime.dialog({
@@ -1105,8 +1105,9 @@ var prime = (function () {
 		},
 		shim: {
 			bootstrap: { deps: ['jquery'] },
-			select2: { deps: ['jquery'] },
-			aceEmmet: { deps: ['ace'] }
+			jqueryUI:  { deps: ['jquery'] },
+			select2:   { deps: ['jquery'] },
+			aceEmmet:  { deps: ['ace'] }
 		}
 	});
 
@@ -1115,7 +1116,7 @@ var prime = (function () {
 	define(['jquery', 'translation', 'jqueryUI', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($, translation) {
 
 		// list available controllers
-		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file'];
+		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file', 'url'];
 
 		// define current controller
 		var Controller  = ($('[data-controller]').data('controller') + '').substr(6);
