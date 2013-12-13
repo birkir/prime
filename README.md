@@ -42,3 +42,8 @@ sed -i -e "s/\/\/ 'orm'/'orm'   /g" application/bootstrap.php
 sed -i -e "s/\/\/ 'image'/'image'   /g" application/bootstrap.php
 sed -i -e "s/Kohana\:\:modules(array(/Kohana\:\:modules(array(\n        'prime'         \=\> MODPATH\.'prime'\,      \/\/ Prime CMS/g" application/bootstrap.php
 rm install.php
+
+
+## Running with HHVM
+
+Prime runs with Hip Hop virtual machine, created by Facebook.
