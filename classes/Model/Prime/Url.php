@@ -22,7 +22,6 @@ class Model_Prime_Url extends Model_Prime {
 	protected $_table_columns = array (
 		'id' => array(),
 		'uri' => array(),
-		'redirect_enabled' => array(),
 		'redirect' => array(),
 		'prime_page_id' => array(),
 		'updated_at' => array(),
