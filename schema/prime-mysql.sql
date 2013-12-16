@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `prime_pages` (
   `slug` varchar(255) NOT NULL,
   `slug_auto` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `template` varchar(255) DEFAULT NULL,
+  `properties` text NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
   `noindex` tinyint(1) unsigned NOT NULL DEFAULT '0',
