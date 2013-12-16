@@ -43,7 +43,12 @@
 			</div>
 
 			<div class="form-group">
-				<?=Form::button(NULL, 'Check and continue', ['type' => 'submit', 'class' => 'btn btn-lg btn-danger']);?>
+				<?php if ($exists === TRUE): ?>
+					<?=Form::hidden('confirm', 1);?>
+					<?=Form::button(NULL, 'Yes, continue!', ['type' => 'submit', 'class' => 'btn btn-lg btn-danger']);?>
+				<?php else: ?>
+					<?=Form::button(NULL, 'Check and continue', ['type' => 'submit', 'class' => 'btn btn-lg btn-danger']);?>
+				<?php endif; ?>
 			</div>
 
 		<?php endif; ?>

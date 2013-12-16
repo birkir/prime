@@ -73,7 +73,8 @@ class Controller_Prime_Install extends Controller {
 		$this->view = View::factory('Prime/Install/Database')
 		->bind('post', $post)
 		->bind('error', $error)
-		->bind('config', $config);
+		->bind('config', $config)
+		->bind('exists', $exists);
 
 		// get post data
 		$post = $this->request->post();
@@ -120,6 +121,7 @@ class Controller_Prime_Install extends Controller {
 				if (count($query->num_rows) > 0 AND Arr::get($post, 'confirm', FALSE) === FALSE)
 				{
 					$error = 'Database not empty, are you sure you want to continue?';
+					$exists = TRUE;
 					return;
 				}
 			}
