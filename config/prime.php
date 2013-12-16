@@ -1,7 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-	'themes' => array(
+	'storage' => 'local',
+	'themes'  => array(
 		'chrome' => 'Chrome',
 		'clouds' => 'Clouds',
 		'crimson_editor' => 'Crimson Editor',
