@@ -213,14 +213,10 @@ class Controller_Prime_Account extends Controller_Prime_Template {
 	 */
 	public function action_logout()
 	{
-		// Are we already authenticated
-		$this->authenticated();
-
 		// Logout authenticated user
 		Auth::instance()->logout();
 
 		// Redirect to login
 		return HTTP::redirect('Prime/Account/Login');
 	}
-
 }
