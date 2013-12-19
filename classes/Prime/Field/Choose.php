@@ -31,6 +31,12 @@ class Prime_Field_Choose extends Prime_Field {
 					'placeholder' => 'eg. foo: bar \\n',
 					'rows' => 5
 				)
+			),
+			array(
+				'name'        => 'multiple',
+				'caption'     => 'Multiple',
+				'field'       => 'Prime_Field_Boolean',
+				'default'     => FALSE
 			)
 		);
 	}
@@ -99,6 +105,9 @@ class Prime_Field_Choose extends Prime_Field {
 
 		// set view fieldset orm
 		$view->items = $items;
+
+		// Allow multiple choice
+		$view->multiple = Arr::get($options, 'multiple', FALSE);
 
 		// return view
 		return $view;
