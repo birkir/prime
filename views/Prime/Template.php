@@ -54,6 +54,9 @@
 						<?=HTML::anchor('#', '<i class="fa fa-folder"></i> '.__('Modules').' <b class="caret"></b>', ['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']); ?>
 						<ul class="dropdown-menu">
 							<li><?=HTML::anchor('Prime/Module/Fieldset', '<i class="fa fa-list-alt"></i> '.__('Fieldsets')); ?></li>
+							<?php if (class_exists('Controller_Prime_Module_Store')): ?>
+								<li><?=HTML::anchor('Prime/Module/Store', '<i class="fa fa-shopping-cart"></i> '.__('Store')); ?></li>
+							<?php endif; ?>
 						</ul>
 					</li>
 					<li><?=HTML::anchor('Prime/Explorer', '<i class="fa fa-th"></i> '.__('Explorer'));?></li>
