@@ -55,14 +55,6 @@ define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 		return false;
 	};
 
-	file.bytes = function (bytes) {
-		var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
-		var mod = 1024;
-		var power = bytes > 0 ? Math.floor(Math.log(bytes) / Math.log(mod)) : 0;
-
-		return Math.round(bytes / Math.pow(mod, power), 2) + ' ' + units[power];
-	}
-
 	file.lazyload = function ()
 	{
 		var scrollable = $('.fullscreen-ui > .scrollable'),
@@ -293,111 +285,11 @@ define(['jquery', 'plupload', 'jqueryUI'], function($, _ace, _emmet, Emmet) {
 	// initialize uploader
 	file.upload = function (folder) {
 		folder = folder || 0;
-		if ('uploader' in file) {
-			file.uploader.destroy();
-		}
-		file.uploader = new plupload.Uploader({
-			runtimes: 'html5,silverlight,html4',
-	        drop_element : $('.panel-center')[0],
-			browse_button: document.getElementById('upload_btn'),
-			url: '/Prime/File/Upload/' + folder,
-			init: {
-				PostInit: function (uploader, params) {
-					if (uploader.features.dragdrop) {
-						var target = $('.panel-center')[0];
-						target.ondragover = function (event) {
-							event.dataTransfer.dropEffect = 'copy';
-						};
-						target.ondragenter = function (event) {
-							$(this).addClass('dragdrop');
-						};
-						target.ondragleave = function (event) {
-							$(this).removeClass('dragdrop');
-						};
-						target.ondrop = function (event) {
-							$(this).removeClass('dragdrop');
-						}
-					}
-				},
-				UploadProgress: function (uploader, files) {
-					$(files).each(function (i, _file) {
-						_file.tdpercent.text(_file.percent+'%');
-					})
-				},
-				FileUploaded: function (uploader, _file, info) {
-					_file.row.addClass('success');
-					_file.tdremove.empty();
-
-					if (prime.file.uploader.total.queued === 0) {
-						prime.reload_view();
-					}
-				},
-				FilesAdded: function (uploader, files) {
-
-					var process_file = function (i, _file) {
-						var tr = $('<tr/>').data('file', _file).appendTo('.uploader tbody');
-						_file.tdname    = $('<td/>', { text: _file.name }).appendTo(tr);
-						_file.tdpercent = $('<td/>', { text: _file.percent + '%' }).appendTo(tr);
-						_file.tdbytes   = $('<td/>', { text: file.bytes(_file.size) }).appendTo(tr);
-						_file.tdremove  = $('<td/>', { width: 30 })
-						.append($('<a/>', { href: '#', html: '&times;', class: 'btn btn-default btn-xs' }).on('click', function () {
-							prime.file.uploader.removeFile(_file);
-							tr.remove();
-							return false;
-						})).appendTo(tr);
-						_file.row       = tr;
-					};
-
-					if ('external' in files[0]) {
-						$(files).each(process_file);
-						return;
-					}
-
-					// dialog buttons
-					var upload = $('<button/>', { class: 'btn btn-danger', html: 'Upload' }),
-					    cancel = $('<button/>', { class: 'btn btn-default', html: 'Cancel', 'data-dismiss': 'modal' }),
-					    browse = $('<button/>', { class: 'btn btn-primary btn-sm pull-left uploader-browse', html: 'Browse...' });
-
-					var dialog = prime.dialog({
-						title: 'Upload files',
-						remote: '/Prime/File/Upload',
-						buttons: [browse, cancel, upload]
-					},
-
-					function (modal) {
-
-						var _uploader = new plupload.Uploader({
-							runtimes: 'html5,silverlight,html4',
-					        drop_element : modal[0],
-							browse_button: $('.uploader-browse')[0],
-							url: '/Prime/File/Upload',
-					        init: {
-					        	FilesAdded: function (uploader, files) {
-					        		$(files).each(function (i, _file) {
-					        			_file.external = true;
-					        			file.uploader.addFile(_file);
-					        		});
-					        	}
-					        }
-					    });
-					    _uploader.init();
-
-						// setup dialog
-						$(files).each(process_file);
-
-						upload.on('click', function () {
-							uploader.start();
-						});
-
-						cancel.on('click', function () {
-
-						});
-					});
-				}
+		prime.upload('/Prime/File/Upload/' + folder, document.getElementById('upload_btn'), $('.panel-center')[0], function (uploader, f) {
+			if (uploader.total.queued === 0) {
+				prime.reload_view();
 			}
 		});
-
-		file.uploader.init();
 	};
 
 	/**

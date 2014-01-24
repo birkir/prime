@@ -146,9 +146,126 @@ var prime = (function () {
 	};
 
 	/**
+	 * Pretty file bytes
+	 */
+	app.bytes = function (bytes) {
+		var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
+		var mod = 1024;
+		var power = bytes > 0 ? Math.floor(Math.log(bytes) / Math.log(mod)) : 0;
+
+		return Math.round(bytes / Math.pow(mod, power), 2) + ' ' + units[power];
+	}
+
+	/**
+	 * Upload dialog for prime
+	 */
+	app.upload = function (url, btn, drop, callback) {
+
+		if ('uploader' in prime) {
+			prime.uploader.destroy();
+		}
+
+		prime.uploader = new plupload.Uploader({
+			runtimes: 'html5,silverlight,html4',
+			drop_element : drop,
+			browse_button: btn,
+			url: url,
+			init: {
+				PostInit: function (uploader, params) {
+					if (uploader.features.dragdrop) {
+						var target = drop;
+						target.ondragover = function (event) {
+							event.dataTransfer.dropEffect = 'copy';
+						};
+						target.ondragenter = function (event) {
+							$(this).addClass('dragdrop');
+						};
+						target.ondragleave = function (event) {
+							$(this).removeClass('dragdrop');
+						};
+						target.ondrop = function (event) {
+							$(this).removeClass('dragdrop');
+						}
+					}
+				},
+				UploadProgress: function (uploader, files) {
+					$(files).each(function (i, _file) {
+						_file.tdpercent.text(_file.percent+'%');
+					})
+				},
+				FileUploaded: function (uploader, _file, info) {
+					_file.row.addClass('success');
+					_file.tdremove.empty();
+					callback(uploader, _file, info);
+				},
+				FilesAdded: function (uploader, files) {
+
+					var process_file = function (i, _file) {
+						var tr = $('<tr/>').data('file', _file).appendTo('.uploader tbody');
+						_file.tdname    = $('<td/>', { text: _file.name }).appendTo(tr);
+						_file.tdpercent = $('<td/>', { text: _file.percent + '%' }).appendTo(tr);
+						_file.tdbytes   = $('<td/>', { text: prime.bytes(_file.size) }).appendTo(tr);
+						_file.tdremove  = $('<td/>', { width: 30 })
+						.append($('<a/>', { href: '#', html: '&times;', class: 'btn btn-default btn-xs' }).on('click', function () {
+							prime.uploader.removeFile(_file);
+							tr.remove();
+							return false;
+						})).appendTo(tr);
+						_file.row       = tr;
+					};
+
+					if ('external' in files[0]) {
+						$(files).each(process_file);
+						return;
+					}
+
+					// dialog buttons
+					var upload = $('<button/>', { class: 'btn btn-danger', html: 'Upload' }),
+					    cancel = $('<button/>', { class: 'btn btn-default', html: 'Cancel', 'data-dismiss': 'modal' }),
+					    browse = $('<button/>', { class: 'btn btn-primary btn-sm pull-left uploader-browse', html: 'Browse...' });
+
+					var dialog = prime.dialog({
+						title: 'Upload files',
+						remote: url,
+						buttons: [browse, cancel, upload]
+					},
+
+					function (modal) {
+
+						var _uploader = new plupload.Uploader({
+							runtimes: 'html5,silverlight,html4',
+							drop_element : modal[0],
+							browse_button: $('.uploader-browse')[0],
+							url: url,
+							init: {
+								FilesAdded: function (uploader, files) {
+									$(files).each(function (i, _file) {
+										_file.external = true;
+										prime.uploader.addFile(_file);
+									});
+								}
+							}
+						});
+
+						_uploader.init();
+
+						$(files).each(process_file);
+
+						upload.on('click', function () {
+							uploader.start();
+						});
+					});
+				}
+			}
+		});
+
+		prime.uploader.init();
+	}
+
+	/**
 	 * Validation for forms with callback
 	 */
-	app.validate = function (form, callback) {
+	app.validate = function (form, callback, beforeSubmit) {
 
 		// create validation object
 		var validate = {};
@@ -293,6 +410,9 @@ var prime = (function () {
 
 			// validate fields in form
 			form.find('input, select, textarea').data('valid', true).each(validate.field);
+
+			// callback before submit
+			if (beforeSubmit) beforeSubmit(form);
 
 			// check if form is valid
 			if (form.data('valid')) {
@@ -696,9 +816,12 @@ var prime = (function () {
 		return false;
 	};
 
-	app.reload_view = function () {
-		return app.view(app.last_view[0], app.last_view[1]);
-	}
+	app.reload_view = function (fallback) {
+		if (('last_view' in prime) && prime.last_view.length === 0) {
+			return prime.view(prime.last_view[0], prime.last_view[1]);
+		}
+		return app.view(fallback || window.location.pathname);
+	};
 
 	/**
 	 * TODO!
@@ -727,11 +850,12 @@ var prime = (function () {
 
 		// setup variables with objects and dom
 		var group    = $(el).parents('.form-group'),
-            selected = group.find('input[type=hidden]'),
+		    selected = group.find('input[type=hidden]'),
 		    visual   = group.find('.form-control'),
 		    clear    = $('<button/>', { 'class': 'btn btn-default btn-sm pull-left', 'data-dismiss': 'modal', text: prime.strings.clear }),
 		    select   = $('<button/>', { 'class': 'btn btn-danger btn-sm', 'data-dismiss': 'modal', text: prime.strings.select }),
-		    cancel   = $('<button/>', { 'class': 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel });
+		    cancel   = $('<button/>', { 'class': 'btn btn-default btn-sm', 'data-dismiss': 'modal', text: prime.strings.cancel }),
+		    multiple = !! visual.data('select2');
 
 		// setup ajax dialog with page tree
 		var dialog = prime.dialog({
@@ -757,38 +881,69 @@ var prime = (function () {
 				if ($(this).attr('unselectable') === 'on') return false;
 
 				// find active link in tree and remove its state
-				modal.find('.nav-tree li').removeClass('active');
+				if ( ! multiple) {
+					modal.find('.nav-tree li').removeClass('active');
+				}
 
 				// add active state to this item
-				$(this).parent('li').addClass('active');
+				$(this).parent('li')[multiple ? 'toggleClass' : 'addClass']('active');
 				
 				return false;
 			});
 
 			// open all parents of active node
-			modal.find('.nav-tree [data-id=' + (selected.val()) + ']').each(function () {
-				$(this).parents('.list-group-item').addClass('open');
-				$(this).trigger('click');
+			$(multiple ? visual.select2('data') : [{id: selected.val(), text: ''}]).each(function (i, item) {
+
+				// open the nodes
+				modal.find('.nav-tree [data-id=' + item.id + ']').each(function () {
+					$(this).parents('.list-group-item').addClass('open');
+					$(this).trigger('click');
+				});
 			});
 
 			// attach event handler to clear button
 			clear.on('click', function () {
 
-				// set selected page value to null
-				selected.val('');
+				if (multiple) {
 
-				// set visually no page selected
-				visual.html('<span class="text-muted">' + nothing_selected + '</span>');
+					// set nothing to select2
+					visual.select2('data', []);
+
+				} else {
+
+					// set selected page value to null
+					selected.val('');
+
+					// set visually no page selected
+					visual.html('<span class="text-muted">' + nothing_selected + '</span>');
+				}
 			});
 
 			// attach click handler to select button
 			select.on('click', function () {
 
-				// set selected page id as value
-				selected.val(modal.find('.active > a').data('id'));
+				if (multiple) {
 
-				// visually set icon and node name
-				visual.html('<i class="icon-file" style="font-size: 14px; color: #555;"></i> ' + modal.find('.active > a').text().trim());
+					// initialize array of selected values
+					var _sel = [];
+
+					modal.find('.active > a').each(function () {
+
+						// append select object to array
+						_sel.push({ id: $(this).data('id'), text: $(this).text() })
+					});
+
+					// set selected data to select2
+					visual.select2('data', _sel);
+
+				} else {
+
+					// set selected page id as value
+					selected.val(modal.find('.active > a').data('id'));
+
+					// visually set icon and node name
+					visual.html('<i class="icon-file" style="font-size: 14px; color: #555;"></i> ' + modal.find('.active > a').text().trim());
+				}
 			});
 		});
 	};
@@ -1101,6 +1256,7 @@ var prime = (function () {
 			emmet: '../lib/emmet',
 			history: '../lib/history',
 			plupload: '../lib/plupload.full.min',
+			autoNumeric: '../lib/autoNumeric-1.9.18',
 			translation: '/Prime/Account/Translation?noext'
 		},
 		shim: {
@@ -1113,10 +1269,10 @@ var prime = (function () {
 
 	// run when jquery has loaded
 	// --------------------------
-	define(['jquery', 'translation', 'jqueryUI', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history'], function ($, translation) {
+	define(['jquery', 'translation', 'jqueryUI', 'handlebars', 'select2', 'cookie', 'bootstrap', 'history', 'autoNumeric'], function ($, translation) {
 
 		// list available controllers
-		var Controllers = ['page', 'module/fieldset', 'user', 'explorer', 'file', 'url'];
+		var Controllers = ['page', 'module/fieldset', 'module/store', 'user', 'explorer', 'file', 'url'];
 
 		// define current controller
 		var Controller  = ($('[data-controller]').data('controller') + '').substr(6);
