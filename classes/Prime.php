@@ -17,9 +17,6 @@ class Prime {
 	const VERSION  = '3.3.0';
 	const CODENAME = 'holymontain';
 
-	// Delta environment (staging flag)
-	const DELTA = TRUE;
-
 	/**
 	 * @var  boolean  Has [Prime::init] been called?
 	 */
