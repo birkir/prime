@@ -1245,7 +1245,7 @@ var prime = (function () {
 	requirejs.config({
 		baseUrl: '/media/Prime/js/prime',
 		paths: {
-			bootstrap: '../lib/bootstrap-3.0.0',
+			bootstrap: '../lib/bootstrap-3.1.0',
 			jquery: '../lib/jquery-2.0.3.min',
 			jqueryUI: '../lib/jquery-ui-1.10.3.min',
 			cookie: '../lib/jquery.cookie',
