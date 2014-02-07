@@ -31,9 +31,9 @@ define(['jquery'], function($) {
 			{
 				// load prime with ckeditor
 				if ( ! window.ckeditor_loaded) {
-					window.CKEDITOR_BASEPATH = '/media/Prime/js/ckeditor/';
+					window.CKEDITOR_BASEPATH = '/media/Prime/js/lib/ckeditor/';
 					var ckeditor = document.createElement('script');
-					ckeditor.src = '/media/Prime/js/ckeditor/ckeditor.js';
+					ckeditor.src = '/media/Prime/js/lib/ckeditor/ckeditor.js';
 					ckeditor.onload = function () {
 						CKEDITOR.replace(modal.find('textarea')[0]);
 						window.ckeditor_loaded = true;
