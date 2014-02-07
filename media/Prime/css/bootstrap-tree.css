@@ -19,6 +19,7 @@
 }
 .nav-tree .list-group-item.active > a {
     padding-left: 0;
+    margin-left: 0;
 }
 .nav-tree .list-group-item span {
     padding-left: 0px;

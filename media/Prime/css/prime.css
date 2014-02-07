@@ -204,13 +204,13 @@ body > .fullscreen.with-panel-right > .panel-right {
 	background: none;
 }
 .nav-tree .list-group-item.active > .list-group {
-	margin-left: -3px;
+	margin-left: -4px;
 }
 .nav-tree .list-group-item.active {
 	border-left-color: #dd4b39 !important;
 }
 .nav-tree .list-group-item.active > .caret {
-	left: -3px;
+	left: -4px;
 }
 .nav-tree .list-group-item:last-child {
 	margin-bottom: -1px;
