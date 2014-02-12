@@ -648,9 +648,9 @@ define(['jquery', 'jqueryUI'], function($) {
 		.appendTo(doc.find('head').eq(0));
 
 		// add ckeditor 
-		ckeditor.src = '/media/Prime/js/ckeditor/ckeditor.js';
+		ckeditor.src = '/media/Prime/js/lib/ckeditor/ckeditor.js';
 
-		frame[0].contentWindow.CKEDITOR_BASEPATH = '/media/Prime/js/ckeditor/';
+		frame[0].contentWindow.CKEDITOR_BASEPATH = '/media/Prime/js/lib/ckeditor/';
 
 		ckeditor.onload = function () {
 			var editorsDone;
