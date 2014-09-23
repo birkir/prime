@@ -94,6 +94,36 @@ class Controller_Prime_File extends Controller_Prime_Template {
 	}
 
 	/**
+	 * List files in folder
+	 *
+	 * @return void
+	 */
+	public function action_select_list()
+	{
+		// Set folder to list files
+		$id = $this->request->param('id');
+
+		// Get file model
+		$folder = ORM::factory('Prime_File', $id);
+
+		// Find all items in folder
+		$items = $folder->files
+		->where('type', '=', 1)
+		->order_by('name', 'ASC')
+		->find_all();
+
+		// setup view
+		$this->view = View::factory('Prime/File/SelectList')
+		->set('files', $items);
+
+		// Disable auto render
+		$this->auto_render = FALSE;
+
+		// Response body
+		$this->response->body($this->view);
+	}
+
+	/**
 	 * Handle upload files
 	 *
 	 * @return void

@@ -35,7 +35,7 @@
 			</div>
 		</div>
 		<div class="col-lg-6">
-			<div class="form-group">
+			<div class="form-group" style="margin-bottom: 46px;">
 				<?=Form::label('fieldType', __('Field type'), ['class' => 'control-label']);?>
 				<?=Form::select('field', $fields['select'], $item->loaded() ? $item->field->type : NULL, ['class' => 'col-lg-12']);?>
 			</div>

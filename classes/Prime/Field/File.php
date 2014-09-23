@@ -32,7 +32,16 @@ class Prime_Field_File extends Prime_Field {
 				'name'    => 'max_size',
 				'caption' => 'Max file size',
 				'field'   => 'Prime_Field_String',
-				'default' => 10240
+				'default' => 10240,
+				'options' => array(
+					'suffix' => 'KiB'
+				)
+			),
+			array(
+				'name'    => 'folder',
+				'caption' => 'Target folder',
+				'field'   => 'Prime_Field_String',
+				'default' => 'Uploaded'
 			),
 			array(
 				'name'    => 'multiple',
@@ -50,6 +59,7 @@ class Prime_Field_File extends Prime_Field {
 	 */
 	public function save($str = NULL)
 	{
+		/*
 		// Get field name
 		$name = Arr::get($this->field, 'name');
 
@@ -84,6 +94,9 @@ class Prime_Field_File extends Prime_Field {
 		}
 
 		return NULL;
+		*/
+
+		return $str;
 	}
 
 	/**

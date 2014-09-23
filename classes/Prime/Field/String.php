@@ -46,6 +46,18 @@ class Prime_Field_String extends Prime_Field {
 						'tel'      => 'Tel'
 					)
 				)
+			),
+			array(
+				'name'    => 'prefix',
+				'caption' => 'Prefix',
+				'field'   => 'Prime_Field_String',
+				'default' => NULL
+			),
+			array(
+				'name'    => 'suffix',
+				'caption' => 'Suffix',
+				'field'   => 'Prime_Field_String',
+				'default' => NULL
 			)
 		);
 	}

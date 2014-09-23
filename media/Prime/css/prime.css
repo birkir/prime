@@ -18,6 +18,7 @@ body > .fullscreen > .panel-right {
 	height: 100%;
 	width: 0;
 	opacity: 0;
+	margin: 0;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
 	        box-sizing: border-box;
@@ -158,6 +159,7 @@ body > .fullscreen.with-panel-right > .panel-right {
 .modal .modal-body .btn-toolbar { margin-top: 20px; }
 .modal .modal-title { font-size: 16px; line-height: 1em; }
 .modal-footer { padding: 11px 20px 10px; margin-top: 0; }
+.modal .table .header-fixed { margin-top: -30px; }
 
 /** button fixes **/
 .btn:focus { outline: 0; }
