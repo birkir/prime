@@ -1,2 +1,6 @@
-application/cache/*
-application/logs/*
+node_modules/
+lerna-debug.log
+npm-debug.log
+packages/*/lib
+packages/*/build
+.idea
