@@ -34,14 +34,18 @@ export const seed = async () => {
 
   // ---
   const author1 = await ContentEntry.create({
+    entryId: await ContentEntry.getRandomId(),
     contentTypeId: authorType.id,
+    isPublished: true,
     data: {
       name: 'John',
     }
   });
 
   const author2 = await ContentEntry.create({
+    entryId: await ContentEntry.getRandomId(),
     contentTypeId: authorType.id,
+    isPublished: true,
     data: {
       name: 'Paul',
     }
@@ -49,31 +53,32 @@ export const seed = async () => {
 
   // --
 
-  await ContentEntry.create({
+  const blog1 = await ContentEntry.create({
+    entryId: await ContentEntry.getRandomId(),
     contentTypeId: blogType.id,
+    isPublished: true,
     data: {
       title: 'Foo 1',
       description: 'Bar 1',
-      author: author1.id,
+      author: author1.entryId,
     },
   });
 
-  await ContentEntry.create({
+  await blog1.draft({ ...blog1.data, title: 'Foo 111' }, 'en');
+  const blog1draft = await blog1.draft({ ...blog1.data, title: 'Foo 123' }, 'en');
+  await blog1draft.publish();
+
+  const blog2 = await ContentEntry.create({
+    entryId: await ContentEntry.getRandomId(),
     contentTypeId: blogType.id,
+    isPublished: true,
     data: {
       title: 'Foo 2',
       description: 'Bar 2',
-      author: author2.id,
+      author: author2.entryId,
     },
   });
+
+  blog2.draft({ ...blog2.data, title: 'Foo IS' }, 'is')
+    .then(blog => blog.publish());
 }
-
-
-// ID  UID   Language   Published     Timestamp
-// 1   ac1   is         true          2018-01-01
-// 2   ac1   is         false         2018-01-02
-// 3   ac1   is         false         2018-01-03
-// 4   ac1   en         true          2018-01-02
-
-
-// SELECT * FROM entries GROUP BY uid WHERE (language = 'is' ORDER BY timestamp ASC)

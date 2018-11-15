@@ -13,6 +13,6 @@ if (process.env.DATABASE_URL) {
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   modelPaths: [`${__dirname}/models`],
-  logging: false,
+  logging: true,
   ...config,
 });
