@@ -1,6 +1,7 @@
 import { GraphQLID, GraphQLString } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { includeLanguages } from './utils/includeLanguages';
+import { transformEntry } from './utils/transformEntry';
 
 export const find = (GraphQLContentType, contentType) => {
   return {
@@ -30,20 +31,7 @@ export const find = (GraphQLContentType, contentType) => {
 
       context.sequelizeDataLoader.prime(entry);
 
-      if (entry) {
-        return {
-          id: entry.entryId,
-          _meta: {
-            language: entry.language,
-            languages: [].concat((entry as any).languages),
-            createdAt: entry.createdAt.toISOString(),
-            updatedAt: entry.updatedAt.toISOString(),
-          },
-          ...entry.data
-        };
-      }
-
-      return null;
+      return transformEntry(entry);
     },
   };
 };

@@ -44,8 +44,8 @@ export const externalGraphql = async () => {
       queries[contentType.name] = find(GraphQLContentType, contentType);
       queries[`all${contentType.name}`] = findAll(GraphQLContentType, contentType);
 
-      inputs[`create${contentType.name}`] = create(GraphQLContentType, contentType);
-      inputs[`update${contentType.name}`] = update(GraphQLContentType, contentType);
+      inputs[`create${contentType.name}`] = create(GraphQLContentType, contentType, queries);
+      inputs[`update${contentType.name}`] = update(GraphQLContentType, contentType, queries);
       inputs[`remove${contentType.name}`] = remove(GraphQLContentType, contentType);
     }),
   );
