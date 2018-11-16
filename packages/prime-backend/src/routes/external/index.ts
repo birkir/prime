@@ -2,25 +2,30 @@ import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { GraphQLSchema, GraphQLObjectType, GraphQLID } from 'graphql';
 import { createContext } from 'dataloader-sequelize';
-import { sequelize } from '../sequelize';
-import { ContentType } from '../models/ContentType';
-import { ContentTypeField } from '../models/ContentTypeField';
-import { ContentEntryMeta } from '../types/ContentEntryMeta';
-import { findAll } from './external/findAll';
-import { find } from './external/find';
-import { create } from './external/create';
-import { update } from './external/update';
-import { remove } from './external/remove';
-import { resolveFieldType } from './external/types/resolveFieldType';
+import { sequelize } from '../../sequelize';
+import { ContentType } from '../../models/ContentType';
+import { ContentTypeField } from '../../models/ContentTypeField';
+import { ContentEntryMeta } from '../../types/ContentEntryMeta';
+import { findAll } from './findAll';
+import { find } from './find';
+import { create } from './create';
+import { update } from './update';
+import { remove } from './remove';
+import { resolveFieldType } from './types/resolveFieldType';
+import { User } from '../../models/User';
+import { acl } from '../../acl';
 
 export const externalGraphql = async () => {
 
   const app = express();
+  const debug = require('debug')('prime:graphql');
 
   const inputs = {};
   const queries = {};
 
   const contentTypes = await ContentType.findAll();
+
+  debug(contentTypes.length, 'content types');
 
   await Promise.all(
     contentTypes.map(async (contentType) => {
@@ -40,6 +45,8 @@ export const externalGraphql = async () => {
           }, {}),
         }),
       });
+
+      debug('created content type:', contentType.name + '(' + contentType.fields.map(field => field.name).join(', ') + ')');
 
       queries[contentType.name] = find(GraphQLContentType, contentType);
       queries[`all${contentType.name}`] = findAll(GraphQLContentType, contentType);
@@ -63,10 +70,34 @@ export const externalGraphql = async () => {
 
   const server = new ApolloServer({
     introspection: true,
+    tracing: true,
     schema,
     context: async ({ req, connection }) => {
-      const sequelizeDataLoader = createContext(sequelize);
-      return { sequelizeDataLoader };
+      const context = {} as any;
+      context.sequelizeDataLoader = createContext(sequelize);
+      const token = req.headers.authorization || '';
+
+      // Make the entire API public
+      context.public = true;
+
+      if (!token || token === '') {
+        debug('context: no token');
+      } else {
+        const user = await User.findOne({
+          where: {
+            refreshToken: token.replace(/^Bearer /, '').trim(),
+          },
+        });
+        if (user) {
+          debug('context: user', user.email);
+          debug('context: roles', await acl.userRoles(user.id));
+          context.user = user;
+        } else {
+          debug('context: invalid token');
+        }
+      }
+
+      return context;
     },
   });
 

@@ -1,8 +1,8 @@
 import { GraphQLInputObjectType, GraphQLID, GraphQLString } from 'graphql';
-
 import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { resolveFieldType } from './types/resolveFieldType';
+import { ensurePermitted } from './utils/ensurePermitted';
 
 export const update = (GraphQLContentType, contentType, queries) => {
   return {
@@ -26,6 +26,8 @@ export const update = (GraphQLContentType, contentType, queries) => {
       },
     },
     async resolve(root, args, context, info) {
+      await ensurePermitted(context, contentType, 'update');
+
       const { input, language, id } = args;
 
       // TODO: What version should he get back?

@@ -2,6 +2,7 @@ import { GraphQLID, GraphQLString } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { includeLanguages } from './utils/includeLanguages';
 import { transformEntry } from './utils/transformEntry';
+import { ensurePermitted } from './utils/ensurePermitted';
 
 export const find = (GraphQLContentType, contentType) => {
   return {
@@ -11,9 +12,12 @@ export const find = (GraphQLContentType, contentType) => {
       language: { type: GraphQLString },
     },
     async resolve(root, args, context, info) {
+      
+      await ensurePermitted(context, contentType, 'read');
+
       const language = args.language || 'en';
       const published = true;
-      const entry = await ContentEntry.find({
+      const entry = await ContentEntry.findOne({
         attributes: {
           include: [
             [includeLanguages(published), 'languages']

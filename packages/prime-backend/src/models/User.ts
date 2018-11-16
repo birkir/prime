@@ -1,6 +1,7 @@
-import { Model, Column, Table, PrimaryKey, DataType, IsEmail } from 'sequelize-typescript';
+import { Model, Column, Table, PrimaryKey, DataType, IsEmail, Unique, BeforeCreate } from 'sequelize-typescript';
+import * as bcrypt from 'bcrypt';
 
-@Table
+@Table({ timestamps: true })
 export class User extends Model<User> {
 
   @PrimaryKey
@@ -17,6 +18,7 @@ export class User extends Model<User> {
   lastname: string;
 
   @IsEmail
+  @Unique
   @Column
   email: string;
 
@@ -25,4 +27,17 @@ export class User extends Model<User> {
 
   @Column
   lastLogin: Date;
+
+  @Unique
+  @Column(DataType.UUID)
+  refreshToken;
+
+  @BeforeCreate
+  static hashPassword(instance: User) {
+    instance.password = bcrypt.hashSync(instance.password, 10);
+  }
+  
+  isPasswordMatch(password) {
+    return bcrypt.compareSync(password, this.password);
+  }
 }

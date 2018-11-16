@@ -9,6 +9,7 @@ import { ContentTypeField } from '../../models/ContentTypeField';
 import { resolveFieldType } from './types/resolveFieldType';
 import { includeLanguages } from './utils/includeLanguages';
 import { latestVersion } from './utils/latestVersion';
+import { ensurePermitted } from './utils/ensurePermitted';
 
 function sortByProcessor(acc, field: ContentTypeField) {
   acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.name}`), 'ASC'] };
@@ -68,6 +69,9 @@ export const findAll = (GraphQLContentType, contentType) => {
       skip: { type: GraphQLInt },
     },
     async resolve(root, args, context, info) {
+
+      await ensurePermitted(context, contentType, 'read');
+
       const findAllOptions: ICountOptions<ContentEntry> = {};
       const published = true;
       const language = args.language || 'en';

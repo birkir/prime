@@ -1,18 +1,14 @@
 import { Sequelize } from 'sequelize-typescript';
 
-let config = {} as any;
+const { DATABASE_URL } = process.env;
 
-if (process.env.DATABASE_URL) {
-  config.url = process.env.DATABASE_URL;
-} else {
-  config.database = 'prime-sq';
-  config.username = 'birkir';
-  config.password = '';
+if (!DATABASE_URL || DATABASE_URL === '') {
+  throw new Error('DATABASE_URL not set');
 }
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   modelPaths: [`${__dirname}/models`],
-  logging: true,
-  ...config,
+  logging: false,
+  url: DATABASE_URL,
 });
