@@ -15,6 +15,9 @@ npm start
  - Add permissions to queries
  - Add more Field types
  - Add releases?
+ - Validate document input in create/update
+ - Add media library (S3?)
+ - Add grouped fields
 
-
-- Validate document input in create/update
+ - Refactor: Use JSON schema for fields? 
+ - Inherit content types
