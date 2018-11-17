@@ -2,15 +2,8 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Layout, Card, Drawer, Button, Popconfirm, Icon } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 const { Sider, Content } = Layout;
-
-
-const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-  userSelect: 'none',
-  marginBottom: 10,
-  background: isDragging ? 'lightgreen' : 'pink',
-  ...draggableStyle,
-});
 
 function array_move(arr: any[], old_index: number, new_index: number) {
   if (new_index >= arr.length) {

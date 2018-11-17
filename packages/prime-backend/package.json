@@ -25,6 +25,7 @@
     "graphql": "14.0.2",
     "graphql-relay": "0.5.5",
     "graphql-sequelize": "9.0.4",
+    "graphql-type-json": "0.2.1",
     "hashids": "1.2.2",
     "lodash": "4.17.11",
     "pg": "7.6.0",

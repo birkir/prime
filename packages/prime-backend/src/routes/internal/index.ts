@@ -3,9 +3,10 @@ import { ApolloServer } from 'apollo-server-express';
 import { attributeFields, resolver } from 'graphql-sequelize';
 import { omit } from 'lodash';
 import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLID } from 'graphql';
-import { ContentType } from '../models/ContentType';
-import { ContentTypeField } from '../models/ContentTypeField';
-import { ContentEntry } from '../models/ContentEntry';
+import { ContentType } from '../../models/ContentType';
+import { ContentTypeField } from '../../models/ContentTypeField';
+import { ContentEntry } from '../../models/ContentEntry';
+import { ContentTypeFieldGroup, getFields, setFields, ContentTypeFieldGroupInputType } from './processFields';
 
 export const internalGraphql = async (restart) => {
 
@@ -52,6 +53,15 @@ export const internalGraphql = async (restart) => {
   });
 
   const queryFields = {
+    getContentTypeSchema: {
+      type: new GraphQLList(ContentTypeFieldGroup),
+      args: {
+        contentTypeId: { type: GraphQLID },
+      },
+      async resolve(root, args, context, info) {
+        return await getFields(args.contentTypeId);
+      }
+    },
     allContentTypes: {
       type: new GraphQLList(ContentTypeType),
       args: {
@@ -94,6 +104,20 @@ export const internalGraphql = async (restart) => {
   };
 
   const mutationFields = {
+    setContentTypeSchema: {
+      type: GraphQLBoolean,
+      args: {
+        contentTypeId: { type: GraphQLID },
+        schema: {
+          type: new GraphQLList(ContentTypeFieldGroupInputType),
+        },
+      },
+      async resolve(root, args, context, info) {
+        await setFields(args.contentTypeId, args.schema);
+        restart();
+        return true;
+      },
+    },
     createContentType: {
       type: queryFields.ContentType.type,
       args: {

@@ -17,7 +17,6 @@ npm start
  - Add releases?
  - Validate document input in create/update
  - Add media library (S3?)
- - Add grouped fields
+ - Inherit content types (later)
 
- - Refactor: Use JSON schema for fields? 
- - Inherit content types
+ - Use ContentTypeField.id's for keys in ContentEntry.data (schema change compatibility)

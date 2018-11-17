@@ -42,6 +42,9 @@ export const externalGraphql = async () => {
             if (FieldType && FieldType.output) {
               acc[field.name] = FieldType.output(field, queries, contentTypes);
             }
+            if (!acc[field.name]) {
+              delete acc[field.name];
+            }
             return acc;
           }, {}),
         }),

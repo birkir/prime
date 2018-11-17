@@ -1,12 +1,12 @@
-import { GraphQLID } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ensurePermitted } from './utils/ensurePermitted';
 
 export const remove = (GraphQLContentType, contentType) => {
   return {
-    type: GraphQLID,
+    type: GraphQLBoolean,
     args: {
-      id: { type: GraphQLID },
+      id: { type: new GraphQLNonNull(GraphQLID) },
     },
     async resolve(root, args, context, info) {
       await ensurePermitted(context, contentType, 'delete');
@@ -20,10 +20,10 @@ export const remove = (GraphQLContentType, contentType) => {
 
       if (entry) {
         entry.destroy();
-        return 1;
+        return true;
       }
 
-      return 0;
+      return false;
     },
   };
 };

@@ -13,10 +13,9 @@ export class ContentType extends Model<ContentType> {
   })
   id;
 
-  // @Default('Aa')
-  @Is('PascalNumericCase', (value) => {
-    if (!/^[A-Z][a-z0-9]+(?:[A-Z][a-z0-9]+)*$/.test(value)) {
-      throw new Error(`"${value}" is not in PascalNumericCase.`);
+  @Is('AlphaNumeric', (value) => {
+    if (!/^[A-Za-z][A-Za-z0-9]+$/.test(value)) {
+      throw new Error(`"${value}" is not in alphanumeric.`);
     }
   })
   @Unique

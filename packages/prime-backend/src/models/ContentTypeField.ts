@@ -1,4 +1,4 @@
-import { Model, Column, Table, BelongsTo, ForeignKey, PrimaryKey, DataType } from 'sequelize-typescript';
+import { Model, Column, Table, BelongsTo, ForeignKey, PrimaryKey, DataType, BeforeCreate } from 'sequelize-typescript';
 import { ContentType } from './ContentType';
 import { JSON } from 'sequelize';
 
@@ -24,9 +24,16 @@ export class ContentTypeField extends Model<ContentTypeField> {
   @Column
   group: string;
 
+  @Column
+  position: number;
+
   @ForeignKey(() => ContentType)
   @Column(DataType.UUID)
   contentTypeId;
+
+  @ForeignKey(() => ContentTypeField)
+  @Column(DataType.UUID)
+  contentTypeFieldId;
 
   @BelongsTo(() => ContentType, {
     onDelete: 'SET NULL',
@@ -36,6 +43,11 @@ export class ContentTypeField extends Model<ContentTypeField> {
 
   @Column(JSON)
   options;
+
+  @BeforeCreate
+  static async ensureName() {
+    // name must be unique to contentTypeId OR contentTypeFieldId
+  }
 }
 
 // UID: String

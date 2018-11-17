@@ -45,6 +45,21 @@ export const seed = async () => {
       },
     }),
   ];
+
+  const tagsField = await ContentTypeField.create({
+    name: 'tags',
+    type: 'group',
+  });
+
+  const tagsTagField = await ContentTypeField.create({
+    name: 'tag',
+    type: 'string',
+    contentTypeFieldId: tagsField.id,
+  });
+
+  blogFields.push(tagsField, tagsTagField);
+
+
   await blogType.$add('fields', blogFields);
 
   debug('acl: allow %s to do everything on %s', 'sample-editor', 'Blog');
@@ -86,6 +101,7 @@ export const seed = async () => {
         title: faker.lorem.lines(1),
         description: faker.lorem.paragraphs(),
         author: faker.random.arrayElement(authorIds),
+        tags: [{ tag: 'foo' }, { tag: 'bar' }],
       },
     });
     if (blog) {
