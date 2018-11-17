@@ -78,7 +78,7 @@ export class ContentTypeList extends React.Component<IProps> {
 
   render() {
     return (
-      <div style={{ padding: 50, paddingBottom: 0 }}>
+      <div style={{ padding: 32 }}>
         <h2>Content Types</h2>
         <Card>
           <Table
