@@ -16,11 +16,13 @@ export const find = (GraphQLContentType, contentType) => {
       await ensurePermitted(context, contentType, 'read');
 
       const language = args.language || 'en';
-      const published = true;
+      // const contentReleaseId = context.contentReleaseId;
+      const published = context.published;
+
       const entry = await ContentEntry.findOne({
         attributes: {
           include: [
-            [includeLanguages(published), 'languages']
+            [includeLanguages({ published }), 'languages']
           ],
         },
         where: {

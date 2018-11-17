@@ -1,4 +1,4 @@
-import { Model, Column, Table, Scopes, BelongsTo, PrimaryKey, ForeignKey, DataType } from 'sequelize-typescript';
+import { Model, Column, Table, Scopes, BelongsTo, PrimaryKey, ForeignKey, DataType, BeforeCreate } from 'sequelize-typescript';
 import { ContentType } from './ContentType';
 import { ContentRelease } from './ContentRelease';
 import Hashids from 'hashids';
@@ -38,7 +38,10 @@ export class ContentEntry extends Model<ContentEntry> {
   @ForeignKey(() => ContentType)
   contentTypeId;
 
-  @BelongsTo(() => ContentType)
+  @BelongsTo(() => ContentType, {
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
   contentType: ContentType;
 
   @Column(DataType.UUID)
@@ -59,6 +62,11 @@ export class ContentEntry extends Model<ContentEntry> {
 
   @Column(DataType.JSON)
   data;
+
+  @BeforeCreate
+  static async setEntryId(instance: ContentEntry) {
+    instance.entryId = await ContentEntry.getRandomId();
+  }
 
   static async getRandomId() {
     const entryId = hashids.encode(+new Date());

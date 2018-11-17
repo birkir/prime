@@ -15,10 +15,11 @@ import { resolveFieldType } from './types/resolveFieldType';
 import { User } from '../../models/User';
 import { acl } from '../../acl';
 
+export const debug = require('debug')('prime:graphql');
+
 export const externalGraphql = async () => {
 
   const app = express();
-  const debug = require('debug')('prime:graphql');
 
   const inputs = {};
   const queries = {};
@@ -96,6 +97,13 @@ export const externalGraphql = async () => {
           debug('context: invalid token');
         }
       }
+
+
+      // Some flags that will have to become globally on the requests (Cookie etc.)
+      // Published flag
+      context.published = true;
+      // Given release?
+      context.contentReleaseId = null;
 
       return context;
     },

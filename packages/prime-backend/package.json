@@ -21,6 +21,7 @@
     "debug": "4.1.0",
     "dotenv": "6.1.0",
     "express": "4.16.4",
+    "faker": "4.1.0",
     "graphql": "14.0.2",
     "graphql-relay": "0.5.5",
     "graphql-sequelize": "9.0.4",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/acl": "0.4.35",
     "@types/bcrypt": "3.0.0",
+    "@types/faker": "4.1.4",
     "@types/graphql": "14.0.3",
     "@types/lodash": "4.14.118",
     "ts-node": "7.0.1"

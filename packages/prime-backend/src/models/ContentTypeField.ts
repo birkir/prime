@@ -28,7 +28,10 @@ export class ContentTypeField extends Model<ContentTypeField> {
   @Column(DataType.UUID)
   contentTypeId;
 
-  @BelongsTo(() => ContentType)
+  @BelongsTo(() => ContentType, {
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL',
+  })
   contentType: ContentType;
 
   @Column(JSON)

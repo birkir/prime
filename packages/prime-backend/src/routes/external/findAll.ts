@@ -10,6 +10,9 @@ import { resolveFieldType } from './types/resolveFieldType';
 import { includeLanguages } from './utils/includeLanguages';
 import { latestVersion } from './utils/latestVersion';
 import { ensurePermitted } from './utils/ensurePermitted';
+import { UserInputError } from 'apollo-server-core';
+import { debug } from './index';
+import { decodeCursor, encodeCursor } from './utils/cursor';
 
 function sortByProcessor(acc, field: ContentTypeField) {
   acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.name}`), 'ASC'] };
@@ -19,9 +22,11 @@ function sortByProcessor(acc, field: ContentTypeField) {
 
 export const findAll = (GraphQLContentType, contentType) => {
 
+  const sortByValues = contentType.fields.reduce(sortByProcessor, {});
+
   const SortByType = new GraphQLEnumType({
     name: `SortBy_${contentType.name}`,
-    values: contentType.fields.reduce(sortByProcessor, {}),
+    values: sortByValues,
   });
 
   const whereOpTypesFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
@@ -59,36 +64,47 @@ export const findAll = (GraphQLContentType, contentType) => {
     },
   });
 
+  const args: any = {
+    language: { type: GraphQLString },
+    first: { type: GraphQLInt },
+    skip: { type: GraphQLInt },
+    before: { type: GraphQLString },
+    after: { type: GraphQLString },
+  };
+
+  if (Object.keys(sortByValues).length > 0) {
+    args.sortBy = { type: SortByType };
+  }
+
+  if (Object.keys(whereOpTypesFields).length > 0) {
+    args.where = { type: WhereType };
+  }
+
   return {
     type: ConnectionType,
-    args: {
-      language: { type: GraphQLString },
-      sortBy: { type: SortByType },
-      where: { type: WhereType },
-      first: { type: GraphQLInt },
-      skip: { type: GraphQLInt },
-    },
+    args,
     async resolve(root, args, context, info) {
+
+      const defaultLimit = 50;
+      const contentReleaseId = context.contentReleaseId;
+      const published = context.published;
 
       await ensurePermitted(context, contentType, 'read');
 
       const findAllOptions: ICountOptions<ContentEntry> = {};
-      const published = true;
       const language = args.language || 'en';
       const findAllPaging: IFindOptions<ContentEntry> = {
         attributes: {
           include: [
-            [includeLanguages(published), 'languages'],
+            [includeLanguages({ published }), 'languages'],
           ],
         },
         having: {
-          versionId: latestVersion({ language, published }),
+          versionId: latestVersion({ language, published, contentReleaseId }),
         },
         group: [
           'versionId'
         ],
-        offset: 0,
-        limit: 50,
       };
 
       if (args.sortBy) {
@@ -96,13 +112,6 @@ export const findAll = (GraphQLContentType, contentType) => {
         findAllPaging.order = [
           [fieldName, sortOrder],
         ];
-      }
-
-      if (args.first) {
-        if (args.skip) {
-          findAllPaging.offset = args.skip;
-        }
-        findAllPaging.limit = args.first;
       }
 
       if (args.where) {
@@ -114,6 +123,58 @@ export const findAll = (GraphQLContentType, contentType) => {
           contentTypeId: contentType.id,
         }, findAllOptions.where],
       };
+
+      if (args.before || args.after) {
+        if (args.before && args.after) {
+          throw new UserInputError('Cannot be both before and after cursor');
+        }
+
+        const cursor = decodeCursor(args.before || args.after);
+        debug('decoded cursor: %s', cursor);
+        if (!cursor) {
+          throw new UserInputError('Invalid cursor');
+        }
+
+        const rawQuery = sequelize.getQueryInterface().QueryGenerator.selectQuery('ContentEntry', {
+          ...findAllPaging,
+          ...findAllOptions,
+          attributes: [
+            'entryId',
+            sequelize.literal(`$INDEX$`),
+          ],
+        }, ContentEntry);
+
+        const sort = rawQuery.match(/\) ORDER BY (.*?);/);
+        const sql = `
+          SELECT "index" FROM (
+            ${rawQuery.replace('$INDEX$', `row_number() OVER (ORDER BY ${sort[1]}) AS index`).replace(/;$/, '')}
+          ) AS "table"
+          WHERE "table"."entryId" = ${sequelize.escape(cursor)}
+        `;
+        const result = await sequelize.query(sql);
+        if (result[0] && result[0][0]) {
+          const index = Number(result[0][0].index);
+          debug('cursor index: %o', index);
+          if (args.after) {
+            findAllPaging.offset = index;
+          } else {
+            findAllPaging.offset = Math.max(0, index - (args.first || defaultLimit))
+          }
+        } else {
+          debug(result);
+          throw new UserInputError('Cursor out of date');
+        }
+      }
+
+      if (args.first) {
+        if (args.skip) {
+          findAllPaging.offset = args.skip;
+        }
+        findAllPaging.limit = args.first;
+      }
+
+      findAllPaging.offset = findAllPaging.offset || 0;
+      findAllPaging.limit = findAllPaging.limit || defaultLimit;
 
       const entries = await ContentEntry.findAll({
         ...findAllOptions,
@@ -131,9 +192,11 @@ export const findAll = (GraphQLContentType, contentType) => {
         pageInfo: {
           hasPreviousPage,
           hasNextPage,
+          startCursor: entries.length > 0 && encodeCursor(entries[0].entryId),
+          endCursor: entries.length > 0 && encodeCursor(entries[entries.length - 1].entryId),
         },
         edges: entries.map(entry => ({
-          cursor: entry.entryId,
+          cursor: encodeCursor(entry.entryId),
           node: {
             _meta: {
               language: entry.language,

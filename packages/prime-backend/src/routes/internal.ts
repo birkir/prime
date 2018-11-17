@@ -2,7 +2,7 @@ import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { attributeFields, resolver } from 'graphql-sequelize';
 import { omit } from 'lodash';
-import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLID } from 'graphql';
 import { ContentType } from '../models/ContentType';
 import { ContentTypeField } from '../models/ContentTypeField';
 import { ContentEntry } from '../models/ContentEntry';
@@ -94,6 +94,43 @@ export const internalGraphql = async (restart) => {
   };
 
   const mutationFields = {
+    createContentType: {
+      type: queryFields.ContentType.type,
+      args: {
+        input: {
+          type: new GraphQLInputObjectType({
+            name: 'CreateContentTypeInput',
+            fields: {
+              title: { type: new GraphQLNonNull(GraphQLString) },
+              name: { type: GraphQLString },
+            },
+          }),
+        }
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentType.create({
+          name: args.input.name,
+          title: args.input.title,
+        });
+        restart();
+        return entry;
+      }
+    },
+    removeContentType: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: GraphQLID },
+      },
+      async resolve(root, args, context, info) {
+        const contentType = await ContentType.findById(args.id);
+        if (contentType) {
+          await contentType.destroy();
+          restart();
+          return true;
+        }
+        return false;
+      }
+    },
     createContentTypeField: {
       type: queryFields.ContentTypeField.type,
       args: {

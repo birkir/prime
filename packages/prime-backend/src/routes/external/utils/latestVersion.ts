@@ -1,5 +1,35 @@
 import { sequelize } from '../../../sequelize';
+import { withField } from './withFields';
 
-export const latestVersion = ({ language, published }) => sequelize.literal(
-  `"ContentEntry"."versionId" = (SELECT "ContentEntryVersion"."versionId" FROM "ContentEntry" AS "ContentEntryVersion" WHERE "ContentEntryVersion"."language" = ${sequelize.escape(language)}${published === null || published === undefined ? '' : `AND "ContentEntryVersion"."isPublished" = ${published ? 'true' : 'false'}`} AND "ContentEntryVersion"."entryId" = "ContentEntry"."entryId" ORDER BY "ContentEntryVersion"."createdAt" DESC LIMIT 1)`
-) as any;
+const VersionModel = '"ContentEntryVersion"';
+const Model = '"ContentEntry"';
+const field = '"versionId"';
+const idField = '"entryId"';
+
+export const latestVersion = ({ language, published, contentReleaseId }) => {
+  let order = `${VersionModel}."createdAt" DESC`;
+  let withRelease = '';
+  if (contentReleaseId) {
+    order = `${VersionModel}."contentReleaseId" DESC, ${order}`;
+    withRelease = `
+      AND (
+        ${VersionModel}."contentReleaseId" = ${sequelize.escape(contentReleaseId)}
+        OR
+        ${VersionModel}."contentReleaseId" IS NULL
+      )
+    `;
+  }
+
+  return sequelize.literal(
+    `${Model}.${field} = (
+      SELECT ${VersionModel}.${field}
+      FROM ${Model} AS ${VersionModel}
+      WHERE ${VersionModel}."language" = ${sequelize.escape(language)}
+      ${withField('ContentEntryVersion.isPublished', published)}
+      ${withRelease}
+      AND ${VersionModel}.${idField} = ${Model}.${idField}
+      ORDER BY ${order}
+      LIMIT 1
+    )`
+  ) as any;
+};

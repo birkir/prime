@@ -14,6 +14,7 @@ npm start
  - Add permissions to mutations
  - Add permissions to queries
  - Add more Field types
- - Add language
- - Add draft/published flags
  - Add releases?
+
+
+- Validate document input in create/update

@@ -22,7 +22,7 @@ export const Layout = withRouter(function Layout({ children, history }: any) {
         <Menu
           theme="dark"
           mode="inline"
-          style={{ height: '100%', borderRight: 0 }}
+          style={{ borderRight: 0 }}
           defaultSelectedKeys={['contentTypes']}
         >
           <Menu.Item key="contentTypes" onClick={() => history.push('/contentTypes')}>
@@ -39,7 +39,7 @@ export const Layout = withRouter(function Layout({ children, history }: any) {
             onClick={toggleMenu}
           />
         </Header>
-        <Content>
+        <Content style={{ flex: 1 }}>
           {children}
         </Content>
       </AntLayout>
