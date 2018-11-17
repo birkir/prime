@@ -25,7 +25,7 @@ export class ContentTypeList extends React.Component<IProps> {
   }
 
   componentDidMount() {
-    ContentTypes.load();
+    ContentTypes.loadAll();
   }
 
   get columns(): ColumnProps<IContentType>[] {

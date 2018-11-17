@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
-import { types, flow, getParent } from 'mobx-state-tree';
+import { types, flow, getParent, Instance } from 'mobx-state-tree';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/internal/graphql',
@@ -12,8 +12,39 @@ export const ContentType = types
     id: types.identifier,
     title: types.string,
     name: types.string,
+    schema: types.maybe(types.string),
   })
   .actions(self => {
+    const loadSchema = flow(function* loadSchema(){
+      const query = gql`
+        query loadSchema($id: ID!) {
+          getContentTypeSchema(contentTypeId:$id) {
+            title
+            fields {
+              id
+              name
+              title
+              type
+              options
+              fields {
+                id
+                name
+                title
+                type
+                options
+              }
+            }
+          }
+        }
+      `;
+      const { data } = yield client.query({
+        query,
+        variables: { id: self.id },
+      });
+      if (data.getContentTypeSchema) {
+        self.schema = JSON.stringify(data.getContentTypeSchema);
+      }
+    })
 
     const remove = flow(function*() {
       const mutation = gql`
@@ -31,8 +62,12 @@ export const ContentType = types
       }
     });
 
-    return { remove };
+    return {
+      remove,
+      loadSchema,
+    };
   });
+
 
 export const ContentTypes = types.model('ContentTypes', {
   items: types.map(ContentType),
@@ -45,10 +80,32 @@ export const ContentTypes = types.model('ContentTypes', {
     const entries = Array.from(self.items.values());
     entries.sort((a, b) => a.title.localeCompare(b.title));
     return entries;
-  }
+  },
 }))
 .actions(self => {
-  const load = flow(function*(){
+
+  const loadById = flow(function* loadById(id: string){
+    const query = gql`
+      query loadContentType($id: String!) {
+        ContentType(id:$id) {
+          id
+          title
+          name
+        }
+      }
+    `;
+
+    const { data } = yield client.query({
+      query,
+      variables: { id },
+    });
+    if (data.ContentType) {
+      self.items.put(data.ContentType);
+      return self.items.get(data.ContentType.id);
+    }
+  });
+
+  const loadAll = flow(function*(){
     self.loading = true;
 
     const query = gql`
@@ -99,169 +156,10 @@ export const ContentTypes = types.model('ContentTypes', {
   };
 
   return {
-    load,
+    loadAll,
+    loadById,
     create,
     removeById,
   };
 })
 .create();
-
-
-// const ContentTypeField = types
-//   .model('ContentTypeField', {
-//     id: types.identifier,
-//     name: types.maybeNull(types.string),
-//     title: types.maybeNull(types.string),
-//     type: types.enumeration(['string', 'number', 'document']),
-//     group: types.maybeNull(types.string),
-//     position: types.optional(types.number, Infinity),
-//   })
-//   .actions(self => ({
-//     setPosition(position: number) {
-//       self.position = position;
-//     },
-//   }))
-
-// const ContentType = types
-//   .model('ContentType', {
-//     id: types.identifier,
-//     name: types.maybeNull(types.string),
-//     fieldsCache: types.map(ContentTypeField),
-//     fields: types.array(types.reference(ContentTypeField)),
-//   })
-//   .actions(self => ({
-//     addField(field: any) {
-//       self.fieldsCache.put(field);
-//       self.fields.push(field.id);
-//     },
-//     updatePositions(id: string, to: number) {
-//       const f = self.fields.slice(0);
-//       f.sort((a, b) => a.position - b.position);
-//       for (let i = 0; i < f.length; i++) {
-//         if (f[i].id === id) {
-//           f[i].setPosition(to);
-//         } else if (i >= to) {
-//           f[i].setPosition(i + 1);
-//         } else {
-//           f[i].setPosition(i);
-//         }
-//       }
-//       self.fields.replace(f.map(n => n.id) as any);
-//     },
-//   }));
-
-
-// export const ContentTypes = types.model('ContentTypes', {
-//   // Contains items (source of truth)
-//   items: types.map(ContentType),
-//   // Contains list of references to items
-//   list: types.array(types.reference(ContentType)),
-//   // are we loading something now?
-//   loading: false,
-//   // did we load successfully?
-//   loaded: false,
-//   // did we error?
-//   error: false,
-// })
-// .actions(self => {
-
-//   function addContentType(data: any) {
-//     const { fields, ...contentType } = data;
-//     const ct = ContentType.create(contentType);
-//     for (let i = 0 ; i < fields.length; i++) {
-//       const f = ContentTypeField.create({
-//         ...fields[i],
-//         position: i,
-//       });
-//       ct.addField(f);
-//     }
-//     self.items.put(ct);
-//   }
-
-//   return {
-//     createContentType: flow(function*(input: any) {
-//       const mutation = gql`
-//         mutation CreateContentTypeField($input:CreateContentTypeFieldInput) {
-//           createContentTypeField(input:$input) {
-//             id
-//             name
-//             title
-//             type
-//             group
-//             options
-//           }
-//         }
-//       `;
-//       const { data } = yield client.mutate({ mutation, variables: { input }});
-//       const record = self.items.get(input.contentTypeId);
-//       if (record) {
-//         // Optimistic UI
-//         record.fields.push(data.createContentTypeField.id);
-//       }
-//       return record;
-//     }),
-//     fetchById: flow(function*(id: string) {
-//       const query = gql`
-//         query fetchContentType($id: String!) {
-//           ContentType(id:$id) {
-//             id
-//             name
-//             fields {
-//               id
-//               name
-//               title
-//               type
-//               group
-//               options
-//             }
-//           }
-//         }
-//       `;
-//       const { data } = yield client.query({
-//         query,
-//         variables: { id },
-//         fetchPolicy: 'network-only',
-//       });
-//       if (data.ContentType) {
-//         addContentType(data.ContentType);
-//       }
-//     }),
-//     fetchContentTypes: flow(function*(){
-//       self.loading = true;
-//       self.list.clear();
-
-//       const query = gql`
-//         query {
-//           allContentTypes {
-//             id
-//             name
-//             fields {
-//               id
-//               name
-//               title
-//               type
-//               group
-//               options
-//             }
-//           }
-//         }
-//       `;
-
-//       try {
-//         const { data } = yield client.query({ query });
-//         data.allContentTypes.forEach((contentType: any) => {
-//           addContentType(contentType);
-//           self.list.push(contentType.id);
-//         });
-//         self.loaded = true;
-//       } catch (err) {
-//         self.error = true;
-//       }
-
-//       self.loading = false;
-//     }),
-//   };
-// })
-// .create();
-
-// console.log(ContentTypes);

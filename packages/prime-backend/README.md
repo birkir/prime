@@ -20,3 +20,4 @@ npm start
  - Inherit content types (later)
 
  - Use ContentTypeField.id's for keys in ContentEntry.data (schema change compatibility)
+ - When changing content type, warn possible dataloss, but try to cast (string > number, etc).

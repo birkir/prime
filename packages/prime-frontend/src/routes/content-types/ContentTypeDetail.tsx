@@ -1,64 +1,163 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Layout, Card, Drawer, Button, Popconfirm, Icon } from 'antd';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, Affix } from 'antd';
+import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
+import { ContentTypes } from '../../stores/contentTypes';
+
+type IFieldType = 'STRING' | 'NUMBER' | 'GROUP';
+
+type IField = {
+  id?: string;
+  parentId?: string;
+  isNew?: boolean;
+  type: IFieldType;
+  name: string;
+  title: string;
+  disableDroppable?: boolean;
+  fields?: IField[];
+  options?: any;
+};
+
+type IGroup = {
+  title: string;
+  disableDroppable?: boolean;
+  fields?: IField[];
+  body?: any;
+};
 
 const { Sider, Content } = Layout;
+const { TabPane } = Tabs;
 
-function array_move(arr: any[], old_index: number, new_index: number) {
-  if (new_index >= arr.length) {
-    let k = new_index - arr.length + 1;
+const arrMove = (arr: any[], oldIndex: number, newIndex: number) => {
+  if (newIndex >= arr.length) {
+    let k = newIndex - arr.length + 1;
     while (k--) {
       arr.push(undefined);
     }
   }
-  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
 }
 
-const genId = () => Math.floor(Math.random() * 10000);
+const availableFields = [{
+  name: 'String',
+  description: 'Text field with no formatting',
+  type: 'STRING',
+}, {
+  name: 'Number',
+  description: 'Floating point number field',
+  type: 'NUMBER',
+}, {
+  name: 'Group',
+  description: 'Group field can contain other fields',
+  type: 'GROUP',
+}];
 
-@observer
-export class ContentTypeDetail extends React.Component {
-
-  componentDidMount() {
-    this.load();
+interface IProps {
+  match: {
+    params: {
+      id: string;
+    }
   }
+}
 
-  async load() {
-    // const contentType = await ContentTypes.loadById(this.props.match.id);
-  }
+interface IState {
+  flush: boolean;
+  groups: IGroup[];
+  fields: IField[];
+  drawerVisible: boolean;
+}
 
-  state = {
-    flush: false,
-    fields: [
-      { name: 'Hello', type: 'string', id: genId() },
-      { name: 'World', type: 'string', id: genId() },
-      { name: 'Foo', type: 'group', id: genId(), fields: [
-        { name: 'Test 1', type: 'string', id: genId() },
-        { name: 'Test 2', type: 'string', id: genId() },
-      ]},
-    ],
-    disableGroups: false,
-    disableFields: false,
-    drawerVisible: false,
-  }
-
-  removeField = (field: any) => {
-    const fields = this.state.fields.slice(0);
-    fields.forEach((f, index) => {
-      if (f.id === field.id) {
-        fields.splice(index, 1);
-      }
-      if (f.fields) {
-        f.fields.forEach((f1, index1, arr) => {
-          if (f1.id === field.id) {
-            arr.splice(index1, 1);
-          }
+const flattenGroupsFields = (groups: IGroup[]) => {
+  return groups.slice(0).reduce((acc: IField[], group: IGroup) => {
+    (group.fields || []).forEach((field: IField) => {
+      acc.push(field);
+      if (field.fields) {
+        field.fields.forEach((f) => {
+          acc.push({ ...f, parentId: field.id });
         });
       }
     });
+    return acc;
+  }, []);
+}
 
-    this.setState({ fields });
+const setFieldFlag = (groups: IGroup[], cb: Function) => {
+  return groups.map((group: IGroup) => {
+    cb(group);
+    return {
+      ...group,
+      fields: (group.fields || []).map((field: IField) => {
+        cb(field);
+        return {
+          ...field,
+          fields: (field.fields || []).map((subfield: IField) => {
+            cb(subfield);
+            return subfield;
+          }),
+        };
+      })
+    }
+  });
+}
+
+@observer
+export class ContentTypeDetail extends React.Component<IProps> {
+
+  componentDidMount() {
+    this.loadSchema();
+  }
+
+  async loadSchema() {
+    const contentType = await ContentTypes.loadById(this.props.match.params.id);
+    if (contentType) {
+      await contentType.loadSchema();
+      const schema = JSON.parse(contentType.schema);
+      this.updateSchema(schema);
+      this.flushSchema();
+    }
+  }
+
+  async updateSchema(schema: IGroup[]) {
+    if (schema.length > 0) {
+      this.setState({
+        groups: schema,
+        fields: flattenGroupsFields(schema),
+      });
+    }
+  }
+
+  flushSchema() {
+    this.setState({ flush: true }, () => this.setState({ flush: false }));
+  }
+
+  mapFields = (fn: Function) => {
+    const groups = setFieldFlag(this.state.groups, fn);
+    this.updateSchema(groups);
+  }
+
+  state: IState = {
+    flush: false,
+    groups: [],
+    fields: [],
+    drawerVisible: false,
+  }
+
+  removeField = (field: IField) => {
+    this.state.groups.forEach((g: IGroup) => {
+      (g.fields || []).forEach((f: IField, i: number, a: IGroup[]) => {
+        if (f.id === field.id) {
+          a.splice(i, 1);
+        }
+        if (f.fields) {
+          f.fields.forEach((f1: IField, i1: number, a1: IField[]) => {
+            if (f1.id === field.id) {
+              a1.splice(i1, 1);
+            }
+          });
+        }
+      });
+    });
+    this.updateSchema(this.state.groups);
   }
 
   onOpenDrawer = () => {
@@ -69,88 +168,121 @@ export class ContentTypeDetail extends React.Component {
     this.setState({ drawerVisible: false });
   }
 
-  onDragStart = (e: any) => {
-    const field = this.state.fields.find(field => String(field.id) === e.draggableId.replace('field-', ''));
-    console.log(e);
-    if (e.source.droppableId === 'fields') {
-      if (field) {
-        this.setState({ disableGroups: true });
-      }
-    } else if (e.source.droppableId !== 'availableFields') {
-      if (!field) {
-        this.setState({ disableFields: true });
-      }
-    } else if (e.draggableId === 'type-group') {
-      this.setState({ disableGroups: true });
-    }
-  }
+  onDragStart = (e: DragStart) => {
+    const { fields } = this.state;
+    const { source, draggableId } = e;
+    const [key, fieldId] = draggableId.split('.');
 
-  onDragEnd = (e: any) => {
-
-    const fields = this.state.fields.slice();
-
-    if (!e.destination || !e.destination.droppableId) return;
-
-    if (e.destination.droppableId !== 'fields') {
-      const idx = fields.findIndex(field => String(field.id) === e.destination.droppableId.replace('fields-', ''));
-      if (e.source.droppableId === e.destination.droppableId) {
-        array_move(fields[idx].fields!, e.source.index, e.destination.index);
-      } else if (String(e.draggableId || '').indexOf('type') >= 0) {
-        fields[idx].fields!.splice(e.destination.index, 0, {
-          name: 'Cool ' + Math.random(),
-          type: e.draggableId.replace('type-', ''),
-          id: genId(),
+    if (source.droppableId === 'AvailableFields') {
+      if (fieldId === 'Group') {
+        this.mapFields((f: IField) => {
+          if (f.type && f.type === 'GROUP') {
+            f.disableDroppable = true;
+          }
         });
       }
-      this.setState({ fields, disableGroups: false, disableFields: false });
+
       return;
     }
 
-    if (e.source.droppableId === e.destination.droppableId) {
-      array_move(fields, e.source.index, e.destination.index);
-    } else if (String(e.draggableId || '').indexOf('type') >= 0) {
-      fields.splice(e.destination.index, 0, {
-        name: 'Cool ' + Math.random(),
-        type: e.draggableId.replace('type-', ''),
-        id: genId(),
-        fields: [],
-      });
+    const currentField = fields.find(({ id }) => id === fieldId);
+
+    if (!currentField) {
+      return null;
     }
 
-    this.setState({ flush: true, fields, disableGroups: false, disableFields: false }, () => this.setState({ flush: false }));
+    // Disable droppable on other GROUP's
+    this.mapFields((f: IField) => {
+      if (f.fields && f.id !== currentField.parentId) {
+        f.disableDroppable = true;
+      }
+    });
   }
 
-  onFieldClick = (e: any) => {
-    const allowed = Array.from(e.currentTarget.querySelectorAll('.ant-card-head, .ant-card-head-wrapper, .ant-card-head-title'));
+  onDragEnd = (e: DropResult) => {
+    const { destination, source, draggableId } = e;
+    const [draggableKey, fieldId] = draggableId.split('.');
+
+    // Enable droppable on all fields
+    this.mapFields((f: IField) => {
+      f.disableDroppable = false;
+    });
+
+    if (!destination) {
+      // Skip operation if no destination
+      return null;
+    }
+
+    if (draggableKey === 'AvailableField') {
+      // Handle dropping of a new field
+      const [key, dropId] = destination.droppableId.split('.');
+      const id = String(Math.floor(Math.random() * 100000));
+      const newField: IField = {
+        id,
+        isNew: true,
+        name: 'new-field',
+        title: 'New Field',
+        disableDroppable: false,
+        fields: [],
+        type: fieldId as IFieldType,
+      };
+
+      this.mapFields((f: IField) => {
+        if ((key === 'Field' && f.id === dropId) || (key === 'Group' && f.title === dropId)) {
+          (f.fields || []).splice(destination.index, 0, newField);
+        }
+      });
+
+      // Nested droppable groups behave badly
+      // Only fix is to flush the schema
+      if (fieldId === 'GROUP') {
+        this.flushSchema();
+      }
+    } else {
+      // Handle moving of a current field
+      const [key, dropId] = destination.droppableId.split('.');
+      this.mapFields((f: IField) => {
+        if ((key === 'Field' && f.id === dropId) || (key === 'Group' && f.title === dropId)) {
+          arrMove(f.fields || [], source.index, destination.index);
+        }
+      });
+    }
+  }
+
+  onFieldClick = (e: React.MouseEvent<HTMLElement>) => {
+    const allowed = Array.from(
+      e.currentTarget.querySelectorAll('.ant-card-head, .ant-card-head-wrapper, .ant-card-head-title')
+    );
     const isAllowed = allowed.find(node => node === e.target);
     if (isAllowed) {
       this.onOpenDrawer();
     }
   }
 
-  renderGroupField = (field: any) => (
-    <>
-      <br />
-      <Droppable
-        droppableId={`fields-${field.id}`}
-        isDropDisabled={this.state.disableGroups}
-      >
-        {(droppableProvided, droppableSnapshot) => (
-          <div
-            ref={droppableProvided.innerRef}
-            style={{ minHeight: 80, backgroundColor: '#f9f9f9', padding: 16 }}
-            {...droppableProvided.droppableProps}
-          >
-            {field.fields.map(this.renderField)}
-            {droppableProvided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </>
+  renderGroupField = (field: IField) => (
+    <Droppable
+      droppableId={`Field.${field.id}`}
+      isDropDisabled={field.disableDroppable}
+    >
+      {(droppableProvided) => (
+        <div
+          ref={droppableProvided.innerRef}
+          style={{ minHeight: 80, backgroundColor: '#f9f9f9', padding: 16 }}
+          {...droppableProvided.droppableProps}
+        >
+          {(field.fields || []).map(this.renderField)}
+          {droppableProvided.placeholder}
+        </div>
+      )}
+    </Droppable>
   );
 
   renderField = (field: any, index: number) => (
-    <Draggable draggableId={`field-${field.id}`} index={index} key={field.id}>
+    <Draggable
+      draggableId={`Field.${field.id}`}
+      index={index}
+      key={field.id}
+    >
       {(draggableProvided, draggableSnapshot) => (
         <div
           ref={draggableProvided.innerRef}
@@ -164,38 +296,85 @@ export class ContentTypeDetail extends React.Component {
           <Card
             title={`${field.name}: ${field.type}`}
             extra={
-              <Popconfirm title="Are you sure?" onConfirm={() => this.removeField(field)} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
+              <Popconfirm
+                title="Are you sure?"
+                onConfirm={() => this.removeField(field)}
+                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+              >
                 <Button size="small" type="dashed">Delete</Button>
               </Popconfirm>
             }
             onClick={this.onFieldClick}
-            bodyStyle={{ display: field.type === 'group' ? 'inherit' : 'none' }}
+            bodyStyle={{ display: field.type === 'GROUP' ? 'inherit' : 'none' }}
           >
-            {field.type === 'group' && this.renderGroupField(field)}
+            {field.type === 'GROUP' && this.renderGroupField(field)}
           </Card>
         </div>
       )}
     </Draggable>
   );
 
+  renderAvailableField = (field: any, index: number) => (
+    <Draggable
+      key={`AvailableField.${field.type}`}
+      draggableId={`AvailableField.${field.type}`}
+      index={index}
+    >
+      {(draggableProvided, draggableSnapshot) => (
+        <div
+          ref={draggableProvided.innerRef}
+          {...draggableProvided.draggableProps}
+          {...draggableProvided.dragHandleProps}
+          style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
+        >
+          <Card
+            title={field.name}
+            bodyStyle={{ display: 'none' }}
+          />
+        </div>
+      )}
+    </Draggable>
+  );
+
+  renderGroup = (group: any) => {
+    return (
+      <TabPane
+        key={group.title}
+        tab={group.title}
+      >
+        <Droppable
+          droppableId={`Group.${group.title}`}
+          isDropDisabled={group.disableDroppable}
+        >
+          {(droppableProvided) => (
+            <div ref={droppableProvided.innerRef}>
+              {group.fields.map(this.renderField)}
+              {droppableProvided.placeholder}
+              <div style={{ height: 100 }} />
+            </div>
+          )}
+        </Droppable>
+      </TabPane>
+    );
+  }
+
   render() {
-    if (this.state.flush) {
+    const { flush, groups } = this.state;
+
+    if (flush) {
       return null;
     }
+
     return (
-      <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
+      <DragDropContext
+        onDragEnd={this.onDragEnd}
+        onDragStart={this.onDragStart}
+      >
         <Layout style={{ minHeight: '100%' }}>
           <Content style={{ padding: 16 }}>
-            <h1>List of added fields</h1>
-            <Droppable droppableId="fields" isDropDisabled={this.state.disableFields}>
-              {(droppableProvided, droppableSnapshot) => (
-                <div ref={droppableProvided.innerRef}>
-                  {this.state.fields.map(this.renderField)}
-                  {droppableProvided.placeholder}
-                  <div style={{ height: 100 }} />
-                </div>
-              )}
-            </Droppable>
+            <Tabs defaultActiveKey="1" size="large">
+              {groups.map(this.renderGroup)}
+            </Tabs>
           </Content>
           <Sider
             theme="light"
@@ -204,65 +383,10 @@ export class ContentTypeDetail extends React.Component {
             collapsed={false}
             style={{ padding: 16 }}
           >
-            <Droppable droppableId="availableFields" isDropDisabled>
-              {(droppableProvided, droppableSnapshot) => (
+            <Droppable droppableId="AvailableFields" isDropDisabled>
+              {(droppableProvided) => (
                 <div ref={droppableProvided.innerRef}>
-                  <Draggable draggableId="type-string" index={0}>
-                    {(draggableProvided, draggableSnapshot) => (
-                      <div
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                        style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
-                      >
-                        <Card style={{ boxShadow: draggableSnapshot.isDragging ? '0 0 5px rgba(0, 0, 0, 0.15)' : 'none' }}>
-                          <h4>String field</h4>
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
-                  <Draggable draggableId="type-number" index={1}>
-                    {(draggableProvided, draggableSnapshot) => (
-                      <div
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                        style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
-                      >
-                        <Card style={{ boxShadow: draggableSnapshot.isDragging ? '0 0 5px rgba(0, 0, 0, 0.15)' : 'none' }}>
-                          <h4>Number field</h4>
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
-                  <Draggable draggableId="type-document" index={2}>
-                    {(draggableProvided, draggableSnapshot) => (
-                      <div
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                        style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
-                      >
-                        <Card style={{ boxShadow: draggableSnapshot.isDragging ? '0 0 5px rgba(0, 0, 0, 0.15)' : 'none' }}>
-                          <h4>Document</h4>
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
-                  <Draggable draggableId="type-group" index={2}>
-                    {(draggableProvided, draggableSnapshot) => (
-                      <div
-                        ref={draggableProvided.innerRef}
-                        {...draggableProvided.draggableProps}
-                        {...draggableProvided.dragHandleProps}
-                        style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
-                      >
-                        <Card style={{ boxShadow: draggableSnapshot.isDragging ? '0 0 5px rgba(0, 0, 0, 0.15)' : 'none' }}>
-                          <h4>Group</h4>
-                        </Card>
-                      </div>
-                    )}
-                  </Draggable>
+                  {availableFields.map(this.renderAvailableField)}
                   {droppableProvided.placeholder}
                 </div>
               )}
