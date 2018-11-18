@@ -6,7 +6,8 @@ import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLS
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { ContentEntry } from '../../models/ContentEntry';
-import { ContentTypeFieldGroup, getFields, setFields, ContentTypeFieldGroupInputType } from './processFields';
+import { ContentTypeFieldGroup, getFields, setFields } from './processFields';
+import * as GraphQLJSON from 'graphql-type-json';
 
 export const internalGraphql = async (restart) => {
 
@@ -108,9 +109,7 @@ export const internalGraphql = async (restart) => {
       type: GraphQLBoolean,
       args: {
         contentTypeId: { type: GraphQLID },
-        schema: {
-          type: new GraphQLList(ContentTypeFieldGroupInputType),
-        },
+        schema: { type: GraphQLJSON },
       },
       async resolve(root, args, context, info) {
         await setFields(args.contentTypeId, args.schema);

@@ -38,34 +38,19 @@ const arrMove = (arr: any[], oldIndex: number, newIndex: number) => {
   arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
 }
 
-const availableFields = [{
-  name: 'String',
-  description: 'Text field with no formatting',
-  type: 'STRING',
-}, {
-  name: 'Number',
-  description: 'Floating point number field',
-  type: 'NUMBER',
-}, {
-  name: 'Group',
-  description: 'Group field can contain other fields',
-  type: 'GROUP',
-}];
-
-interface IProps {
-  match: {
-    params: {
-      id: string;
-    }
+const stripField = (field: any) => {
+  if (field.isNew) {
+    delete field.id;
   }
-}
-
-interface IState {
-  flush: boolean;
-  groups: IGroup[];
-  fields: IField[];
-  drawerVisible: boolean;
-}
+  delete field.disableDroppable;
+  delete field.isNew;
+  const fields = (field.fields || []).slice(0).map(stripField);
+  if (fields.length > 0) {
+    field.fields = fields;
+  }
+  field.type = field.type.toLowerCase();
+  return field;
+};
 
 const flattenGroupsFields = (groups: IGroup[]) => {
   return groups.slice(0).reduce((acc: IField[], group: IGroup) => {
@@ -98,6 +83,35 @@ const setFieldFlag = (groups: IGroup[], cb: Function) => {
       })
     }
   });
+};
+
+const availableFields = [{
+  name: 'String',
+  description: 'Text field with no formatting',
+  type: 'STRING',
+}, {
+  name: 'Number',
+  description: 'Floating point number field',
+  type: 'NUMBER',
+}, {
+  name: 'Group',
+  description: 'Group field can contain other fields',
+  type: 'GROUP',
+}];
+
+interface IProps {
+  match: {
+    params: {
+      id: string;
+    }
+  }
+}
+
+interface IState {
+  flush: boolean;
+  groups: IGroup[];
+  fields: IField[];
+  drawerVisible: boolean;
 }
 
 @observer
@@ -114,6 +128,13 @@ export class ContentTypeDetail extends React.Component<IProps> {
       const schema = JSON.parse(contentType.schema);
       this.updateSchema(schema);
       this.flushSchema();
+    }
+  }
+
+  async saveSchema(schema: IGroup[]) {
+    const contentType = await ContentTypes.loadById(this.props.match.params.id);
+    if (contentType) {
+      await contentType.saveSchema(schema);
     }
   }
 
@@ -220,7 +241,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
       const newField: IField = {
         id,
         isNew: true,
-        name: 'new-field',
+        name: 'newField',
         title: 'New Field',
         disableDroppable: false,
         fields: [],
@@ -257,6 +278,20 @@ export class ContentTypeDetail extends React.Component<IProps> {
     if (isAllowed) {
       this.onOpenDrawer();
     }
+  }
+
+  onSave = () => {
+    // Remove IDs and other stuff from schema
+    const schema = this.state.groups
+    .slice(0)
+    .map((g: IGroup) => {
+      return {
+        title: g.title,
+        fields: (g.fields || []).slice(0).map(stripField),
+      };
+    });
+
+    this.saveSchema(schema);
   }
 
   renderGroupField = (field: IField) => (
@@ -372,6 +407,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
       >
         <Layout style={{ minHeight: '100%' }}>
           <Content style={{ padding: 16 }}>
+            <Button onClick={this.onSave}>Save</Button>
             <Tabs defaultActiveKey="1" size="large">
               {groups.map(this.renderGroup)}
             </Tabs>

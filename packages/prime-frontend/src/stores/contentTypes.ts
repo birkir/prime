@@ -44,7 +44,29 @@ export const ContentType = types
       if (data.getContentTypeSchema) {
         self.schema = JSON.stringify(data.getContentTypeSchema);
       }
-    })
+    });
+
+    const saveSchema = flow(function*(schema: any) {
+      const mutation = gql`
+        mutation updateSchema(
+          $contentTypeId: ID!
+          $schema: JSON!
+        ) {
+          setContentTypeSchema(
+            contentTypeId: $contentTypeId
+            schema: $schema
+          )
+        }
+      `;
+      const result = yield client.mutate({
+        mutation,
+        variables: {
+          contentTypeId: self.id,
+          schema,
+        }
+      });
+      console.log(result);
+    });
 
     const remove = flow(function*() {
       const mutation = gql`
@@ -65,6 +87,7 @@ export const ContentType = types
     return {
       remove,
       loadSchema,
+      saveSchema,
     };
   });
 
