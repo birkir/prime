@@ -1,6 +1,6 @@
 {
   "name": "@primecms/cms",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
@@ -24,7 +24,7 @@
     "url": "https://github.com/birkir/prime/issues"
   },
   "dependencies": {
-    "@primecms/core": "^0.0.0",
-    "@primecms/ui": "^0.0.0"
+    "@primecms/core": "^0.0.1",
+    "@primecms/ui": "^0.0.1"
   }
 }

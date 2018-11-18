@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -13,10 +13,10 @@
     "lib"
   ],
   "dependencies": {
-    "@primecms/field": "^0.0.0",
-    "@primecms/field-document": "^0.0.0",
-    "@primecms/field-group": "^0.0.0",
-    "@primecms/field-string": "^0.0.0",
+    "@primecms/field": "^0.0.1",
+    "@primecms/field-document": "^0.0.1",
+    "@primecms/field-group": "^0.0.1",
+    "@primecms/field-string": "^0.0.1",
     "acl": "0.4.11",
     "apollo-server-express": "2.2.0",
     "bcrypt": "3.0.2",
