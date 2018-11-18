@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, message } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { ContentTypes } from '../../stores/contentTypes';
+import { EditField } from './components/EditField';
 
 type IFieldType = 'STRING' | 'NUMBER' | 'GROUP';
 
@@ -114,10 +115,14 @@ interface IState {
   groups: IGroup[];
   fields: IField[];
   drawerVisible: boolean;
+  selectedField?: IField;
+  isNewField: boolean;
 }
 
 @observer
 export class ContentTypeDetail extends React.Component<IProps> {
+
+  editField: any = React.createRef();
 
   componentDidMount() {
     this.loadSchema();
@@ -169,6 +174,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
     groups: [],
     fields: [],
     drawerVisible: false,
+    isNewField: false,
   }
 
   removeField = (field: IField) => {
@@ -194,7 +200,10 @@ export class ContentTypeDetail extends React.Component<IProps> {
   }
 
   onCloseDrawer = () => {
-    this.setState({ drawerVisible: false });
+    this.setState({
+      drawerVisible: false,
+      isNewField: false,
+    });
   }
 
   onDragStart = (e: DragStart) => {
@@ -249,8 +258,8 @@ export class ContentTypeDetail extends React.Component<IProps> {
       const newField: IField = {
         id,
         isNew: true,
-        name: 'newField',
-        title: 'New Field',
+        name: '',
+        title: '',
         disableDroppable: false,
         fields: [],
         type: fieldId as IFieldType,
@@ -267,6 +276,13 @@ export class ContentTypeDetail extends React.Component<IProps> {
       if (fieldId === 'GROUP') {
         this.flushSchema();
       }
+
+      this.setState({
+        isNewField: true,
+        selectedField: newField,
+      });
+
+      this.onOpenDrawer();
     } else {
       // Handle moving of a current field
       const [key, dropId] = destination.droppableId.split('.');
@@ -278,12 +294,18 @@ export class ContentTypeDetail extends React.Component<IProps> {
     }
   }
 
-  onFieldClick = (e: React.MouseEvent<HTMLElement>) => {
+  onFieldClick = (e: React.MouseEvent<HTMLElement>, field: IField) => {
+    e.stopPropagation();
     const allowed = Array.from(
       e.currentTarget.querySelectorAll('.ant-card-head, .ant-card-head-wrapper, .ant-card-head-title')
     );
     const isAllowed = allowed.find(node => node === e.target);
     if (isAllowed) {
+
+      this.setState({
+        selectedField: field,
+      });
+
       this.onOpenDrawer();
     }
   }
@@ -300,6 +322,37 @@ export class ContentTypeDetail extends React.Component<IProps> {
     });
 
     this.saveSchema(schema);
+  }
+
+  onEditFieldCancel = () => {
+    const { selectedField, isNewField } = this.state;
+    if (selectedField && isNewField) {
+      this.removeField(selectedField);
+    }
+    this.onCloseDrawer();
+  }
+
+  onEditFieldSubmit = async (field: any) => {
+    const isValid = await new Promise(resolve =>
+      this.editField.current.validateFields((hasErrors: any) => {
+        resolve(!hasErrors);
+      }));
+
+    if (isValid) {
+      // Save field...
+      this.mapFields((f: any) => {
+        if (field.id == f.id) {
+          f.name = field.name;
+          f.title = field.title;
+          f.type = field.type;
+          f.options = JSON.parse(field.options);
+        }
+      });
+
+      this.onCloseDrawer();
+    } else {
+      message.error('Fix errors before saving');
+    }
   }
 
   renderGroupField = (field: IField) => (
@@ -337,17 +390,26 @@ export class ContentTypeDetail extends React.Component<IProps> {
           }}
         >
           <Card
-            title={`${field.name}: ${field.type}`}
+            title={<>
+              {`${field.title || field.name}`}
+            </>}
             extra={
-              <Popconfirm
-                title="Are you sure?"
-                onConfirm={() => this.removeField(field)}
-                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-              >
-                <Button size="small" type="dashed">Delete</Button>
-              </Popconfirm>
+              <>
+                <span style={{ marginRight: 10, color: '#aaa', display: 'inline-block', border: '1px solid #eee', borderRadius: 4, fontSize: 12, fontWeight: 'normal', padding: '2px 4px' }}>
+                  {field.type.substr(0, 1) + field.type.substr(1).toLowerCase()}
+                </span>
+                <Popconfirm
+                  title="Are you sure?"
+                  onConfirm={() => this.removeField(field)}
+                  icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                >
+                  <Button size="small" type="dashed">
+                    <Icon type="delete" />
+                  </Button>
+                </Popconfirm>
+              </>
             }
-            onClick={this.onFieldClick}
+            onClick={(e) => this.onFieldClick(e, field)}
             bodyStyle={{ display: field.type === 'GROUP' ? 'inherit' : 'none' }}
           >
             {field.type === 'GROUP' && this.renderGroupField(field)}
@@ -379,30 +441,28 @@ export class ContentTypeDetail extends React.Component<IProps> {
     </Draggable>
   );
 
-  renderGroup = (group: any) => {
-    return (
-      <TabPane
-        key={group.title}
-        tab={group.title}
+  renderGroup = (group: any) => (
+    <TabPane
+      key={group.title}
+      tab={group.title}
+    >
+      <Droppable
+        droppableId={`Group.${group.title}`}
+        isDropDisabled={group.disableDroppable}
       >
-        <Droppable
-          droppableId={`Group.${group.title}`}
-          isDropDisabled={group.disableDroppable}
-        >
-          {(droppableProvided) => (
-            <div
-              ref={droppableProvided.innerRef}
-              style={{ minHeight: 80 }}
-            >
-              {group.fields.map(this.renderField)}
-              {droppableProvided.placeholder}
-              <div style={{ height: 100 }} />
-            </div>
-          )}
-        </Droppable>
-      </TabPane>
-    );
-  }
+        {(droppableProvided) => (
+          <div
+            ref={droppableProvided.innerRef}
+            style={{ minHeight: 80 }}
+          >
+            {group.fields.map(this.renderField)}
+            {droppableProvided.placeholder}
+            <div style={{ height: 100 }} />
+          </div>
+        )}
+      </Droppable>
+    </TabPane>
+  );
 
   render() {
     const { flush, groups } = this.state;
@@ -447,7 +507,12 @@ export class ContentTypeDetail extends React.Component<IProps> {
             onClose={this.onCloseDrawer}
             visible={this.state.drawerVisible}
           >
-            Edit field
+            <EditField
+              ref={this.editField}
+              field={this.state.selectedField}
+              onCancel={this.onEditFieldCancel}
+              onSubmit={this.onEditFieldSubmit}
+            />
           </Drawer>
         </Layout>
       </DragDropContext>

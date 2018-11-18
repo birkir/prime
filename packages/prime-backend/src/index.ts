@@ -2,6 +2,7 @@ require('dotenv').config();
 import * as express from 'express';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
+import * as path from 'path';
 import debug from 'debug';
 
 import { sequelize } from './sequelize';
@@ -33,6 +34,7 @@ debug('initializing');
     currentApp = express();
 
     currentApp.use(bodyParser.json());
+    currentApp.use(express.static(path.join(__dirname, '..', '..', 'prime-frontend', 'build')));
     currentApp.use('/auth', auth);
     currentApp.use(await externalGraphql());
     currentApp.use('/internal', await internalGraphql(start));

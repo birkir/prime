@@ -65,7 +65,9 @@ export class ContentEntry extends Model<ContentEntry> {
 
   @BeforeCreate
   static async setEntryId(instance: ContentEntry) {
-    instance.entryId = await ContentEntry.getRandomId();
+    if (!instance.entryId) {
+      instance.entryId = await ContentEntry.getRandomId();
+    }
   }
 
   static async getRandomId() {

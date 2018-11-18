@@ -1,11 +1,6 @@
-import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
 import { types, flow, getParent, Instance } from 'mobx-state-tree';
-
-const client = new ApolloClient({
-  uri: 'http://localhost:4000/internal/graphql',
-});
-
+import { client } from '../utils/client';
 
 export const ContentType = types
   .model('ContentType', {
@@ -110,7 +105,7 @@ export const ContentTypes = types.model('ContentTypes', {
 
   const loadById = flow(function* loadById(id: string){
     const query = gql`
-      query loadContentType($id: String!) {
+      query loadContentType($id: ID) {
         ContentType(id:$id) {
           id
           title

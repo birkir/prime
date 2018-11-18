@@ -104,6 +104,7 @@ export const seed = async () => {
         tags: [{ tag: 'foo' }, { tag: 'bar' }],
       },
     });
+    await blog.publish();
     if (blog) {
       blogIds.push(blog.entryId);
     }

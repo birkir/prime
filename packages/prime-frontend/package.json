@@ -32,6 +32,7 @@
     "mobx-react": "5.3.6",
     "mobx-state-tree": "3.7.1",
     "react": "16.7.0-alpha.0",
+    "react-apollo": "2.3.1",
     "react-beautiful-dnd": "10.0.0",
     "react-dom": "16.7.0-alpha.0",
     "react-router-dom": "4.3.1",

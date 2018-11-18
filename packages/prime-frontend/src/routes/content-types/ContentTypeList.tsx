@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Table, Card, Button, Popconfirm, Icon, Drawer } from 'antd';
+import { Table, Card, Button, Popconfirm, Icon, Drawer, Divider } from 'antd';
 import { History } from 'history';
 import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
@@ -47,13 +47,17 @@ export class ContentTypeList extends React.Component<IProps> {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
-        <Popconfirm
-          title="Are you sure?"
-          icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-          onConfirm={record.remove}
-        >
-          <a href="#">Delete</a>
-        </Popconfirm>
+        <>
+          <Link to={`/contentEntries/${record.id}`}>Entries</Link>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="Are you sure?"
+            icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+            onConfirm={record.remove}
+          >
+            <a href="#">Delete</a>
+          </Popconfirm>
+        </>
       )
     }]
   }
