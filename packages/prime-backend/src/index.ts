@@ -35,6 +35,7 @@ debug('initializing');
 
     currentApp.use(bodyParser.json());
     currentApp.use(express.static(path.join(__dirname, '..', '..', 'prime-frontend', 'build')));
+    currentApp.use(express.static(path.join(__dirname, '..', 'node_modules', 'prime-frontend', 'build')));
     currentApp.use('/auth', auth);
     currentApp.use(await externalGraphql());
     currentApp.use('/internal', await internalGraphql(start));

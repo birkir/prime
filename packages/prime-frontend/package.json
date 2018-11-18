@@ -10,7 +10,7 @@
     "build": "build"
   },
   "files": [
-    "lib"
+    "build"
   ],
   "publishConfig": {
     "access": "public"
