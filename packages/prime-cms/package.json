@@ -26,5 +26,6 @@
   "dependencies": {
     "@primecms/core": "^0.0.2",
     "@primecms/ui": "^0.0.2"
-  }
+  },
+  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
 }

@@ -1,5 +1,6 @@
 {
   "name": "@primecms/field",
+  "private": false,
   "version": "0.0.2",
   "description": "> TODO: description",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
@@ -22,5 +23,6 @@
   },
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
-  }
+  },
+  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
 }

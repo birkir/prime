@@ -55,8 +55,8 @@
     "start": "node lib/index.js",
     "build": "tsc -p .",
     "dev": "DEBUG=prime* ts-node src",
-    "postinstall": "npm run build",
     "rebuild-deps": "lerna run build --ignore @primecms/core --ignore @primecms/ui",
     "test": "echo \"Error: no test specified\" && exit 1"
-  }
+  },
+  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
 }

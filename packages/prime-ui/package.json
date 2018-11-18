@@ -54,5 +54,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
 }
