@@ -1,0 +1,35 @@
+{
+  "name": "@primecms/field-string",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
+  "homepage": "https://github.com/birkir/prime#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birkir/prime.git"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/birkir/prime/issues"
+  },
+  "dependencies": {
+    "@primecms/field": "^0.0.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.0.3"
+  },
+  "peerDependencies": {
+    "graphql": "^14.0.0"
+  }
+}

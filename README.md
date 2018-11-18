@@ -34,21 +34,21 @@ cd packages/prime-frontend; npm start; cd -
 
 Main aspects
 
- - `@prime/core`: The backend core server
- - `@prime/ui`: Front-end UI
+ - `@primecms/core`: The backend core server
+ - `@primecms/ui`: Front-end UI
 
 Fields (shared for ui and core). These would have to self register.
 
- - @prime/field-base
- - @prime/field-string
- - @prime/field-timestamp
- - @prime/field-group
- - @prime/field-number
- - @prime/field-document
- - @prime/field-image
- - @prime/field-geopoint
- - @prime/field-select
- - @prime/field-color
+ - @prime/field
+ - @primecms/field-string
+ - @primecms/field-timestamp
+ - @primecms/field-group
+ - @primecms/field-number
+ - @primecms/field-document
+ - @primecms/field-image
+ - @primecms/field-geopoint
+ - @primecms/field-select
+ - @primecms/field-color
 
 Each field would have logic for the following:
  

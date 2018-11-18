@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "declaration": false,
+    "pretty": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

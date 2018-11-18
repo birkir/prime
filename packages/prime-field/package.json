@@ -1,0 +1,26 @@
+{
+  "name": "@primecms/field",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
+  "homepage": "https://github.com/birkir/prime#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birkir/prime.git"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/birkir/prime/issues"
+  }
+}
