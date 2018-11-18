@@ -1,7 +1,7 @@
 Prime CMS
 =========
 
-Fully featured headless content management system written in TypeScript.
+Fully featured headless content management system backed by TypeScript and GraphQL.
 
 ## Features
 
@@ -14,23 +14,54 @@ Fully featured headless content management system written in TypeScript.
 
 ## Installation
 
+ - Requires Postgres
+
 ```bash
-git clone git@github.com:birkir/prime.git
-cd prime
-npm install
+npm init
+npm install -S @primecms/core @primecms/ui
+# edit your .env and .primerc
+# start
+node ./node_modules/@primecms/lib/index.js
 ```
 
 ## Development
 
 ```bash
-# Start backend
-cd packages/prime-backend; npm run dev; cd -
+git clone git@github.com:birkir/prime.git
+cd prime
 
-# Start frontend
-cd packages/prime-frontend; npm start; cd -
+# Link packages
+lerna bootstrap --hoist --nohoist "prime*"
+
+# Run core and ui in development
+lerna run dev
 ```
 
-### TODO
+## Configuration
+
+Sample `.primerc`
+```json
+{
+  "fields": [
+    "@primecms/field-string",
+    "@primecms/field-document",
+    "@primecms/field-group"
+  ]
+}
+```
+
+Sample `.env`
+```bash
+DATABASE_URL=postgresql://localhost:5432/primecms
+```
+
+## TODO
+
+### Documentation
+
+This needs to be done...
+
+### Other ideas
 
 Main aspects
 

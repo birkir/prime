@@ -2,7 +2,7 @@
   "name": "@primecms/field",
   "private": false,
   "version": "0.0.3",
-  "description": "> TODO: description",
+  "description": "Base interface for Prime CMS Fields",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
   "license": "MIT",
@@ -18,11 +18,12 @@
     "url": "git+https://github.com/birkir/prime.git"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "tsc -p .",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
   },
-  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
+  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
 }

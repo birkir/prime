@@ -1,7 +1,7 @@
 {
   "name": "@primecms/ui",
   "version": "0.0.3",
-  "description": "Frontend package for prime cms",
+  "description": "User Interface for Prime CMS Core",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -55,5 +56,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "gitHead": "bb77c305f08445277e2608be33653c485fd9d705"
+  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
 }

@@ -1,7 +1,0 @@
-{
-  "fields": [
-    "@primecms/field-string",
-    "@primecms/field-document",
-    "@primecms/field-group"
-  ]
-}

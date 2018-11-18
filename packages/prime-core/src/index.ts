@@ -15,7 +15,7 @@ let currentApp;
 const port = process.env.PORT || 4000;
 const debug = require('debug')('prime:http');
 
-debug('initializing 123');
+debug('initializing');
 
 (async () => {
   await sequelize.sync({ force: true });
@@ -34,8 +34,7 @@ debug('initializing 123');
     currentApp = express();
 
     currentApp.use(bodyParser.json());
-    currentApp.use(express.static(path.join(__dirname, '..', '..', 'prime-frontend', 'build')));
-    currentApp.use(express.static(path.join(__dirname, '..', 'node_modules', 'prime-frontend', 'build')));
+    currentApp.use(express.static(path.join(__dirname, '..', '..', 'ui', 'build')));
     currentApp.use('/auth', auth);
     currentApp.use(await externalGraphql());
     currentApp.use('/internal', await internalGraphql(start));
