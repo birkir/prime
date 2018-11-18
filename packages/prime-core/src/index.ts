@@ -15,7 +15,7 @@ let currentApp;
 const port = process.env.PORT || 4000;
 const debug = require('debug')('prime:http');
 
-debug('initializing');
+debug('initializing 123');
 
 (async () => {
   await sequelize.sync({ force: true });
