@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, Affix } from 'antd';
+import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, message } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { ContentTypes } from '../../stores/contentTypes';
 
@@ -47,8 +47,10 @@ const stripField = (field: any) => {
   const fields = (field.fields || []).slice(0).map(stripField);
   if (fields.length > 0) {
     field.fields = fields;
+  } else {
+    delete field.fields;
   }
-  field.type = field.type.toLowerCase();
+  delete field.__typename;
   return field;
 };
 
@@ -126,6 +128,9 @@ export class ContentTypeDetail extends React.Component<IProps> {
     if (contentType) {
       await contentType.loadSchema();
       const schema = JSON.parse(contentType.schema);
+      if (schema.length === 0) {
+        schema.push({ title: 'Main', fields: [] });
+      }
       this.updateSchema(schema);
       this.flushSchema();
     }
@@ -134,7 +139,10 @@ export class ContentTypeDetail extends React.Component<IProps> {
   async saveSchema(schema: IGroup[]) {
     const contentType = await ContentTypes.loadById(this.props.match.params.id);
     if (contentType) {
-      await contentType.saveSchema(schema);
+      const success = await contentType.saveSchema(schema);
+      if (success) {
+        message.success('Schema updated');
+      }
     }
   }
 
@@ -382,7 +390,10 @@ export class ContentTypeDetail extends React.Component<IProps> {
           isDropDisabled={group.disableDroppable}
         >
           {(droppableProvided) => (
-            <div ref={droppableProvided.innerRef}>
+            <div
+              ref={droppableProvided.innerRef}
+              style={{ minHeight: 80 }}
+            >
               {group.fields.map(this.renderField)}
               {droppableProvided.placeholder}
               <div style={{ height: 100 }} />

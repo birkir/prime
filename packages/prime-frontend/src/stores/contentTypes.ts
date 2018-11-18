@@ -40,6 +40,7 @@ export const ContentType = types
       const { data } = yield client.query({
         query,
         variables: { id: self.id },
+        fetchPolicy: 'network-only',
       });
       if (data.getContentTypeSchema) {
         self.schema = JSON.stringify(data.getContentTypeSchema);
@@ -50,7 +51,7 @@ export const ContentType = types
       const mutation = gql`
         mutation updateSchema(
           $contentTypeId: ID!
-          $schema: JSON!
+          $schema: [ContentTypeFieldGroupInputType]!
         ) {
           setContentTypeSchema(
             contentTypeId: $contentTypeId
@@ -63,9 +64,9 @@ export const ContentType = types
         variables: {
           contentTypeId: self.id,
           schema,
-        }
+        },
       });
-      console.log(result);
+      return result && result.data && result.data.setContentTypeSchema;
     });
 
     const remove = flow(function*() {
@@ -121,6 +122,7 @@ export const ContentTypes = types.model('ContentTypes', {
     const { data } = yield client.query({
       query,
       variables: { id },
+      fetchPolicy: 'network-only',
     });
     if (data.ContentType) {
       self.items.put(data.ContentType);
