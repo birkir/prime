@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import { Table, Card } from 'antd';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import { client } from '../../utils/client';
 
 const GET_CONTENT_ENTRIES = gql`
@@ -52,7 +52,9 @@ const columns = [{
 }];
 
 export const ContentEntryList = ({ match }: any) => {
+  const [isLoading, setLoading] = useState(false);
   const contentTypeId = match.params.id;
+  let timer: any;
 
   return (
     <Query
@@ -74,6 +76,9 @@ export const ContentEntryList = ({ match }: any) => {
           pageSize: 5,
         };
 
+        clearTimeout(timer);
+        timer = setTimeout(() => (loading !== isLoading) && setLoading(loading), 330);
+
         const onTableChange = (pagination: any, filters: any, sorter: any) => {
           refetch({
             contentTypeId,
@@ -83,6 +88,7 @@ export const ContentEntryList = ({ match }: any) => {
         };
 
         const title = get(data, 'ContentType.title');
+        const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
 
         return (
           <div style={{ padding: 32 }}>
@@ -91,9 +97,11 @@ export const ContentEntryList = ({ match }: any) => {
               <Table
                 columns={columns}
                 rowKey="entryId"
-                dataSource={get(data, 'allContentEntries.edges', []).map(({ node }: any) => node)}
+                dataSource={items}
                 pagination={pagination}
-                loading={loading}
+                loading={isLoading ? {
+                  wrapperClassName: 'table-fast-spin',
+                } : false}
                 onChange={onTableChange}
               />
             </Card>

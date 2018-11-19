@@ -71,11 +71,18 @@ export const seed = async () => {
 
   blogFields.push(tagsField, tagsTagField);
 
-
   await blogType.$add('fields', blogFields);
 
   debug('acl: allow %s to do everything on %s', 'sample-editor', 'Blog');
   await acl.allow('sample-editor', `ContentType.${blogType.id}`, ['create', 'read', 'update', 'delete']);
+
+  // Allow author to have blogs
+  const blogConnectionField = await ContentTypeField.create({
+    name: 'blog',
+    type: 'document',
+    options: { contentTypeId: blogType.id }
+  });
+  await authorType.$add('fields', [blogConnectionField]);
 
   // --- create some authors
   const authorIds: string[] = [];

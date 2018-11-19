@@ -38,6 +38,7 @@ export const create = (GraphQLContentType, contentType, queries) => {
 
   return {
     type: GraphQLContentType,
+    args,
     async resolve(root, args, context, info) {
       await ensurePermitted(context, contentType, 'create');
       const { language = context.language, input } = args;
