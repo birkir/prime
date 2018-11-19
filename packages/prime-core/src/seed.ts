@@ -31,8 +31,8 @@ export const seed = async () => {
   debug('adding ContentType: %s', 'Author');
   const authorType = await ContentType.create({ title: 'Author' });
   const authorFields = [
-    await ContentTypeField.create({ name: 'name', type: 'string' }),
-    await ContentTypeField.create({ name: 'bio', type: 'string' }),
+    await ContentTypeField.create({ title: 'Name', name: 'name', type: 'string' }),
+    await ContentTypeField.create({ title: 'Bio', name: 'bio', type: 'string' }),
   ];
   await authorType.$add('fields', authorFields);
 
@@ -42,14 +42,17 @@ export const seed = async () => {
   const blogType = await ContentType.create({ title: 'Blog' });
   const blogFields = [
     await ContentTypeField.create({
+      title: 'Title',
       name: 'title',
       type: 'string',
     }),
     await ContentTypeField.create({
+      title: 'Description',
       name: 'description',
       type: 'string',
     }),
     await ContentTypeField.create({
+      title: 'Author',
       name: 'author',
       type: 'document',
       options: {
@@ -59,11 +62,13 @@ export const seed = async () => {
   ];
 
   const tagsField = await ContentTypeField.create({
+    title: 'Tags',
     name: 'tags',
     type: 'group',
   });
 
   const tagsTagField = await ContentTypeField.create({
+    title: 'Tag',
     name: 'tag',
     type: 'string',
     contentTypeFieldId: tagsField.id,
@@ -78,6 +83,7 @@ export const seed = async () => {
 
   // Allow author to have blogs
   const blogConnectionField = await ContentTypeField.create({
+    title: 'Blog',
     name: 'blog',
     type: 'document',
     options: { contentTypeId: blogType.id }

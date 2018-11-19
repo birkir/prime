@@ -8,11 +8,12 @@ const { TextArea } = Input;
 
 interface IProps extends FormComponentProps {
   field: any;
+  availableFields: any[];
   onCancel(): void;
   onSubmit(data: any): void;
 }
 
-const EditFieldBase = ({ form, onCancel, onSubmit, field }: IProps) => {
+const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IProps) => {
   const { getFieldDecorator } = form;
 
   const [autoName, setAutoName] = useState(form.getFieldValue('name') === '');
@@ -63,12 +64,13 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field }: IProps) => {
           )}
         </Form.Item>
         <Form.Item label="Type">
-          {getFieldDecorator('type')(<Select placeholder="Please select type">
-            <Option value="STRING">String</Option>
-            <Option value="NUMBER">Number</Option>
-            <Option value="DOCUMENT">Document</Option>
-            <Option value="GROUP">Group</Option>
-          </Select>)}
+          {getFieldDecorator('type')(
+            <Select placeholder="Please select type">
+              {availableFields.map((field) => (
+                <Option value={field.id} key={field.id}>{field.title}</Option>
+              ))}
+            </Select>
+          )}
         </Form.Item>
         <Form.Item label="Options">
           {getFieldDecorator('options', {

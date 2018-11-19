@@ -4,6 +4,7 @@ import gql from 'graphql-tag';
 import { Table, Card } from 'antd';
 import { get, debounce } from 'lodash';
 import { client } from '../../utils/client';
+import { Link } from 'react-router-dom';
 
 const GET_CONTENT_ENTRIES = gql`
   query contentEntries(
@@ -43,6 +44,9 @@ const GET_CONTENT_ENTRIES = gql`
 const columns = [{
   title: 'ID',
   dataIndex: 'entryId',
+  render(_text: string, record: any) {
+    return (<Link to={`/contentEntry/${record.entryId}`}>{record.entryId}</Link>);
+  }
 }, {
   title: 'Type',
   dataIndex: 'contentType.title',

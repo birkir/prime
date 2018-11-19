@@ -9,6 +9,7 @@ import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeFieldGroup, getFields, setFields, ContentTypeFieldGroupInputType } from './processFields';
 import { PageInfo } from '../../types/PageInfo';
 import { latestVersion } from '../external/utils/latestVersion';
+import { fields } from '../../fields';
 
 export const internalGraphql = async (restart) => {
 
@@ -120,13 +121,41 @@ export const internalGraphql = async (restart) => {
     }).resolveConnection,
   };
 
+  const Field = new GraphQLObjectType({
+    name: 'Field',
+    fields: {
+      id: { type: GraphQLID },
+      title: { type: GraphQLString },
+      description: { type: GraphQLString },
+    },
+  });
+
+  const allFields = {
+    type: new GraphQLList(Field),
+    resolve() {
+      return fields;
+    },
+  };
+
   const queryFields = {
     getContentTypeSchema: {
       type: new GraphQLList(ContentTypeFieldGroup),
       args: {
+        entryId: { type: GraphQLID },
         contentTypeId: { type: GraphQLID },
       },
       async resolve(root, args, context, info) {
+        if (args.entryId && !args.contentTypeId) {
+          const entry = await ContentEntry.findOne({
+            where: {
+              entryId: args.entryId,
+            },
+          });
+          if (!entry || !entry.contentTypeId) {
+            return null;
+          }
+          args.contentTypeId = entry.contentTypeId;
+        }
         return await getFields(args.contentTypeId);
       }
     },
@@ -138,6 +167,7 @@ export const internalGraphql = async (restart) => {
       },
       resolve: resolver(ContentType),
     },
+    allFields,
     allContentEntries,
     ContentType: {
       type: ContentTypeType,
@@ -163,7 +193,7 @@ export const internalGraphql = async (restart) => {
     ContentEntry: {
       type: ContentEntryType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
+        entryId: { type: GraphQLID },
       },
       resolve: resolver(ContentEntry),
     },

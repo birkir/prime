@@ -4,14 +4,17 @@ import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, message } from 'a
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { ContentTypes } from '../../stores/contentTypes';
 import { EditField } from './components/EditField';
+import { client } from '../../utils/client';
+import gql from 'graphql-tag';
 
-type IFieldType = 'STRING' | 'NUMBER' | 'GROUP';
+const { Sider, Content } = Layout;
+const { TabPane } = Tabs;
 
 type IField = {
   id?: string;
   parentId?: string;
   isNew?: boolean;
-  type: IFieldType;
+  type: string;
   name: string;
   title: string;
   disableDroppable?: boolean;
@@ -26,8 +29,21 @@ type IGroup = {
   body?: any;
 };
 
-const { Sider, Content } = Layout;
-const { TabPane } = Tabs;
+type IAvailableField = {
+  id: string;
+  title: string;
+  description: string;
+}
+
+const QUERY_ALL_FIELDS = gql`
+  query {
+    allFields {
+      id
+      title
+      description
+    }
+  }
+`;
 
 const arrMove = (arr: any[], oldIndex: number, newIndex: number) => {
   if (newIndex >= arr.length) {
@@ -88,20 +104,6 @@ const setFieldFlag = (groups: IGroup[], cb: Function) => {
   });
 };
 
-const availableFields = [{
-  name: 'String',
-  description: 'Text field with no formatting',
-  type: 'STRING',
-}, {
-  name: 'Number',
-  description: 'Floating point number field',
-  type: 'NUMBER',
-}, {
-  name: 'Group',
-  description: 'Group field can contain other fields',
-  type: 'GROUP',
-}];
-
 interface IProps {
   match: {
     params: {
@@ -117,6 +119,7 @@ interface IState {
   drawerVisible: boolean;
   selectedField?: IField;
   isNewField: boolean;
+  availableFields: IAvailableField[];
 }
 
 @observer
@@ -124,8 +127,18 @@ export class ContentTypeDetail extends React.Component<IProps> {
 
   editField: any = React.createRef();
 
+  state: IState = {
+    flush: false,
+    groups: [],
+    fields: [],
+    drawerVisible: false,
+    isNewField: false,
+    availableFields: [],
+  }
+
   componentDidMount() {
     this.loadSchema();
+    this.loadFields();
   }
 
   async loadSchema() {
@@ -139,6 +152,16 @@ export class ContentTypeDetail extends React.Component<IProps> {
       this.updateSchema(schema);
       this.flushSchema();
     }
+  }
+
+  async loadFields() {
+    const { data } = await client.query({
+      query: QUERY_ALL_FIELDS,
+    });
+
+    this.setState({
+      availableFields: (data as any).allFields,
+    });
   }
 
   async saveSchema(schema: IGroup[]) {
@@ -167,14 +190,6 @@ export class ContentTypeDetail extends React.Component<IProps> {
   mapFields = (fn: Function) => {
     const groups = setFieldFlag(this.state.groups, fn);
     this.updateSchema(groups);
-  }
-
-  state: IState = {
-    flush: false,
-    groups: [],
-    fields: [],
-    drawerVisible: false,
-    isNewField: false,
   }
 
   removeField = (field: IField) => {
@@ -214,7 +229,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
     if (source.droppableId === 'AvailableFields') {
       if (fieldId === 'Group') {
         this.mapFields((f: IField) => {
-          if (f.type && f.type === 'GROUP') {
+          if (f.type && f.type === 'group') {
             f.disableDroppable = true;
           }
         });
@@ -262,7 +277,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
         title: '',
         disableDroppable: false,
         fields: [],
-        type: fieldId as IFieldType,
+        type: fieldId,
       };
 
       this.mapFields((f: IField) => {
@@ -410,9 +425,9 @@ export class ContentTypeDetail extends React.Component<IProps> {
               </>
             }
             onClick={(e) => this.onFieldClick(e, field)}
-            bodyStyle={{ display: field.type === 'GROUP' ? 'inherit' : 'none' }}
+            bodyStyle={{ display: field.type === 'group' ? 'inherit' : 'none' }}
           >
-            {field.type === 'GROUP' && this.renderGroupField(field)}
+            {field.type === 'group' && this.renderGroupField(field)}
           </Card>
         </div>
       )}
@@ -421,8 +436,8 @@ export class ContentTypeDetail extends React.Component<IProps> {
 
   renderAvailableField = (field: any, index: number) => (
     <Draggable
-      key={`AvailableField.${field.type}`}
-      draggableId={`AvailableField.${field.type}`}
+      key={`AvailableField.${field.id}`}
+      draggableId={`AvailableField.${field.id}`}
       index={index}
     >
       {(draggableProvided, draggableSnapshot) => (
@@ -433,7 +448,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
           style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
         >
           <Card
-            title={field.name}
+            title={field.title}
             bodyStyle={{ display: 'none' }}
           />
         </div>
@@ -465,7 +480,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
   );
 
   render() {
-    const { flush, groups } = this.state;
+    const { flush, groups, availableFields } = this.state;
 
     if (flush) {
       return null;
@@ -509,6 +524,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
           >
             <EditField
               ref={this.editField}
+              availableFields={availableFields}
               field={this.state.selectedField}
               onCancel={this.onEditFieldCancel}
               onSubmit={this.onEditFieldSubmit}

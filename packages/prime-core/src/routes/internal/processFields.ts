@@ -1,11 +1,11 @@
-import { GraphQLObjectType, GraphQLList, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLNonNull, GraphQLEnumType } from 'graphql';
+import { GraphQLObjectType, GraphQLList, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLNonNull } from 'graphql';
 import * as GraphQLJSON from 'graphql-type-json';
 
 import { ContentTypeField } from '../../models/ContentTypeField';
 
 type IField = {
   id?: string;
-  type: 'text' | 'number' | 'group';
+  type: string;
   name: string;
   title: string;
   fields?: IField[];
@@ -18,24 +18,13 @@ type IGroup = {
   body?: any;
 };
 
-export const TypeEnum = new GraphQLEnumType({
-  name: 'FieldTypeEnum',
-  values: {
-    STRING: { value: 'string' },
-    NUMBER: { value: 'number' },
-    DOCUMENT: { value: 'document' },
-    IMAGE: { value: 'image' },
-    GROUP: { value: 'group' },
-  }
-});
-
 export const ContentTypeType = new GraphQLObjectType({
   name: 'ContentTypeFieldType',
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     name: { type: new GraphQLNonNull(GraphQLString) },
-    type: { type: TypeEnum },
+    type: { type: GraphQLString },
     options: { type: GraphQLJSON },
     fields: { type: new GraphQLList(ContentTypeType) },
   }),
@@ -55,7 +44,7 @@ export const ContentTypeInputType = new GraphQLInputObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     name: { type: new GraphQLNonNull(GraphQLString) },
-    type: { type: TypeEnum },
+    type: { type: GraphQLString },
     options: { type: GraphQLJSON },
     fields: { type: new GraphQLList(ContentTypeInputType) },
   }),
