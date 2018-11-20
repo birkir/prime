@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "PUBLIC_PATH=/ npm run build",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
