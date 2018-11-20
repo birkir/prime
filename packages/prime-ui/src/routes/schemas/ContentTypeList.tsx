@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Table, Card, Button, Popconfirm, Icon, Drawer, Divider } from 'antd';
+import { Table, Card, Button, Popconfirm, Icon, Drawer, Divider, Layout } from 'antd';
 import { History } from 'history';
 import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,8 @@ import { Instance } from 'mobx-state-tree';
 
 import { ContentTypes, ContentType } from '../../stores/contentTypes';
 import { CreateForm } from './components/CreateForm';
+
+const { Content, Header } = Layout;
 
 interface IProps {
   history: History
@@ -34,7 +36,7 @@ export class ContentTypeList extends React.Component<IProps> {
       dataIndex: 'title',
       key: 'title',
       render(_text: string, record: any) {
-        return (<Link to={`/contentType/${record.id}`}>{record.name}</Link>);
+        return (<Link to={`/schemas/${record.id}`}>{record.name}</Link>);
       }
     }, {
       title: 'API',
@@ -48,7 +50,7 @@ export class ContentTypeList extends React.Component<IProps> {
       key: 'action',
       render: (text, record) => (
         <>
-          <Link to={`/contentEntries/${record.id}`}>Entries</Link>
+          <Link to={`/documents/schema/${record.id}`}>Documents</Link>
           <Divider type="vertical" />
           <Popconfirm
             title="Are you sure?"
@@ -82,20 +84,39 @@ export class ContentTypeList extends React.Component<IProps> {
 
   render() {
     return (
-      <div style={{ padding: 32 }}>
-        <h2>Content Types</h2>
-        <Card>
-          <Table
-            dataSource={this.data}
-            columns={this.columns}
-            loading={ContentTypes.loading}
-            pagination={false}
-            footer={() => (
-              <Button onClick={this.onCreateNewClick}>Create new</Button>
-            )}
-            rowKey="id"
-          />
-        </Card>
+      <Layout>
+        <Header
+          style={{
+            backgroundColor: 'white',
+            boxShadow: '0 2px 4px 0 rgba(0, 24, 36, 0.06)',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <strong>Back?</strong>
+        </Header>
+        <Content style={{ padding: 32 }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 16, }}>
+            <div style={{ flex: 1 }}>
+              <h1 style={{ margin: 0 }}>Schemas</h1>
+            </div>
+            <Button type="primary" onClick={this.onCreateNewClick}>Create new</Button>
+          </div>
+
+          <Card
+            bodyStyle={{ padding: 0 }}
+            className="with-table-pagination"
+            hoverable
+          >
+            <Table
+              dataSource={this.data}
+              columns={this.columns}
+              loading={ContentTypes.loading}
+              pagination={false}
+              rowKey="id"
+            />
+          </Card>
+        </Content>
         <Drawer
           title="Create new Content Type"
           width={720}
@@ -118,7 +139,7 @@ export class ContentTypeList extends React.Component<IProps> {
             }}
           />
         </Drawer>
-      </div>
+      </Layout>
     );
   }
 }

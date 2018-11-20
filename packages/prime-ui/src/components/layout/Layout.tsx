@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Breadcrumb, Icon } from 'antd';
+import { Layout as AntLayout, Menu, Breadcrumb, Icon, Divider } from 'antd';
+import 'antd/dist/antd.css';
 import './Layout.css';
 import { withRouter, Route } from 'react-router-dom';
 
@@ -15,7 +16,8 @@ export const Layout = ({ children }: any) => (
     return (
       <AntLayout style={{ minHeight: '100vh'}}>
         <Sider
-          width={240}
+          width={280}
+          theme="dark"
           trigger={null}
           collapsed={!isOpen}
           collapsible
@@ -27,30 +29,30 @@ export const Layout = ({ children }: any) => (
             style={{ borderRight: 0 }}
             defaultSelectedKeys={[selected]}
           >
+            <Menu.Item>Homepage</Menu.Item>
+            <Menu.Item>BlogPage</Menu.Item>
+            <Menu.Item>Blog</Menu.Item>
+            <SubMenu title="Pages">
+              <Menu.Item>About Us</Menu.Item>
+              <Menu.Item>Contact Us</Menu.Item>
+            </SubMenu>
             <Menu.Item
-              key="contentEntries"
-              onClick={() => history.push('/contentEntries')}
+              key="documents"
+              onClick={() => history.push('/documents')}
             >
               <Icon type="file" />
-              <span>Content Entries</span>
+              <span>Documents</span>
             </Menu.Item>
             <Menu.Item
-              key="contentTypes"
-              onClick={() => history.push('/contentTypes')}
+              key="schemas"
+              onClick={() => history.push('/schemas')}
             >
               <Icon type="database" />
-              <span>Content Types</span>
+              <span>Schemas</span>
             </Menu.Item>
           </Menu>
         </Sider>
         <AntLayout>
-          <Header style={{ background: '#fff', paddingLeft: 32 }}>
-            <Icon
-              className="trigger"
-              type={!isOpen ? 'menu-unfold' : 'menu-fold'}
-              onClick={toggleMenu}
-            />
-          </Header>
           <Content style={{ flex: 1 }}>
             {children}
           </Content>

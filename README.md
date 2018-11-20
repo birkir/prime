@@ -33,8 +33,11 @@ cd prime
 # Link packages
 lerna bootstrap --hoist --nohoist "prime*"
 
+# Build fields and other stuff
+lerna run build --ignore @primecms/core --ignore @primecms/ui
+
 # Run core and ui in development
-lerna run dev
+lerna run dev --stream
 ```
 
 ## Configuration

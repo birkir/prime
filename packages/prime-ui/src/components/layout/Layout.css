@@ -1,5 +1,3 @@
-@import '~antd/dist/antd.css';
-
 .logo {
   height: 32px;
   background: rgba(255,255,255,.2);
@@ -9,4 +7,12 @@
 .table-fast-spin .ant-spin-blur {
   filter: none;
   transition: none;
+}
+
+.with-table-pagination {
+  border-bottom-width: 0;
+}
+.with-table-pagination .ant-table-pagination {
+  margin-bottom: -70px;
+  margin-top: 30px;
 }

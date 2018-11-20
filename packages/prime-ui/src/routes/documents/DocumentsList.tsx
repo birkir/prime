@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Table, Card } from 'antd';
-import { get, debounce } from 'lodash';
+import { Table, Card, Layout, Button } from 'antd';
+import { get } from 'lodash';
 import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
+
+const { Header, Content } = Layout;
 
 const GET_CONTENT_ENTRIES = gql`
   query contentEntries(
@@ -45,7 +47,7 @@ const columns = [{
   title: 'ID',
   dataIndex: 'entryId',
   render(_text: string, record: any) {
-    return (<Link to={`/contentEntry/${record.entryId}`}>{record.entryId}</Link>);
+    return (<Link to={`/documents/doc/${record.entryId}`}>{record.entryId}</Link>);
   }
 }, {
   title: 'Type',
@@ -55,7 +57,7 @@ const columns = [{
   dataIndex: 'updatedAt',
 }];
 
-export const ContentEntryList = ({ match }: any) => {
+export const DocumentsList = ({ match }: any) => {
   const [isLoading, setLoading] = useState(false);
   const contentTypeId = match.params.id;
   let timer: any;
@@ -78,6 +80,7 @@ export const ContentEntryList = ({ match }: any) => {
         const pagination = {
           total: get(data, 'allContentEntries.totalCount'),
           pageSize: 5,
+
         };
 
         clearTimeout(timer);
@@ -91,25 +94,47 @@ export const ContentEntryList = ({ match }: any) => {
           });
         };
 
-        const title = get(data, 'ContentType.title');
+        const title = get(data, 'ContentType.title', 'Document');
         const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
 
         return (
-          <div style={{ padding: 32 }}>
-            {title && (<h2>Content Type: {title}</h2>)}
-            <Card>
-              <Table
-                columns={columns}
-                rowKey="entryId"
-                dataSource={items}
-                pagination={pagination}
-                loading={isLoading ? {
-                  wrapperClassName: 'table-fast-spin',
-                } : false}
-                onChange={onTableChange}
-              />
-            </Card>
-          </div>
+          <Layout>
+            <Header
+              style={{
+                backgroundColor: 'white',
+                boxShadow: '0 2px 4px 0 rgba(0, 24, 36, 0.06)',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <strong>Back?</strong>
+            </Header>
+            <Content style={{ padding: 32 }}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 16, }}>
+                <div style={{ flex: 1 }}>
+                  <h1 style={{ margin: 0 }}>Documents</h1>
+                </div>
+                <Button type="primary">{`Create ${title}`}</Button>
+              </div>
+
+              <Card
+                bodyStyle={{ padding: 0 }}
+                hoverable
+                className="with-table-pagination"
+              >
+                <Table
+                  columns={columns}
+                  rowKey="entryId"
+                  dataSource={items}
+                  pagination={pagination}
+                  loading={isLoading ? {
+                    wrapperClassName: 'table-fast-spin',
+                  } : false}
+                  onChange={onTableChange}
+                />
+              </Card>
+            </Content>
+          </Layout>
         );
       }}
     </Query>
