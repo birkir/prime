@@ -19,7 +19,7 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "tsc -p .",
+    "build": "rm -rf ./lib && tsc -p .",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
