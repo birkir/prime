@@ -1,9 +1,11 @@
 import React, { createContext, useContext } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
-import { Layout, Tabs, Button, Input } from 'antd';
+import { Layout, Tabs, Button, Input, Icon } from 'antd';
 import { client } from '../../utils/client';
 import { FieldString } from './components/FieldString';
+import { Toolbar } from '../../components/toolbar/Toolbar';
+import { Link } from 'react-router-dom';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -65,7 +67,7 @@ const renderGroup = (group: any) => (
   </TabPane>
 );
 
-export const ContentEntryDetail = ({ match }: any) => {
+export const DocumentsDetail = ({ match }: any) => {
   const onSave = () => null;
   const entryId = match.params.id;
 
@@ -89,8 +91,16 @@ export const ContentEntryDetail = ({ match }: any) => {
         return (
           <ContentContext.Provider value={data.ContentEntry}>
             <Layout style={{ minHeight: '100%' }}>
-              <Content style={{ padding: 16, backgroundColor: 'white' }}>
-                <Button onClick={onSave}>Save</Button>
+              <Toolbar>
+                <div style={{ flex: 1 }}>
+                  <Link to="/documents" style={{ color: '#aaa' }}>
+                    <Icon type="left" />
+                    Back
+                  </Link>
+                </div>
+                <Button onClick={onSave} type="primary">Save</Button>
+              </Toolbar>
+              <Content style={{ padding: 32 }}>
                 <Tabs size="large">
                   {groups.map(renderGroup)}
                 </Tabs>

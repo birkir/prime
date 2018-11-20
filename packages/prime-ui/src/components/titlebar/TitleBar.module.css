@@ -1,0 +1,14 @@
+.titlebar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.titlebar__flex {
+  flex: 1;
+}
+
+.titlebar__title {
+  margin: 0;
+}

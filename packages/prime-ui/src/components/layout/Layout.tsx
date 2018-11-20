@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout as AntLayout, Menu, Breadcrumb, Icon, Divider } from 'antd';
 import 'antd/dist/antd.css';
 import './Layout.css';
-import { withRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = AntLayout;
@@ -22,20 +22,13 @@ export const Layout = ({ children }: any) => (
           collapsed={!isOpen}
           collapsible
         >
-          <div className="logo" />
+          <Header style={{ backgroundColor: '#08223c' }} />
           <Menu
             theme="dark"
             mode="inline"
             style={{ borderRight: 0 }}
             defaultSelectedKeys={[selected]}
           >
-            <Menu.Item>Homepage</Menu.Item>
-            <Menu.Item>BlogPage</Menu.Item>
-            <Menu.Item>Blog</Menu.Item>
-            <SubMenu title="Pages">
-              <Menu.Item>About Us</Menu.Item>
-              <Menu.Item>Contact Us</Menu.Item>
-            </SubMenu>
             <Menu.Item
               key="documents"
               onClick={() => history.push('/documents')}

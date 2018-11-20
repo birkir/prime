@@ -5,6 +5,8 @@ import { Table, Card, Layout, Button } from 'antd';
 import { get } from 'lodash';
 import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
+import { Toolbar } from '../../components/toolbar/Toolbar';
+import { TitleBar } from '../../components/titlebar/TitleBar';
 
 const { Header, Content } = Layout;
 
@@ -94,29 +96,17 @@ export const DocumentsList = ({ match }: any) => {
           });
         };
 
-        const title = get(data, 'ContentType.title', 'Document');
         const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
 
         return (
           <Layout>
-            <Header
-              style={{
-                backgroundColor: 'white',
-                boxShadow: '0 2px 4px 0 rgba(0, 24, 36, 0.06)',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <strong>Back?</strong>
-            </Header>
+            <Toolbar>
+              <p></p>
+            </Toolbar>
             <Content style={{ padding: 32 }}>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 16, }}>
-                <div style={{ flex: 1 }}>
-                  <h1 style={{ margin: 0 }}>Documents</h1>
-                </div>
-                <Button type="primary">{`Create ${title}`}</Button>
-              </div>
-
+              <TitleBar title="Documents">
+                <Button type="primary">Create new</Button>
+              </TitleBar>
               <Card
                 bodyStyle={{ padding: 0 }}
                 hoverable

@@ -8,6 +8,7 @@ import { Instance } from 'mobx-state-tree';
 
 import { ContentTypes, ContentType } from '../../stores/contentTypes';
 import { CreateForm } from './components/CreateForm';
+import { Toolbar } from '../../components/toolbar/Toolbar';
 
 const { Content, Header } = Layout;
 
@@ -18,7 +19,7 @@ interface IProps {
 interface IContentType extends Instance<typeof ContentType> {}
 
 @observer
-export class ContentTypeList extends React.Component<IProps> {
+export class SchemaList extends React.Component<IProps> {
 
   formRef: any = React.createRef();
 
@@ -85,16 +86,9 @@ export class ContentTypeList extends React.Component<IProps> {
   render() {
     return (
       <Layout>
-        <Header
-          style={{
-            backgroundColor: 'white',
-            boxShadow: '0 2px 4px 0 rgba(0, 24, 36, 0.06)',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <strong>Back?</strong>
-        </Header>
+        <Toolbar>
+          <p></p>
+        </Toolbar>
         <Content style={{ padding: 32 }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 16, }}>
             <div style={{ flex: 1 }}>
@@ -119,7 +113,7 @@ export class ContentTypeList extends React.Component<IProps> {
         </Content>
         <Drawer
           title="Create new Content Type"
-          width={720}
+          width={280}
           placement="right"
           maskClosable={true}
           onClose={this.onCloseDrawer}

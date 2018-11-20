@@ -2,10 +2,13 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, message } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
+import { get } from 'lodash';
+import gql from 'graphql-tag';
+
 import { ContentTypes } from '../../stores/contentTypes';
 import { EditField } from './components/EditField';
 import { client } from '../../utils/client';
-import gql from 'graphql-tag';
+import { Toolbar } from '../../components/toolbar/Toolbar';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -123,9 +126,10 @@ interface IState {
 }
 
 @observer
-export class ContentTypeDetail extends React.Component<IProps> {
+export class SchemaDetail extends React.Component<IProps> {
 
   editField: any = React.createRef();
+  contentType: any;
 
   state: IState = {
     flush: false,
@@ -144,6 +148,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
   async loadSchema() {
     const contentType = await ContentTypes.loadById(this.props.match.params.id);
     if (contentType) {
+      this.contentType = contentType;
       await contentType.loadSchema();
       const schema = JSON.parse(contentType.schema);
       if (schema.length === 0) {
@@ -244,7 +249,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
       return null;
     }
 
-    // Disable droppable on other GROUP's
+    // Disable droppable on other group's
     this.mapFields((f: IField) => {
       if (f.fields && f.id !== currentField.parentId) {
         f.disableDroppable = true;
@@ -288,7 +293,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
 
       // Nested droppable groups behave badly
       // Only fix is to flush the schema
-      if (fieldId === 'GROUP') {
+      if (fieldId === 'group') {
         this.flushSchema();
       }
 
@@ -401,13 +406,14 @@ export class ContentTypeDetail extends React.Component<IProps> {
           {...draggableProvided.dragHandleProps}
           style={{
             ...draggableProvided.draggableProps.style,
-            marginBottom: 10,
+            marginBottom: 16,
           }}
         >
           <Card
             title={<>
               {`${field.title || field.name}`}
             </>}
+            hoverable
             extra={
               <>
                 <span style={{ marginRight: 10, color: '#aaa', display: 'inline-block', border: '1px solid #eee', borderRadius: 4, fontSize: 12, fontWeight: 'normal', padding: '2px 4px' }}>
@@ -450,6 +456,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
           <Card
             title={field.title}
             bodyStyle={{ display: 'none' }}
+            hoverable
           />
         </div>
       )}
@@ -460,6 +467,7 @@ export class ContentTypeDetail extends React.Component<IProps> {
     <TabPane
       key={group.title}
       tab={group.title}
+      closable={group.title !== 'Main'}
     >
       <Droppable
         droppableId={`Group.${group.title}`}
@@ -486,40 +494,49 @@ export class ContentTypeDetail extends React.Component<IProps> {
       return null;
     }
 
+    const title = get(this.contentType, 'title');
+
     return (
       <DragDropContext
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}
       >
         <Layout style={{ minHeight: '100%' }}>
-          <Content style={{ padding: 16 }}>
-            <Button onClick={this.onSave}>Save</Button>
-            <Tabs defaultActiveKey="1" size="large">
-              {groups.map(this.renderGroup)}
-            </Tabs>
-          </Content>
-          <Sider
-            theme="light"
-            width={300}
-            trigger={null}
-            collapsed={false}
-            style={{ padding: 16 }}
-          >
-            <Droppable droppableId="AvailableFields" isDropDisabled>
-              {(droppableProvided) => (
-                <div ref={droppableProvided.innerRef}>
-                  {availableFields.map(this.renderAvailableField)}
-                  {droppableProvided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </Sider>
+          <Toolbar>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ padding: 0 }}>{title}</h3>
+            </div>
+            <Button type="primary" onClick={this.onSave}>Save</Button>
+          </Toolbar>
+          <Layout>
+            <Content style={{ padding: 32 }}>
+              <Tabs defaultActiveKey="1" size="small" type="editable-card">
+                {groups.map(this.renderGroup)}
+              </Tabs>
+            </Content>
+            <Sider
+              theme="light"
+              width={300}
+              trigger={null}
+              collapsed={false}
+              style={{ padding: 16 }}
+            >
+              <Droppable droppableId="AvailableFields" isDropDisabled>
+                {(droppableProvided) => (
+                  <div ref={droppableProvided.innerRef}>
+                    {availableFields.map(this.renderAvailableField)}
+                    {droppableProvided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </Sider>
+          </Layout>
           <Drawer
             title="Edit field"
             width={300}
             placement="right"
             maskClosable={true}
-            onClose={this.onCloseDrawer}
+            onClose={this.onEditFieldCancel}
             visible={this.state.drawerVisible}
           >
             <EditField

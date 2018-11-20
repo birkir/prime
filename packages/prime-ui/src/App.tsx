@@ -1,21 +1,21 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import { ContentTypeList } from './routes/schemas/ContentTypeList';
-import { ContentTypeDetail } from './routes/schemas/ContentTypeDetail';
+import { SchemaList } from './routes/schemas/SchemaList';
+import { SchemaDetail } from './routes/schemas/SchemaDetail';
 import { Layout } from './components/layout/Layout';
 import { DocumentsList } from './routes/documents/DocumentsList';
-import { ContentEntryDetail } from './routes/documents/ContentEntryDetail';
+import { DocumentsDetail } from './routes/documents/DocumentsDetail';
 import { Test } from './routes/Test';
 
 export const App = () => (
   <BrowserRouter>
     <Layout>
-      <Route path="/schemas" exact component={ContentTypeList} />
-      <Route path="/schemas/:id" component={ContentTypeDetail} />
+      <Route path="/schemas" exact component={SchemaList} />
+      <Route path="/schemas/:id" component={SchemaDetail} />
       <Route path="/documents" exact component={DocumentsList} />
       <Route path="/documents/schema/:id" component={DocumentsList} />
-      <Route path="/documents/doc/:id" component={ContentEntryDetail} />
+      <Route path="/documents/doc/:id" component={DocumentsDetail} />
       <Route path="/test" component={Test} />
     </Layout>
   </BrowserRouter>
