@@ -1,7 +1,7 @@
 {
   "name": "@primecms/field",
   "private": false,
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Base interface for Prime CMS Fields",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
