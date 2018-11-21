@@ -125,6 +125,21 @@ export const seed = async () => {
     }
   }
 
+  const slice1 = await ContentType.create({
+    title: 'Slice Test 1',
+    isSlice: true,
+  })
+  await slice1.$add('fields', [await ContentTypeField.create({ title: 'Foo', name: 'foo', type: 'string' })]);
+  // next slice type
+  const slice2 = await ContentType.create({
+    title: 'Slice Test 2',
+    isSlice: true,
+  })
+  await slice2.$add('fields', [await ContentTypeField.create({ title: 'Bar', name: 'bar', type: 'string' })]);
+  authorType.$add('fields', [
+    await ContentTypeField.create({ title: 'Body', name: 'body', type: 'slice', options: { slices: [slice1.id, slice2.id] }}),
+  ]);
+
   // Print ACL
   debug('print roles:');
   debug(await acl.whatResources('sample-editor'));

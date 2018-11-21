@@ -4,7 +4,7 @@ import { includeLanguages } from './utils/includeLanguages';
 import { transformEntry } from './utils/transformEntry';
 import { ensurePermitted } from './utils/ensurePermitted';
 
-export const find = (GraphQLContentType, contentType) => {
+export const find = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   return {
     type: GraphQLContentType,
     args: {

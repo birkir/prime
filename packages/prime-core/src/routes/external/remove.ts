@@ -2,7 +2,7 @@ import { GraphQLID, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ensurePermitted } from './utils/ensurePermitted';
 
-export const remove = (GraphQLContentType, contentType) => {
+export const remove = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   return {
     type: GraphQLBoolean,
     args: {

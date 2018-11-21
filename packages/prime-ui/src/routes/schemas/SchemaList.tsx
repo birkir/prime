@@ -127,9 +127,9 @@ export class SchemaList extends React.Component<IProps> {
           <CreateForm
             ref={this.formRef}
             onCancel={this.onCloseDrawer}
-            onSubmit={(contentTypeId) => {
+            onSubmit={(contentType) => {
               this.onCloseDrawer();
-              this.props.history.push(`/contentTypes/${contentTypeId}`);
+              this.props.history.push(`/schemas/${contentType.id}`);
             }}
           />
         </Drawer>

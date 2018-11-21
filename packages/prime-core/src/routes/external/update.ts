@@ -4,7 +4,7 @@ import { ContentTypeField } from '../../models/ContentTypeField';
 import { resolveFieldType } from './utils/resolveFieldType';
 import { ensurePermitted } from './utils/ensurePermitted';
 
-export const update = (GraphQLContentType, contentType, queries) => {
+export const update = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   const args: any = {
     id: { type: new GraphQLNonNull(GraphQLID) },
     language: { type: GraphQLString },
@@ -17,8 +17,9 @@ export const update = (GraphQLContentType, contentType, queries) => {
         field,
         queries,
         contentType,
-        isUpdate: true,
+        contentTypes,
         resolveFieldType,
+        isUpdate: true,
       });
     }
     if (!acc[field.name]) {
@@ -30,7 +31,7 @@ export const update = (GraphQLContentType, contentType, queries) => {
   if (Object.keys(inputFields).length > 0) {
     args.input = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
-        name: `Update${contentType.name}`,
+        name: `${contentType.name}UpdateInput`,
         fields: {
           ...inputFields,
         },

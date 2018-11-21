@@ -31,7 +31,11 @@ export const externalGraphql = async () => {
   await Promise.all(
     contentTypes.map(async (contentType) => {
       contentType.fields = await contentType.$get('fields') as ContentTypeField[];
+    })
+  );
 
+  await Promise.all(
+    contentTypes.map(async (contentType) => {
       const GraphQLContentType = new GraphQLObjectType({
         name: contentType.name,
         fields: () => ({
@@ -43,6 +47,7 @@ export const externalGraphql = async () => {
               acc[field.name] = FieldType.GraphQL({
                 field,
                 queries,
+                contentType,
                 contentTypes,
                 resolveFieldType,
               });
@@ -55,14 +60,18 @@ export const externalGraphql = async () => {
         }),
       });
 
+      if (contentType.isSlice) {
+        debug('content type %s is a slice', contentType.id);
+        return null;
+      }
+
       debug('created content type:', contentType.name + '(' + contentType.fields.map(field => field.name).join(', ') + ')');
 
-      queries[contentType.name] = find(GraphQLContentType, contentType);
-      queries[`all${contentType.name}`] = findAll(GraphQLContentType, contentType);
-
-      inputs[`create${contentType.name}`] = create(GraphQLContentType, contentType, queries);
-      inputs[`update${contentType.name}`] = update(GraphQLContentType, contentType, queries);
-      inputs[`remove${contentType.name}`] = remove(GraphQLContentType, contentType);
+      queries[contentType.name]             = find({ GraphQLContentType, contentType, contentTypes, queries });
+      queries[`all${contentType.name}`]  = findAll({ GraphQLContentType, contentType, contentTypes, queries });
+      inputs[`create${contentType.name}`] = create({ GraphQLContentType, contentType, contentTypes, queries });
+      inputs[`update${contentType.name}`] = update({ GraphQLContentType, contentType, contentTypes, queries });
+      inputs[`remove${contentType.name}`] = remove({ GraphQLContentType, contentType, contentTypes, queries });
     }),
   );
 

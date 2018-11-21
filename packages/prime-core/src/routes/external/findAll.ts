@@ -20,12 +20,12 @@ function sortByProcessor(acc, field: ContentTypeField) {
   return acc;
 };
 
-export const findAll = (GraphQLContentType, contentType) => {
+export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
 
   const sortByValues = contentType.fields.reduce(sortByProcessor, {});
 
   const SortByType = new GraphQLEnumType({
-    name: `SortBy_${contentType.name}`,
+    name: `${contentType.name}SortBy`,
     values: sortByValues,
   });
 
@@ -42,7 +42,7 @@ export const findAll = (GraphQLContentType, contentType) => {
   }, {});
 
   const WhereType = new GraphQLInputObjectType({
-    name: `Where_${contentType.name}`,
+    name: `${contentType.name}Where`,
     fields: () => ({
       ...whereOpTypesFields,
       OR: { type: new GraphQLList(WhereType) },
@@ -61,8 +61,8 @@ export const findAll = (GraphQLContentType, contentType) => {
   const ConnectionType = new GraphQLObjectType({
     name: `${contentType.name}Connection`,
     fields: {
-      pageInfo: { type: PageInfo },
       edges: { type: new GraphQLList(ConnectionEdgeType) },
+      pageInfo: { type: PageInfo },
       totalCount: { type: GraphQLInt },
     },
   });
@@ -209,6 +209,14 @@ export const findAll = (GraphQLContentType, contentType) => {
             },
             id: entry.entryId,
             ...entry.data,
+            body: [{
+              __typeId: 0,
+              foo: 'Hello Foo',
+              raw: { foo: 'Hello Foo' },
+            }, {
+              __typeId: 1,
+              bar: 'Hello Bar',
+            }],
           }
         })),
       };

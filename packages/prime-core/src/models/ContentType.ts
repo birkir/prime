@@ -25,6 +25,9 @@ export class ContentType extends Model<ContentType> {
   @Column
   title: string;
 
+  @Column
+  isSlice: boolean;
+
   @HasMany(() => ContentEntry, {
     onUpdate: 'SET NULL',
     onDelete: 'SET NULL',

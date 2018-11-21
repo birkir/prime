@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Input, Select, Checkbox } from 'antd';
+import { Form, Button, Input, Select } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { camelCase } from 'lodash';
 

@@ -4,7 +4,7 @@ import { ContentTypeField } from '../../models/ContentTypeField';
 import { resolveFieldType } from './utils/resolveFieldType';
 import { ensurePermitted } from './utils/ensurePermitted';
 
-export const create = (GraphQLContentType, contentType, queries) => {
+export const create = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   const args: any = {
     language: { type: GraphQLString },
   };
@@ -16,6 +16,7 @@ export const create = (GraphQLContentType, contentType, queries) => {
         field,
         queries,
         contentType,
+        contentTypes,
         resolveFieldType,
       });
     }
@@ -28,7 +29,7 @@ export const create = (GraphQLContentType, contentType, queries) => {
   if (Object.keys(inputFields).length > 0) {
     args.input = {
       type: new GraphQLNonNull(new GraphQLInputObjectType({
-        name: `Create${contentType.name}`,
+        name: `${contentType.name}CreateInput`,
         fields: {
           ...inputFields,
         },

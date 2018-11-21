@@ -9,9 +9,12 @@ import { ContentTypes } from '../../stores/contentTypes';
 import { EditField } from './components/EditField';
 import { client } from '../../utils/client';
 import { Toolbar } from '../../components/toolbar/Toolbar';
+import { Prompt } from 'react-router';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
+
+const highlightColor = '#FEFCDD';
 
 type IField = {
   id?: string;
@@ -20,6 +23,7 @@ type IField = {
   type: string;
   name: string;
   title: string;
+  group: string;
   disableDroppable?: boolean;
   fields?: IField[];
   options?: any;
@@ -121,6 +125,8 @@ interface IState {
   fields: IField[];
   drawerVisible: boolean;
   selectedField?: IField;
+  selectedGroup: string;
+  hasUnsavedChanges: false;
   isNewField: boolean;
   availableFields: IAvailableField[];
 }
@@ -128,6 +134,7 @@ interface IState {
 @observer
 export class SchemaDetail extends React.Component<IProps> {
 
+  tabs: any = React.createRef();
   editField: any = React.createRef();
   contentType: any;
 
@@ -135,6 +142,8 @@ export class SchemaDetail extends React.Component<IProps> {
     flush: false,
     groups: [],
     fields: [],
+    hasUnsavedChanges: false,
+    selectedGroup: 'Main',
     drawerVisible: false,
     isNewField: false,
     availableFields: [],
@@ -154,7 +163,7 @@ export class SchemaDetail extends React.Component<IProps> {
       if (schema.length === 0) {
         schema.push({ title: 'Main', fields: [] });
       }
-      this.updateSchema(schema);
+      this.updateSchema(schema, false);
       this.flushSchema();
     }
   }
@@ -169,20 +178,24 @@ export class SchemaDetail extends React.Component<IProps> {
     });
   }
 
-  async saveSchema(schema: IGroup[]) {
+  saveSchema = async (schema: IGroup[]) => {
     const contentType = await ContentTypes.loadById(this.props.match.params.id);
     if (contentType) {
       const success = await contentType.saveSchema(schema);
       if (success) {
         message.success('Schema updated');
+        this.setState({
+          hasUnsavedChanges: false,
+        });
       }
     }
   }
 
-  async updateSchema(schema: IGroup[]) {
+  async updateSchema(schema: IGroup[], hasUnsavedChanges = true) {
     if (schema.length > 0) {
       this.setState({
         groups: schema,
+        hasUnsavedChanges,
         fields: flattenGroupsFields(schema),
       });
     }
@@ -280,6 +293,7 @@ export class SchemaDetail extends React.Component<IProps> {
         isNew: true,
         name: '',
         title: '',
+        group: this.state.selectedGroup,
         disableDroppable: false,
         fields: [],
         type: fieldId,
@@ -375,15 +389,46 @@ export class SchemaDetail extends React.Component<IProps> {
     }
   }
 
+  onTabsChange = (selectedGroup: string) => {
+    this.setState({ selectedGroup });
+  }
+
+  onTabsEdit = (targetKey: any, action: string) => {
+    if (action === 'add') {
+      this.onGroupAdd();
+    } else if (action === 'remove') {
+      if (confirm('Are you sure?')) {
+        const groups = this.state.groups.slice(0);
+        const index = groups.findIndex(g => g.title === targetKey);
+        if (index >= 0) {
+          groups.splice(index, 1);
+          this.setState({ groups });
+        }
+      }
+    }
+  }
+
+  onGroupAdd = () => {
+    const title = prompt('Enter group name', '');
+    if (title && title !== '') {
+      const groups = this.state.groups.slice(0);
+      groups.push({
+        title,
+        fields: [],
+      });
+      this.setState({ groups });
+    }
+  }
+
   renderGroupField = (field: IField) => (
     <Droppable
       droppableId={`Field.${field.id}`}
       isDropDisabled={field.disableDroppable}
     >
-      {(droppableProvided) => (
+      {(droppableProvided, droppableSnapshot) => (
         <div
           ref={droppableProvided.innerRef}
-          style={{ minHeight: 80, backgroundColor: '#f9f9f9', padding: 16 }}
+          style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)', padding: 16 }}
           {...droppableProvided.droppableProps}
         >
           {(field.fields || []).map(this.renderField)}
@@ -473,14 +518,14 @@ export class SchemaDetail extends React.Component<IProps> {
         droppableId={`Group.${group.title}`}
         isDropDisabled={group.disableDroppable}
       >
-        {(droppableProvided) => (
+        {(droppableProvided, droppableSnapshot) => (
           <div
             ref={droppableProvided.innerRef}
-            style={{ minHeight: 80 }}
+            style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
           >
             {group.fields.map(this.renderField)}
             {droppableProvided.placeholder}
-            <div style={{ height: 100 }} />
+            <div style={{ height: 80 }} />
           </div>
         )}
       </Droppable>
@@ -488,7 +533,7 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   render() {
-    const { flush, groups, availableFields } = this.state;
+    const { flush, groups, availableFields, selectedGroup } = this.state;
 
     if (flush) {
       return null;
@@ -501,6 +546,10 @@ export class SchemaDetail extends React.Component<IProps> {
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}
       >
+        <Prompt
+          when={this.state.hasUnsavedChanges}
+          message="You have unsaved changes. Are you sure you want to leave?"
+        />
         <Layout style={{ minHeight: '100%' }}>
           <Toolbar>
             <div style={{ flex: 1 }}>
@@ -509,8 +558,15 @@ export class SchemaDetail extends React.Component<IProps> {
             <Button type="primary" onClick={this.onSave}>Save</Button>
           </Toolbar>
           <Layout>
-            <Content style={{ padding: 32 }}>
-              <Tabs defaultActiveKey="1" size="small" type="editable-card">
+            <Content>
+              <Tabs
+                className="tabs-schema"
+                defaultActiveKey={selectedGroup}
+                onEdit={this.onTabsEdit}
+                onChange={this.onTabsChange}
+                type="editable-card"
+                ref={this.tabs}
+              >
                 {groups.map(this.renderGroup)}
               </Tabs>
             </Content>
