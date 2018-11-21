@@ -186,7 +186,16 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
 
       context.sequelizeDataLoader.prime(entries);
 
-      const totalCount = await ContentEntry.count(findAllOptions);
+      const totalCount = await ContentEntry.count({
+        ...findAllOptions,
+        where: {
+          ...findAllOptions.where,
+          isPublished: published,
+          language: language,
+        },
+        distinct: true,
+        col: 'entryId',
+      });
       const hasPreviousPage = Number(findAllPaging.offset) > 0 && totalCount > 0;
       const hasNextPage = (Number(findAllPaging.offset) + entries.length) < totalCount;
 

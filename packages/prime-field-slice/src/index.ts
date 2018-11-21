@@ -3,9 +3,7 @@ import PrimeField from '@primecms/field';
 import * as GraphQLUnionInputType from 'graphql-union-input-type';
 import * as GraphQLJSON from 'graphql-type-json';
 
-interface FieldOptions {
-  singleline: boolean;
-}
+interface FieldOptions {}
 
 const UnknownSlice = new GraphQLObjectType({
   name: 'UnknownSlice',
@@ -27,9 +25,7 @@ export default class PrimeFieldSlice extends PrimeField {
   /**
    * Default options for field
    */
-  defaultOptions: FieldOptions = {
-    singleline: true,
-  };
+  defaultOptions: FieldOptions = {};
 
   /**
    * GraphQL type for output query
@@ -38,6 +34,8 @@ export default class PrimeFieldSlice extends PrimeField {
     if (!contentType || !field.options || !field.options.slices) {
       return null;
     }
+
+    const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
 
     const sliceTypes = (field.options.slices || []).map(sliceId => {
       const sliceType = contentTypes.find(n => n.id === sliceId);
@@ -60,19 +58,22 @@ export default class PrimeFieldSlice extends PrimeField {
         return acc;
       }, {});
 
-      return { id: sliceId, name: sliceType.name, fields: fieldsTypes };
+      const pascalType = sliceType.name.charAt(0).toUpperCase() + sliceType.name.slice(1);
+
+      return {
+        id: sliceId,
+        name: `${contentType.name}${pascalName}${pascalType}`,
+        fields: fieldsTypes,
+      };
     });
 
     if (sliceTypes.filter(n => !!n).length === 0) {
       return null;
     }
 
-    const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
-
     const types = sliceTypes.map(type => {
-      const pascalType = type.name.charAt(0).toUpperCase() + type.name.slice(1);
       return new GraphQLObjectType({
-        name: `${contentType.name}${pascalName}${pascalType}`,
+        name: type.name,
         fields: type.fields,
       });
     });
@@ -82,8 +83,8 @@ export default class PrimeFieldSlice extends PrimeField {
         name: `${contentType.name}${pascalName}Slice`,
         types: [...types, UnknownSlice],
         resolveType(value, context, info) {
-          if (value.__typeid) {
-            const sliceTypeIndex = sliceTypes.findIndex((s: { id: string }) => s.id === value.__typeid);
+          if (value.__inputname) {
+            const sliceTypeIndex = sliceTypes.findIndex((s: { name: string }) => s.name === value.__inputname);
             if (sliceTypeIndex >= 0) {
               return types[sliceTypeIndex];
             }
@@ -133,7 +134,10 @@ export default class PrimeFieldSlice extends PrimeField {
         fields: fieldsTypes,
         type: new GraphQLInputObjectType({
           name: `${contentType.name}${pascalName}${sliceType.name}`,
-          fields: fieldsTypes,
+          fields: {
+            __inputname: { type: GraphQLString },
+            ...fieldsTypes,
+          },
         }),
       };
     });
