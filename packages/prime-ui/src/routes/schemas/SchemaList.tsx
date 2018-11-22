@@ -6,15 +6,24 @@ import { ColumnProps } from 'antd/lib/table';
 import { Link } from 'react-router-dom';
 import { Instance } from 'mobx-state-tree';
 
-import { ContentTypes, ContentType } from '../../stores/contentTypes';
+import { ContentTypes } from '../../stores/contentTypes';
 import { CreateForm } from './components/CreateForm';
 import { Toolbar } from '../../components/toolbar/Toolbar';
+import { ContentType } from '../../stores/models/ContentType';
 
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 interface IProps {
   history: History
 }
+
+const tabs = [{
+  key: 'contentTypes',
+  tab: 'Content Types',
+}, {
+  key: 'slices',
+  tab: 'Slices',
+}];
 
 interface IContentType extends Instance<typeof ContentType> {}
 
@@ -25,6 +34,7 @@ export class SchemaList extends React.Component<IProps> {
 
   state = {
     visible: false,
+    tab: 'contentTypes',
   }
 
   componentDidMount() {
@@ -83,6 +93,12 @@ export class SchemaList extends React.Component<IProps> {
     });
   }
 
+  onTabChange = (tab: string) => {
+    this.setState({
+      tab,
+    });
+  }
+
   render() {
     return (
       <Layout>
@@ -98,12 +114,15 @@ export class SchemaList extends React.Component<IProps> {
           </div>
 
           <Card
+            tabList={tabs}
             bodyStyle={{ padding: 0 }}
             className="with-table-pagination"
             hoverable
+            onTabChange={this.onTabChange}
+            activeTabKey={this.state.tab}
           >
             <Table
-              dataSource={this.data}
+              dataSource={this.data.filter(n => this.state.tab === 'slices' ? n.isSlice : !n.isSlice )}
               columns={this.columns}
               loading={ContentTypes.loading}
               pagination={false}

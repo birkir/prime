@@ -1,0 +1,7 @@
+query contentTypeById($id: ID) {
+  ContentType(id: $id) {
+    id
+    title
+    name
+  }
+}

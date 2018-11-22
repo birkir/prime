@@ -1,0 +1,8 @@
+query allContentTypes {
+  allContentTypes(order: "title") {
+    id
+    title
+    name
+    isSlice
+  }
+}

@@ -1,0 +1,23 @@
+query loadSchema(
+    $id: ID!
+  ) {
+  getContentTypeSchema(
+    contentTypeId: $id
+    ) {
+    title
+    fields {
+      id
+      name
+      title
+      type
+      options
+      fields {
+        id
+        name
+        title
+        type
+        options
+      }
+    }
+  }
+}

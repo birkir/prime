@@ -1,40 +1,25 @@
 import React from 'react';
+import { Prompt } from 'react-router';
+import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Layout, Card, Drawer, Button, Popconfirm, Icon, Tabs, message } from 'antd';
+import { Instance, getParent } from 'mobx-state-tree';
+import { Layout, Card, Drawer, Button, Tabs, message } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { get } from 'lodash';
-import gql from 'graphql-tag';
 
 import { ContentTypes } from '../../stores/contentTypes';
 import { EditField } from './components/EditField';
 import { client } from '../../utils/client';
 import { Toolbar } from '../../components/toolbar/Toolbar';
-import { Prompt } from 'react-router';
+import { ContentType } from '../../stores/models/ContentType';
+import { FieldRow } from './components/field-row/FieldRow';
+import { ALL_FIELDS } from '../../stores/queries';
+import { DEFAULT_GROUP_TITLE } from '../../stores/models/Schema';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
 
 const highlightColor = '#FEFCDD';
-
-type IField = {
-  id?: string;
-  parentId?: string;
-  isNew?: boolean;
-  type: string;
-  name: string;
-  title: string;
-  group: string;
-  disableDroppable?: boolean;
-  fields?: IField[];
-  options?: any;
-};
-
-type IGroup = {
-  title: string;
-  disableDroppable?: boolean;
-  fields?: IField[];
-  body?: any;
-};
 
 type IAvailableField = {
   id: string;
@@ -42,93 +27,15 @@ type IAvailableField = {
   description: string;
 }
 
-const QUERY_ALL_FIELDS = gql`
-  query {
-    allFields {
-      id
-      title
-      description
-    }
-  }
-`;
-
-const arrMove = (arr: any[], oldIndex: number, newIndex: number) => {
-  if (newIndex >= arr.length) {
-    let k = newIndex - arr.length + 1;
-    while (k--) {
-      arr.push(undefined);
-    }
-  }
-  arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
-}
-
-const stripField = (field: any) => {
-  if (field.isNew) {
-    delete field.id;
-  }
-  delete field.disableDroppable;
-  delete field.isNew;
-  const fields = (field.fields || []).slice(0).map(stripField);
-  if (fields.length > 0) {
-    field.fields = fields;
-  } else {
-    delete field.fields;
-  }
-  delete field.__typename;
-  return field;
-};
-
-const flattenGroupsFields = (groups: IGroup[]) => {
-  return groups.slice(0).reduce((acc: IField[], group: IGroup) => {
-    (group.fields || []).forEach((field: IField) => {
-      acc.push(field);
-      if (field.fields) {
-        field.fields.forEach((f) => {
-          acc.push({ ...f, parentId: field.id });
-        });
-      }
-    });
-    return acc;
-  }, []);
-}
-
-const setFieldFlag = (groups: IGroup[], cb: Function) => {
-  return groups.map((group: IGroup) => {
-    cb(group);
-    return {
-      ...group,
-      fields: (group.fields || []).map((field: IField) => {
-        cb(field);
-        return {
-          ...field,
-          fields: (field.fields || []).map((subfield: IField) => {
-            cb(subfield);
-            return subfield;
-          }),
-        };
-      })
-    }
-  });
-};
-
 interface IProps {
   match: {
-    params: {
-      id: string;
-    }
+    params: { id: string; }
   }
 }
 
 interface IState {
   flush: boolean;
-  groups: IGroup[];
-  fields: IField[];
-  drawerVisible: boolean;
-  selectedField?: IField;
-  selectedGroup: string;
-  hasUnsavedChanges: false;
-  isNewField: boolean;
-  availableFields: IAvailableField[];
+  disabledDroppables: string[],
 }
 
 @observer
@@ -136,68 +43,44 @@ export class SchemaDetail extends React.Component<IProps> {
 
   tabs: any = React.createRef();
   editField: any = React.createRef();
-  contentType: any;
-
+  contentType?: Instance<typeof ContentType>;
   state: IState = {
     flush: false,
-    groups: [],
-    fields: [],
-    hasUnsavedChanges: false,
-    selectedGroup: 'Main',
-    drawerVisible: false,
-    isNewField: false,
-    availableFields: [],
-  }
+    disabledDroppables: [],
+  };
+
+  @observable
+  isDrawerOpen = false;
+
+  @observable
+  isNewField = false;
+
+  @observable
+  availableFields: IAvailableField[] = [];
+
+  @observable
+  selectedField: any = null;
+
+  @observable
+  selectedGroup: any = DEFAULT_GROUP_TITLE;
 
   componentDidMount() {
-    this.loadSchema();
-    this.loadFields();
+    this.load();
   }
 
-  async loadSchema() {
-    const contentType = await ContentTypes.loadById(this.props.match.params.id);
-    if (contentType) {
-      this.contentType = contentType;
-      await contentType.loadSchema();
-      const schema = JSON.parse(contentType.schema);
-      if (schema.length === 0) {
-        schema.push({ title: 'Main', fields: [] });
-      }
-      this.updateSchema(schema, false);
-      this.flushSchema();
+  async load() {
+    this.contentType = await ContentTypes.loadById(this.props.match.params.id);
+    if (this.contentType) {
+      await this.contentType.loadSchema();
+      const { data } = await client.query({ query: ALL_FIELDS });
+      this.availableFields = (data as any).allFields;
     }
   }
 
-  async loadFields() {
-    const { data } = await client.query({
-      query: QUERY_ALL_FIELDS,
-    });
-
-    this.setState({
-      availableFields: (data as any).allFields,
-    });
-  }
-
-  saveSchema = async (schema: IGroup[]) => {
-    const contentType = await ContentTypes.loadById(this.props.match.params.id);
-    if (contentType) {
-      const success = await contentType.saveSchema(schema);
-      if (success) {
-        message.success('Schema updated');
-        this.setState({
-          hasUnsavedChanges: false,
-        });
-      }
-    }
-  }
-
-  async updateSchema(schema: IGroup[], hasUnsavedChanges = true) {
-    if (schema.length > 0) {
-      this.setState({
-        groups: schema,
-        hasUnsavedChanges,
-        fields: flattenGroupsFields(schema),
-      });
+  saveSchema = async () => {
+    const success = await this.contentType!.saveSchema();
+    if (success) {
+      message.success('Schema updated');
     }
   }
 
@@ -205,105 +88,88 @@ export class SchemaDetail extends React.Component<IProps> {
     this.setState({ flush: true }, () => this.setState({ flush: false }));
   }
 
-  mapFields = (fn: Function) => {
-    const groups = setFieldFlag(this.state.groups, fn);
-    this.updateSchema(groups);
-  }
-
-  removeField = (field: IField) => {
-    this.state.groups.forEach((g: IGroup) => {
-      (g.fields || []).forEach((f: IField, i: number, a: IGroup[]) => {
-        if (f.id === field.id) {
-          a.splice(i, 1);
-        }
-        if (f.fields) {
-          f.fields.forEach((f1: IField, i1: number, a1: IField[]) => {
-            if (f1.id === field.id) {
-              a1.splice(i1, 1);
-            }
-          });
-        }
-      });
-    });
-    this.updateSchema(this.state.groups);
-  }
-
   onOpenDrawer = () => {
-    this.setState({ drawerVisible: true });
+    this.isDrawerOpen = true;
   }
 
   onCloseDrawer = () => {
-    this.setState({
-      drawerVisible: false,
-      isNewField: false,
-    });
+    this.isDrawerOpen = false;
+    this.isNewField = false;
   }
 
   onDragStart = (e: DragStart) => {
-    const { fields } = this.state;
+    const { fields } = this.contentType!.schema;
+
+    // const { fields } = this.state;
     const { source, draggableId } = e;
     const [key, fieldId] = draggableId.split('.');
 
+    // Allow drop on all Droppables
+    const disabledDroppables: string[] = [];
+
     if (source.droppableId === 'AvailableFields') {
-      if (fieldId === 'Group') {
-        this.mapFields((f: IField) => {
+      // The Draggable is a new field!
+      if (fieldId === 'group') {
+        fields.forEach(f => {
           if (f.type && f.type === 'group') {
-            f.disableDroppable = true;
+            disabledDroppables.push(`FieldGroup.${f.id}`);
           }
         });
       }
+    } else {
+      const movingField = fields.find(({ id }) => id === fieldId);
+      if (!movingField) return null;
 
-      return;
-    }
+      const parentTree = getParent(movingField);
+      const parentNode = getParent(parentTree);
+      const parentNodeId = parentNode && (parentNode as any).id;
 
-    const currentField = fields.find(({ id }) => id === fieldId);
-
-    if (!currentField) {
-      return null;
-    }
-
-    // Disable droppable on other group's
-    this.mapFields((f: IField) => {
-      if (f.fields && f.id !== currentField.parentId) {
-        f.disableDroppable = true;
+      if (parentNodeId) {
+        // Disable current group
+        disabledDroppables.push(`Group.${this.selectedGroup}`);
       }
+
+      fields.forEach(f => {
+        if (f.type === 'group' && f.id !== parentNodeId) {
+          // Disable other fields
+          disabledDroppables.push(`FieldGroup.${f.id}`);
+        }
+      });
+    }
+
+    this.setState({
+      disabledDroppables,
     });
   }
 
   onDragEnd = (e: DropResult) => {
-    const { destination, source, draggableId } = e;
-    const [draggableKey, fieldId] = draggableId.split('.');
+    if (!this.contentType) return;
 
-    // Enable droppable on all fields
-    this.mapFields((f: IField) => {
-      f.disableDroppable = false;
-    });
+    const { destination, draggableId } = e;
 
     if (!destination) {
       // Skip operation if no destination
       return null;
     }
 
+    const [draggableKey, fieldId] = draggableId.split('.');
+    const [key, dropId] = destination.droppableId.split('.');
+
     if (draggableKey === 'AvailableField') {
       // Handle dropping of a new field
-      const [key, dropId] = destination.droppableId.split('.');
-      const id = String(Math.floor(Math.random() * 100000));
-      const newField: IField = {
-        id,
-        isNew: true,
-        name: '',
-        title: '',
-        group: this.state.selectedGroup,
-        disableDroppable: false,
-        fields: [],
-        type: fieldId,
-      };
+      const addedField = this.contentType.schema.add({
+          name: '',
+          title: '',
+          group: this.selectedGroup,
+          type: fieldId,
+        },
+        destination.index,
+        this.selectedGroup,
+        (key === 'Field') ? dropId : undefined,
+      );
 
-      this.mapFields((f: IField) => {
-        if ((key === 'Field' && f.id === dropId) || (key === 'Group' && f.title === dropId)) {
-          (f.fields || []).splice(destination.index, 0, newField);
-        }
-      });
+      this.isNewField = true;
+      this.selectedField = addedField;
 
       // Nested droppable groups behave badly
       // Only fix is to flush the schema
@@ -311,57 +177,35 @@ export class SchemaDetail extends React.Component<IProps> {
         this.flushSchema();
       }
 
-      this.setState({
-        isNewField: true,
-        selectedField: newField,
-      });
-
-      this.onOpenDrawer();
+      if (addedField) {
+        this.onOpenDrawer();
+      } else {
+        message.error('Could not add field :(');
+      }
     } else {
       // Handle moving of a current field
-      const [key, dropId] = destination.droppableId.split('.');
-      this.mapFields((f: IField) => {
-        if ((key === 'Field' && f.id === dropId) || (key === 'Group' && f.title === dropId)) {
-          arrMove(f.fields || [], source.index, destination.index);
-        }
-      });
+      this.contentType.schema.move(fieldId, destination.index);
     }
   }
 
-  onFieldClick = (e: React.MouseEvent<HTMLElement>, field: IField) => {
-    e.stopPropagation();
-    const allowed = Array.from(
-      e.currentTarget.querySelectorAll('.ant-card-head, .ant-card-head-wrapper, .ant-card-head-title')
-    );
-    const isAllowed = allowed.find(node => node === e.target);
-    if (isAllowed) {
+  onFieldDelete = (field: any) => {
+    this.contentType!.schema.remove(field);
+    this.flushSchema();
+  }
 
-      this.setState({
-        selectedField: field,
-      });
-
-      this.onOpenDrawer();
-    }
+  onFieldClick = (field: any) => {
+    this.selectedField = field;
+    this.onOpenDrawer();
   }
 
   onSave = () => {
-    // Remove IDs and other stuff from schema
-    const schema = this.state.groups
-    .slice(0)
-    .map((g: IGroup) => {
-      return {
-        title: g.title,
-        fields: (g.fields || []).slice(0).map(stripField),
-      };
-    });
-
-    this.saveSchema(schema);
+    this.saveSchema();
   }
 
   onEditFieldCancel = () => {
-    const { selectedField, isNewField } = this.state;
+    const { selectedField, isNewField } = this;
     if (selectedField && isNewField) {
-      this.removeField(selectedField);
+      this.contentType!.schema.remove(selectedField);
     }
     this.onCloseDrawer();
   }
@@ -373,16 +217,12 @@ export class SchemaDetail extends React.Component<IProps> {
       }));
 
     if (isValid) {
-      // Save field...
-      this.mapFields((f: any) => {
-        if (field.id == f.id) {
-          f.name = field.name;
-          f.title = field.title;
-          f.type = field.type;
-          f.options = JSON.parse(field.options);
-        }
+      this.selectedField.update({
+        name: field.name,
+        title: field.title,
+        type: field.type,
+        options: JSON.parse(field.options),
       });
-
       this.onCloseDrawer();
     } else {
       message.error('Fix errors before saving');
@@ -390,7 +230,7 @@ export class SchemaDetail extends React.Component<IProps> {
   }
 
   onTabsChange = (selectedGroup: string) => {
-    this.setState({ selectedGroup });
+    this.selectedGroup = selectedGroup;
   }
 
   onTabsEdit = (targetKey: any, action: string) => {
@@ -398,32 +238,23 @@ export class SchemaDetail extends React.Component<IProps> {
       this.onGroupAdd();
     } else if (action === 'remove') {
       if (confirm('Are you sure?')) {
-        const groups = this.state.groups.slice(0);
-        const index = groups.findIndex(g => g.title === targetKey);
-        if (index >= 0) {
-          groups.splice(index, 1);
-          this.setState({ groups });
-        }
+        this.contentType!.schema.removeGroup(targetKey);
       }
     }
   }
 
   onGroupAdd = () => {
     const title = prompt('Enter group name', '');
-    if (title && title !== '') {
-      const groups = this.state.groups.slice(0);
-      groups.push({
-        title,
-        fields: [],
-      });
-      this.setState({ groups });
+    if (title) {
+      this.contentType!.schema.addGroup(title);
     }
   }
 
-  renderGroupField = (field: IField) => (
+  renderGroupField = (field: any) => (
     <Droppable
+      key={field.id}
       droppableId={`Field.${field.id}`}
-      isDropDisabled={field.disableDroppable}
+      isDropDisabled={this.state.disabledDroppables.indexOf(`FieldGroup.${field.id}`) >= 0}
     >
       {(droppableProvided, droppableSnapshot) => (
         <div
@@ -439,50 +270,15 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   renderField = (field: any, index: number) => (
-    <Draggable
-      draggableId={`Field.${field.id}`}
-      index={index}
+    <FieldRow
       key={field.id}
+      field={field}
+      index={index}
+      onClick={this.onFieldClick}
+      onDelete={this.onFieldDelete}
     >
-      {(draggableProvided, draggableSnapshot) => (
-        <div
-          ref={draggableProvided.innerRef}
-          {...draggableProvided.draggableProps}
-          {...draggableProvided.dragHandleProps}
-          style={{
-            ...draggableProvided.draggableProps.style,
-            marginBottom: 16,
-          }}
-        >
-          <Card
-            title={<>
-              {`${field.title || field.name}`}
-            </>}
-            hoverable
-            extra={
-              <>
-                <span style={{ marginRight: 10, color: '#aaa', display: 'inline-block', border: '1px solid #eee', borderRadius: 4, fontSize: 12, fontWeight: 'normal', padding: '2px 4px' }}>
-                  {field.type.substr(0, 1) + field.type.substr(1).toLowerCase()}
-                </span>
-                <Popconfirm
-                  title="Are you sure?"
-                  onConfirm={() => this.removeField(field)}
-                  icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-                >
-                  <Button size="small" type="dashed">
-                    <Icon type="delete" />
-                  </Button>
-                </Popconfirm>
-              </>
-            }
-            onClick={(e) => this.onFieldClick(e, field)}
-            bodyStyle={{ display: field.type === 'group' ? 'inherit' : 'none' }}
-          >
-            {field.type === 'group' && this.renderGroupField(field)}
-          </Card>
-        </div>
-      )}
-    </Draggable>
+      {field.type === 'group' && this.renderGroupField(field)}
+    </FieldRow>
   );
 
   renderAvailableField = (field: any, index: number) => (
@@ -512,11 +308,11 @@ export class SchemaDetail extends React.Component<IProps> {
     <TabPane
       key={group.title}
       tab={group.title}
-      closable={group.title !== 'Main'}
+      closable={group.title !== DEFAULT_GROUP_TITLE}
     >
       <Droppable
         droppableId={`Group.${group.title}`}
-        isDropDisabled={group.disableDroppable}
+        isDropDisabled={this.state.disabledDroppables.indexOf(`Group.${group.title}`) >= 0}
       >
         {(droppableProvided, droppableSnapshot) => (
           <div
@@ -533,13 +329,15 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   render() {
-    const { flush, groups, availableFields, selectedGroup } = this.state;
+    const { contentType, availableFields } = this;
 
-    if (flush) {
+    const { flush } = this.state;
+
+    if (flush || !contentType) {
       return null;
     }
-
-    const title = get(this.contentType, 'title');
+    const { schema } = contentType;
+    const title = get(contentType, 'title');
 
     return (
       <DragDropContext
@@ -547,7 +345,7 @@ export class SchemaDetail extends React.Component<IProps> {
         onDragStart={this.onDragStart}
       >
         <Prompt
-          when={this.state.hasUnsavedChanges}
+          when={schema.hasChanged}
           message="You have unsaved changes. Are you sure you want to leave?"
         />
         <Layout style={{ minHeight: '100%' }}>
@@ -561,13 +359,13 @@ export class SchemaDetail extends React.Component<IProps> {
             <Content>
               <Tabs
                 className="tabs-schema"
-                defaultActiveKey={selectedGroup}
+                defaultActiveKey={this.selectedGroup}
                 onEdit={this.onTabsEdit}
                 onChange={this.onTabsChange}
                 type="editable-card"
                 ref={this.tabs}
               >
-                {groups.map(this.renderGroup)}
+                {schema.groups.map(this.renderGroup)}
               </Tabs>
             </Content>
             <Sider
@@ -588,17 +386,17 @@ export class SchemaDetail extends React.Component<IProps> {
             </Sider>
           </Layout>
           <Drawer
-            title="Edit field"
+            title={`${this.isNewField ? 'New' : 'Edit'} field`}
             width={300}
             placement="right"
             maskClosable={true}
             onClose={this.onEditFieldCancel}
-            visible={this.state.drawerVisible}
+            visible={this.isDrawerOpen}
           >
             <EditField
               ref={this.editField}
               availableFields={availableFields}
-              field={this.state.selectedField}
+              field={this.selectedField}
               onCancel={this.onEditFieldCancel}
               onSubmit={this.onEditFieldSubmit}
             />

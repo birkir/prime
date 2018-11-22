@@ -7,7 +7,7 @@ import { FieldString } from './components/FieldString';
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { Link } from 'react-router-dom';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const GET_SCHEMA = gql`

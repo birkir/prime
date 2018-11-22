@@ -127,13 +127,13 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
 
   const removeFieldIds = new Set(originalFields.map(f => f.id));
 
-  const updateOrCreateField = async (field: IField, position: number, parent?: IField) => {
+  const updateOrCreateField = async (field: IField, group: string, position: number, parent?: IField) => {
     const obj = {
       contentTypeId,
       position,
       type: field.type,
       name: field.name,
-      group: field.group,
+      group: group,
       title: field.title,
       options: field.options,
     } as any;
@@ -164,12 +164,12 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
 
     if (group.fields) {
       for (let f = 0; f < group.fields.length; f++) {
-        const field = await updateOrCreateField(group.fields[f], f);
+        const field = await updateOrCreateField(group.fields[f], group.title, f);
         const subfields = group.fields[f].fields;
 
         if (field && subfields) {
           for (let ff = 0; ff < subfields.length; ff++) {
-            await updateOrCreateField(subfields[ff], ff, field);
+            await updateOrCreateField(subfields[ff], group.title, ff, field);
           }
         }
       }

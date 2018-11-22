@@ -1,0 +1,3 @@
+mutation removeContentType($id: ID) {
+  removeContentType(id: $id)
+}

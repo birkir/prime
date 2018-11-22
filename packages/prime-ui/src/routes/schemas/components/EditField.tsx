@@ -52,6 +52,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
             <Input
               onKeyUp={onTitleKeyUp}
               placeholder="Please enter title"
+              autoFocus
             />
           )}
         </Form.Item>

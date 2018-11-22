@@ -7,6 +7,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "lib": [
+      "dom",
       "es6",
       "es2015",
       "es2017.object",

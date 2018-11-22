@@ -1,5 +1,8 @@
-const { injectBabelPlugin } = require('react-app-rewired');
+const fs = require('fs');
+const { injectBabelPlugin, getBabelLoader } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
+const rewireGqlTag = require('react-app-rewire-graphql-tag');
+const { fields } = require('./scripts/fields');
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin(
@@ -27,6 +30,20 @@ module.exports = function override(config, env) {
     },
     javascriptEnabled: true,
   })(config, env);
+
+  config = rewireGqlTag(config, env);
+
+  if (config.mode !== 'production') {
+    const babelLoader = getBabelLoader(config.module.rules);
+    babelLoader.include = [].concat(
+      babelLoader.include,
+      fields.map(n => n.absPackagePath).filter(n => !!n),
+    );
+    const fieldResolverSrc = `export default {
+  ${fields.filter(f => f.uiPathSrc).map(field => `'${field.packageName}': require('${field.uiPackageName}'),`).join('\n  ')}
+};`;
+    fs.writeFileSync('./src/fieldResolver.generated.ts', fieldResolverSrc);
+  }
 
   return config;
 };

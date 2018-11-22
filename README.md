@@ -21,7 +21,7 @@ npm init
 npm install -S @primecms/core @primecms/ui
 # edit your .env and .primerc
 # start
-node ./node_modules/@primecms/lib/index.js
+node ./node_modules/@primecms/core/lib/index.js
 ```
 
 ## Development

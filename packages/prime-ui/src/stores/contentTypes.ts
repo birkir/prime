@@ -1,92 +1,8 @@
 import gql from 'graphql-tag';
 import { types, flow, getParent, Instance } from 'mobx-state-tree';
 import { client } from '../utils/client';
-
-export const ContentType = types
-  .model('ContentType', {
-    id: types.identifier,
-    title: types.string,
-    name: types.string,
-    schema: types.maybe(types.string),
-  })
-  .actions(self => {
-    const loadSchema = flow(function* loadSchema(){
-      const query = gql`
-        query loadSchema($id: ID!) {
-          getContentTypeSchema(contentTypeId:$id) {
-            title
-            fields {
-              id
-              name
-              title
-              type
-              options
-              fields {
-                id
-                name
-                title
-                type
-                options
-              }
-            }
-          }
-        }
-      `;
-      const { data } = yield client.query({
-        query,
-        variables: { id: self.id },
-        fetchPolicy: 'network-only',
-      });
-      if (data.getContentTypeSchema) {
-        self.schema = JSON.stringify(data.getContentTypeSchema);
-      }
-    });
-
-    const saveSchema = flow(function*(schema: any) {
-      const mutation = gql`
-        mutation updateSchema(
-          $contentTypeId: ID!
-          $schema: [ContentTypeFieldGroupInputType]!
-        ) {
-          setContentTypeSchema(
-            contentTypeId: $contentTypeId
-            schema: $schema
-          )
-        }
-      `;
-      const result = yield client.mutate({
-        mutation,
-        variables: {
-          contentTypeId: self.id,
-          schema,
-        },
-      });
-      return result && result.data && result.data.setContentTypeSchema;
-    });
-
-    const remove = flow(function*() {
-      const mutation = gql`
-        mutation CreateContentType($id:ID) {
-          removeContentType(id:$id)
-        }
-      `;
-      try {
-        const { data } = yield client.mutate({ mutation, variables: { id: self.id }});
-        if (data.removeContentType) {
-          ContentTypes.removeById(self.id);
-        }
-      } catch (err) {
-        throw new Error(err);
-      }
-    });
-
-    return {
-      remove,
-      loadSchema,
-      saveSchema,
-    };
-  });
-
+import { ContentType } from './models/ContentType';
+import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
 
 export const ContentTypes = types.model('ContentTypes', {
   items: types.map(ContentType),
@@ -104,18 +20,8 @@ export const ContentTypes = types.model('ContentTypes', {
 .actions(self => {
 
   const loadById = flow(function* loadById(id: string){
-    const query = gql`
-      query loadContentType($id: ID) {
-        ContentType(id:$id) {
-          id
-          title
-          name
-        }
-      }
-    `;
-
     const { data } = yield client.query({
-      query,
+      query: CONTENT_TYPE_BY_ID,
       variables: { id },
       fetchPolicy: 'network-only',
     });
@@ -127,19 +33,8 @@ export const ContentTypes = types.model('ContentTypes', {
 
   const loadAll = flow(function*(){
     self.loading = true;
-
-    const query = gql`
-      query {
-        allContentTypes(order:"title") {
-          id
-          title
-          name
-        }
-      }
-    `;
-
     try {
-      const { data } = yield client.query({ query });
+      const { data } = yield client.query({ query: ALL_CONTENT_TYPES });
       data.allContentTypes.forEach((contentType: any) => {
         self.items.put(contentType);
       });

@@ -6,6 +6,7 @@
     "noUnusedLocals": true,
     "declaration": false,
     "pretty": true,
+    "jsx": "react",
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true
   },
@@ -13,6 +14,7 @@
     "./src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./src/ui"
   ]
 }

@@ -16,7 +16,7 @@ export const App = () => (
       <Route path="/documents" exact component={DocumentsList} />
       <Route path="/documents/schema/:id" component={DocumentsList} />
       <Route path="/documents/doc/:id" component={DocumentsDetail} />
-      <Route path="/test" component={Test} />
+      <Route path="/" exact component={Test} />
     </Layout>
   </BrowserRouter>
 );
