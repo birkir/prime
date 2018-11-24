@@ -21,7 +21,7 @@ npm init
 npm install -S @primecms/core @primecms/ui
 # edit your .env and .primerc
 # start
-node ./node_modules/@primecms/core/lib/index.js
+npx primecms
 ```
 
 ## Development
@@ -33,11 +33,8 @@ cd prime
 # Link packages
 lerna bootstrap --hoist --nohoist "prime*"
 
-# Build fields and other stuff
-lerna run build --ignore @primecms/core --ignore @primecms/ui
-
 # Run core and ui in development
-lerna run dev --stream
+lerna run dev
 ```
 
 ## Configuration
