@@ -6,12 +6,25 @@
   "homepage": "https://github.com/birkir/prime",
   "license": "MIT",
   "main": "lib/index.js",
+  "bin" : {
+    "primecms" : "./cli.js"
+  },
   "directories": {
     "lib": "lib"
   },
   "files": [
-    "lib"
+    "lib",
+    "cli.js"
   ],
+  "scripts": {
+    "start": "node lib/index.js",
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf ./lib && tsc -p .",
+    "dev": "DEBUG=prime* ts-node src",
+    "debug": "DEBUG=* ts-node src",
+    "rebuild-deps": "lerna run build --ignore @primecms/core --ignore @primecms/ui",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@primecms/field": "^0.0.10",
     "@primecms/field-document": "^0.0.10",
@@ -52,14 +65,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "scripts": {
-    "start": "node lib/index.js",
-    "prepublishOnly": "npm run build",
-    "build": "rm -rf ./lib && tsc -p .",
-    "dev": "DEBUG=prime* ts-node src",
-    "debug": "DEBUG=* ts-node src",
-    "rebuild-deps": "lerna run build --ignore @primecms/core --ignore @primecms/ui",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
+  "gitHead": "17956f5215a4087d49f18dfc2e197afc2a4d2678"
 }

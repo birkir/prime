@@ -12,9 +12,6 @@
   "files": [
     "build"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "prepublishOnly": "npm run build",
     "dev": "react-app-rewired start",
@@ -62,5 +59,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "17956f5215a4087d49f18dfc2e197afc2a4d2678"
 }

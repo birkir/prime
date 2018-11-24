@@ -24,6 +24,9 @@
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@primecms/field": "^0.0.10"
   },
@@ -33,5 +36,5 @@
   "peerDependencies": {
     "graphql": "^14.0.0"
   },
-  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
+  "gitHead": "17956f5215a4087d49f18dfc2e197afc2a4d2678"
 }

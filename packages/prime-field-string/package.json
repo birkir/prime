@@ -6,7 +6,7 @@
   "homepage": "https://github.com/birkir/prime#readme",
   "license": "MIT",
   "main": "lib/index.js",
-  "prime:ui": "lib/ui.js",
+  "prime": "lib/ui.js",
   "directories": {
     "lib": "lib"
   },
@@ -36,5 +36,8 @@
   "peerDependencies": {
     "graphql": "^14.0.0"
   },
-  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "17956f5215a4087d49f18dfc2e197afc2a4d2678"
 }

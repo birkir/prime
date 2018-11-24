@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
   },
-  "gitHead": "3aef43baf74b6ba720f49da6faa516b2a2603f51"
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "17956f5215a4087d49f18dfc2e197afc2a4d2678"
 }
