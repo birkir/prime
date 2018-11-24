@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-group",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Group Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
@@ -28,7 +28,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@primecms/field": "^0.0.10"
+    "@primecms/field": "^0.0.11"
   },
   "devDependencies": {
     "@types/graphql": "14.0.3"

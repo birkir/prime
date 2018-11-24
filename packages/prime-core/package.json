@@ -1,13 +1,13 @@
 {
   "name": "@primecms/core",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
   "license": "MIT",
   "main": "lib/index.js",
-  "bin" : {
-    "primecms" : "./cli.js"
+  "bin": {
+    "primecms": "./cli.js"
   },
   "directories": {
     "lib": "lib"
@@ -26,11 +26,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@primecms/field": "^0.0.10",
-    "@primecms/field-document": "^0.0.10",
-    "@primecms/field-group": "^0.0.10",
-    "@primecms/field-slice": "^0.0.10",
-    "@primecms/field-string": "^0.0.10",
+    "@primecms/field": "^0.0.11",
+    "@primecms/field-document": "^0.0.11",
+    "@primecms/field-group": "^0.0.11",
+    "@primecms/field-slice": "^0.0.11",
+    "@primecms/field-string": "^0.0.11",
     "acl": "0.4.11",
     "apollo-server-express": "2.2.0",
     "bcrypt": "3.0.2",
