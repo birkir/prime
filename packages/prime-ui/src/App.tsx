@@ -6,7 +6,7 @@ import { SchemaDetail } from './routes/schemas/SchemaDetail';
 import { Layout } from './components/layout/Layout';
 import { DocumentsList } from './routes/documents/DocumentsList';
 import { DocumentsDetail } from './routes/documents/DocumentsDetail';
-import { Test } from './routes/Test';
+import { Home } from './routes/Home';
 
 export const App = () => (
   <BrowserRouter>
@@ -15,19 +15,9 @@ export const App = () => (
       <Route path="/schemas/:id" component={SchemaDetail} />
       <Route path="/documents" exact component={DocumentsList} />
       <Route path="/documents/schema/:id" component={DocumentsList} />
-      <Route path="/documents/doc/:id" component={DocumentsDetail} />
-      <Route path="/" exact component={Test} />
+      <Route path="/documents/doc/:entryId" component={DocumentsDetail} />
+      <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
+      <Route path="/" exact component={Home} />
     </Layout>
   </BrowserRouter>
 );
-
-
-// Homepage                           /documents/$entryId$
-// Blogs                              /documents/bySchema/$contentTypeId$
-// Pages                              /documents/bySchema/$contentTypeId$
-// - About                            /documents/$entryId$
-// - Contact Us                       /documents/$entryId$
-
-// Schema                             /schema
-// Users                              /users
-// Settings                           /settings

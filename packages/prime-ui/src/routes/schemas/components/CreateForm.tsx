@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Input, notification } from 'antd';
+import { Form, Button, Input, notification, Checkbox } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { startCase } from 'lodash';
 import { ContentTypes } from '../../../stores/contentTypes';
@@ -13,7 +13,9 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
 
   const { getFieldDecorator } = form;
 
-  const onFormSubmit = async () => {
+  const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+
     const data = form.getFieldsValue();
 
     try {
@@ -45,30 +47,33 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
         <Form.Item label="Title">
           {getFieldDecorator('title', {
             rules: [{ required: true, message: 'please enter title' }],
-          })(<Input onKeyUp={updateApiField} placeholder="Please enter title" />)}
+          })(<Input autoFocus onKeyUp={updateApiField} placeholder="Please enter title" />)}
         </Form.Item>
         <Form.Item label="API">
           {getFieldDecorator('name', {
             rules: [{ message: 'please enter api id' }],
           })(<Input placeholder="Please enter api id" />)}
         </Form.Item>
+        <Form.Item label="Slice">
+          {getFieldDecorator('isSlice')(<Checkbox />)}
+        </Form.Item>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            borderTop: '1px solid #e8e8e8',
+            padding: '10px 16px',
+            textAlign: 'right',
+            left: 0,
+            background: '#fff',
+            borderRadius: '0 0 4px 4px',
+          }}
+        >
+          <Button style={{ marginRight: 8 }} onClick={onCancel}>Cancel</Button>
+          <Button onClick={onFormSubmit} type="primary" htmlType="submit">Submit</Button>
+        </div>
       </Form>
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          borderTop: '1px solid #e8e8e8',
-          padding: '10px 16px',
-          textAlign: 'right',
-          left: 0,
-          background: '#fff',
-          borderRadius: '0 0 4px 4px',
-        }}
-      >
-        <Button style={{ marginRight: 8 }} onClick={onCancel}>Cancel</Button>
-        <Button onClick={onFormSubmit} type="primary">Submit</Button>
-      </div>
     </>
   );
 }

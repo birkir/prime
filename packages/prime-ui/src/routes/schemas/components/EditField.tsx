@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Input, Select } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { camelCase } from 'lodash';
+import { ContentTypes } from '../../../stores/contentTypes';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -73,8 +74,21 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
             </Select>
           )}
         </Form.Item>
-        <Form.Item label="Options">
-          {getFieldDecorator('options', {
+        {field.type === 'document' && (
+          <Form.Item label="Content Type">
+            {getFieldDecorator('options.contentTypeId')(
+              <Select placeholder="Select Content Type">
+                {ContentTypes.list.map(contentType => (
+                  <Option value={contentType.id} key={contentType.id}>
+                    {contentType.title}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
+        )}
+        {/* <Form.Item label="Options">
+          {getFieldDecorator('optionsJson', {
             rules: [{
               validator(rule, value, callback) {
                 try { JSON.parse(value); } catch (err) {
@@ -86,7 +100,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
           })(
             <TextArea />
           )}
-        </Form.Item>
+        </Form.Item> */}
         <div
           style={{
             position: 'absolute',
@@ -111,11 +125,18 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
 export const EditField = Form.create({
   mapPropsToFields(props: any) {
     const { field } = props;
-    return {
+    const res: any = {
       title: Form.createFormField({ value: field.title }),
       name: Form.createFormField({ value: field.name }),
       type: Form.createFormField({ value: field.type }),
-      options: Form.createFormField({ value: JSON.stringify(field.options || {}) }),
+      // options: Form.createFormField({ value: field.options }),
+      optionsJson: Form.createFormField({ value: JSON.stringify(field.options || {}) }),
     };
+
+    Object.entries(field.options).forEach(([key, value]) => {
+      res[`options.${key}`] = Form.createFormField({ value });
+    });
+
+    return res;
   },
 })(EditFieldBase);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Table, Card, Layout, Button } from 'antd';
+import { Table, Card, Layout, Button, Menu, Dropdown, Icon } from 'antd';
 import { get } from 'lodash';
 import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
@@ -21,6 +21,11 @@ const GET_CONTENT_ENTRIES = gql`
       name
       title
     }
+    allContentTypes(order: "title") {
+      id
+      title
+      isSlice
+    }
     allContentEntries(
       limit:$limit
       skip:$skip
@@ -35,6 +40,7 @@ const GET_CONTENT_ENTRIES = gql`
           language
           isPublished
           updatedAt
+          data
           contentType {
             id
             title
@@ -45,11 +51,24 @@ const GET_CONTENT_ENTRIES = gql`
   }
 `;
 
+const PER_PAGE = 10;
+
 const columns = [{
   title: 'ID',
   dataIndex: 'entryId',
   render(_text: string, record: any) {
-    return (<Link to={`/documents/doc/${record.entryId}`}>{record.entryId}</Link>);
+    return (
+      <>
+        <Link to={`/documents/doc/${record.entryId}`}>{record.entryId}</Link>
+        {!record.isPublished && <Icon style={{ marginLeft: 16 }} type="info-circle" />}
+      </>
+    );
+  }
+}, {
+  title: 'Title',
+  dataIndex: 'data.title',
+  render(_text: string, record: any) {
+    return record.data.title || record.data.name || Object.values(record.data).shift();
   }
 }, {
   title: 'Type',
@@ -59,7 +78,7 @@ const columns = [{
   dataIndex: 'updatedAt',
 }];
 
-export const DocumentsList = ({ match }: any) => {
+export const DocumentsList = ({ match, history }: any) => {
   const [isLoading, setLoading] = useState(false);
   const contentTypeId = match.params.id;
   let timer: any;
@@ -68,8 +87,9 @@ export const DocumentsList = ({ match }: any) => {
     <Query
       query={GET_CONTENT_ENTRIES}
       client={client}
+      fetchPolicy="network-only"
       variables={{
-        limit: 5,
+        limit: PER_PAGE,
         skip: 0,
         contentTypeId,
       }}
@@ -81,8 +101,7 @@ export const DocumentsList = ({ match }: any) => {
 
         const pagination = {
           total: get(data, 'allContentEntries.totalCount'),
-          pageSize: 5,
-
+          pageSize: PER_PAGE,
         };
 
         clearTimeout(timer);
@@ -96,16 +115,34 @@ export const DocumentsList = ({ match }: any) => {
           });
         };
 
-        const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
+        const onMenuClick = (e: any) => {
+          history.push(`/documents/create/${e.key}`);
+        };
+
+        const menu = (
+          <Menu onClick={onMenuClick}>
+            {get(data, 'allContentTypes', []).filter((n: any) => !n.isSlice).map(({ id, title }: any) => (
+              <Menu.Item key={id}>{title}</Menu.Item>
+            ))}
+          </Menu>
+        );
+
+        const items = get(data, 'allContentEntries.edges', [])
+          .map(({ node }: any) => node);
 
         return (
           <Layout>
             <Toolbar>
               <p></p>
             </Toolbar>
-            <Content style={{ padding: 32 }}>
+            <Content style={{ padding: 32, height: 'calc(100vh - 64px)' }}>
               <TitleBar title="Documents">
-                <Button type="primary">Create new</Button>
+                <Dropdown overlay={menu} trigger={['click']}>
+                  <Button type="primary">
+                    Create
+                    <Icon type="down" />
+                  </Button>
+                </Dropdown>
               </TitleBar>
               <Card
                 bodyStyle={{ padding: 0 }}
@@ -123,6 +160,7 @@ export const DocumentsList = ({ match }: any) => {
                   onChange={onTableChange}
                 />
               </Card>
+              <div style={{ height: 180 }} />
             </Content>
           </Layout>
         );

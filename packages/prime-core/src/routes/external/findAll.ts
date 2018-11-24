@@ -13,6 +13,7 @@ import { ensurePermitted } from './utils/ensurePermitted';
 import { UserInputError } from 'apollo-server-core';
 import { debug } from './index';
 import { decodeCursor, encodeCursor } from './utils/cursor';
+import { transformEntry } from './utils/transformEntry';
 
 function sortByProcessor(acc, field: ContentTypeField) {
   acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.name}`), 'ASC'] };
@@ -209,24 +210,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
         },
         edges: entries.map(entry => ({
           cursor: encodeCursor(entry.entryId),
-          node: {
-            _meta: {
-              language: entry.language,
-              languages: [].concat((entry as any).languages),
-              createdAt: entry.createdAt.toISOString(),
-              updatedAt: entry.updatedAt.toISOString(),
-            },
-            id: entry.entryId,
-            ...entry.data,
-            body: [{
-              __typeId: 0,
-              foo: 'Hello Foo',
-              raw: { foo: 'Hello Foo' },
-            }, {
-              __typeId: 1,
-              bar: 'Hello Bar',
-            }],
-          }
+          node: transformEntry(entry),
         })),
       };
     }

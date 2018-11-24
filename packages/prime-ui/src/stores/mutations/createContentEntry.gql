@@ -1,0 +1,19 @@
+mutation createContentEntry(
+  $contentTypeId: ID!
+  $data: JSON!
+) {
+  createContentEntry(
+    contentTypeId: $contentTypeId
+    data: $data
+  ) {
+    versionId
+    entryId
+    contentTypeId
+    contentReleaseId
+    language
+    isPublished
+    data
+    createdAt
+    updatedAt
+  }
+}

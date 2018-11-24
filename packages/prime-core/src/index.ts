@@ -10,6 +10,7 @@ import { seed } from './seed';
 import { auth } from './routes/auth';
 import { externalGraphql } from './routes/external';
 import { internalGraphql } from './routes/internal';
+import { fields } from './routes/fields';
 
 let currentApp;
 const port = process.env.PORT || 4000;
@@ -35,6 +36,7 @@ debug('initializing');
 
     currentApp.use(bodyParser.json());
     currentApp.use(express.static(path.join(__dirname, '..', '..', 'ui', 'build')));
+    currentApp.use('/fields', fields);
     currentApp.use('/auth', auth);
     currentApp.use(await externalGraphql());
     currentApp.use('/internal', await internalGraphql(start));

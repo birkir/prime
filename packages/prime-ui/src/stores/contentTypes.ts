@@ -20,19 +20,28 @@ export const ContentTypes = types.model('ContentTypes', {
 .actions(self => {
 
   const loadById = flow(function* loadById(id: string){
-    const { data } = yield client.query({
-      query: CONTENT_TYPE_BY_ID,
-      variables: { id },
-      fetchPolicy: 'network-only',
-    });
-    if (data.ContentType) {
-      self.items.put(data.ContentType);
-      return self.items.get(data.ContentType.id);
+    let item = self.items.get(id);
+    if (!item) {
+      const { data } = yield client.query({
+        query: CONTENT_TYPE_BY_ID,
+        variables: { id },
+        fetchPolicy: 'network-only',
+      });
+      if (data.ContentType) {
+        item = ContentType.create(data.ContentType);
+        self.items.put(item);
+      }
     }
+    return item;
   });
 
-  const loadAll = flow(function*(){
+  const loadAll = flow(function*(clear = true){
     self.loading = true;
+
+    if (clear) {
+      self.items.clear();
+    }
+
     try {
       const { data } = yield client.query({ query: ALL_CONTENT_TYPES });
       data.allContentTypes.forEach((contentType: any) => {
@@ -46,13 +55,14 @@ export const ContentTypes = types.model('ContentTypes', {
     self.loading = false;
   });
 
-  const create = flow(function*(input: { title: string; name?: string; }) {
+  const create = flow(function*(input: { title: string; name?: string; isSlice?: boolean; }) {
     const mutation = gql`
       mutation CreateContentType($input:CreateContentTypeInput) {
         createContentType(input:$input) {
           id
           name
           title
+          isSlice
         }
       }
     `;

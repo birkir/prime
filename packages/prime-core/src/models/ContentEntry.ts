@@ -91,6 +91,14 @@ export class ContentEntry extends Model<ContentEntry> {
       data,
     };
 
+    if (!this.isPublished && (language === this.language)) {
+      // And later check if its the same user account
+      return this.update({
+        language,
+        data,
+      });
+    }
+
     return ContentEntry.create(res);
   }
 

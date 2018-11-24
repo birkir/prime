@@ -1,0 +1,25 @@
+query contentEntryById(
+  $entryId: ID
+  $versionId: ID
+) {
+  ContentEntry(
+    entryId: $entryId
+    versionId: $versionId
+  ) {
+    versionId
+    entryId
+    contentTypeId
+    contentReleaseId
+    language
+    isPublished
+    data
+    createdAt
+    updatedAt
+    versions {
+      versionId
+      isPublished
+      createdAt
+      updatedAt
+    }
+  }
+}

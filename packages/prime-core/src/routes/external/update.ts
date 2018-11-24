@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLID, GraphQLString, GraphQLNonNull } from 'graphql';
+import { GraphQLInputObjectType, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLBoolean } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { resolveFieldType } from './utils/resolveFieldType';
@@ -8,6 +8,7 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
   const args: any = {
     id: { type: new GraphQLNonNull(GraphQLID) },
     language: { type: GraphQLString },
+    publish: { type: GraphQLBoolean },
   };
 
   const inputFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
@@ -30,12 +31,12 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
 
   if (Object.keys(inputFields).length > 0) {
     args.input = {
-      type: new GraphQLNonNull(new GraphQLInputObjectType({
+      type: new GraphQLInputObjectType({
         name: `${contentType.name}UpdateInput`,
         fields: {
           ...inputFields,
         },
-      })),
+      }),
     };
   }
 
@@ -45,23 +46,30 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
     async resolve(root, args, context, info) {
       await ensurePermitted(context, contentType, 'update');
 
-      const { input, language, id } = args;
+      const { input, language = 'en', publish = false, id } = args;
 
-      // TODO: What version should he get back?
-      // TODO: Draft/Published control
-
-      const entry = await ContentEntry.find({
+      let entry = await ContentEntry.find({
         where: {
           contentTypeId: contentType.id,
           entryId: id,
+          language: language,
+          // @todo add isPublished = context.published
+          // @todo add contentReleaseId = context.releaseId
         },
+        order: [['createdAt', 'DESC']],
       });
 
       if (entry) {
-        const draft = await entry.draft(input, language);
-        const publishedEntry = await draft.publish();
 
-        if (publishedEntry && queries[contentType.name]) {
+        if (input) {
+          entry = await entry.draft(input, language);
+        }
+
+        if (publish) {
+          entry = await entry.publish();
+        }
+
+        if (entry && queries[contentType.name]) {
           return await queries[contentType.name].resolve(root, { id, language }, context, info);
         }
       }

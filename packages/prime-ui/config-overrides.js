@@ -14,6 +14,7 @@ module.exports = function override(config, env) {
     modifyVars: {
       '@primary-color': '#318E9F',
       '@link-color': '#318E9F',
+      // '@layout-header-background': '#010102',
       '@layout-header-background': '#1F3E44',
       // @link-color: #1890ff;                            // link color
       // @success-color: #52c41a;                         // success state color

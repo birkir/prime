@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { GraphQLSchema, GraphQLObjectType, GraphQLID } from 'graphql';
+import { GraphQLSchema, GraphQLObjectType, GraphQLID, GraphQLBoolean } from 'graphql';
 import { createContext } from 'dataloader-sequelize';
 import { sequelize } from '../../sequelize';
 import { ContentType } from '../../models/ContentType';
@@ -75,16 +75,28 @@ export const externalGraphql = async () => {
     }),
   );
 
-  const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-      name: 'Query',
-      fields: queries,
-    }),
-    mutation: new GraphQLObjectType({
+  const queriesAndMutations: any = {};
+
+  if (Object.keys(queries).length === 0) {
+    (queries as any).isEmpty = {
+      type: GraphQLBoolean,
+      resolve() {
+        return true;
+      }
+    };
+  } else {
+    queriesAndMutations.mutation = new GraphQLObjectType({
       name: 'Mutation',
       fields: inputs,
-    }),
+    });
+  }
+
+  queriesAndMutations.query = new GraphQLObjectType({
+    name: 'Query',
+    fields: queries,
   });
+
+  const schema = new GraphQLSchema(queriesAndMutations);
 
   const server = new ApolloServer({
     introspection: true,

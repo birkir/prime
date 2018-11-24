@@ -1,8 +1,10 @@
 query loadSchema(
-    $id: ID!
+    $contentTypeId: ID
+    $entryId: ID
   ) {
   getContentTypeSchema(
-    contentTypeId: $id
+    contentTypeId: $contentTypeId
+    entryId: $entryId
     ) {
     title
     fields {

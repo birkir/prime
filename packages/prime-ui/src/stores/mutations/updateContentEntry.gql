@@ -1,0 +1,25 @@
+mutation updateContentEntry(
+  $entryId: ID!
+  $data: JSON!
+) {
+  updateContentEntry(
+    entryId: $entryId
+    data: $data
+  ) {
+    versionId
+    entryId
+    contentTypeId
+    contentReleaseId
+    language
+    isPublished
+    data
+    createdAt
+    updatedAt
+    versions {
+      versionId
+      isPublished
+      createdAt
+      updatedAt
+    }
+  }
+}

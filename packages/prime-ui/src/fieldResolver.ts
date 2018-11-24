@@ -1,23 +1,9 @@
 import { get } from 'lodash';
-// export const fieldResolver = {};
-
-// if (process.env.NODE_ENV !== 'production') {
-//   try {
-//     const fsg = require('./fieldResolver.generated');
-//     console.log(fsg);
-//   } catch (err) {
-//     console.log('Fail', err);
-//   }
-// } else {
-//   Object.entries((window as any).prime).forEach(([key, value]: any) => {
-//     (fieldResolver as any)[key] = value;
-//   });
-// }
 
 export const fieldResolver = async () => new Promise(resolve => {
   try {
-    const fsg = require('./fieldResolver.generated');
-    console.log(fsg);
+    const genFields = require('./fieldResolver.generated')
+    return resolve(genFields.default);
   } catch (err) {}
 
   const load = () => {

@@ -1,8 +1,9 @@
 import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { attributeFields, resolver, relay } from 'graphql-sequelize';
+import { attributeFields, resolver, relay, DateType } from 'graphql-sequelize';
 import { omit } from 'lodash';
 import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLID } from 'graphql';
+import * as GraphQLJSON from 'graphql-type-json';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { ContentEntry } from '../../models/ContentEntry';
@@ -55,9 +56,25 @@ export const internalGraphql = async (restart) => {
             opts.where = {
               id: info.source.contentTypeId,
             };
+            opts.attributeFields = {
+
+            }
             return opts;
           }
         }),
+      },
+      versions: {
+        type: new GraphQLList(
+          new GraphQLObjectType({
+            name: 'Version',
+            fields: {
+              versionId: { type: GraphQLID },
+              isPublished: { type: GraphQLBoolean },
+              createdAt: { type: DateType.default },
+              updatedAt: { type: DateType.default },
+            }
+          }),
+        ),
       }
     }),
   });
@@ -194,8 +211,38 @@ export const internalGraphql = async (restart) => {
       type: ContentEntryType,
       args: {
         entryId: { type: GraphQLID },
+        versionId: { type: GraphQLID },
       },
-      resolve: resolver(ContentEntry),
+      resolve: resolver(ContentEntry, {
+        before(opts, args, context) {
+          opts.where = {
+            entryId: args.entryId,
+          };
+          opts.order = [
+            ['createdAt', 'DESC'],
+          ];
+          return opts;
+        },
+        async after(result, args, context) {
+          result.versions = await ContentEntry.findAll({
+            attributes: [
+              'versionId',
+              'isPublished',
+              'createdAt',
+              'updatedAt',
+            ],
+            where: {
+              entryId: args.entryId,
+              language: result.language,
+            },
+            order: [
+              ['createdAt', 'DESC'],
+            ],
+          });
+          console
+          return result;
+        }
+      }),
     },
   };
 
@@ -221,6 +268,7 @@ export const internalGraphql = async (restart) => {
             fields: {
               title: { type: new GraphQLNonNull(GraphQLString) },
               name: { type: GraphQLString },
+              isSlice: { type: GraphQLBoolean },
             },
           }),
         }
@@ -229,6 +277,7 @@ export const internalGraphql = async (restart) => {
         const entry = await ContentType.create({
           name: args.input.name,
           title: args.input.title,
+          isSlice: args.input.isSlice,
         });
         restart();
         return entry;
@@ -286,6 +335,69 @@ export const internalGraphql = async (restart) => {
         restart();
 
         return entry;
+      }
+    },
+    updateContentEntry: {
+      type: ContentEntryType,
+      args: {
+        entryId: { type: new GraphQLNonNull(GraphQLID) },
+        language: { type: GraphQLString },
+        data: { type: GraphQLJSON },
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.find({
+          where: {
+            entryId: args.entryId,
+          },
+          order: [
+            ['createdAt', 'DESC'],
+          ],
+        });
+
+        if (entry) {
+          const draftedEntry = await entry.draft(args.data, args.language || 'en');
+          return draftedEntry;
+        }
+
+        return null;
+      }
+    },
+    createContentEntry: {
+      type: ContentEntryType,
+      args: {
+        contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
+        language: { type: GraphQLString },
+        data: { type: GraphQLJSON },
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.create({
+          isPublished: false,
+          contentTypeId: args.contentTypeId,
+          language: args.language || 'en',
+          data: args.data,
+        });
+
+        return entry;
+      }
+    },
+    publishContentEntry: {
+      type: ContentEntryType,
+      args: {
+        versionId: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.find({
+          where: {
+            versionId: args.versionId
+          },
+        });
+
+        if (entry) {
+          const publishedEntry = await entry.publish();
+          return publishedEntry;
+        }
+
+        return false;
       }
     },
   };

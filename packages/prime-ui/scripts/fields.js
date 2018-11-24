@@ -8,7 +8,7 @@ const primeConfig = require('rc')('prime', {
   fields: [],
 });
 
-const lib = ['lib/ui/index.js', 'lib/ui.js', 'ui.js'];
+const lib = ['lib/ui/index.js', 'lib/ui.js', 'ui/index.js', 'ui.js'];
 const src = ['src/ui/index.ts', 'src/ui.ts', 'src/ui.js', 'src/ui/index.js'];
 
 function resolveWithEndings(part, endings) {
@@ -58,7 +58,7 @@ fields.filter(f => f.uiPathLib).forEach(field => {
   try {
     fieldsSrc = fs.readFileSync(field.uiPathLib);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 });
 fs.writeFileSync('./build/fields.js', fieldsSrc);

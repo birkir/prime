@@ -1,0 +1,16 @@
+query contentEntriesByContentType(
+  $contentTypeId: ID
+) {
+  allContentEntries(
+    limit: 10000
+    contentTypeId: $contentTypeId
+  ) {
+    totalCount
+    edges {
+      node {
+        entryId
+        data
+      }
+    }
+  }
+}

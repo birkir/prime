@@ -1,10 +1,7 @@
-import { types, destroy, Instance, getParent, detach } from 'mobx-state-tree';
+import { types, destroy, Instance, getParent, detach, hasParentOfType, getParentOfType, getPath, getPathParts } from 'mobx-state-tree';
+import { JSONObject } from '../../interfaces/JSONObject';
 
 export type ISchemaField = Instance<typeof SchemaField>;
-export type JSONPrimitive = string | number | boolean | null;
-export type JSONValue = JSONPrimitive | JSONObject | JSONArray;
-export type JSONObject = { [member: string]: JSONValue };
-export interface JSONArray extends Array<JSONValue> {}
 export interface IAddField {
   name: string;
   title: string;
@@ -15,7 +12,7 @@ export interface IAddField {
 export const DEFAULT_TYPE = 'string';
 export const DEFAULT_GROUP_TITLE = 'Main';
 
-const SchemaField = types
+export const SchemaField = types
   .model('SchemaField', {
     id: types.identifier,
     type: types.string,
@@ -70,6 +67,9 @@ export const Schema = types
     },
   }))
   .actions(self => ({
+      setHasChanged(hasChanged: boolean) {
+        self.hasChanged = hasChanged;
+      },
       remove(node: ISchemaField) {
         destroy(node);
       },
@@ -113,4 +113,5 @@ export const Schema = types
           destroy(node);
         }
       }
-  }));
+    }),
+  );

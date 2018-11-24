@@ -30,7 +30,7 @@ export const ContentType = types
   const loadSchema = flow(function* loadSchema(){
     const { data } = yield client.query({
       query: LOAD_SCHEMA,
-      variables: { id: self.id },
+      variables: { contentTypeId: self.id },
       fetchPolicy: 'network-only',
     });
     if (data.getContentTypeSchema) {

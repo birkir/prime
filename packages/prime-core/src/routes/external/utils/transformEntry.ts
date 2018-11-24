@@ -8,6 +8,7 @@ export const transformEntry = (entry) => {
     _meta: {
       language: entry.language,
       languages: [].concat((entry as any).dataValues.languages),
+      isPublished: entry.isPublished,
       createdAt: entry.createdAt.toISOString(),
       updatedAt: entry.updatedAt.toISOString(),
     },

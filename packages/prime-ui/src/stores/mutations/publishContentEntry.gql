@@ -1,0 +1,23 @@
+mutation publishContentEntry(
+  $versionId: ID!
+) {
+  publishContentEntry(
+    versionId: $versionId
+  ) {
+    versionId
+    entryId
+    contentTypeId
+    contentReleaseId
+    language
+    isPublished
+    data
+    createdAt
+    updatedAt
+    versions {
+      versionId
+      isPublished
+      createdAt
+      updatedAt
+    }
+  }
+}

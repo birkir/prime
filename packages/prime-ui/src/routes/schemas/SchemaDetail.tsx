@@ -2,7 +2,7 @@ import React from 'react';
 import { Prompt } from 'react-router';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Instance, getParent } from 'mobx-state-tree';
+import { Instance, getParent, onPatch } from 'mobx-state-tree';
 import { Layout, Card, Drawer, Button, Tabs, message } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { get } from 'lodash';
@@ -41,6 +41,7 @@ interface IState {
 @observer
 export class SchemaDetail extends React.Component<IProps> {
 
+  disposeOnPatch: any;
   tabs: any = React.createRef();
   editField: any = React.createRef();
   contentType?: Instance<typeof ContentType>;
@@ -68,20 +69,35 @@ export class SchemaDetail extends React.Component<IProps> {
     this.load();
   }
 
+  componentWillUnmount() {
+
+  }
+
   async load() {
+    await ContentTypes.loadAll();
     this.contentType = await ContentTypes.loadById(this.props.match.params.id);
     if (this.contentType) {
       await this.contentType.loadSchema();
       const { data } = await client.query({ query: ALL_FIELDS });
       this.availableFields = (data as any).allFields;
+      this.detectChanges();
     }
   }
 
   saveSchema = async () => {
+    this.disposeOnPatch();
     const success = await this.contentType!.saveSchema();
     if (success) {
       message.success('Schema updated');
     }
+    this.contentType!.schema.setHasChanged(false);
+    this.detectChanges();
+  }
+
+  detectChanges() {
+    this.disposeOnPatch = onPatch(this.contentType!.schema, () => {
+      this.contentType!.schema.setHasChanged(true);
+    });
   }
 
   flushSchema() {
@@ -217,11 +233,13 @@ export class SchemaDetail extends React.Component<IProps> {
       }));
 
     if (isValid) {
+      console.log('submit', field);
+
       this.selectedField.update({
         name: field.name,
         title: field.title,
         type: field.type,
-        options: JSON.parse(field.options),
+        options: field.options,
       });
       this.onCloseDrawer();
     } else {
