@@ -51,18 +51,6 @@ const fields = primeConfig.fields.map(packageName => {
   return res;
 });
 
-// One idea to just read .primerc and generate fields
-// to load on demand in the HTML.
-let fieldsSrc = '';
-fields.filter(f => f.uiPathLib).forEach(field => {
-  try {
-    fieldsSrc = fs.readFileSync(field.uiPathLib);
-  } catch (err) {
-    console.error(err);
-  }
-});
-fs.writeFileSync('./build/fields.js', fieldsSrc);
-
 module.exports = {
   primeConfig,
   fields,

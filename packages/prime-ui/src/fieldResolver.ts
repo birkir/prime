@@ -1,10 +1,12 @@
 import { get } from 'lodash';
 
 export const fieldResolver = async () => new Promise(resolve => {
-  try {
-    const genFields = require('./fieldResolver.generated')
-    return resolve(genFields.default);
-  } catch (err) {}
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      const genFields = require('./fieldResolver.generated')
+      return resolve(genFields.default);
+    } catch (err) {}
+  }
 
   const load = () => {
     const fields = get(window, 'prime', {});

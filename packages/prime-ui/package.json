@@ -18,7 +18,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "dev": "react-app-rewired start",
-    "build": "PUBLIC_URL=/ react-app-rewired build; node scripts/fields",
+    "build": "PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
