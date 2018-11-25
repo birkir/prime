@@ -1,7 +1,9 @@
 import ApolloClient from 'apollo-boost';
 
+const ENDPOINT = 'http://localhost:4000';
+
 export const client = new ApolloClient({
-  uri: 'http://localhost:4000/internal/graphql',
+  uri: `${ENDPOINT}/internal/graphql`,
 });
 
 client.defaultOptions = {

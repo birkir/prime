@@ -4,9 +4,8 @@
     "outDir": "./lib",
     "moduleResolution": "node",
     "noUnusedLocals": true,
-    "declaration": false,
+    "declaration": true,
     "pretty": true,
-    "jsx": "react",
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true
   },

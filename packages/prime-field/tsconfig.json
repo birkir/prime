@@ -4,7 +4,7 @@
     "outDir": "./lib",
     "moduleResolution": "node",
     "noUnusedLocals": true,
-    "declaration": false,
+    "declaration": true,
     "pretty": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true

@@ -3,5 +3,6 @@ query {
     id
     title
     description
+    ui
   }
 }

@@ -1,39 +1,26 @@
-import React from 'react';
+import * as React from 'react';
+import { Form, Input } from 'antd';
 
 interface IProps {
-  value: string;
+  field: any;
+  form: any;
+  client: any;
+  path: string;
 }
 
 export class InputComponent extends React.Component<IProps> {
 
-  componentDidMount() {
-    console.log('Component is mounted');
-  }
-
-  getValue() {
-    return this.state.value;
-  }
-
-  state = {
-    value: this.props.value,
-  };
-
-  onChange = (e: any) => {
-    this.setState({
-      value: e.currentTarget.value,
-    });
-  }
-
   render() {
+    const { form, field, path } = this.props;
+    const { getFieldDecorator } = form;
+
     return (
-      <div>
-        <p>This is a sample field</p>
-        <input
-          type="text"
-          value={this.state.value}
-          onChange={this.onChange}
-        />
-      </div>
-    )
+      <Form.Item label={field.title}>
+        {getFieldDecorator(path || field.name)(
+          // @ts-ignore
+          <Input size="large" />
+        )}
+      </Form.Item>
+    );
   }
 }

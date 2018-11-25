@@ -22,6 +22,7 @@ module.exports = {
   externals: {
     react: 'React',
     antd: 'Antd',
+    lodash: 'lodash',
   },
   output: {
     filename: 'index.js',

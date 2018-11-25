@@ -144,6 +144,7 @@ export const internalGraphql = async (restart) => {
       id: { type: GraphQLID },
       title: { type: GraphQLString },
       description: { type: GraphQLString },
+      ui: { type: GraphQLString },
     },
   });
 

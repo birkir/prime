@@ -1,7 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 import { get } from 'lodash';
-import { Form, Input, Button, Card, Divider } from 'antd';
-import { fields } from './document-form/DocumentForm';
+import { Button, Card, Divider } from 'antd';
+
+const fields = (window as any).prime.fields;
 
 const getRandomId = () => Array.from({ length: 5 })
   .map(() => Math.floor(Math.random() * 10000) + 9999)
@@ -12,9 +13,7 @@ interface IProps {
   form: any;
 }
 
-// @todo get this from core via express static
-
-class FieldGroupInput extends React.PureComponent<IProps, any> {
+export class InputComponent extends React.PureComponent<IProps, any> {
 
   constructor(props: any) {
     super(props);
@@ -28,7 +27,7 @@ class FieldGroupInput extends React.PureComponent<IProps, any> {
     if (Array.isArray(value)) {
       this.initialValue = value.map(() => getRandomId());
       value.forEach((value, index) => {
-        Object.entries(value || {}).forEach(([vKey, vVal]) => {
+        (Object as any).entries(value || {}).forEach(([vKey, vVal]) => {
           getFieldDecorator(`${field.name}.${index}.${vKey}`, { initialValue: vVal });
         });
       });
@@ -63,19 +62,24 @@ class FieldGroupInput extends React.PureComponent<IProps, any> {
     const index = keys.indexOf(key);
 
     const fieldsField = get(fields, field.type);
-    if (fieldsField && fieldsField.component) {
-      const FieldComponent = fieldsField.component;
-      return <FieldComponent
+    if (fieldsField && fieldsField.InputComponent) {
+      return <fieldsField.InputComponent
         key={field.id}
         field={field}
         form={this.props.form}
         path={`tags.${index}.${field.name}`}
       />;
     }
+
+    return (
+      <div key={field.id}>
+        <i>could not locate ui component for this field: {field.name} ({field.type})</i>
+      </div>
+    );
   }
 
   renderGroupItem = (key: any, index: number) => {
-    const { field, form } = this.props;
+    const { field } = this.props;
 
     if (!key) return null;
 
@@ -107,8 +111,4 @@ class FieldGroupInput extends React.PureComponent<IProps, any> {
       </Card>
     );
   };
-}
-
-export const FieldGroup = {
-  component: FieldGroupInput,
 }

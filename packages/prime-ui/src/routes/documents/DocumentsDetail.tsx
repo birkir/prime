@@ -121,6 +121,7 @@ export class DocumentsDetail extends React.Component<IProps> {
     const draftLabel = this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
       <Alert
+        key={version.versionId}
         type={version.isPublished ? 'info' : 'warning'}
         message={version.isPublished ? 'Published' : draftLabel}
         description={`${distanceInWordsToNow(version.updatedAt)} ago`}

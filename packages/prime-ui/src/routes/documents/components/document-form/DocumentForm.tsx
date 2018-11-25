@@ -2,22 +2,17 @@ import React from 'react';
 import { get } from 'lodash';
 import { Form, Tabs } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { FieldString } from '../FieldString';
-import { FieldGroup } from '../FieldGroup';
-import { FieldDocument } from '../FieldDocument';
 import { hasParentOfType } from 'mobx-state-tree';
+
 import { SchemaField } from '../../../../stores/models/Schema';
+import { client } from '../../../../utils/client';
+import { fields } from '../../../../utils/fields';
+import stores from '../../../../stores';
 
 export interface IDocumentFormProps extends FormComponentProps {
   entry?: any;
   schema: any;
   onSave(e: React.MouseEvent<any> | React.FormEvent<any>): void;
-}
-
-export const fields = {
-  string: FieldString,
-  group: FieldGroup,
-  document: FieldDocument,
 }
 
 export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
@@ -30,17 +25,24 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
   }
 
   renderField = (field: any) => {
+    const { form } = this.props;
     const fieldsField = get(fields, field.type);
-    if (fieldsField && fieldsField.component) {
-      const FieldComponent = fieldsField.component;
-      return <FieldComponent
+
+    if (fieldsField && fieldsField.InputComponent) {
+      return <fieldsField.InputComponent
         key={field.id}
         field={field}
-        form={this.props.form}
+        form={form}
+        client={client}
+        stores={stores}
       />;
     }
 
-    return (<div key={field.id}><i>could not locate ui component for this field: {field.name} ({field.type})</i></div>);
+    return (
+      <div key={field.id}>
+        <i>could not locate ui component for this field: {field.name} ({field.type})</i>
+      </div>
+    );
   }
 
   renderGroup = (group: any) => (

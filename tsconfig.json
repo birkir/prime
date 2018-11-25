@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "jsx": "react",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

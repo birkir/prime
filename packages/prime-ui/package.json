@@ -21,6 +21,9 @@
   },
   "devDependencies": {
     "@primecms/field": "^0.0.12",
+    "@primecms/field-document": "^0.0.12",
+    "@primecms/field-group": "^0.0.12",
+    "@primecms/field-slice": "^0.0.12",
     "@primecms/field-string": "^0.0.12",
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.9",
@@ -29,7 +32,7 @@
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.0.9",
     "@types/react-router-dom": "4.3.1",
-    "antd": "3.10.7",
+    "antd": "3.10.9",
     "apollo-boost": "0.1.20",
     "babel-plugin-import": "1.11.0",
     "date-fns": "1.29.0",

@@ -1,8 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 const { injectBabelPlugin, getBabelLoader } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 const rewireGqlTag = require('react-app-rewire-graphql-tag');
-const { fields } = require('./scripts/fields');
+const primeConfig = require('rc')('prime', { fields: [] });
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin(
@@ -36,14 +37,22 @@ module.exports = function override(config, env) {
 
   if (config.mode !== 'production') {
     const babelLoader = getBabelLoader(config.module.rules);
+
+    const fieldPaths = primeConfig.fields
+      .map(packageName => {
+        const absPackageName = packageName.replace(/\/(src|lib)\/?$/, '');
+        try {
+          return fs.realpathSync(path.resolve(path.join('node_modules', absPackageName)));
+        } catch (err) {
+          return null;
+        }
+      })
+      .filter(pkg => !!pkg);
+
     babelLoader.include = [].concat(
       babelLoader.include,
-      fields.map(n => n.absPackagePath).filter(n => !!n),
+      fieldPaths,
     );
-    const fieldResolverSrc = `export default {
-  ${fields.filter(f => f.uiPathSrc).map(field => `'${field.packageName}': require('${field.uiPackageName}'),`).join('\n  ')}
-};`;
-    fs.writeFileSync('./src/fieldResolver.generated.ts', fieldResolverSrc);
   }
 
   return config;

@@ -6,6 +6,7 @@
   "homepage": "https://github.com/birkir/prime#readme",
   "license": "MIT",
   "main": "lib/index.js",
+  "prime": "lib/ui",
   "directories": {
     "lib": "lib"
   },
@@ -18,7 +19,7 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf ./lib && tsc -p .",
+    "build": "rm -rf ./lib && tsc -p . && webpack-cli --mode production",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -31,7 +32,10 @@
     "@primecms/field": "^0.0.12"
   },
   "devDependencies": {
-    "@types/graphql": "14.0.3"
+    "@types/graphql": "14.0.3",
+    "antd": "3.10.9",
+    "ts-loader": "5.3.0",
+    "webpack-cli": "3.1.2"
   },
   "peerDependencies": {
     "graphql": "^14.0.0"
