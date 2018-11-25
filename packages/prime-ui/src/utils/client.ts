@@ -4,6 +4,7 @@ const ENDPOINT = 'http://localhost:4000';
 
 export const client = new ApolloClient({
   uri: `${ENDPOINT}/internal/graphql`,
+  credentials: 'include',
 });
 
 client.defaultOptions = {

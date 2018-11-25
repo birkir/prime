@@ -3,6 +3,9 @@ import * as express from 'express';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
 import * as path from 'path';
+import * as session from 'express-session';
+import * as passport from 'passport';
+import * as cors from 'cors';
 import debug from 'debug';
 
 import { sequelize } from './sequelize';
@@ -12,9 +15,13 @@ import { externalGraphql } from './routes/external';
 import { internalGraphql } from './routes/internal';
 import { fields } from './routes/fields';
 
-let currentApp;
+let app = express();
 const port = process.env.PORT || 4000;
 const debug = require('debug')('prime:http');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const store = new SequelizeStore({
+  db: sequelize
+});
 
 debug('initializing');
 
@@ -24,24 +31,41 @@ debug('initializing');
   debug('seeding');
   await seed();
 
-  const app = express();
   const httpServer = http.createServer(app);
-  currentApp = app;
 
   const start = async () => {
-    httpServer.removeListener('request', currentApp);
+    httpServer.removeListener('request', app);
     debug('closing connections');
 
-    currentApp = express();
+    app = express();
+    app.use(cors({
+      credentials: true,
+      origin: true,
+    }));
+    app.use(bodyParser.json());
+    app.use(
+      session({
+        name: 'prime.sid',
+        secret: process.env.SESSION_SECRET || 'keyboard cat dart',
+        store,
+        resave: false,
+      }),
+    );
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(express.static(path.join(__dirname, '..', '..', 'ui', 'build')));
+    app.use('/fields', fields);
+    app.use('/auth', auth);
+    app.use(await externalGraphql());
+    app.use('/internal', await internalGraphql(start));
 
-    currentApp.use(bodyParser.json());
-    currentApp.use(express.static(path.join(__dirname, '..', '..', 'ui', 'build')));
-    currentApp.use('/fields', fields);
-    currentApp.use('/auth', auth);
-    currentApp.use(await externalGraphql());
-    currentApp.use('/internal', await internalGraphql(start));
+    app.use((err, req, res, next) => {
+      console.log('====== ERROR =======');
+      console.error(err.stack);
+      res.status(500);
+    });
 
-    httpServer.on('request', currentApp);
+    httpServer.on('request', app);
 
     debug('started');
   }

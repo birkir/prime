@@ -11,7 +11,7 @@ export const remove = ({ GraphQLContentType, contentType, contentTypes, queries 
     async resolve(root, args, context, info) {
       await ensurePermitted(context, contentType, 'delete');
 
-      const entry = await ContentEntry.find({
+      const entry = await ContentEntry.findOne({
         where: {
           contentTypeId: contentType.id,
           id: args.id,

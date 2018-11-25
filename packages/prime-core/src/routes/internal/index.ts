@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import { attributeFields, resolver, relay, DateType } from 'graphql-sequelize';
 import { omit } from 'lodash';
 import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLID } from 'graphql';
@@ -346,7 +346,7 @@ export const internalGraphql = async (restart) => {
         data: { type: GraphQLJSON },
       },
       async resolve(root, args, context, info) {
-        const entry = await ContentEntry.find({
+        const entry = await ContentEntry.findOne({
           where: {
             entryId: args.entryId,
           },
@@ -387,7 +387,7 @@ export const internalGraphql = async (restart) => {
         versionId: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
-        const entry = await ContentEntry.find({
+        const entry = await ContentEntry.findOne({
           where: {
             versionId: args.versionId
           },
@@ -415,11 +415,24 @@ export const internalGraphql = async (restart) => {
   });
 
   const server = new ApolloServer({
-    introspection: true,
+    introspection: false,
+    playground: false,
     schema,
+    context: async ({ req }) => {
+      const { user } = req;
+      if (!user) {
+        throw new AuthenticationError('Not logged in');
+      }
+      return { user };
+    },
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: true,
+    },
+  });
 
   return app;
 };

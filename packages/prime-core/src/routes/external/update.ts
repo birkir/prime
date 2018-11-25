@@ -48,7 +48,7 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
 
       const { input, language = 'en', publish = false, id } = args;
 
-      let entry = await ContentEntry.find({
+      let entry = await ContentEntry.findOne({
         where: {
           contentTypeId: contentType.id,
           entryId: id,
