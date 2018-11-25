@@ -12,8 +12,8 @@ import { create } from './create';
 import { update } from './update';
 import { remove } from './remove';
 import { resolveFieldType } from './utils/resolveFieldType';
-import { User } from '../../models/User';
-import { acl } from '../../acl';
+// import { User } from '../../models/User';
+// import { acl } from '../../acl';
 
 export const debug = require('debug')('prime:graphql');
 
@@ -113,18 +113,15 @@ export const externalGraphql = async () => {
       if (!token || token === '') {
         debug('context: no token');
       } else {
-        const user = await User.findOne({
-          where: {
-            refreshToken: token.replace(/^Bearer /, '').trim(),
-          },
-        });
-        if (user) {
-          debug('context: user', user.email);
-          debug('context: roles', await acl.userRoles(user.id));
-          context.user = user;
-        } else {
-          debug('context: invalid token');
-        }
+        debug('invalid token');
+        // const user = await User.findOne({});
+        // if (user) {
+        //   debug('context: user', user.email);
+        //   debug('context: roles', await acl.userRoles(user.id));
+        //   context.user = user;
+        // } else {
+        //   debug('context: invalid token');
+        // }
       }
 
 
