@@ -147,7 +147,11 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
     if (field.id) {
       removeFieldIds.delete(field.id);
 
-      ctField = await ContentTypeField.findByPrimary(field.id);
+      ctField = await ContentTypeField.findOne({
+        where: {
+          id: field.id,
+        }
+      });
     }
 
     if (ctField) {

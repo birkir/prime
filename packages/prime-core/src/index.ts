@@ -1,4 +1,5 @@
 require('dotenv').config();
+import * as fs from 'fs';
 import * as express from 'express';
 import * as http from 'http';
 import * as bodyParser from 'body-parser';
@@ -14,6 +15,7 @@ import { auth } from './routes/auth';
 import { externalGraphql } from './routes/external';
 import { internalGraphql } from './routes/internal';
 import { fields } from './routes/fields';
+import { primeConfig } from './utils/primeConfig';
 
 let app = express();
 const port = process.env.PORT || 4000;
@@ -49,15 +51,31 @@ debug('initializing');
         secret: process.env.SESSION_SECRET || 'keyboard cat dart',
         store,
         resave: false,
+        saveUninitialized: true,
       }),
     );
     app.use(passport.initialize());
     app.use(passport.session());
-    app.use(express.static(path.join(__dirname, '..', '..', 'ui', 'build')));
     app.use('/fields', fields);
     app.use('/auth', auth);
     app.use(await externalGraphql());
     app.use('/internal', await internalGraphql(start));
+
+    if (primeConfig.uiDir) {
+      app.use(express.static(primeConfig.uiDir, {
+        index: false,
+      }));
+      app.get('*', (req, res) => {
+        fs.readFile(path.join(primeConfig.uiDir, 'index.html'), (err, data) => {
+          if (err) {
+            console.error(err);
+            res.send('error');
+          } else {
+            res.send(data.toString().replace('"$PRIME_CONFIG$"', `'${JSON.stringify(primeConfig)}'`));
+          }
+        });
+      });
+    }
 
     app.use((err, req, res, next) => {
       console.log('====== ERROR =======');

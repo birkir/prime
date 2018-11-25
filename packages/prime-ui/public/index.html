@@ -20,6 +20,10 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Prime CMS</title>
+    <script>
+      window.prime = window.prime || {};
+      window.prime.config = "$PRIME_CONFIG$";
+    </script>
   </head>
   <body>
     <noscript>

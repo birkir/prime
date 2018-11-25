@@ -3,6 +3,7 @@ import { User } from './models/User';
 import { client } from '../utils/client';
 import { ALL_FIELDS } from './queries';
 import { fields } from '../utils/fields';
+import { config } from '../utils/config';
 
 export const Auth = types
   .model('Auth', {
@@ -18,7 +19,7 @@ export const Auth = types
         data.allFields.forEach((field: any) => {
           if (field.ui && !fields[field.id]) {
             const script = document.createElement('script');
-            script.src = `http://localhost:4000/fields/${field.id}/index.js`;
+            script.src = `${config.coreUrl}/fields/${field.id}/index.js`;
             script.id = `Prime_Field_${field.id}`;
             document.body.appendChild(script);
           }
@@ -27,7 +28,7 @@ export const Auth = types
     };
 
     const login = flow(function*(email: string, password: string) {
-      const res: any = yield fetch('http://localhost:4000/auth/login', {
+      const res: any = yield fetch(`${config.coreUrl}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -45,7 +46,7 @@ export const Auth = types
     });
 
     const logout = flow(function*() {
-      yield fetch('http://localhost:4000/auth/logout', {
+      yield fetch(`${config.coreUrl}/auth/logout`, {
         credentials: 'include',
       });
       self.isLoggedIn = false;
@@ -53,8 +54,7 @@ export const Auth = types
     });
 
     const checkLogin = flow(function*() {
-
-      const res: any = yield fetch('http://localhost:4000/auth/user', {
+      const res: any = yield fetch(`${config.coreUrl}/auth/user`, {
         credentials: 'include',
         headers: {
           'content-type': 'application/json',
