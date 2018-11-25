@@ -28,15 +28,11 @@ export class User extends Model<User> {
   @Column
   lastLogin: Date;
 
-  @Unique
-  @Column(DataType.UUID)
-  refreshToken;
-
   @BeforeCreate
   static hashPassword(instance: User) {
     instance.password = bcrypt.hashSync(instance.password, 10);
   }
-  
+
   isPasswordMatch(password) {
     return bcrypt.compareSync(password, this.password);
   }

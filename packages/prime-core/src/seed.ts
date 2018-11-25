@@ -1,4 +1,3 @@
-import * as uuidv4 from 'uuid/v4';
 import * as faker from 'faker';
 
 import { ContentType } from './models/ContentType';
@@ -15,9 +14,8 @@ export const seed = async () => {
   const user = await User.create({
     firstname: 'John',
     lastname: 'Doe',
-    email: 'john@doe.com',
-    password: 'sample',
-    refreshToken: uuidv4(),
+    email: 'demo@local.me',
+    password: 'demo',
   });
 
   debug('sample user %s', user.dataValues.id);
@@ -95,7 +93,6 @@ export const seed = async () => {
   for (let i = 0; i < 15; i++) {
     const author = await ContentEntry.create({
       contentTypeId: authorType.id,
-      isPublished: true,
       data: {
         name: faker.name.findName(),
         bio: faker.lorem.words(15),
@@ -119,7 +116,6 @@ export const seed = async () => {
         tags: [{ tag: 'foo' }, { tag: 'bar' }],
       },
     });
-    await blog.publish();
     if (blog) {
       blogIds.push(blog.entryId);
     }

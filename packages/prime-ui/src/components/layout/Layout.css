@@ -4,6 +4,11 @@
   margin: 16px;
 }
 
+.ant-layout-sider-children {
+  flex-direction: column;
+  display: flex;
+}
+
 .table-fast-spin .ant-spin-blur {
   filter: none;
   transition: none;

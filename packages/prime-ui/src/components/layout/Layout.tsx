@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Breadcrumb, Icon, Divider } from 'antd';
+import { Layout as AntLayout, Menu, Icon } from 'antd';
+import { Route, Link } from 'react-router-dom';
 import './Layout.css';
-import { Route } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = AntLayout;
@@ -45,6 +45,11 @@ export const Layout = ({ children }: any) => (
               <span>Schemas</span>
             </Menu.Item>
           </Menu>
+          <div style={{ flex: 1 }} />
+          <Link style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', padding: 16 }} to="/logout">
+            <Icon type="logout" style={{ marginRight: 16 }} />
+            <span>Logout</span>
+          </Link>
         </Sider>
         <AntLayout>
           <Content style={{ flex: 1 }}>

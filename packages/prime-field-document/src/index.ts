@@ -1,5 +1,5 @@
-import { GraphQLID } from 'graphql';
 import PrimeField from '@primecms/field';
+import { GraphQLID } from 'graphql';
 
 interface FieldOptions {
   contentTypeId: string;

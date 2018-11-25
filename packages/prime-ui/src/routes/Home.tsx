@@ -5,10 +5,6 @@ import { Link } from 'react-router-dom';
 const { Content, Header } = Layout;
 
 export class Home extends React.Component {
-
-  componentDidMount() {
-  }
-
   render() {
     return (
       <Layout>
