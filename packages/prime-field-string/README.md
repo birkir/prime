@@ -1,11 +1,3 @@
 # `prime-field-string`
 
-> TODO: description
-
-## Usage
-
-```
-const primeFieldString = require('prime-field-string');
-
-// TODO: DEMONSTRATE API
-```
+Single or multiline string

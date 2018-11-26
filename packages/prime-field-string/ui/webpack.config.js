@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/ui',
+  entry: './src',
   module: {
     rules: [{
       test: /\.tsx?$/,
@@ -9,22 +9,23 @@ module.exports = {
       exclude: /node_modules/,
       options: {
         compilerOptions: {
-          module: 'es6',
-          target: 'es5',
+          noEmit: false,
           jsx: 'react',
-        }
+        },
       },
     }],
   },
+  mode: 'production',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   externals: {
     react: 'React',
     antd: 'Antd',
+    lodash: 'lodash',
   },
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, 'lib', 'ui'),
+    path: path.resolve(__dirname, '..', 'lib', 'ui'),
   },
 };

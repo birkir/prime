@@ -4,6 +4,8 @@
   "devDependencies": {
     "@types/node": "10.12.3",
     "lerna": "3.4.3",
+    "tslint": "5.11.0",
+    "tslint-microsoft-contrib": "5.2.1",
     "typescript": "3.1.6"
   }
 }

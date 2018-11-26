@@ -1,9 +1,9 @@
 import { GraphQLInputObjectType, GraphQLString } from 'graphql';
 
-export const PrimeFieldStringWhere = new GraphQLInputObjectType({
+export const primeFieldStringWhere = new GraphQLInputObjectType({
   name: 'PrimeFieldStringWhereOp',
   fields: {
     neq: { type: GraphQLString },
-    eq: { type: GraphQLString },
+    eq: { type: GraphQLString }
   }
 });

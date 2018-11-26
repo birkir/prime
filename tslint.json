@@ -1,0 +1,20 @@
+{
+  "extends": "tslint-microsoft-contrib",
+  "rules": {
+    "no-reserved-keywords": false,
+    "missing-jsdoc": false,
+    "no-relative-imports": false,
+    "typedef": false,
+    "no-unsafe-any": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "completed-docs": false,
+    "strict-boolean-expressions": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "./packages/prime-ui/**/*",
+      "./packages/prime-field-group/**/*",
+      "./packages/prime-core/**/*"
+    ]
+  }
+}

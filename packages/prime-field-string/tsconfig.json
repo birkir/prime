@@ -2,18 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "declaration": true,
-    "pretty": true,
-    "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true
+    "declaration": true
   },
   "include": [
     "./src"
   ],
   "exclude": [
     "node_modules",
-    "./src/ui"
+    "ui"
   ]
 }

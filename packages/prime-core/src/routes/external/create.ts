@@ -10,9 +10,9 @@ export const create = ({ GraphQLContentType, contentType, contentTypes, queries 
   };
 
   const inputFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
-    const FieldType = resolveFieldType(field);
-    if (FieldType && FieldType.GraphQLInput) {
-      acc[field.name] = FieldType.GraphQLInput({
+    const fieldType = resolveFieldType(field);
+    if (fieldType) {
+      acc[field.name] = fieldType.getGraphQLInput({
         field,
         queries,
         contentType,

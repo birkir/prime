@@ -2,17 +2,19 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "jsx": "preserve",
+    "pretty": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "lib": [
       "dom",
       "es6",
       "es2015",
-      "es2017.object",
-      "esnext.asynciterable"
+      "es2017",
+      "esnext"
     ]
   },
   "exclude": [

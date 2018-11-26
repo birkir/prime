@@ -42,9 +42,9 @@ export const externalGraphql = async () => {
           _meta: { type: ContentEntryMeta },
           id: { type: GraphQLID },
           ...contentType.fields.reduce((acc, field: ContentTypeField) => {
-            const FieldType = resolveFieldType(field);
-            if (FieldType && FieldType.GraphQL) {
-              acc[field.name] = FieldType.GraphQL({
+            const fieldType = resolveFieldType(field);
+            if (fieldType) {
+              acc[field.name] = fieldType.getGraphQLOutput({
                 field,
                 queries,
                 contentType,
