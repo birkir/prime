@@ -5,14 +5,23 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "declaration": false,
+    "jsx": "react",
     "pretty": true,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es6",
+      "dom",
+      "es2015",
+      "es2017",
+      "esnext"
+    ],
   },
   "include": [
     "./src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./src/ui"
   ]
 }

@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { get } from 'lodash';
 import { Button, Card, Divider } from 'antd';
-
-const fields = (window as any).prime.fields;
+import { get } from 'lodash';
 
 const getRandomId = () => Array.from({ length: 5 })
   .map(() => Math.floor(Math.random() * 10000) + 9999)
@@ -11,31 +9,29 @@ const getRandomId = () => Array.from({ length: 5 })
 interface IProps {
   field: any;
   form: any;
+  renderField: any;
+  path: any;
 }
 
 export class InputComponent extends React.PureComponent<IProps, any> {
 
   constructor(props: any) {
     super(props);
-    const { form, field } = props;
+    const { form, field, path } = props;
     const { getFieldValue, getFieldDecorator } = form;
 
-    const value = getFieldValue(field.name);
+    const values = getFieldValue(path || field.name);
+    this.values = values;
+    this.keysKey =  `${path || field.name}.keys`;
 
-    this.keysKey =  `${field.name}.keys`;
-
-    if (Array.isArray(value)) {
-      this.initialValue = value.map(() => getRandomId());
-      value.forEach((value, index) => {
-        (Object as any).entries(value || {}).forEach(([vKey, vVal]) => {
-          getFieldDecorator(`${field.name}.${index}.${vKey}`, { initialValue: vVal });
-        });
-      });
+    if (Array.isArray(values)) {
+      this.initialValue = values.map(() => getRandomId());
     } else {
       this.initialValue = [];
     }
   }
 
+  values: any;
   keysKey: any;
   initialValue: string[];
 
@@ -57,25 +53,18 @@ export class InputComponent extends React.PureComponent<IProps, any> {
   }
 
   renderField = (field: any, key: string) => {
-    const { getFieldValue } = this.props.form;
+    const { getFieldValue, getFieldDecorator } = this.props.form;
     const keys = getFieldValue(this.keysKey);
     const index = keys.indexOf(key);
+    const path = `${this.props.path || this.props.field.name}.${index}.${field.name}`;
+    const initialValue = get(this.values, `${index}.${field.name}`);
 
-    const fieldsField = get(fields, field.type);
-    if (fieldsField && fieldsField.InputComponent) {
-      return <fieldsField.InputComponent
-        key={field.id}
-        field={field}
-        form={this.props.form}
-        path={`${this.props.field.name}.${index}.${field.name}`}
-      />;
-    }
-
-    return (
-      <div key={field.id}>
-        <i>could not locate ui component for this field: {field.name} ({field.type})</i>
-      </div>
-    );
+    return this.props.renderField({
+      ...this.props,
+      field,
+      path,
+      initialValue,
+    });
   }
 
   renderGroupItem = (key: any, index: number) => {

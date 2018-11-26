@@ -9,7 +9,9 @@ export const config = {
 
 const sourceConfig = get(window, 'prime.config', '');
 if (sourceConfig === '$PRIME_CONFIG$' || sourceConfig === '') {
-  console.error('$PRIME_CONFIG$ variable not set');
+  if (process.env.NODE_ENV !== 'development') {
+    console.error('$PRIME_CONFIG$ variable not set');
+  }
 } else {
   try {
     const primeConfig = JSON.parse(sourceConfig);
