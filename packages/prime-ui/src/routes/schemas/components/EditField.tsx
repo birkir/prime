@@ -5,7 +5,6 @@ import { camelCase } from 'lodash';
 import { ContentTypes } from '../../../stores/contentTypes';
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 interface IProps extends FormComponentProps {
   field: any;
@@ -78,7 +77,20 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
           <Form.Item label="Content Type">
             {getFieldDecorator('options.contentTypeId')(
               <Select placeholder="Select Content Type">
-                {ContentTypes.list.map(contentType => (
+                {ContentTypes.list.filter(n => !n.isSlice).map(contentType => (
+                  <Option value={contentType.id} key={contentType.id}>
+                    {contentType.title}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          </Form.Item>
+        )}
+        {field.type === 'slice' && (
+          <Form.Item label="Slices">
+            {getFieldDecorator('options.contentTypeIds')(
+              <Select placeholder="Select Slices" mode="multiple">
+                {ContentTypes.list.filter(n => n.isSlice).map(contentType => (
                   <Option value={contentType.id} key={contentType.id}>
                     {contentType.title}
                   </Option>

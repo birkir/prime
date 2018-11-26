@@ -73,7 +73,7 @@ export const ContentEntry = types
       if (self.versionId !== data.versionId) {
         self.versions.splice(0, 0, {
           versionId: data.versionId,
-          isPublished: data.isPublished,
+          isPublished: Boolean(data.isPublished),
           createdAt: new Date(data.createdAt),
           updatedAt: new Date(data.updatedAt),
         });
@@ -82,7 +82,7 @@ export const ContentEntry = types
       self.contentTypeId = data.contentTypeId;
       self.data = data.data;
       self.language = data.language;
-      self.isPublished = data.isPublished;
+      self.isPublished = Boolean(data.isPublished);
       self.createdAt = new Date(data.createdAt);
       self.updatedAt = new Date(data.updatedAt);
     };

@@ -31,7 +31,19 @@ export class DocumentsDetail extends React.Component<IProps> {
   @observable error: Error | null = null;
 
   componentDidMount() {
-    const { params } = this.props.match
+    this.load();
+  }
+
+  async load() {
+    await ContentTypes.loadAll();
+    await Promise.all(
+      ContentTypes.list
+      .filter(n => n.isSlice)
+      .map(item => item.loadSchema())
+    );
+
+    const { params } = this.props.match;
+
     if (params.entryId) {
       this.loadEntry(params.entryId);
     } else if (params.contentTypeId) {
@@ -81,7 +93,7 @@ export class DocumentsDetail extends React.Component<IProps> {
       const values: any = this.documentForm.props.form.getFieldsValue();
 
       this.contentType!.schema.fields.forEach(field => {
-        if (field.type === 'group') {
+        if (field.type === 'group' || field.type === 'slice') {
           if (values[field.name]) {
             values[field.name] = Object.entries(values[field.name] || {})
               .filter(n => n[0] === '0' || Number(n[0]) > 0)

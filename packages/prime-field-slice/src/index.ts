@@ -31,13 +31,13 @@ export default class PrimeFieldSlice extends PrimeField {
    * GraphQL type for output query
    */
   GraphQL({ field, queries, contentType, contentTypes, resolveFieldType }) {
-    if (!contentType || !field.options || !field.options.slices) {
+    if (!contentType || !field.options || !field.options.contentTypeIds) {
       return null;
     }
 
     const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
 
-    const sliceTypes = (field.options.slices || []).map(sliceId => {
+    const sliceTypes = (field.options.contentTypeIds || []).map(sliceId => {
       const sliceType = contentTypes.find(n => n.id === sliceId);
       if (!sliceType) return null;
       const fieldsTypes = sliceType.fields.reduce((acc, nfield: any) => {
@@ -84,7 +84,7 @@ export default class PrimeFieldSlice extends PrimeField {
         types: [...types, UnknownSlice],
         resolveType(value, context, info) {
           if (value.__inputname) {
-            const sliceTypeIndex = sliceTypes.findIndex((s: { name: string }) => s.name === value.__inputname);
+            const sliceTypeIndex = sliceTypes.findIndex((s: { id: string }) => s.id === value.__inputname);
             if (sliceTypeIndex >= 0) {
               return types[sliceTypeIndex];
             }
@@ -100,14 +100,14 @@ export default class PrimeFieldSlice extends PrimeField {
    */
   GraphQLInput({ field, queries, contentTypes, contentType, resolveFieldType, isUpdate }) {
 
-    if (!contentType || !field.options || !field.options.slices) {
+    if (!contentType || !field.options || !field.options.contentTypeIds) {
       return null;
     }
 
     const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
     const actionName = isUpdate ? 'Update' : 'Create';
 
-    const sliceTypes = (field.options.slices || []).map(sliceId => {
+    const sliceTypes = (field.options.contentTypeIds || []).map(sliceId => {
       const sliceType = contentTypes.find((n: { id: string}) => n.id === sliceId);
       if (!sliceType) return null;
       const fieldsTypes = (sliceType.fields || []).reduce((acc, nfield: any) => {

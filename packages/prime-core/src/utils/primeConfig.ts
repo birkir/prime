@@ -1,8 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { get } from 'lodash';
 
 export const primeConfig = require('rc')('prime', {
-  coreUrl: `http://localhost:${process.env.PORT || 4000}`,
+  coreUrl: get(process.env, 'CORE_URL',  `http://localhost:${process.env.PORT || 4000}`),
   fields: [],
 });
 

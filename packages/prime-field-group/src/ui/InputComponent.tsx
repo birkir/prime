@@ -67,7 +67,7 @@ export class InputComponent extends React.PureComponent<IProps, any> {
         key={field.id}
         field={field}
         form={this.props.form}
-        path={`tags.${index}.${field.name}`}
+        path={`${this.props.field.name}.${index}.${field.name}`}
       />;
     }
 
