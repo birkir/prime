@@ -1,7 +1,7 @@
 {
   "name": "@primecms/field",
   "private": false,
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Base interface for Prime CMS Fields",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
@@ -27,10 +27,10 @@
     "url": "https://github.com/birkir/prime/issues"
   },
   "peerDependencies": {
-    "graphql": "^14.0.0",
-    "react": "^16.7.0",
     "antd": "^3.0.0",
-    "apollo-boost": "^0.1.20"
+    "apollo-boost": "^0.1.20",
+    "graphql": "^14.0.0",
+    "react": "^16.7.0"
   },
   "publishConfig": {
     "access": "public"

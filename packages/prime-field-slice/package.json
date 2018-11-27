@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-slice",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Slice Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
@@ -29,7 +29,7 @@
     "url": "https://github.com/birkir/prime/issues"
   },
   "dependencies": {
-    "@primecms/field": "^0.0.17",
+    "@primecms/field": "^0.0.18",
     "graphql-union-input-type": "0.4.0"
   },
   "devDependencies": {
@@ -39,8 +39,8 @@
   },
   "peerDependencies": {
     "antd": "^3.0.0",
-    "graphql-type-json": "^0.2.1",
     "graphql": "^14.0.0",
+    "graphql-type-json": "^0.2.1",
     "lodash": "^4.17.11",
     "react": "^16.7.0"
   },

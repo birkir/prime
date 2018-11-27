@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-group",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Group Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
@@ -29,7 +29,7 @@
     "url": "https://github.com/birkir/prime/issues"
   },
   "dependencies": {
-    "@primecms/field": "^0.0.17"
+    "@primecms/field": "^0.0.18"
   },
   "devDependencies": {
     "@types/graphql": "14.0.3",
@@ -37,10 +37,10 @@
     "webpack-cli": "3.1.2"
   },
   "peerDependencies": {
+    "antd": "^3.0.0",
     "graphql": "^14.0.0",
-    "react": "^16.7.0",
     "lodash": "^4.17.11",
-    "antd": "^3.0.0"
+    "react": "^16.7.0"
   },
   "publishConfig": {
     "access": "public"
