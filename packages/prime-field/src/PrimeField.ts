@@ -32,6 +32,10 @@ export interface IPrimeFieldProps {
     ContentEntries: any; // tslint:disable-line no-any
     ContentTypes: any; // tslint:disable-line no-any
   };
+  entry: {
+    entryId: string;
+    data: object;
+  };
   path: string;
   renderField(args: IPrimeFieldProps): React.ReactNode;
 }

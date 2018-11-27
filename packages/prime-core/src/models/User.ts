@@ -1,5 +1,5 @@
-import { Model, Column, Table, PrimaryKey, DataType, IsEmail, Unique, BeforeCreate } from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
+import { BeforeCreate, Column, DataType, IsEmail, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
 
 @Table({ timestamps: true })
 export class User extends Model<User> {
@@ -9,31 +9,31 @@ export class User extends Model<User> {
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4
   })
-  id;
+  public id;
 
   @Column
-  firstname: string;
+  public firstname: string;
 
   @Column
-  lastname: string;
+  public lastname: string;
 
   @IsEmail
   @Unique
   @Column
-  email: string;
+  public email: string;
 
   @Column
-  password: string;
+  public password: string;
 
   @Column
-  lastLogin: Date;
+  public lastLogin: Date;
 
   @BeforeCreate
-  static hashPassword(instance: User) {
+  public static HASH_PASSWORD(instance: User) {
     instance.password = bcrypt.hashSync(instance.password, 10);
   }
 
-  isPasswordMatch(password) {
+  public isPasswordMatch(password) {
     return bcrypt.compareSync(password, this.password);
   }
 }

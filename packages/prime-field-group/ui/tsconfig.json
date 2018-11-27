@@ -1,0 +1,9 @@
+{
+  "extends": "../../prime-ui/tsconfig.json",
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

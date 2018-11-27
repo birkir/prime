@@ -8,8 +8,15 @@ query contentEntriesByContentType(
     totalCount
     edges {
       node {
+        versionId
         entryId
+        contentTypeId
+        contentReleaseId
+        language
+        isPublished
         data
+        createdAt
+        updatedAt
       }
     }
   }

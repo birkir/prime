@@ -12,8 +12,8 @@ export const registerField = (id: string, field: any) => {
 };
 
 if (process.env.NODE_ENV === 'development') {
-  registerField('string', require('@primecms/field-string/src/ui').default);
-  registerField('group', require('@primecms/field-group/src/ui').default);
-  registerField('document', require('@primecms/field-document/src/ui').default);
-  registerField('slice', require('@primecms/field-slice/src/ui').default);
+  registerField('string', require('@primecms/field-string/ui/src').default);
+  registerField('group', require('@primecms/field-group/ui/src').default);
+  registerField('document', require('@primecms/field-document/ui/src').default);
+  registerField('slice', require('@primecms/field-slice/ui/src').default);
 }

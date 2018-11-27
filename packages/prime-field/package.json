@@ -19,7 +19,8 @@
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm -rf ./lib && tsc -p .",
+    "lint": "tslint -p .",
+    "build": "rm -rf ./lib && npm run lint && tsc -p .",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

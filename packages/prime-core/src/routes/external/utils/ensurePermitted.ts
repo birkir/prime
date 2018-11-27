@@ -7,4 +7,4 @@ export const ensurePermitted = async (context, contentType, allowed = 'read') =>
       throw new AuthenticationError('Insufficient permissions');
     }
   }
-}
+};

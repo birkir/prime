@@ -1,115 +1,116 @@
-import { Model, Column, Table, Scopes, BelongsTo, PrimaryKey, ForeignKey, DataType, BeforeCreate } from 'sequelize-typescript';
-import { ContentType } from './ContentType';
+import hashids from 'hashids';
+import { BeforeCreate, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
 import { ContentRelease } from './ContentRelease';
-import Hashids from 'hashids';
+import { ContentType } from './ContentType';
 
-const hashids = new Hashids('SaltingTheHash', 10);
+const hashid = new hashids('SaltingTheHash', 10);
 
 @Scopes({
   contentType: {
     include: [{
       model: () => ContentType,
-      through: { attributes: [] },
-    }],
+      through: { attributes: [] }
+    }]
   },
   contentRelease: {
     include: [{
       model: () => ContentRelease,
-      through: { attributes: [] },
+      through: { attributes: [] }
     }]
   }
 })
 @Table({
-  timestamps: true,
+  timestamps: true
 })
 export class ContentEntry extends Model<ContentEntry> {
 
   @Column(DataType.STRING)
-  entryId: string;
+  public entryId: string;
 
   @PrimaryKey
   @Column({
       type: DataType.UUID,
-      defaultValue: DataType.UUIDV4,
+      defaultValue: DataType.UUIDV4
   })
-  versionId;
+  public versionId;
 
   @Column(DataType.UUID)
   @ForeignKey(() => ContentType)
-  contentTypeId;
+  public contentTypeId;
 
   @BelongsTo(() => ContentType, {
     onDelete: 'SET NULL',
-    onUpdate: 'SET NULL',
+    onUpdate: 'SET NULL'
   })
-  contentType: ContentType;
+  public contentType: ContentType;
 
   @Column(DataType.UUID)
   @ForeignKey(() => ContentRelease)
-  contentReleaseId;
+  public contentReleaseId;
 
   @BelongsTo(() => ContentRelease)
-  contentRelease: ContentRelease;
+  public contentRelease: ContentRelease;
 
   @Column({
     type: DataType.STRING,
-    defaultValue: 'en',
+    defaultValue: 'en'
   })
-  language: string;
+  public language: string;
 
   @Column(DataType.BOOLEAN)
-  isPublished: boolean;
+  public isPublished: boolean;
 
   @Column(DataType.JSON)
-  data;
+  public data;
 
   @BeforeCreate
-  static async setEntryId(instance: ContentEntry) {
+  public static async SET_ENTRY_ID(instance: ContentEntry) {
     if (!instance.entryId) {
-      instance.entryId = await ContentEntry.getRandomId();
+      instance.entryId = await ContentEntry.GET_RANDOM_ID();
     }
   }
 
-  static async getRandomId() {
-    const entryId = hashids.encode(+new Date());
+  public static async GET_RANDOM_ID() {
+    const entryId = hashid.encode(+new Date());
     const count = await ContentEntry.count({
       where: {
-        entryId,
+        entryId
       }
     });
-    return count === 0 ? entryId : await ContentEntry.getRandomId();
+
+    return count === 0 ? entryId : ContentEntry.GET_RANDOM_ID();
   }
 
   // Update with version
-  draft(data, language) {
+  public draft(data, language) {
     const res = {
       entryId: this.entryId,
       contentTypeId: this.contentTypeId,
       contentReleaseId: this.contentReleaseId,
       language: language || this.language,
       isPublished: false,
-      data,
+      data
     };
 
     if (!this.isPublished && (language === this.language)) {
       // And later check if its the same user account
       return this.update({
         language,
-        data,
+        data
       });
     }
 
     return ContentEntry.create(res);
   }
 
-  publish() {
+  public publish() {
     const res = {
       entryId: this.entryId,
       contentTypeId: this.contentTypeId,
       contentReleaseId: this.contentReleaseId,
       language: this.language,
       isPublished: true,
-      data: this.data,
+      data: this.data
     };
 
     return ContentEntry.create(res);

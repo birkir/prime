@@ -1,27 +1,28 @@
+// tslint:disable no-require-imports no-var-requires no-console
 require('dotenv').config();
-import * as fs from 'fs';
-import * as express from 'express';
-import * as http from 'http';
-import * as bodyParser from 'body-parser';
-import * as path from 'path';
-import * as session from 'express-session';
-import * as passport from 'passport';
-import * as cors from 'cors';
-import debug from 'debug';
 
-import { sequelize } from './sequelize';
-import { seed } from './seed';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import * as express from 'express';
+import * as session from 'express-session';
+import * as fs from 'fs';
+import * as http from 'http';
+import * as passport from 'passport';
+import * as path from 'path';
+
 import { auth } from './routes/auth';
 import { externalGraphql } from './routes/external';
-import { internalGraphql } from './routes/internal';
 import { fields } from './routes/fields';
+import { internalGraphql } from './routes/internal';
+import { seed } from './seed';
+import { sequelize } from './sequelize';
 import { primeConfig } from './utils/primeConfig';
 
 let app = express();
 const port = process.env.PORT || 4000;
 const debug = require('debug')('prime:http');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const store = new SequelizeStore({
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
+const store = new sequelizeStore({
   db: sequelize
 });
 
@@ -42,7 +43,7 @@ debug('initializing');
     app = express();
     app.use(cors({
       credentials: true,
-      origin: true,
+      origin: true
     }));
     app.use(bodyParser.json());
     app.use(
@@ -51,8 +52,8 @@ debug('initializing');
         secret: process.env.SESSION_SECRET || 'keyboard cat dart',
         store,
         resave: false,
-        saveUninitialized: true,
-      }),
+        saveUninitialized: true
+      })
     );
     app.use(passport.initialize());
     app.use(passport.session());
@@ -63,7 +64,7 @@ debug('initializing');
 
     if (primeConfig.uiDir) {
       app.use(express.static(primeConfig.uiDir, {
-        index: false,
+        index: false
       }));
       app.get('*', (req, res) => {
         fs.readFile(path.join(primeConfig.uiDir, 'index.html'), (err, data) => {
@@ -78,15 +79,14 @@ debug('initializing');
     }
 
     app.use((err, req, res, next) => {
-      console.log('====== ERROR =======');
-      console.error(err.stack);
+      console.error(err);
       res.status(500);
     });
 
     httpServer.on('request', app);
 
     debug('started');
-  }
+  };
 
   await start();
 

@@ -1,22 +1,24 @@
-import * as express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { GraphQLSchema, GraphQLObjectType, GraphQLID, GraphQLBoolean } from 'graphql';
 import { createContext } from 'dataloader-sequelize';
-import { sequelize } from '../../sequelize';
+import * as express from 'express';
+import { GraphQLBoolean, GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
-import { ContentEntryMeta } from '../../types/ContentEntryMeta';
-import { findAll } from './findAll';
-import { find } from './find';
+import { sequelize } from '../../sequelize';
+import { contentEntryMetaType } from '../../types/contentEntryMetaType';
 import { create } from './create';
-import { update } from './update';
+import { find } from './find';
+import { findAll } from './findAll';
 import { remove } from './remove';
+import { update } from './update';
 import { resolveFieldType } from './utils/resolveFieldType';
 // import { User } from '../../models/User';
 // import { acl } from '../../acl';
 
+// tslint:disable-next-line no-require-imports no-var-requires
 export const debug = require('debug')('prime:graphql');
 
+// tslint:disable-next-line max-func-body-length
 export const externalGraphql = async () => {
 
   const app = express();
@@ -30,55 +32,66 @@ export const externalGraphql = async () => {
 
   await Promise.all(
     contentTypes.map(async (contentType) => {
-      contentType.fields = await contentType.$get('fields') as ContentTypeField[];
+      // tslint:disable-next-line no-any
+      const contentTypeFields: any = await contentType.$get('fields');
+      contentType.fields = contentTypeFields;
     })
   );
 
   await Promise.all(
     contentTypes.map(async (contentType) => {
+      // tslint:disable-next-line variable-name
       const GraphQLContentType = new GraphQLObjectType({
         name: contentType.name,
         fields: () => ({
-          _meta: { type: ContentEntryMeta },
+          _meta: { type: contentEntryMetaType },
           id: { type: GraphQLID },
-          ...contentType.fields.reduce((acc, field: ContentTypeField) => {
-            const fieldType = resolveFieldType(field);
-            if (fieldType) {
-              acc[field.name] = fieldType.getGraphQLOutput({
-                field,
-                queries,
-                contentType,
-                contentTypes,
-                resolveFieldType,
-              });
-            }
-            if (!acc[field.name]) {
-              delete acc[field.name];
-            }
-            return acc;
-          }, {}),
-        }),
+          ...contentType.fields.reduce(
+            (acc, field: ContentTypeField) => {
+              const fieldType = resolveFieldType(field);
+              if (fieldType) {
+                acc[field.name] = fieldType.getGraphQLOutput({
+                  field,
+                  queries,
+                  contentType,
+                  contentTypes,
+                  resolveFieldType
+                });
+              }
+              if (!acc[field.name]) {
+                delete acc[field.name];
+              }
+
+              return acc;
+            },
+            {}
+          )
+        })
       });
 
       if (contentType.isSlice) {
         debug('content type %s is a slice', contentType.id);
+
         return null;
       }
 
-      debug('created content type:', contentType.name + '(' + contentType.fields.map(field => field.name).join(', ') + ')');
+      debug(
+        'created content type:',
+        `${contentType.name}(${contentType.fields.map(field => field.name).join(', ')})`
+      );
 
       queries[contentType.name]             = find({ GraphQLContentType, contentType, contentTypes, queries });
       queries[`all${contentType.name}`]  = findAll({ GraphQLContentType, contentType, contentTypes, queries });
       inputs[`create${contentType.name}`] = create({ GraphQLContentType, contentType, contentTypes, queries });
       inputs[`update${contentType.name}`] = update({ GraphQLContentType, contentType, contentTypes, queries });
       inputs[`remove${contentType.name}`] = remove({ GraphQLContentType, contentType, contentTypes, queries });
-    }),
+    })
   );
 
-  const queriesAndMutations: any = {};
+  const queriesAndMutations: any = {}; // tslint:disable-line no-any
 
   if (Object.keys(queries).length === 0) {
-    (queries as any).isEmpty = {
+    queries[`isEmpty`] = {
       type: GraphQLBoolean,
       resolve() {
         return true;
@@ -87,13 +100,13 @@ export const externalGraphql = async () => {
   } else {
     queriesAndMutations.mutation = new GraphQLObjectType({
       name: 'Mutation',
-      fields: inputs,
+      fields: inputs
     });
   }
 
   queriesAndMutations.query = new GraphQLObjectType({
     name: 'Query',
-    fields: queries,
+    fields: queries
   });
 
   const schema = new GraphQLSchema(queriesAndMutations);
@@ -103,14 +116,14 @@ export const externalGraphql = async () => {
     tracing: true,
     schema,
     context: async ({ req, connection }) => {
-      const context = {} as any;
+      const context: any = {}; // tslint:disable-line no-any
       context.sequelizeDataLoader = createContext(sequelize);
       const token = req.headers.authorization || '';
 
       // Make the entire API public
       context.public = true;
 
-      if (!token || token === '') {
+      if (!token || String(token) === '') {
         debug('context: no token');
       } else {
         debug('invalid token');
@@ -124,7 +137,6 @@ export const externalGraphql = async () => {
         // }
       }
 
-
       // Some flags that will have to become globally on the requests (Cookie etc.)
       // Published flag
       context.published = true;
@@ -132,10 +144,10 @@ export const externalGraphql = async () => {
       context.contentReleaseId = null;
 
       return context;
-    },
+    }
   });
 
   server.applyMiddleware({ app });
 
   return app;
-}
+};

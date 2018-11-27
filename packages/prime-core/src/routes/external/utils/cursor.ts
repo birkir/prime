@@ -1,4 +1,4 @@
-export const encodeCursor = payload => {
+export const encodeCursor = (payload: string) => {
   try {
     return Buffer.from(`->${payload}`).toString('base64');
   } catch (err) {
@@ -6,10 +6,11 @@ export const encodeCursor = payload => {
   }
 };
 
-export const decodeCursor = encodedCursor => {
+export const decodeCursor = (encodedCursor: string) => {
   try {
-    const cursor = Buffer.from(encodedCursor, 'base64').toString('ascii');
-    return cursor.substr(2);
+    return Buffer.from(encodedCursor, 'base64')
+      .toString('ascii')
+      .substr(2);
   } catch (err) {
     return null;
   }

@@ -15,19 +15,23 @@ const compareOperators = {
 };
 
 function formatCompareOperators(obj): Object {
-  return Object.entries(obj).reduce((acc, [key, val]: [string, any]) => {
-    if (compareOperators[key]) {
-      acc[compareOperators[key]] = val;
-    } else {
-      acc[key] = val;
-    }
-    return acc;
-  }, {});
+  return Object.entries(obj).reduce(
+    (acc, [key, val]: [string, object]) => {
+      if (compareOperators[key]) {
+        acc[compareOperators[key]] = val;
+      } else {
+        acc[key] = val;
+      }
+
+      return acc;
+    },
+    {}
+  );
 }
 
 export function processWhereQuery(obj): Object {
   return Object.entries(obj).reduce(
-    (acc, [key, val]: [string, any]) => {
+    (acc, [key, val]: [string, object]) => {
       if (logicalOperators[key]) {
         const value = val instanceof Array ? val : [val];
         acc[logicalOperators[key]] = value.map(processWhereQuery);
@@ -40,6 +44,7 @@ export function processWhereQuery(obj): Object {
           }
         };
       }
+
       return acc;
     },
     { data: {} }

@@ -1,10 +1,10 @@
-import { sequelize } from "../../../sequelize";
-import { withField } from "./withFields";
+import { sequelize } from '../../../sequelize';
+import { withField } from './withFields';
 
-const Model = '"ContentEntry"';
+const model = '"ContentEntry"';
 const field = '"entryId"';
 
 export const includeLanguages = ({ published }) =>
   sequelize.literal(
-    `(SELECT array_agg(DISTINCT "language") FROM ${Model} WHERE ${field} = ${Model}.${field}${withField('isPublished', published)})`
+    `(SELECT array_agg(DISTINCT "language") FROM ${model} WHERE ${field} = ${model}.${field}${withField('isPublished', published)})`
   );

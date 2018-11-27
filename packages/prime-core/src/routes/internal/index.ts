@@ -1,67 +1,70 @@
-import * as express from 'express';
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
-import { attributeFields, resolver, relay, DateType } from 'graphql-sequelize';
-import { omit } from 'lodash';
-import { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLID } from 'graphql';
+import * as express from 'express';
+import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLList,
+  GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
+import { attributeFields, DateType, relay, resolver } from 'graphql-sequelize';
 import * as GraphQLJSON from 'graphql-type-json';
+import { omit } from 'lodash';
+import { fields } from '../../fields';
+import { ContentEntry } from '../../models/ContentEntry';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
-import { ContentEntry } from '../../models/ContentEntry';
-import { ContentTypeFieldGroup, getFields, setFields, ContentTypeFieldGroupInputType } from './processFields';
-import { PageInfo } from '../../types/PageInfo';
+import { pageInfoType } from '../../types/pageInfoType';
 import { latestVersion } from '../external/utils/latestVersion';
-import { fields } from '../../fields';
+import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
+  getFields, setFields } from './processFields';
 
+// tslint:disable max-func-body-length export-name await-promise
 export const internalGraphql = async (restart) => {
 
   const app = express();
 
-  const ContentTypeFieldType = new GraphQLObjectType({
+  const contentTypeFieldType = new GraphQLObjectType({
     name: 'ContentTypeField',
-    fields: omit({
-      ...attributeFields(ContentTypeField),
-    }, ['contentTypeId']),
+    fields: omit(
+      attributeFields(ContentTypeField),
+      ['contentTypeId']
+    )
   });
 
-  const ContentTypeType = new GraphQLObjectType({
+  const contentTypeType = new GraphQLObjectType({
     name: 'ContentType',
     fields: () => ({
       ...attributeFields(ContentType),
       fields: {
-        type: new GraphQLList(ContentTypeFieldType),
+        type: new GraphQLList(contentTypeFieldType),
         args: {
           limit: { type: GraphQLInt },
-          order: { type: GraphQLString },
+          order: { type: GraphQLString }
         },
         resolve: resolver(ContentTypeField, {
           before(opts, args, context, info) {
             opts.where = {
-              contentTypeId: info.source.id,
+              contentTypeId: info.source.id
             };
+
             return opts;
           }
-        }),
+        })
       }
-    }),
+    })
   });
 
-  const ContentEntryType = new GraphQLObjectType({
+  const contentEntryType = new GraphQLObjectType({
     name: 'ContentEntry',
     fields: omit({
       ...attributeFields(ContentEntry),
       contentType: {
-        type: ContentTypeType,
+        type: contentTypeType,
         resolve: resolver(ContentType, {
           before(opts, args, context, info) {
             opts.where = {
-              id: info.source.contentTypeId,
+              id: info.source.contentTypeId
             };
-            opts.attributeFields = {
 
-            }
             return opts;
           }
-        }),
+        })
       },
       versions: {
         type: new GraphQLList(
@@ -71,41 +74,41 @@ export const internalGraphql = async (restart) => {
               versionId: { type: GraphQLID },
               isPublished: { type: GraphQLBoolean },
               createdAt: { type: DateType.default },
-              updatedAt: { type: DateType.default },
+              updatedAt: { type: DateType.default }
             }
-          }),
-        ),
+          })
+        )
       }
-    }),
+    })
   });
 
-  const ContentEntryConnectionEdge = new GraphQLObjectType({
+  const contentEntryConnectionEdgeType = new GraphQLObjectType({
     name: 'ContentEntryConnectionEdge',
     fields: {
-      node: { type: ContentEntryType },
-      cursor: { type: GraphQLString },
-    },
+      node: { type: contentEntryType },
+      cursor: { type: GraphQLString }
+    }
   });
 
-  const ContentEntryConnection = new GraphQLObjectType({
+  const contentEntryConnectionType = new GraphQLObjectType({
     name: 'ContentEntryConnection',
     fields: {
-      pageInfo: { type: PageInfo },
+      pageInfo: { type: pageInfoType },
       totalCount: { type: GraphQLInt },
       edges: {
-        type: new GraphQLList(ContentEntryConnectionEdge)
-      },
-    },
+        type: new GraphQLList(contentEntryConnectionEdgeType)
+      }
+    }
   });
 
   const allContentEntries = {
-    type: ContentEntryConnection,
+    type: contentEntryConnectionType,
     args: {
       contentTypeId: { type: GraphQLID },
       language: { type: GraphQLString },
       limit: { type: GraphQLInt },
       skip: { type: GraphQLInt },
-      order: { type: GraphQLString },
+      order: { type: GraphQLString }
     },
     resolve: relay.createConnectionResolver({
       target: ContentEntry,
@@ -114,13 +117,14 @@ export const internalGraphql = async (restart) => {
         const published = null;
         const contentReleaseId = null;
         findOptions.having = {
-          versionId: latestVersion({ language, published, contentReleaseId }),
+          versionId: latestVersion({ language, published, contentReleaseId })
         };
         if (args.contentTypeId) {
           findOptions.where.contentTypeId = args.contentTypeId;
         }
         findOptions.offset = args.skip;
         findOptions.group = ['versionId'];
+
         return findOptions;
       },
       async after(values, args, context, info) {
@@ -130,29 +134,30 @@ export const internalGraphql = async (restart) => {
         const totalCount = await ContentEntry.count({
           distinct: true,
           col: 'entryId',
-          where: values.where,
+          where: values.where
         });
         values.totalCount = totalCount;
+
         return values;
-      },
-    }).resolveConnection,
+      }
+    }).resolveConnection
   };
 
-  const Field = new GraphQLObjectType({
+  const fieldObjectType = new GraphQLObjectType({
     name: 'Field',
     fields: {
       id: { type: GraphQLID },
       title: { type: GraphQLString },
       description: { type: GraphQLString },
-      ui: { type: GraphQLString },
-    },
+      ui: { type: GraphQLString }
+    }
   });
 
   const allFields = {
-    type: new GraphQLList(Field),
+    type: new GraphQLList(fieldObjectType),
     resolve() {
       return fields;
-    },
+    }
   };
 
   const queryFields = {
@@ -160,68 +165,71 @@ export const internalGraphql = async (restart) => {
       type: new GraphQLList(ContentTypeFieldGroup),
       args: {
         entryId: { type: GraphQLID },
-        contentTypeId: { type: GraphQLID },
+        contentTypeId: { type: GraphQLID }
       },
       async resolve(root, args, context, info) {
         if (args.entryId && !args.contentTypeId) {
           const entry = await ContentEntry.findOne({
             where: {
-              entryId: args.entryId,
-            },
+              entryId: args.entryId
+            }
           });
           if (!entry || !entry.contentTypeId) {
             return null;
           }
           args.contentTypeId = entry.contentTypeId;
         }
-        return await getFields(args.contentTypeId);
+
+        return getFields(args.contentTypeId);
       }
     },
     allContentTypes: {
-      type: new GraphQLList(ContentTypeType),
+      type: new GraphQLList(contentTypeType),
       args: {
         limit: { type: GraphQLInt },
-        order: { type: GraphQLString },
+        order: { type: GraphQLString }
       },
-      resolve: resolver(ContentType),
+      resolve: resolver(ContentType)
     },
     allFields,
     allContentEntries,
     ContentType: {
-      type: ContentTypeType,
+      type: contentTypeType,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLID }
       },
       resolve: resolver(ContentType, {
         before(opts, args, context) {
           opts.where = {
-            id: args.id,
+            id: args.id
           };
+
           return opts;
-        },
-      }),
+        }
+      })
     },
     ContentTypeField: {
-      type: ContentTypeFieldType,
+      type: contentTypeFieldType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
+        id: { type: new GraphQLNonNull(GraphQLID) }
       },
-      resolve: resolver(ContentTypeField),
+      resolve: resolver(ContentTypeField)
     },
     ContentEntry: {
-      type: ContentEntryType,
+      type: contentEntryType,
       args: {
         entryId: { type: GraphQLID },
-        versionId: { type: GraphQLID },
+        versionId: { type: GraphQLID }
       },
       resolve: resolver(ContentEntry, {
         before(opts, args, context) {
           opts.where = {
-            entryId: args.entryId,
+            entryId: args.entryId
           };
           opts.order = [
-            ['createdAt', 'DESC'],
+            ['createdAt', 'DESC']
           ];
+
           return opts;
         },
         async after(result, args, context) {
@@ -230,21 +238,21 @@ export const internalGraphql = async (restart) => {
               'versionId',
               'isPublished',
               'createdAt',
-              'updatedAt',
+              'updatedAt'
             ],
             where: {
               entryId: args.entryId,
-              language: result.language,
+              language: result.language
             },
             order: [
-              ['createdAt', 'DESC'],
-            ],
+              ['createdAt', 'DESC']
+            ]
           });
-          console
+
           return result;
         }
-      }),
-    },
+      })
+    }
   };
 
   const mutationFields = {
@@ -252,13 +260,14 @@ export const internalGraphql = async (restart) => {
       type: GraphQLBoolean,
       args: {
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
-        schema: { type: new GraphQLNonNull(new GraphQLList(ContentTypeFieldGroupInputType)) },
+        schema: { type: new GraphQLNonNull(new GraphQLList(ContentTypeFieldGroupInputType)) }
       },
       async resolve(root, args, context, info) {
         await setFields(args.contentTypeId, args.schema);
         restart();
+
         return true;
-      },
+      }
     },
     createContentType: {
       type: queryFields.ContentType.type,
@@ -269,33 +278,36 @@ export const internalGraphql = async (restart) => {
             fields: {
               title: { type: new GraphQLNonNull(GraphQLString) },
               name: { type: GraphQLString },
-              isSlice: { type: GraphQLBoolean },
-            },
-          }),
+              isSlice: { type: GraphQLBoolean }
+            }
+          })
         }
       },
       async resolve(root, args, context, info) {
         const entry = await ContentType.create({
           name: args.input.name,
           title: args.input.title,
-          isSlice: args.input.isSlice,
+          isSlice: args.input.isSlice
         });
         restart();
+
         return entry;
       }
     },
     removeContentType: {
       type: GraphQLBoolean,
       args: {
-        id: { type: GraphQLID },
+        id: { type: GraphQLID }
       },
       async resolve(root, args, context, info) {
         const contentType = await ContentType.findById(args.id);
         if (contentType) {
           await contentType.destroy();
           restart();
+
           return true;
         }
+
         return false;
       }
     },
@@ -310,10 +322,10 @@ export const internalGraphql = async (restart) => {
               name: { type: new GraphQLNonNull(GraphQLString) },
               title: { type: GraphQLString },
               type: { type: new GraphQLNonNull(GraphQLString) },
-              group: { type: GraphQLString },
-            },
-          }),
-        },
+              group: { type: GraphQLString }
+            }
+          })
+        }
       },
       async resolve(root, args, context, info) {
 
@@ -322,7 +334,7 @@ export const internalGraphql = async (restart) => {
         );
 
         if (!contentType) {
-          throw new Error("Content Type not valid");
+          throw new Error('Content Type not valid');
         }
 
         const entry = await ContentTypeField.create({
@@ -330,7 +342,7 @@ export const internalGraphql = async (restart) => {
           name: args.input.name,
           title: args.input.title,
           type: args.input.type,
-          group: args.input.group,
+          group: args.input.group
         });
 
         restart();
@@ -339,79 +351,75 @@ export const internalGraphql = async (restart) => {
       }
     },
     updateContentEntry: {
-      type: ContentEntryType,
+      type: contentEntryType,
       args: {
         entryId: { type: new GraphQLNonNull(GraphQLID) },
         language: { type: GraphQLString },
-        data: { type: GraphQLJSON },
+        data: { type: GraphQLJSON }
       },
       async resolve(root, args, context, info) {
         const entry = await ContentEntry.findOne({
           where: {
-            entryId: args.entryId,
+            entryId: args.entryId
           },
           order: [
-            ['createdAt', 'DESC'],
-          ],
+            ['createdAt', 'DESC']
+          ]
         });
 
         if (entry) {
-          const draftedEntry = await entry.draft(args.data, args.language || 'en');
-          return draftedEntry;
+          return entry.draft(args.data, args.language || 'en');
         }
 
         return null;
       }
     },
     createContentEntry: {
-      type: ContentEntryType,
+      type: contentEntryType,
       args: {
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
         language: { type: GraphQLString },
-        data: { type: GraphQLJSON },
+        data: { type: GraphQLJSON }
       },
       async resolve(root, args, context, info) {
-        const entry = await ContentEntry.create({
+        return ContentEntry.create({
           isPublished: false,
           contentTypeId: args.contentTypeId,
           language: args.language || 'en',
-          data: args.data,
+          data: args.data
         });
-
-        return entry;
       }
     },
     publishContentEntry: {
-      type: ContentEntryType,
+      type: contentEntryType,
       args: {
-        versionId: { type: new GraphQLNonNull(GraphQLID) },
+        versionId: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(root, args, context, info) {
         const entry = await ContentEntry.findOne({
           where: {
             versionId: args.versionId
-          },
+          }
         });
 
         if (entry) {
-          const publishedEntry = await entry.publish();
-          return publishedEntry;
+          return entry.publish();
         }
 
         return false;
       }
-    },
+    }
   };
 
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'Query',
-      fields: queryFields,
+      fields: queryFields
     }),
     mutation: new GraphQLObjectType({
       name: 'Mutation',
-      fields: mutationFields,
-    }),
+      fields: mutationFields
+    })
   });
 
   const server = new ApolloServer({
@@ -423,15 +431,16 @@ export const internalGraphql = async (restart) => {
       if (!user) {
         throw new AuthenticationError('Not logged in');
       }
+
       return { user };
-    },
+    }
   });
 
   server.applyMiddleware({
     app,
     cors: {
-      origin: true,
-    },
+      origin: true
+    }
   });
 
   return app;

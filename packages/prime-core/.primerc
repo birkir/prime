@@ -1,8 +1,8 @@
 {
   "fields": [
     "@primecms/field-string/src",
-    // "@primecms/field-document/src",
-    // "@primecms/field-group/src",
-    // "@primecms/field-slice/src"
+    "@primecms/field-document/src",
+    "@primecms/field-group/src",
+    "@primecms/field-slice/src"
   ]
 }

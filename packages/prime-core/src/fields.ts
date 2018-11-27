@@ -1,3 +1,4 @@
+// tslint:disable non-literal-require no-console
 import * as fs from 'fs';
 import * as path from 'path';
 import { primeConfig } from './utils/primeConfig';
@@ -22,7 +23,9 @@ export const fields = (primeConfig.fields || []).map((moduleName: string) => {
         instance.mode = 'production';
         instance.dir = distFile.replace(/\/package.json$/, '');
         pkgJson = require(distFile);
-      } catch (_err) {}
+      } catch (err2) {
+        // noop
+      }
     }
 
     if (pkgJson) {
@@ -35,10 +38,11 @@ export const fields = (primeConfig.fields || []).map((moduleName: string) => {
   } catch (err) {
     console.error(
       'ERROR: Could not resolve field module',
-      '"' + moduleName + '"'
+      `"${moduleName}"`
     );
     console.error(err);
   }
+
   return null;
 })
 .filter(n => !!n);

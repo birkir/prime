@@ -92,23 +92,40 @@ export class DocumentsDetail extends React.Component<IProps> {
       this.documentForm.props.form.validateFields();
       const values: any = this.documentForm.props.form.getFieldsValue();
 
-      this.contentType!.schema.fields.forEach(field => {
-        if (field.type === 'group' || field.type === 'slice') {
-          if (values[field.name]) {
-            values[field.name] = Object.entries(values[field.name] || {})
-              .filter(n => n[0] === '0' || Number(n[0]) > 0)
-              .map(n => n[1]);
-          }
+      const parse = (vals: any): any => {
+        if (Array.isArray(vals)) {
+          return vals.map(parse);
         }
-      });
+        if (typeof vals === 'object') {
+          return Object.entries(vals).reduce(
+            (acc: any, [key, value]) => {
+              if (typeof value === 'object') {
+                const entries = Object.entries(value);
+                const indexes = entries.filter(([k]) => Number.isInteger(Number(k)));
+                const isArrayLike = (indexes.length >= entries.length - 1);
+                if (isArrayLike) {
+                  acc[key] = indexes.map(([k, v]) => parse(v));
+                  return acc;
+                }
+              }
+              acc[key] = parse(value);
+              return acc;
+            },
+            {}
+          );
+        }
+        return vals;
+      };
+
+      const parsed = parse(values);
 
       // Update values
       if (this.contentEntry) {
-        await this.contentEntry!.update(values as any);
+        await this.contentEntry!.update(parsed);
         message.info('Document was saved');
       } else if (this.contentType) {
         try {
-          const contentEntry = await ContentEntries.create(this.contentType.id, values);
+          const contentEntry = await ContentEntries.create(this.contentType.id, parsed);
           this.props.history.push(`/documents/doc/${contentEntry.entryId}`);
           message.success('Document created');
         } catch(err) {

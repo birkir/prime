@@ -5,6 +5,7 @@
     "target": "es5",
     "jsx": "preserve",
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "lib": [

@@ -10,5 +10,5 @@ export const sequelize = new Sequelize({
   dialect: 'postgres',
   modelPaths: [`${__dirname}/models`],
   logging: false,
-  url: DATABASE_URL,
+  url: DATABASE_URL
 });

@@ -1,92 +1,99 @@
+import { GraphQLEnumType, GraphQLInputObjectType, GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { ICountOptions, IFindOptions, Sequelize } from 'sequelize-typescript';
-import { GraphQLObjectType, GraphQLInputObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLEnumType } from 'graphql';
 
-import { sequelize } from '../../sequelize';
-import { ContentEntry } from '../../models/ContentEntry';
-import { PageInfo } from '../../types/PageInfo';
-import { processWhereQuery } from '../../utils/processWhereQuery';
-import { ContentTypeField } from '../../models/ContentTypeField';
-import { resolveFieldType } from './utils/resolveFieldType';
-import { includeLanguages } from './utils/includeLanguages';
-import { latestVersion } from './utils/latestVersion';
-import { ensurePermitted } from './utils/ensurePermitted';
 import { UserInputError } from 'apollo-server-core';
+import { ContentEntry } from '../../models/ContentEntry';
+import { ContentTypeField } from '../../models/ContentTypeField';
+import { sequelize } from '../../sequelize';
+import { pageInfoType } from '../../types/pageInfoType';
+import { processWhereQuery } from '../../utils/processWhereQuery';
 import { debug } from './index';
 import { decodeCursor, encodeCursor } from './utils/cursor';
+import { ensurePermitted } from './utils/ensurePermitted';
+import { includeLanguages } from './utils/includeLanguages';
+import { latestVersion } from './utils/latestVersion';
+import { resolveFieldType } from './utils/resolveFieldType';
 import { transformEntry } from './utils/transformEntry';
 
 function sortByProcessor(acc, field: ContentTypeField) {
   acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.name}`), 'ASC'] };
   acc[`${field.name}_DESC`] = { value: [sequelize.json(`data.${field.name}`), 'DESC'] };
+
   return acc;
-};
+}
+
+// tslint:disable max-func-body-length
 
 export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
 
   const sortByValues = contentType.fields.reduce(sortByProcessor, {});
 
-  const SortByType = new GraphQLEnumType({
+  const sortByType = new GraphQLEnumType({
     name: `${contentType.name}SortBy`,
-    values: sortByValues,
+    values: sortByValues
   });
 
-  const whereOpTypesFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
-    const fieldType = resolveFieldType(field);
-    if (fieldType) {
-      acc[field.name] = fieldType.getGraphQLWhere();
-    }
-    if (!acc[field.name]) {
-      delete acc[field.name];
-    }
+  const whereOpTypesFields = contentType.fields.reduce(
+    (acc, field: ContentTypeField) => {
+      const fieldType = resolveFieldType(field);
+      if (fieldType) {
+        acc[field.name] = fieldType.getGraphQLWhere();
+      }
+      if (!acc[field.name]) {
+        delete acc[field.name];
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {}
+  );
 
-  const WhereType = new GraphQLInputObjectType({
+  const whereType = new GraphQLInputObjectType({
     name: `${contentType.name}Where`,
     fields: () => ({
       ...whereOpTypesFields,
-      OR: { type: new GraphQLList(WhereType) },
-      AND: { type: new GraphQLList(WhereType) },
-    }),
+      OR: { type: new GraphQLList(whereType) },
+      AND: { type: new GraphQLList(whereType) }
+    })
   });
 
-  const ConnectionEdgeType = new GraphQLObjectType({
+  const connectionEdgeType = new GraphQLObjectType({
     name: `${contentType.name}ConnectionEdge`,
     fields: {
       node: { type: GraphQLContentType },
-      cursor: { type: GraphQLString },
-    },
+      cursor: { type: GraphQLString }
+    }
   });
 
-  const ConnectionType = new GraphQLObjectType({
+  const connectionType = new GraphQLObjectType({
     name: `${contentType.name}Connection`,
     fields: {
-      edges: { type: new GraphQLList(ConnectionEdgeType) },
-      pageInfo: { type: PageInfo },
-      totalCount: { type: GraphQLInt },
-    },
+      edges: { type: new GraphQLList(connectionEdgeType) },
+      pageInfo: { type: pageInfoType },
+      totalCount: { type: GraphQLInt }
+    }
   });
 
-  const args: any = {
+  const typeArgs: any = { // tslint:disable-line no-any
     language: { type: GraphQLString },
     first: { type: GraphQLInt },
     skip: { type: GraphQLInt },
     before: { type: GraphQLString },
-    after: { type: GraphQLString },
+    after: { type: GraphQLString }
   };
 
   if (Object.keys(sortByValues).length > 0) {
-    args.sortBy = { type: SortByType };
+    typeArgs.sortBy = { type: sortByType };
   }
 
   if (Object.keys(whereOpTypesFields).length > 0) {
-    args.where = { type: WhereType };
+    typeArgs.where = { type: whereType };
   }
 
   return {
-    type: ConnectionType,
-    args,
+    type: connectionType,
+    args: typeArgs,
+    // tslint:disable-next-line cyclomatic-complexity
     async resolve(root, args, context, info) {
 
       const defaultLimit = 50;
@@ -100,21 +107,21 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
       const findAllPaging: IFindOptions<ContentEntry> = {
         attributes: {
           include: [
-            [includeLanguages({ published }), 'languages'],
-          ],
+            [includeLanguages({ published }), 'languages']
+          ]
         },
         having: {
-          versionId: latestVersion({ language, published, contentReleaseId }),
+          versionId: latestVersion({ language, published, contentReleaseId })
         },
         group: [
           'versionId'
-        ],
+        ]
       };
 
       if (args.sortBy) {
         const [fieldName, sortOrder] = args.sortBy;
         findAllPaging.order = [
-          [fieldName, sortOrder],
+          [fieldName, sortOrder]
         ];
       }
 
@@ -124,8 +131,8 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
 
       findAllOptions.where = {
         [Sequelize.Op.and]: [{
-          contentTypeId: contentType.id,
-        }, findAllOptions.where],
+          contentTypeId: contentType.id
+        }, findAllOptions.where]
       };
 
       if (args.before || args.after) {
@@ -139,14 +146,18 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
           throw new UserInputError('Invalid cursor');
         }
 
-        const rawQuery = sequelize.getQueryInterface().QueryGenerator.selectQuery('ContentEntry', {
-          ...findAllPaging,
-          ...findAllOptions,
-          attributes: [
-            'entryId',
-            sequelize.literal(`$INDEX$`),
-          ],
-        }, ContentEntry);
+        const rawQuery = sequelize.getQueryInterface().QueryGenerator.selectQuery(
+          'ContentEntry',
+          {
+            ...findAllPaging,
+            ...findAllOptions,
+            attributes: [
+              'entryId',
+              sequelize.literal(`$INDEX$`)
+            ]
+          },
+          ContentEntry
+        );
 
         const sort = rawQuery.match(/\) ORDER BY (.*?);/);
         const sql = `
@@ -162,7 +173,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
           if (args.after) {
             findAllPaging.offset = index;
           } else {
-            findAllPaging.offset = Math.max(0, index - (args.first || defaultLimit))
+            findAllPaging.offset = Math.max(0, index - (args.first || defaultLimit));
           }
         } else {
           debug(result);
@@ -182,8 +193,8 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
 
       const entries = await ContentEntry.findAll({
         ...findAllOptions,
-        ...findAllPaging,
-      } as any);
+        ...findAllPaging
+      });
 
       context.sequelizeDataLoader.prime(entries);
 
@@ -192,10 +203,10 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
         where: {
           ...findAllOptions.where,
           isPublished: published,
-          language: language,
+          language: language
         },
         distinct: true,
-        col: 'entryId',
+        col: 'entryId'
       });
       const hasPreviousPage = Number(findAllPaging.offset) > 0 && totalCount > 0;
       const hasNextPage = (Number(findAllPaging.offset) + entries.length) < totalCount;
@@ -206,13 +217,13 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
           hasPreviousPage,
           hasNextPage,
           startCursor: entries.length > 0 && encodeCursor(entries[0].entryId),
-          endCursor: entries.length > 0 && encodeCursor(entries[entries.length - 1].entryId),
+          endCursor: entries.length > 0 && encodeCursor(entries[entries.length - 1].entryId)
         },
         edges: entries.map(entry => ({
           cursor: encodeCursor(entry.entryId),
-          node: transformEntry(entry),
-        })),
+          node: transformEntry(entry)
+        }))
       };
     }
   };
-}
+};

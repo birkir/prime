@@ -19,7 +19,7 @@ export const ContentEntries = types.model('ContentEntries', {
         contentTypeId,
       },
     });
-    return data.allContentEntries.edges.map(({ node }: any) => node);
+    return data.allContentEntries.edges.map(({ node }: any) => ContentEntry.create(node));
   });
 
   const loadById = flow(function* loadById(id: string) {

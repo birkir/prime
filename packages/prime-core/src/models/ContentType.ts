@@ -1,7 +1,7 @@
-import { Model, Column, Table, HasMany, PrimaryKey, DataType, Unique, Is, BeforeCreate } from 'sequelize-typescript';
+import { startCase } from 'lodash';
+import { BeforeCreate, Column, DataType, HasMany, Is, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
 import { ContentEntry } from './ContentEntry';
 import { ContentTypeField } from './ContentTypeField';
-import { startCase } from 'lodash';
 
 @Table
 export class ContentType extends Model<ContentType> {
@@ -11,7 +11,7 @@ export class ContentType extends Model<ContentType> {
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4
   })
-  id;
+  public id;
 
   @Is('AlphaNumeric', (value) => {
     if (!/^[A-Za-z][A-Za-z0-9]+$/.test(value)) {
@@ -20,25 +20,25 @@ export class ContentType extends Model<ContentType> {
   })
   @Unique
   @Column
-  name: string;
+  public name: string;
 
   @Column
-  title: string;
+  public title: string;
 
   @Column
-  isSlice: boolean;
+  public isSlice: boolean;
 
   @HasMany(() => ContentEntry, {
     onUpdate: 'SET NULL',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
-  contentEntry: ContentEntry;
+  public contentEntry: ContentEntry;
 
   @HasMany(() => ContentTypeField)
-  fields: ContentTypeField[];
+  public fields: ContentTypeField[];
 
   @BeforeCreate
-  static async setName(instance: ContentType) {
+  public static async SET_NAME(instance: ContentType) {
     if (!instance.name && instance.title) {
       const baseName = startCase(instance.title).replace(/ /g, '');
       let name = baseName;
@@ -47,7 +47,8 @@ export class ContentType extends Model<ContentType> {
       while (count === 1) {
         count = await ContentType.count({ where: { name }});
         if (count === 1) {
-          name = `${baseName}${i++}`;
+          name = `${baseName}${i}`;
+          i += 1;
         }
       }
       instance.name = name;

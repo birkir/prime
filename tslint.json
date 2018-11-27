@@ -12,9 +12,9 @@
   },
   "linterOptions": {
     "exclude": [
-      "./packages/prime-ui/**/*",
-      "./packages/prime-field-group/**/*",
-      "./packages/prime-core/**/*"
+      "node_modules",
+      "lib",
+      "./packages/prime-ui/**/*"
     ]
   }
 }

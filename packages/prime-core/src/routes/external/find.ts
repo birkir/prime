@@ -1,15 +1,15 @@
-import { GraphQLID, GraphQLString, GraphQLNonNull } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLString } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
+import { ensurePermitted } from './utils/ensurePermitted';
 import { includeLanguages } from './utils/includeLanguages';
 import { transformEntry } from './utils/transformEntry';
-import { ensurePermitted } from './utils/ensurePermitted';
 
 export const find = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   return {
     type: GraphQLContentType,
     args: {
       id: { type: new GraphQLNonNull(GraphQLID) },
-      language: { type: GraphQLString },
+      language: { type: GraphQLString }
     },
     async resolve(root, args, context, info) {
 
@@ -23,16 +23,16 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
         attributes: {
           include: [
             [includeLanguages({ published }), 'languages']
-          ],
+          ]
         },
         where: {
           entryId: args.id,
           contentTypeId: contentType.id,
-          language,
+          language
         },
         order: [
-          ['createdAt', 'DESC'],
-        ],
+          ['createdAt', 'DESC']
+        ]
       });
 
       if (!entry) {
@@ -42,6 +42,6 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
       context.sequelizeDataLoader.prime(entry);
 
       return transformEntry(entry);
-    },
+    }
   };
 };

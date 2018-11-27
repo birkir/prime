@@ -1,6 +1,7 @@
-import * as React from 'react';
+// tslint:disable insecure-random no-any
 import { Button, Card, Divider } from 'antd';
 import { get } from 'lodash';
+import * as React from 'react';
 
 const getRandomId = () => Array.from({ length: 5 })
   .map(() => Math.floor(Math.random() * 10000) + 9999)
@@ -15,73 +16,83 @@ interface IProps {
 
 export class InputComponent extends React.PureComponent<IProps, any> {
 
+  public values: any;
+  public keysKey: any;
+  public initialValue: string[];
+
   constructor(props: any) {
     super(props);
-    const { form, field, path } = props;
-    const { getFieldValue, getFieldDecorator } = form;
+    const { path, entry } = props;
+    const values = get(entry.data, path, []);
 
-    const values = getFieldValue(path || field.name);
     this.values = values;
-    this.keysKey =  `${path || field.name}.keys`;
+    this.keysKey =  `${path}.keys`;
 
     if (Array.isArray(values)) {
-      this.initialValue = values.map(() => getRandomId());
+      this.initialValue = values.map(getRandomId);
     } else {
       this.initialValue = [];
     }
   }
 
-  values: any;
-  keysKey: any;
-  initialValue: string[];
+  public onRemoveClick = (e: React.MouseEvent<HTMLElement>) => {
+    const key = String(e.currentTarget.dataset.key);
+    this.remove(key);
+  }
 
-  remove = (k: any) => {
+  public remove = (k: any) => {
     const { form } = this.props;
     const keys = form.getFieldValue(this.keysKey);
     form.setFieldsValue({
-      [this.keysKey]: keys.map((key: any) => key === k ? null : key),
+      [this.keysKey]: keys.map((key: any) => key === k ? null : key)
     });
   }
 
-  add = () => {
+  public add = () => {
     const { form } = this.props;
     const keys = form.getFieldValue(this.keysKey);
     const nextKeys = keys.concat(getRandomId());
     form.setFieldsValue({
-      [this.keysKey]: nextKeys,
+      [this.keysKey]: nextKeys
     });
   }
 
-  renderField = (field: any, key: string) => {
-    const { getFieldValue, getFieldDecorator } = this.props.form;
+  public renderField = (field: any, key: string) => {
+    const { getFieldValue } = this.props.form;
     const keys = getFieldValue(this.keysKey);
     const index = keys.indexOf(key);
-    const path = `${this.props.path || this.props.field.name}.${index}.${field.name}`;
+    const path = `${this.props.path}.${index}.${field.name}`;
     const initialValue = get(this.values, `${index}.${field.name}`);
 
     return this.props.renderField({
       ...this.props,
       field,
       path,
-      initialValue,
+      initialValue
     });
   }
 
-  renderGroupItem = (key: any, index: number) => {
+  public renderGroupItem = (key: any, index: number) => {
     const { field } = this.props;
 
-    if (!key) return null;
+    if (!key) { return null; }
 
     return (
       <div key={key} style={{ position: 'relative' }}>
-        <Button shape="circle-outline" icon="minus" style={{ position: 'absolute', top: -8, right: 0, zIndex: 2 }} onClick={() => this.remove(key)}></Button>
+        <Button
+          data-key={key}
+          shape="circle-outline"
+          icon="minus"
+          style={{ position: 'absolute', top: -8, right: 0, zIndex: 2 }}
+          onClick={this.onRemoveClick}
+        />
         {field.fields.map((f: any) => this.renderField(f, key))}
         <Divider />
       </div>
     );
   }
 
-  render() {
+  public render() {
     const { field, form } = this.props;
     const { getFieldValue, getFieldDecorator } = form;
 
@@ -99,5 +110,5 @@ export class InputComponent extends React.PureComponent<IProps, any> {
         {keys.map(this.renderGroupItem)}
       </Card>
     );
-  };
+  }
 }

@@ -1,4 +1,4 @@
-import { Model, Column, Table, PrimaryKey, DataType } from 'sequelize-typescript';
+import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table
 export class Navigation extends Model<Navigation> {
@@ -8,23 +8,23 @@ export class Navigation extends Model<Navigation> {
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4
   })
-  id;
+  public id;
 
   @Column(DataType.UUID)
-  parentNavigationId;
+  public parentNavigationId;
 
   @Column(DataType.STRING)
-  name: string;
+  public name: string;
 
   @Column(DataType.UUID)
-  contentTypeId: string;
+  public contentTypeId: string;
 
   @Column(DataType.UUID)
-  contentEntryId: string;
+  public contentEntryId: string;
 
   @Column(DataType.BOOLEAN)
-  showEntries: boolean;
+  public showEntries: boolean;
 
   @Column(DataType.INTEGER)
-  index: number;
+  public index: number;
 }

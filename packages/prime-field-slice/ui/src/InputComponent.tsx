@@ -15,6 +15,17 @@ interface IState {
   slices: ISlice[];
 }
 
+function noChildren(field: any, index: number, allFields: any) {
+  // check if field is part of another fields
+  return !allFields.find((allFieldsField: any) => {
+    if (allFieldsField.id !== field.id && allFieldsField.fields) {
+      return allFieldsField.fields.find((innerField: any) => innerField.id === field.id);
+    }
+
+    return false;
+  });
+}
+
 export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public state: IState = {
@@ -32,9 +43,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public async load() {
-    const { field, form, stores } = this.props;
+    const { field, entry, path, stores } = this.props;
     const ids = get(field.options, 'contentTypeIds', []);
-    this.values = form.getFieldValue(field.name) || [];
+    this.values = get(entry.data, path);
 
     this.setState({
       contentTypes: stores.ContentTypes.list.filter((n: { id: string }) => ids.indexOf(n.id) >= 0),
@@ -90,7 +101,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
                 <Button data-index={index} onClick={this.onRemoveClick}>Remove</Button>
               }
             >
-              {slice.schema.fields.map(
+              {slice.schema.fields.filter(noChildren).map(
                 (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}
               {form.getFieldDecorator(`${field.name}.${index}.__inputname`, {
