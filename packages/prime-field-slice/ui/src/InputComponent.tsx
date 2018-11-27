@@ -45,7 +45,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public async load() {
     const { field, entry, path, stores } = this.props;
     const ids = get(field.options, 'contentTypeIds', []);
-    this.values = get(entry.data, path);
+    this.values = get(entry.data, path, []);
 
     this.setState({
       contentTypes: stores.ContentTypes.list.filter((n: { id: string }) => ids.indexOf(n.id) >= 0),
