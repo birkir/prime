@@ -20,7 +20,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "lint": "tslint -p .",
-    "build": "rm -rf ./lib && npm run lint && tsc -p .",
+    "build": "rm -rf ./lib && tsc -p .",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

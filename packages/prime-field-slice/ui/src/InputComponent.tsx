@@ -15,10 +15,12 @@ interface IState {
   slices: ISlice[];
 }
 
+// tslint:disable-next-line no-any
 function noChildren(field: any, index: number, allFields: any) {
-  // check if field is part of another fields
+  // tslint:disable-next-line no-any
   return !allFields.find((allFieldsField: any) => {
     if (allFieldsField.id !== field.id && allFieldsField.fields) {
+      // tslint:disable-next-line no-any
       return allFieldsField.fields.find((innerField: any) => innerField.id === field.id);
     }
 

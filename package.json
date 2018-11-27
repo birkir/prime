@@ -1,6 +1,10 @@
 {
   "name": "root",
   "private": false,
+  "scripts": {
+    "lint": "tslint -p .",
+    "build": "lerna run build"
+  },
   "devDependencies": {
     "@types/node": "10.12.3",
     "lerna": "3.4.3",
