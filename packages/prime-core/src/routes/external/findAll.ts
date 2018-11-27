@@ -194,7 +194,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
       const entries = await ContentEntry.findAll({
         ...findAllOptions,
         ...findAllPaging
-      });
+      } as any);
 
       context.sequelizeDataLoader.prime(entries);
 
