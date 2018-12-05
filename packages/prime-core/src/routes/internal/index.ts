@@ -4,7 +4,7 @@ import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLL
   GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { attributeFields, DateType, relay, resolver } from 'graphql-sequelize';
 import * as GraphQLJSON from 'graphql-type-json';
-import { omit } from 'lodash';
+import { omit, pickBy } from 'lodash';
 import { fields } from '../../fields';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ContentType } from '../../models/ContentType';
@@ -161,6 +161,12 @@ export const internalGraphql = async (restart) => {
   };
 
   const queryFields = {
+    getConfig: {
+      type: GraphQLJSON,
+      async resolve() {
+        return pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0);
+      },
+    },
     getContentTypeSchema: {
       type: new GraphQLList(ContentTypeFieldGroup),
       args: {

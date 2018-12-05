@@ -3,7 +3,7 @@ import { User } from './models/User';
 import { client } from '../utils/client';
 import { ALL_FIELDS } from './queries';
 import { fields } from '../utils/fields';
-import { config } from '../utils/config';
+import { config, getConfig } from '../utils/config';
 
 export const Auth = types
   .model('Auth', {
@@ -14,6 +14,7 @@ export const Auth = types
 
     const ensureFields = async () => {
       if (!self.isLoggedIn) return;
+      getConfig();
       const { data }: any = await client.query({ query: ALL_FIELDS });
       if (data.allFields) {
         data.allFields.forEach((field: any) => {

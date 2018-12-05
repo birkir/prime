@@ -1,8 +1,10 @@
 {
   "fields": [
-    "@primecms/field-string/src",
-    "@primecms/field-document/src",
-    "@primecms/field-group/src",
-    "@primecms/field-slice/src"
+    "@primecms/field-asset",
+    "@primecms/field-datetime",
+    "@primecms/field-document",
+    "@primecms/field-group",
+    "@primecms/field-slice",
+    "@primecms/field-string"
   ]
 }

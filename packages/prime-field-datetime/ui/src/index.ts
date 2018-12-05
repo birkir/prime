@@ -3,7 +3,7 @@ import { InputComponent } from './InputComponent';
 import { SchemaSettingsComponent } from './SchemaSettingsComponent';
 
 // tslint:disable-next-line no-default-export export-name
-export default registerField('slice', {
+export default registerField('datetime', {
   InputComponent,
   SchemaSettingsComponent
 });

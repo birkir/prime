@@ -9,7 +9,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     return (
       <Form.Item label={field.title}>
-        {getFieldDecorator(typeof path === 'string' ? path : field.name, { initialValue })(
+        {getFieldDecorator(path, { initialValue })(
           <Input size="large" />
         )}
       </Form.Item>

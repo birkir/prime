@@ -6,3 +6,4 @@ declare module '*.gif'
 declare module '*.bmp'
 declare module '*.tiff'
 declare module '*.gql'
+declare module 'react-easy-crop';

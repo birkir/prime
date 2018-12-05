@@ -8,6 +8,7 @@ import './utils/fields';
 (window as any).ReactDOM = ReactDOM;
 (window as any).Antd = require('antd');
 (window as any).lodash = require('lodash');
+(window as any).moment = require('moment');
 
 function renderApp(AppRoot: any) {
   ReactDOM.render(<AppRoot />, document.getElementById('root'));

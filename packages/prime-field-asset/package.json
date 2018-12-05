@@ -1,0 +1,50 @@
+{
+  "name": "@primecms/field-asset",
+  "version": "0.0.19",
+  "description": "Asset Field for Prime CMS",
+  "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
+  "homepage": "https://github.com/birkir/prime#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "prime": "lib/ui",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "lint": "tslint -p . && npm run lint:ui",
+    "lint:ui": "tslint -p ./ui",
+    "build:ui": "cd ./ui; webpack-cli; cd -",
+    "build": "rm -rf ./lib && tsc -p . && npm run build:ui",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birkir/prime.git"
+  },
+  "bugs": {
+    "url": "https://github.com/birkir/prime/issues"
+  },
+  "dependencies": {
+    "@primecms/field": "^0.0.19",
+    "react-easy-crop": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.0.3",
+    "ts-loader": "5.3.0",
+    "webpack-cli": "3.1.2"
+  },
+  "peerDependencies": {
+    "antd": "^3.0.0",
+    "graphql": "^14.0.0",
+    "lodash": "^4.17.11",
+    "react": "^16.7.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "330de5101b01a3604d708b7d5991943fb57db9ef"
+}

@@ -3,6 +3,8 @@
   "private": false,
   "scripts": {
     "lint": "tslint -p .",
+    "clean": "sh ./scripts/tidyFieldNodeModules.sh",
+    "dev": "lerna run dev --stream",
     "build": "lerna run build"
   },
   "devDependencies": {

@@ -37,7 +37,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
     (acc, field: ContentTypeField) => {
       const fieldType = resolveFieldType(field);
       if (fieldType) {
-        acc[field.name] = fieldType.getGraphQLWhere();
+        acc[field.name] = fieldType.getGraphQLWhere({ field });
       }
       if (!acc[field.name]) {
         delete acc[field.name];

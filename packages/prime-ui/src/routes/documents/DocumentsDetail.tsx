@@ -102,7 +102,7 @@ export class DocumentsDetail extends React.Component<IProps> {
               if (typeof value === 'object') {
                 const entries = Object.entries(value);
                 const indexes = entries.filter(([k]) => Number.isInteger(Number(k)));
-                const isArrayLike = (indexes.length >= entries.length - 1);
+                const isArrayLike = (indexes.length > 0);
                 if (isArrayLike) {
                   acc[key] = indexes.map(([k, v]) => parse(v));
                   return acc;

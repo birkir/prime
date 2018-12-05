@@ -32,7 +32,8 @@ export const seed = async () => {
   const authorType = await ContentType.create({ title: 'Author' });
   const authorFields = [
     await ContentTypeField.create({ title: 'Name', name: 'name', type: 'string' }),
-    await ContentTypeField.create({ title: 'Bio', name: 'bio', type: 'string' })
+    await ContentTypeField.create({ title: 'Bio', name: 'bio', type: 'string' }),
+    await ContentTypeField.create({ title: 'Date test', name: 'dateTest', type: 'datetime' })
   ];
   await authorType.$add('fields', authorFields);
 
@@ -95,9 +96,11 @@ export const seed = async () => {
   for (let i = 0; i < 15; i += 1) {
     const author = await ContentEntry.create({
       contentTypeId: authorType.id,
+      isPublished: true,
       data: {
         name: faker.name.findName(),
-        bio: faker.lorem.words(15)
+        bio: faker.lorem.words(15),
+        dateTest: faker.date.past(),
       }
     });
     if (author) {

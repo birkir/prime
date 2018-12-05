@@ -69,10 +69,6 @@ export class SchemaDetail extends React.Component<IProps> {
     this.load();
   }
 
-  componentWillUnmount() {
-
-  }
-
   async load() {
     await ContentTypes.loadAll();
     this.contentType = await ContentTypes.loadById(this.props.match.params.id);
@@ -110,7 +106,6 @@ export class SchemaDetail extends React.Component<IProps> {
 
   onCloseDrawer = () => {
     this.isDrawerOpen = false;
-    this.isNewField = false;
   }
 
   onDragStart = (e: DragStart) => {
@@ -233,14 +228,13 @@ export class SchemaDetail extends React.Component<IProps> {
       }));
 
     if (isValid) {
-      console.log('submit', field);
-
       this.selectedField.update({
         name: field.name,
         title: field.title,
         type: field.type,
         options: field.options,
       });
+      this.selectedField = null;
       this.onCloseDrawer();
     } else {
       message.error('Fix errors before saving');
@@ -405,19 +399,19 @@ export class SchemaDetail extends React.Component<IProps> {
           </Layout>
           <Drawer
             title={`${this.isNewField ? 'New' : 'Edit'} field`}
-            width={300}
+            width={360}
             placement="right"
             maskClosable={true}
             onClose={this.onEditFieldCancel}
             visible={this.isDrawerOpen}
           >
-            <EditField
+            {this.selectedField && (<EditField
               ref={this.editField}
               availableFields={availableFields}
               field={this.selectedField}
               onCancel={this.onEditFieldCancel}
               onSubmit={this.onEditFieldSubmit}
-            />
+            />)}
           </Drawer>
         </Layout>
       </DragDropContext>

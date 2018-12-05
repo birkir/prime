@@ -1,5 +1,6 @@
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import * as GraphQLJSON from 'graphql-type-json';
+import { fields as allFields } from '../../fields';
 
 import { ContentTypeField } from '../../models/ContentTypeField';
 
@@ -137,6 +138,9 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
 
   const updateOrCreateField = async (field: IField, group: string, position: number, parent?: IField) => {
 
+    const fieldInstance = allFields.find(f => f.id === field.type);
+    const defaultOptions = (fieldInstance && fieldInstance.defaultOptions) || {};
+
     const obj: any = { // tslint:disable-line no-any
       contentTypeId,
       position,
@@ -144,7 +148,10 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
       name: field.name,
       group: group,
       title: field.title,
-      options: field.options
+      options: {
+        ...defaultOptions,
+        ...field.options
+      },
     };
 
     if (parent) {

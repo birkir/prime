@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "@primecms/field": "^0.0.19",
+    "@primecms/field-asset": "^0.0.19",
+    "@primecms/field-datetime": "^0.0.19",
     "@primecms/field-document": "^0.0.19",
     "@primecms/field-group": "^0.0.19",
     "@primecms/field-slice": "^0.0.19",
@@ -66,7 +68,6 @@
     "@types/graphql": "14.0.3",
     "@types/lodash": "4.14.118",
     "@types/rc": "0.0.1",
-    "graphql": "14.0.2",
     "ts-node": "7.0.1"
   },
   "publishConfig": {

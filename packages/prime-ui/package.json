@@ -63,5 +63,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "330de5101b01a3604d708b7d5991943fb57db9ef"
+  "gitHead": "330de5101b01a3604d708b7d5991943fb57db9ef",
+  "dependencies": {
+    "@primecms/field-asset": "^0.0.19",
+    "@primecms/field-datetime": "^0.0.19",
+    "moment": "^2.22.2"
+  }
 }

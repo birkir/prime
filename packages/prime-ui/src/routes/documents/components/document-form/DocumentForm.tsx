@@ -8,6 +8,7 @@ import { SchemaField } from '../../../../stores/models/Schema';
 import { client } from '../../../../utils/client';
 import { fields } from '../../../../utils/fields';
 import stores from '../../../../stores';
+import { config } from '../../../../utils/config';
 
 export interface IDocumentFormProps extends FormComponentProps {
   entry?: any;
@@ -24,6 +25,7 @@ function renderInputField({ field, path, initialValue, form, entry, client, stor
       field={field}
       form={form}
       client={client}
+      config={config}
       stores={stores}
       path={path}
       entry={entry}
@@ -58,6 +60,7 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
       stores,
       path: field.name,
       entry: this.props.entry,
+      initialValue: get(this.props, `entry.data.${field.name}`),
     });
   }
 

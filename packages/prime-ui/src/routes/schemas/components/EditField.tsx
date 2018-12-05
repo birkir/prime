@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Button, Input, Select } from 'antd';
+import { Form, Button, Input, Select, Row, Col } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { camelCase } from 'lodash';
-import { ContentTypes } from '../../../stores/contentTypes';
+import { camelCase, get } from 'lodash';
+import { fields } from '../../../utils/fields';
+import stores from '../../../stores';
+import { config } from '../../../utils/config';
 
 const { Option } = Select;
 
@@ -18,6 +20,14 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
 
   const [autoName, setAutoName] = useState(form.getFieldValue('name') === '');
 
+  const type = form.getFieldValue('type');
+  const theField = get(fields, type);
+  const SchemaSettingsComponent = get(theField, 'SchemaSettingsComponent', () => null);
+  const options = {
+    ...(get(theField, 'defaultOptions', {}) || {}),
+    ...(get(field, 'options', {}) || {})
+  };
+
   const onFormSubmit = async (e: any) => {
     e.preventDefault();
     const data = form.getFieldsValue();
@@ -25,9 +35,15 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
       ...field,
       ...data,
     }
-    onSubmit(result);
+
+    if (SchemaSettingsComponent && SchemaSettingsComponent.BEFORE_SUBMIT) {
+      SchemaSettingsComponent.BEFORE_SUBMIT(result.options);
+    }
+
+    await onSubmit(result);
     return false;
   }
+
 
   const onNameKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     setAutoName(e.currentTarget.value === '');
@@ -40,6 +56,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
     });
   }
 
+
   return (
     <>
       <Form
@@ -47,72 +64,45 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
         hideRequiredMark
         onSubmit={onFormSubmit}
       >
-        <Form.Item label="Title">
+        <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('title')(
             <Input
+              addonBefore="Title"
               onKeyUp={onTitleKeyUp}
               placeholder="Please enter title"
               autoFocus
             />
           )}
         </Form.Item>
-        <Form.Item label="API">
+
+        <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('name')(
             <Input
+              addonBefore="API"
               onKeyUp={onNameKeyUp}
               placeholder="Please enter api id"
             />
           )}
         </Form.Item>
-        <Form.Item label="Type">
+
+        <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('type')(
-            <Select placeholder="Please select type">
+            <Select placeholder="Field Type">
               {availableFields.map((field) => (
                 <Option value={field.id} key={field.id}>{field.title}</Option>
               ))}
             </Select>
           )}
         </Form.Item>
-        {field.type === 'document' && (
-          <Form.Item label="Content Type">
-            {getFieldDecorator('options.contentTypeId')(
-              <Select placeholder="Select Content Type">
-                {ContentTypes.list.filter(n => !n.isSlice).map(contentType => (
-                  <Option value={contentType.id} key={contentType.id}>
-                    {contentType.title}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-        )}
-        {field.type === 'slice' && (
-          <Form.Item label="Slices">
-            {getFieldDecorator('options.contentTypeIds')(
-              <Select placeholder="Select Slices" mode="multiple">
-                {ContentTypes.list.filter(n => n.isSlice).map(contentType => (
-                  <Option value={contentType.id} key={contentType.id}>
-                    {contentType.title}
-                  </Option>
-                ))}
-              </Select>
-            )}
-          </Form.Item>
-        )}
-        {/* <Form.Item label="Options">
-          {getFieldDecorator('optionsJson', {
-            rules: [{
-              validator(rule, value, callback) {
-                try { JSON.parse(value); } catch (err) {
-                  callback('Invalid JSON');
-                }
-                callback();
-              },
-            }]
-          })(
-            <TextArea />
-          )}
-        </Form.Item> */}
+
+        <SchemaSettingsComponent
+          field={field}
+          form={form}
+          config={config}
+          options={options}
+          stores={stores}
+        />
+
         <div
           style={{
             position: 'absolute',
@@ -137,15 +127,16 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
 export const EditField = Form.create({
   mapPropsToFields(props: any) {
     const { field } = props;
+    const options = get(field, 'options', {}) || {};
     const res: any = {
       title: Form.createFormField({ value: field.title }),
       name: Form.createFormField({ value: field.name }),
       type: Form.createFormField({ value: field.type }),
       // options: Form.createFormField({ value: field.options }),
-      optionsJson: Form.createFormField({ value: JSON.stringify(field.options || {}) }),
+      optionsJson: Form.createFormField({ value: JSON.stringify(options) }),
     };
 
-    Object.entries(field.options).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       res[`options.${key}`] = Form.createFormField({ value });
     });
 

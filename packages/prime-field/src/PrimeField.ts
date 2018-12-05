@@ -1,6 +1,12 @@
 import { FormComponentProps } from 'antd/lib/form'; // tslint:disable-line no-submodule-imports
 import { ApolloClient } from 'apollo-boost';
-import { GraphQLInputObjectType, GraphQLInputType, GraphQLOutputType } from 'graphql';
+import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInputType } from 'graphql';
+
+interface IOutputArgs {
+  [key: string]: {
+    type: GraphQLInputType | GraphQLInputObjectType;
+  };
+}
 
 interface IField {
   id: string;
@@ -36,6 +42,9 @@ export interface IPrimeFieldProps {
     entryId: string;
     data: object;
   };
+  config: {
+    [key: string]: string;
+  };
   path: string;
   renderField(args: IPrimeFieldProps): React.ReactNode;
 }
@@ -51,9 +60,7 @@ export interface IPrimeFieldGraphQLArguments {
   isUpdate: boolean;
 }
 
-type IPrimeFieldGraphQLOutput = null | {
-  type: GraphQLOutputType;
-};
+type IPrimeFieldGraphQLOutput = null | GraphQLFieldConfig<any, any>; // tslint:disable-line no-any
 
 type IPrimeFieldGraphQLInput = null | {
   type: GraphQLInputType | GraphQLInputObjectType;
@@ -103,7 +110,7 @@ export abstract class PrimeField {
    * Return a object that can be used as GraphQL input type to query the field via `where`
    * @param args All the necessery things you will need from Prime Core
    */
-  public abstract getGraphQLWhere(): IPrimeFieldGraphQLInput;
+  public abstract getGraphQLWhere(args: IPrimeFieldGraphQLArguments): IPrimeFieldGraphQLInput;
 }
 
 export function registerField(name: string, field: IRegisterField): IRegisterField {
