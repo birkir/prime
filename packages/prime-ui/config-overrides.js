@@ -3,7 +3,16 @@ const path = require('path');
 const { injectBabelPlugin, getBabelLoader } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 const rewireGqlTag = require('react-app-rewire-graphql-tag');
-const primeConfig = require('rc')('prime', { fields: [] });
+const primeConfig = require('rc')('prime', {
+  fields: [
+    '@primecms/field-asset',
+    '@primecms/field-datetime',
+    '@primecms/field-document',
+    '@primecms/field-group',
+    '@primecms/field-slice',
+    '@primecms/field-string'
+  ]
+});
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin(

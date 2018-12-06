@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prime</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//unpkg.com/docsify-themeable/dist/css/theme-simple.css">
+  <link rel="stylesheet" href="dracula-prism.css">
+  <style>
+    :root {
+      --theme-color: #318E9F;
+      --cover-max-width: 100vw;
+      --cover-background-color: white;
+    }
+
+    main.hidden {
+      display: none;
+    }
+
+    .cover-main ul {
+      font-size: 1.25rem;
+      line-height: 2rem;
+      display: grid;
+      text-align: left;
+      grid-column-gap: 16px;
+      grid-row-gap: 20px;
+      grid-template-columns: repeat(2, 50%);
+      list-style: none;
+      margin: 1.5em 0;
+      width: 480px;
+      max-width: 100%;
+    }
+
+    @media (max-width: 400px) {
+      .cover-main ul {
+        grid-template-columns: repeat(1, 100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: '<i style="font-family: system; font-size: 46px;">prime</i>',
+      repo: 'https://github.com/birkir/prime',
+      homepage: 'https://raw.githubusercontent.com/birkir/prime/master/README.md',
+      loadSidebar: true,
+      coverpage: true,
+      onlyCover: true,
+      auto2top: true,
+      autoHeader: false,
+      subMaxLevel: 3,
+      maxLevel: 4,
+      search: {
+        paths: 'auto',
+        placeholder: 'Search',
+        noData: 'No Results.'
+      },
+      ga: 'UA-113990173-2'
+    }
+  </script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-json.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-javascript.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-typescript.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/ga.min.js"></script>
+  <script src="//unpkg.com/docsify-themeable"></script>
+</body>
+</html>

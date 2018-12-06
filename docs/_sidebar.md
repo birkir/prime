@@ -1,0 +1,11 @@
+- [Introduction](README)
+- [Getting Started](getstarted)
+- [Guides](guides)
+- [Plugins](plugins)
+- [Deploying](deploying)
+- [Changelog](changelog)
+- [Contributing](contributing)
+- **Links**
+- [![Github](https://icongram.jgog.in/simple/github.svg?color=808080&size=16)Github](https://github.com/birkir/prime)
+- [![NPM](https://icongram.jgog.in/simple/npm.svg?colored&size=16)NPM](https://www.npmjs.com/org/primecms)
+- [![Twitter](https://icongram.jgog.in/simple/twitter.svg?colored&size=16)@birkirgudjonson](https://twitter.com/birkirgudjonson)

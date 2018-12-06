@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Prime" width="330px" src="docs/_assets/prime.png" />
+  <img alt="Prime" width="330px" src="_assets/prime.png" />
 </p>
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
