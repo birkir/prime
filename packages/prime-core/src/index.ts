@@ -14,7 +14,6 @@ import { auth } from './routes/auth';
 import { externalGraphql } from './routes/external';
 import { fields } from './routes/fields';
 import { internalGraphql } from './routes/internal';
-import { seed } from './seed';
 import { sequelize } from './sequelize';
 import { primeConfig } from './utils/primeConfig';
 
@@ -29,12 +28,13 @@ const store = new sequelizeStore({
 debug('initializing');
 
 (async () => {
-  await sequelize.sync({ force: true });
-
-  debug('seeding');
-  await seed();
+  await sequelize.sync();
 
   const httpServer = http.createServer(app);
+
+  if (!process.env.SESSION_SECRET && process.env.NODE_ENV !== 'development') {
+    throw new Error('Unset environment variable in non-development mode: "SESSION_SECRET"');
+  }
 
   const start = async () => {
     httpServer.removeListener('request', app);
@@ -93,8 +93,8 @@ debug('initializing');
   httpServer.listen(port, () => {
     console.log();
     console.log(`🚀  Server listening on port ${port}\n`);
-    console.log(`[Public API] http://localhost:${port}/graphql`);
-    console.log(`[Internal API] http://localhost:${port}/internal/graphql`);
+    console.log(`[UI] http://localhost:${port}`);
+    console.log(`[API] http://localhost:${port}/graphql`);
   });
 
 })();

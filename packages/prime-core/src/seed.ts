@@ -1,3 +1,6 @@
+// tslint:disable no-require-imports no-var-requires no-console
+require('dotenv').config();
+
 // tslint:disable no-require-imports no-var-requires no-console await-promise
 import * as faker from 'faker';
 
@@ -6,11 +9,14 @@ import { ContentEntry } from './models/ContentEntry';
 import { ContentType } from './models/ContentType';
 import { ContentTypeField } from './models/ContentTypeField';
 import { User } from './models/User';
+import { sequelize } from './sequelize';
 
 const debug = require('debug')('prime:seed');
 
 // tslint:disable-next-line max-func-body-length
 export const seed = async () => {
+
+  await sequelize.sync({ force: true });
 
   // Create sample user
   const user = await User.create({
@@ -144,4 +150,12 @@ export const seed = async () => {
   // Print ACL
   debug('print roles:');
   debug(await acl.whatResources('sample-editor'));
+
+  // Done
+  debug('seeding finished');
+
+  return 1;
 };
+
+seed()
+  .then(() => process.exit(0));
