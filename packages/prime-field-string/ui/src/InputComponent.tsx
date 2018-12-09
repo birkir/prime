@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
-import BraftEditor from 'braft-editor'; // tslint:disable-line
+// import BraftEditor from 'braft-editor'; // tslint:disable-line
 import { draftToMarkdown } from 'markdown-draft-js'; // tslint:disable-line
 import * as React from 'react';
 
@@ -9,14 +9,14 @@ const controls = ['bold', 'italic', 'underline', 'link'];
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
   public state = {
-    value: BraftEditor.createEditorState(null)
+    // value: BraftEditor.createEditorState(null)
   };
 
   public onGetMarkdown() {
-    const markdownString = draftToMarkdown(JSON.parse(this.state.value.toRAW()));
+    // const markdownString = draftToMarkdown(JSON.parse(this.state.value.toRAW()));
   }
 
-  public onChange = (value: any) => {
+  public onChange = (value: any) => { // tslint:disable-line no-any
     this.setState({
       value
     });
@@ -24,13 +24,14 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
   public renderMarkdown = () => {
     return (
-      <BraftEditor
-        className="my-editor"
-        controls={controls}
-        onChange={this.onChange}
-        language="en"
-        placeholder="Some stuff"
-      />
+      null
+      // <BraftEditor
+      //   className="my-editor"
+      //   controls={controls}
+      //   onChange={this.onChange}
+      //   language="en"
+      //   placeholder="Some stuff"
+      // />
     );
   }
 
@@ -42,7 +43,6 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       <Form.Item label={field.title}>
         {getFieldDecorator(path, { initialValue })(
           <Input.TextArea
-            size="large"
             autosize={{ minRows: 2, maxRows: 8 }}
           />
         )}

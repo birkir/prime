@@ -2,12 +2,6 @@ import { FormComponentProps } from 'antd/lib/form'; // tslint:disable-line no-su
 import { ApolloClient } from 'apollo-boost';
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInputType } from 'graphql';
 
-interface IOutputArgs {
-  [key: string]: {
-    type: GraphQLInputType | GraphQLInputObjectType;
-  };
-}
-
 interface IField {
   id: string;
   name: string;
