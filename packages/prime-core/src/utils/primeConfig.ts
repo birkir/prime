@@ -10,12 +10,11 @@ const fields = [
   '@primecms/field-slice',
   '@primecms/field-string'
 ].map(pkg => {
-  if (process.env.NODE_ENV === 'development') {
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     return pkg + '/src';
   }
   return pkg;
 });
-
 
 // Make default heroku buildpacks work
 if (process.env.CLOUDINARY_URL && !process.env.PRIME_CLOUDINARY_URL) {

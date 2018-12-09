@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'antd/dist/antd.less';
 import { App } from './App';
+import 'antd/dist/antd.less';
+import './styles/base.css';
 import './utils/fields';
 
 (window as any).React = React;

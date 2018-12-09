@@ -47,7 +47,7 @@ export class SchemaList extends React.Component<IProps> {
       dataIndex: 'title',
       key: 'title',
       render(_text: string, record: any) {
-        return (<Link to={`/schemas/${record.id}`}>{record.name}</Link>);
+        return (<Link to={`/schemas/${record.id}`}>{record.title}</Link>);
       }
     }, {
       title: 'API',
@@ -61,8 +61,12 @@ export class SchemaList extends React.Component<IProps> {
       key: 'action',
       render: (text, record) => (
         <>
-          <Link to={`/documents/schema/${record.id}`}>Documents</Link>
-          <Divider type="vertical" />
+          {!record.isSlice && (
+            <>
+              <Link to={`/documents/schema/${record.id}`}>Documents</Link>
+              <Divider type="vertical" />
+            </>
+          )}
           <Popconfirm
             title="Are you sure?"
             icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}

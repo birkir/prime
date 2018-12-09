@@ -16,3 +16,14 @@ lerna bootstrap --hoist --nohoist "prime*"
 # Run core and ui in development
 lerna run dev --stream
 ```
+
+## Common problems
+
+### `Schema must contain unique named types but contains multiple types named "String".`
+
+Dependencies must be hoisted, as GraphQL types are created with Symbol and must be unique.
+
+Fix:
+```
+lerna bootstrap --hoist
+```

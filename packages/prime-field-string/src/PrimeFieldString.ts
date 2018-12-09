@@ -3,7 +3,8 @@ import { GraphQLString } from 'graphql';
 import { primeFieldStringWhere } from './primeFieldStringWhere';
 
 interface IPrimeFieldStringOptions {
-  singleline: boolean;
+  multiline: boolean;
+  markdown: boolean;
 }
 
 export class PrimeFieldString extends PrimeField {
@@ -13,7 +14,8 @@ export class PrimeFieldString extends PrimeField {
   public description: string = 'Text field with no formatting';
 
   public defaultOptions: IPrimeFieldStringOptions = {
-    singleline: true
+    multiline: false,
+    markdown: false
   };
 
   public getGraphQLOutput() {

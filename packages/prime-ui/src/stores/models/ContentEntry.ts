@@ -92,6 +92,7 @@ export const ContentEntry = types
         mutation: UPDATE_CONTENT_ENTRY,
         variables: {
           entryId: self.entryId,
+          language: self.language,
           data: proposedData,
         },
       });

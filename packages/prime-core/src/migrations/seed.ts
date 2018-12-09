@@ -4,19 +4,19 @@ require('dotenv').config();
 // tslint:disable no-require-imports no-var-requires no-console await-promise
 import * as faker from 'faker';
 
-import { acl } from './acl';
-import { ContentEntry } from './models/ContentEntry';
-import { ContentType } from './models/ContentType';
-import { ContentTypeField } from './models/ContentTypeField';
-import { User } from './models/User';
-import { sequelize } from './sequelize';
+import { acl } from '../acl';
+import { ContentEntry } from '../models/ContentEntry';
+import { ContentType } from '../models/ContentType';
+import { ContentTypeField } from '../models/ContentTypeField';
+import { User } from '../models/User';
+import { sequelize } from '../sequelize';
 
 const debug = require('debug')('prime:seed');
 
 // tslint:disable-next-line max-func-body-length
 export const seed = async () => {
 
-  await sequelize.sync({ force: true });
+  await sequelize.sync();
 
   // Create sample user
   const user = await User.create({

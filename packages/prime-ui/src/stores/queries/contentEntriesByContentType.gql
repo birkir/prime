@@ -14,6 +14,7 @@ query contentEntriesByContentType(
         contentReleaseId
         language
         isPublished
+        display
         data
         createdAt
         updatedAt

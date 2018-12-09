@@ -205,8 +205,14 @@ export class SchemaDetail extends React.Component<IProps> {
   }
 
   onFieldClick = (field: any) => {
+    this.isNewField = false;
     this.selectedField = field;
     this.onOpenDrawer();
+  }
+
+  onFieldDisplay = (field: any) => {
+    this.contentType!.schema.setDisplay(field);
+    this.flushSchema();
   }
 
   onSave = () => {
@@ -286,6 +292,7 @@ export class SchemaDetail extends React.Component<IProps> {
       key={field.id}
       field={field}
       index={index}
+      onDisplayClick={this.onFieldDisplay}
       onClick={this.onFieldClick}
       onDelete={this.onFieldDelete}
     >

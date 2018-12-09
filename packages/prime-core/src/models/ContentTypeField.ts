@@ -1,5 +1,5 @@
 import { JSON } from 'sequelize';
-import { BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
 import { ContentType } from './ContentType';
 
 @Table
@@ -21,11 +21,17 @@ export class ContentTypeField extends Model<ContentTypeField> {
   @Column
   public type: string;
 
+  @Default('Main')
   @Column
   public group: string;
 
+  @Default(0)
   @Column
   public position: number;
+
+  @Default(false)
+  @Column
+  public isDisplay: boolean;
 
   @ForeignKey(() => ContentType)
   @Column(DataType.UUID)

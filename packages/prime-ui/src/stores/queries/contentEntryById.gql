@@ -1,10 +1,12 @@
 query contentEntryById(
   $entryId: ID
   $versionId: ID
+  $language: String
 ) {
   ContentEntry(
     entryId: $entryId
     versionId: $versionId
+    language: $language
   ) {
     versionId
     entryId
@@ -15,6 +17,7 @@ query contentEntryById(
     data
     createdAt
     updatedAt
+    display
     versions {
       versionId
       isPublished

@@ -24,6 +24,7 @@ module.exports = function override(config, env) {
     modifyVars: {
       '@primary-color': '#318E9F',
       '@link-color': '#318E9F',
+      '@font-family': '"Noto Sans TC", "Helvetica Neue", Helvetica, Arial, sans-serif',
       // '@layout-header-background': '#010102',
       '@layout-header-background': '#1F3E44',
       // @link-color: #1890ff;                            // link color

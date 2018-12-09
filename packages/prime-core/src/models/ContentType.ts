@@ -28,6 +28,9 @@ export class ContentType extends Model<ContentType> {
   @Column
   public isSlice: boolean;
 
+  @Column(DataType.JSONB)
+  public groups;
+
   @HasMany(() => ContentEntry, {
     onUpdate: 'SET NULL',
     onDelete: 'SET NULL'

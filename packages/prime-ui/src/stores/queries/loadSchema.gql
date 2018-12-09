@@ -13,6 +13,7 @@ query loadSchema(
       title
       type
       options
+      isDisplay
       fields {
         id
         name

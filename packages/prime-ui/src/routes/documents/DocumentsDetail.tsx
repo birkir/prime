@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Button, Icon, message, Skeleton, Card, Alert } from 'antd';
+import { Layout, Button, Icon, message, Skeleton, Card, Alert, Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { observable } from 'mobx';
 import { Instance } from 'mobx-state-tree';
@@ -26,11 +26,16 @@ export class DocumentsDetail extends React.Component<IProps> {
   contentEntry: Instance<typeof ContentEntry> | null = null;
   contentType: Instance<typeof ContentType> | null = null;
 
+  langs = [{ id: 'en', flag: 'us', name: 'English' }, { id: 'is', flag: 'is', name: 'Icelandic' }];
+  language: { id: string; flag: string; name: string } = this.langs[0];
+
   @observable loading = false;
   @observable loaded = false;
   @observable error: Error | null = null;
 
   componentDidMount() {
+    const search = new URLSearchParams(window.location.search)
+    this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
     this.load();
   }
 
@@ -54,7 +59,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   async loadEntry(entryId: string) {
     this.loading = true;
     try {
-      const contentEntry = await ContentEntries.loadById(entryId);
+      const contentEntry = await ContentEntries.loadById(entryId, this.language.id);
       const contentType = await ContentTypes.loadById(contentEntry.contentTypeId);
       await contentType.loadSchema();
       contentEntry.setContentType(contentType);
@@ -146,6 +151,17 @@ export class DocumentsDetail extends React.Component<IProps> {
     this.documentForm = ref;
   }
 
+  onLanguageClick = (e: any) => {
+    const { match, history } = this.props;
+    const { params } = match;
+
+    if (params.entryId) {
+      history.push(`/documents/doc/${params.entryId}?lang=${e.key}`);
+    } else if (params.contentTypeId) {
+      history.push(`/documents/create/${params.contentTypeId}?lang=${e.key}`);
+    }
+  }
+
   renderVersion = (version: any, index: number) => {
     const draftLabel = this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
@@ -158,6 +174,19 @@ export class DocumentsDetail extends React.Component<IProps> {
         banner
       />
     );
+  }
+
+  get languagesMenu() {
+    return (
+      <Menu onClick={this.onLanguageClick}>
+        {this.langs.map(({ id, flag, name }) => (
+          <Menu.Item key={id}>
+            <span className={`flag-icon flag-icon-${flag}`} style={{ marginRight: 8 }} />
+            {name}
+          </Menu.Item>
+        ))}
+      </Menu>
+    )
   }
 
   render() {
@@ -174,6 +203,13 @@ export class DocumentsDetail extends React.Component<IProps> {
               Back
             </Link>
           </div>
+          <Dropdown overlay={this.languagesMenu} trigger={['click']}>
+            <Button type="default" style={{ marginRight: 16 }}>
+              <span className={`flag-icon flag-icon-${this.language.flag}`} style={{ marginRight: 8 }} />
+              {this.language.name}
+              <Icon type="down" />
+            </Button>
+          </Dropdown>
           {!loading && (
             <>
               <Button onClick={this.onSave} type="default" style={{ marginRight: 16 }}>Save</Button>

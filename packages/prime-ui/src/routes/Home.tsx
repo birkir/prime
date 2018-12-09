@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Breadcrumb, Icon, Card, Table, Button, Row, Col } from 'antd';
+import { Layout, Breadcrumb, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
 const { Content, Header } = Layout;

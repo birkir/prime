@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import { ContentEntry } from './models/ContentEntry';
 import { client } from '../utils/client';
 import { CONTENT_ENTRY_BY_ID, CONTENT_ENTRIES_BY_CONTENT_TYPE } from './queries';
@@ -22,21 +22,24 @@ export const ContentEntries = types.model('ContentEntries', {
     return data.allContentEntries.edges.map(({ node }: any) => ContentEntry.create(node));
   });
 
-  const loadById = flow(function* loadById(id: string) {
+  const loadById = flow(function* loadById(id: string, language: string) {
     self.loading = true;
+    // @todo persist between language switches
     let item = self.items.get(id);
-    if (!item) {
-      const { data } = yield client.query({
-        query: CONTENT_ENTRY_BY_ID,
-        variables: {
-          entryId: id,
-        },
-      });
-      self.loading = false;
-      self.loaded = true;
-      item = ContentEntry.create(data.ContentEntry);
-      self.items.put(item);
+    if (item) {
+      destroy(item);
     }
+    const { data } = yield client.query({
+      query: CONTENT_ENTRY_BY_ID,
+      variables: {
+        entryId: id,
+        language,
+      },
+    });
+    self.loading = false;
+    self.loaded = true;
+    item = ContentEntry.create(data.ContentEntry);
+    self.items.put(item);
     return item;
   });
 

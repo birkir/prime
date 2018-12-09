@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Icon, Input, Checkbox, Button, message } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { Auth } from '../../stores/auth';
 

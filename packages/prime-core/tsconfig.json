@@ -1,18 +1,30 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
     "moduleResolution": "node",
     "noUnusedLocals": true,
-    "declaration": false,
     "pretty": true,
     "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "module": "commonjs",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es6",
+      "es2015",
+      "es2017",
+      "esnext"
+    ]
   },
   "include": [
     "./src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.spec.ts"
   ]
 }

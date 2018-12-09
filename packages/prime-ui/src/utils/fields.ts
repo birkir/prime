@@ -22,4 +22,6 @@ if (process.env.NODE_ENV === 'development') {
   registerField('group', require('@primecms/field-group/ui/src').default);
   registerField('slice', require('@primecms/field-slice/ui/src').default);
   registerField('string', require('@primecms/field-string/ui/src').default);
+
+  console.log('using development fields');
 }

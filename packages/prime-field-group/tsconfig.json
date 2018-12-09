@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../prime-core/tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
     "moduleResolution": "node",

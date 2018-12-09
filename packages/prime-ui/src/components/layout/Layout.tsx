@@ -44,6 +44,13 @@ export const Layout = ({ children }: any) => (
               <Icon type="database" />
               <span>Schemas</span>
             </Menu.Item>
+            <Menu.Item
+              key="playground"
+              onClick={() => history.push('/playground')}
+            >
+              <Icon type="code" />
+              <span>Playground</span>
+            </Menu.Item>
           </Menu>
           <div style={{ flex: 1 }} />
           <Link style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', padding: 16 }} to="/logout">

@@ -11,6 +11,8 @@ import { Login } from './routes/login/Login';
 import { observer } from 'mobx-react';
 import { Auth } from './stores/auth';
 import { Logout } from './routes/logout/Logout';
+import { Playground } from './routes/playground/Playground';
+// import { Onboarding } from './routes/onboarding/Onboarding';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
@@ -36,12 +38,14 @@ export class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
+          {/* <Route path="/" exact component={Onboarding} /> */}
           <Route path="/login" exact component={Login} />
           <Route path="/logout" exact component={Logout} />
           <Private>
             <Layout>
               <Switch>
                 <Route path="/" exact component={Home} />
+                <Route path="/playground" exact component={Playground} />
                 <Route path="/schemas" exact component={SchemaList} />
                 <Route path="/schemas/:id" component={SchemaDetail} />
                 <Route path="/documents" exact component={DocumentsList} />

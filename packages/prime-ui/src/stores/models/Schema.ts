@@ -1,4 +1,4 @@
-import { types, destroy, Instance, getParent, detach, hasParentOfType, getParentOfType, getPath, getPathParts } from 'mobx-state-tree';
+import { types, destroy, Instance, getParent, detach, hasParentOfType } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
 
 export type ISchemaField = Instance<typeof SchemaField>;
@@ -18,6 +18,7 @@ export const SchemaField = types
     type: types.string,
     name: types.string,
     title: types.string,
+    isDisplay: types.optional(types.boolean, false),
     options: types.frozen<JSONObject>(),
     group: DEFAULT_GROUP_TITLE,
     fields: types.maybeNull(
@@ -27,12 +28,20 @@ export const SchemaField = types
     ),
     __typename: types.maybeNull(types.string),
   })
+  .views(self => ({
+    get isLeaf() {
+      return !hasParentOfType(self, SchemaField);
+    }
+  }))
   .actions(self => ({
     update(obj: { name: string; title: string; type: string; options: JSONObject }) {
       self.name = obj.name;
       self.title= obj.title;
       self.type = obj.type;
       self.options = obj.options;
+    },
+    setIsDisplay(isDisplay: boolean) {
+      self.isDisplay = isDisplay;
     },
   }));
 
@@ -91,6 +100,7 @@ export const Schema = types
             id: id,
             name: obj.name,
             title: obj.title,
+            isDisplay: false,
             type: obj.type || DEFAULT_TYPE,
             group: obj.group || DEFAULT_GROUP_TITLE,
             options: {},
@@ -100,6 +110,10 @@ export const Schema = types
           return newField;
         }
         return null;
+      },
+      setDisplay(node: ISchemaField) {
+        self.fields.forEach(field => field.setIsDisplay(false));
+        node.setIsDisplay(true);
       },
       addGroup(title: string) {
         self.groups.push(SchemaGroup.create({

@@ -1,8 +1,10 @@
-import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLBoolean } from 'graphql';
 import * as GraphQLJSON from 'graphql-type-json';
+import { defaultsDeep } from 'lodash';
 import { fields as allFields } from '../../fields';
 
 import { ContentTypeField } from '../../models/ContentTypeField';
+import { ContentType } from '../../models/ContentType';
 
 type IField = {
   id?: string;
@@ -13,6 +15,7 @@ type IField = {
   fields?: IField[];
   position?: number;
   options?: any; // tslint:disable-line no-any
+  isDisplay?: boolean;
 };
 
 type IGroup = {
@@ -30,6 +33,7 @@ export const ContentTypeType = new GraphQLObjectType({
     type: { type: GraphQLString },
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
+    isDisplay: { type: GraphQLBoolean },
     fields: { type: new GraphQLList(ContentTypeType) }
   })
 });
@@ -51,6 +55,7 @@ export const ContentTypeInputType = new GraphQLInputObjectType({
     type: { type: GraphQLString },
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
+    isDisplay: { type: GraphQLBoolean },
     fields: { type: new GraphQLList(ContentTypeInputType) }
   })
 });
@@ -76,7 +81,23 @@ export const getFields = async (contentTypeId: string) => {
     ]
   });
 
-  const groups = fields.reduce(
+  const contentType = await ContentType.find({
+    where: {
+      id: contentTypeId,
+    }
+  });
+
+  const groups = (contentType && contentType.groups || ['Main'])
+    .map(title => ({ title, fields: [] }));
+
+  const withOptions = (field: any) => {
+    const fieldInstance = allFields.find(f => f.id === field.type);
+    const defaultOptions = (fieldInstance && fieldInstance.defaultOptions) || {};
+    field.options = defaultsDeep(field.options || {}, defaultOptions);
+    return field;
+  };
+
+  fields.reduce(
     (acc: IGroup[], field, index: number) => {
       if (field.contentTypeFieldId) {
         return acc;
@@ -86,18 +107,18 @@ export const getFields = async (contentTypeId: string) => {
         field.group = 'Main';
       }
 
-      let group: IGroup | undefined = acc.find((g: IGroup) => g && g.title === field.group);
+      let group: IGroup | undefined = groups.find((g: IGroup) => g && g.title === field.group);
 
       if (!group) {
         group = { title: field.group, fields: [] };
-        acc.push(group);
+        groups.push(group);
       }
 
       if (group.fields) {
-        group.fields.push({
+        group.fields.push(withOptions({
           ...field.dataValues as any, // tslint:disable-line prefer-type-cast no-any
           position: field.dataValues.position || index
-        });
+        }));
       }
 
       return acc;
@@ -114,10 +135,10 @@ export const getFields = async (contentTypeId: string) => {
           const target = group.fields.find(f => f.id === parentField.id);
           if (target) {
             target.fields = target.fields || [];
-            target.fields.push({
+            target.fields.push(withOptions({
               ...field.dataValues as any, // tslint:disable-line prefer-type-cast no-any
               position: field.dataValues.position || target.fields.length
-            });
+            }));
           }
         }
       }
@@ -137,10 +158,6 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
   const removeFieldIds = new Set(originalFields.map(f => f.id));
 
   const updateOrCreateField = async (field: IField, group: string, position: number, parent?: IField) => {
-
-    const fieldInstance = allFields.find(f => f.id === field.type);
-    const defaultOptions = (fieldInstance && fieldInstance.defaultOptions) || {};
-
     const obj: any = { // tslint:disable-line no-any
       contentTypeId,
       position,
@@ -148,10 +165,8 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
       name: field.name,
       group: group,
       title: field.title,
-      options: {
-        ...defaultOptions,
-        ...field.options
-      },
+      isDisplay: field.isDisplay || false,
+      options: field.options,
     };
 
     if (parent) {
@@ -186,7 +201,7 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
         const subfields = group.fields[f].fields;
 
         if (field && subfields) {
-          for (let ff = 0; ff < subfields.length; ff = + 1) {
+          for (let ff = 0; ff < subfields.length; ff += 1) {
             await updateOrCreateField(subfields[ff], group.title, ff, field);
           }
         }
@@ -201,4 +216,16 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
     }
   });
 
+  const contentType = await ContentType.find({
+    where: {
+      id: contentTypeId,
+    }
+  });
+
+  if (contentType) {
+    contentType.groups = groups.map(group => group.title);
+    await contentType.save();
+  }
+
+  return true;
 };
