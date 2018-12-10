@@ -246,7 +246,9 @@ export const internalGraphql = async (restart) => {
     getConfig: {
       type: GraphQLJSON,
       async resolve() {
-        return pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0);
+        return {
+          ...pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0),
+        };
       },
     },
     getContentTypeSchema: {

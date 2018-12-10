@@ -18,6 +18,7 @@ class LoginBase extends React.Component<FormComponentProps> {
     } catch (err) {
       message.error('Invalid email or password');
     }
+    return false;
   }
 
   render() {

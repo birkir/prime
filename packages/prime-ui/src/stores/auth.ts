@@ -8,13 +8,14 @@ import { config, getConfig } from '../utils/config';
 export const Auth = types
   .model('Auth', {
     user: types.maybeNull(User),
+    isSetup: types.optional(types.maybeNull(types.boolean), null),
     isLoggedIn: false,
   })
   .actions(self => {
 
     const ensureFields = async () => {
       if (!self.isLoggedIn) return;
-      getConfig();
+      await getConfig();
       const { data }: any = await client.query({ query: ALL_FIELDS });
       if (data.allFields) {
         data.allFields.forEach((field: any) => {
@@ -62,15 +63,39 @@ export const Auth = types
         },
       }).then(res => res.json());
 
+      if (res.setup) {
+        self.isSetup = res.setup;
+      } else if (res.user) {
+        self.isLoggedIn = Boolean(res.user);
+        self.user = res.user;
+      }
+
+      yield ensureFields();
+    });
+
+    const register = flow(function*({ firstname = '', lastname = '', email, password }: { firstname?: string, lastname?: string, email: string, password: string }) {
+      const res: any = yield fetch(`${config.coreUrl}/auth/register`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ firstname, lastname, email, password }),
+      }).then(res => res.json());
+
+      self.isSetup = false;
       self.isLoggedIn = Boolean(res.user);
       self.user = res.user;
 
       yield ensureFields();
+
+      return res;
     });
 
     return {
       login,
       logout,
+      register,
       checkLogin,
     };
   })

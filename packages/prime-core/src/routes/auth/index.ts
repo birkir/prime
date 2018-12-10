@@ -47,24 +47,42 @@ passport.deserializeUser(({ id }: { id: string }, done: Function) => {
 
 passport.use(strategy);
 
-auth.get('/user', (req: IRequest, res) => {
+auth.get('/user', async (req: IRequest, res) => {
+  const setup = (await User.count()) === 0;
+  const user = req.user;
+  const success = Boolean(user);
+  res.json({
+    user: success ? omit(user && user.dataValues || {}, ['password']) : null,
+    setup,
+    success
+  });
+});
+
+const login = async (req: IRequest, res) => {
   const user = req.user;
   const success = Boolean(user);
   res.json({
     user: success ? omit(user && user.dataValues || {}, ['password']) : null,
     success
   });
-});
+}
 
-auth.post('/login', passport.authenticate('local'), async (req: IRequest, res) => {
-    const user = req.user;
-    const success = Boolean(user);
-    res.json({
-      user: success ? omit(user && user.dataValues || {}, ['password']) : null,
-      success
+auth.post('/login', passport.authenticate('local'), login);
+
+auth.post('/register', async (req: IRequest, res, next) => {
+  const setup = (await User.count()) === 0;
+
+  if (setup) {
+    await User.create({
+      firstname: req.body.firstname || '',
+      lastname: req.body.lastname || '',
+      email: req.body.email,
+      password: req.body.password
     });
   }
-);
+
+  next();
+}, passport.authenticate('local'), login);
 
 auth.get('/logout', (req: IRequest, res) => {
   const { user, session } = req;

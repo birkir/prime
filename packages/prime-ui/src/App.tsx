@@ -12,11 +12,14 @@ import { observer } from 'mobx-react';
 import { Auth } from './stores/auth';
 import { Logout } from './routes/logout/Logout';
 import { Playground } from './routes/playground/Playground';
-// import { Onboarding } from './routes/onboarding/Onboarding';
+import { Onboarding } from './routes/onboarding/Onboarding';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
     return children;
+  }
+  if (Auth.isSetup) {
+    return <Redirect to="/setup" />
   }
   return <Redirect to="/login" />;
 });
@@ -38,7 +41,7 @@ export class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
-          {/* <Route path="/" exact component={Onboarding} /> */}
+          <Route path="/setup" exact component={Onboarding} />
           <Route path="/login" exact component={Login} />
           <Route path="/logout" exact component={Logout} />
           <Private>
