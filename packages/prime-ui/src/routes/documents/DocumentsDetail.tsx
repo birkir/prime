@@ -130,8 +130,8 @@ export class DocumentsDetail extends React.Component<IProps> {
         message.info('Document was saved');
       } else if (this.contentType) {
         try {
-          const contentEntry = await ContentEntries.create(this.contentType.id, parsed);
-          this.props.history.push(`/documents/doc/${contentEntry.entryId}`);
+          const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.language.id);
+          this.props.history.push(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
           message.success('Document created');
         } catch(err) {
           message.error('Could not create document');
@@ -162,7 +162,7 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
   }
 
-  renderVersion = (version: any, index: number) => {
+  renderVersion = (version: any) => {
     const draftLabel = this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
       <Alert
@@ -176,9 +176,25 @@ export class DocumentsDetail extends React.Component<IProps> {
     );
   }
 
+  renderStatus = () => {
+    const contentEntry = this.contentEntry!;
+    const lastPublished = contentEntry.versions.findIndex(v => v.isPublished);
+    const lastDraft = contentEntry.versions.findIndex(v => !v.isPublished);
+
+    return (
+      <>
+        {(lastDraft >= 0 && lastDraft < lastPublished) && this.renderVersion(contentEntry.versions[lastDraft])}
+        {lastPublished >= 0 && this.renderVersion(contentEntry.versions[lastPublished])}
+      </>
+    );
+  }
+
   get languagesMenu() {
     return (
-      <Menu onClick={this.onLanguageClick}>
+      <Menu
+        onClick={this.onLanguageClick}
+        selectedKeys={[this.language.id]}
+      >
         {this.langs.map(({ id, flag, name }) => (
           <Menu.Item key={id}>
             <span className={`flag-icon flag-icon-${flag}`} style={{ marginRight: 8 }} />
@@ -198,10 +214,10 @@ export class DocumentsDetail extends React.Component<IProps> {
       <Layout>
         <Toolbar>
           <div style={{ flex: 1 }}>
-            <Link to="/documents" style={{ color: '#aaa' }}>
+            <Link to={`/documents?lang=${this.language.id}`} style={{ color: '#aaa', marginRight: 16 }}>
               <Icon type="left" />
-              Back
             </Link>
+            {contentType && <strong>{contentType.title}</strong>}
           </div>
           <Dropdown overlay={this.languagesMenu} trigger={['click']}>
             <Button type="default" style={{ marginRight: 16 }}>
@@ -218,7 +234,7 @@ export class DocumentsDetail extends React.Component<IProps> {
           )}
         </Toolbar>
         <Layout>
-          <Content style={{ padding: 32, height: 'calc(100vh - 64px)' }}>
+          <Content style={{ height: 'calc(100vh - 64px)' }}>
             {loading && (
               <Card style={{ marginTop: 100 }}>
                 <Skeleton loading={true} />
@@ -237,9 +253,8 @@ export class DocumentsDetail extends React.Component<IProps> {
             width={320}
             theme="light"
           >
-            <div style={{ padding: 32 }}>
-              <h3>Versions</h3>
-              {contentEntry ? contentEntry.versions.map(this.renderVersion) : (
+            <div style={{ padding: 16 }}>
+              {contentEntry && contentEntry.versions.length > 0 ? this.renderStatus() : (
                 <Alert
                   type="warning"
                   message="Unsaved document"

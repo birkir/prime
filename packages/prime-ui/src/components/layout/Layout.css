@@ -17,9 +17,11 @@
 .with-table-pagination {
   border-bottom-width: 0;
 }
-.with-table-pagination .ant-table-pagination {
+
+.with-table-pagination .ant-table-pagination.ant-pagination {
   margin-bottom: -70px;
   margin-top: 30px;
+  margin-right: 16px !important;
 }
 
 .tabs-schema .ant-tabs-bar {
@@ -27,4 +29,25 @@
   padding-bottom: 0;
   padding-top: 16px;
   margin-bottom: 0;
+}
+
+.document-tabs .ant-tabs-bar {
+  margin-left: 32px;
+}
+
+.document-tabs .ant-tabs-tabpane {
+  padding: 0 32px;
+}
+
+.document-tabs .bf-content {
+  height: auto !important;
+  padding-bottom: 0;
+}
+
+.document-tabs .bf-container .public-DraftEditor-content > div {
+  padding-bottom: 0;
+}
+
+.document-tabs .bf-controlbar {
+  box-shadow: inset 0 -1px 0 0 rgb(217, 217, 217);
 }

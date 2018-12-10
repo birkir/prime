@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Breadcrumb, Icon } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 const { Content, Header } = Layout;
 
@@ -24,6 +24,7 @@ export class Home extends React.Component {
             <Breadcrumb.Item>Blog</Breadcrumb.Item>
           </Breadcrumb>
         </Header>
+        <Redirect to="/documents" />
 
         <Content style={{ padding: 32 }}>
           <h1>Welcome</h1>

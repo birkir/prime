@@ -37,7 +37,7 @@ export const seed = async () => {
   debug('adding ContentType: %s', 'Author');
   const authorType = await ContentType.create({ title: 'Author' });
   const authorFields = [
-    await ContentTypeField.create({ title: 'Name', name: 'name', type: 'string' }),
+    await ContentTypeField.create({ title: 'Name', name: 'name', type: 'string', isDisplay: true }),
     await ContentTypeField.create({ title: 'Bio', name: 'bio', type: 'string' }),
     await ContentTypeField.create({ title: 'Date test', name: 'dateTest', type: 'datetime' })
   ];
@@ -51,7 +51,8 @@ export const seed = async () => {
     await ContentTypeField.create({
       title: 'Title',
       name: 'title',
-      type: 'string'
+      type: 'string',
+      isDisplay: true,
     }),
     await ContentTypeField.create({
       title: 'Description',
@@ -107,7 +108,8 @@ export const seed = async () => {
         name: faker.name.findName(),
         bio: faker.lorem.words(15),
         dateTest: faker.date.past(),
-      }
+      },
+      userId: user.id,
     });
     if (author) {
       authorIds.push(author.entryId);
@@ -125,7 +127,8 @@ export const seed = async () => {
         description: faker.lorem.paragraphs(),
         author: faker.random.arrayElement(authorIds),
         tags: [{ tag: 'foo' }, { tag: 'bar' }]
-      }
+      },
+      userId: user.id,
     });
     if (blog) {
       blogIds.push(blog.entryId);
@@ -144,7 +147,7 @@ export const seed = async () => {
   });
   await slice2.$add('fields', [await ContentTypeField.create({ title: 'Bar', name: 'bar', type: 'string' })]);
   authorType.$add('fields', [
-    await ContentTypeField.create({ title: 'Body', name: 'body', type: 'slice', options: { slices: [slice1.id, slice2.id] }})
+    await ContentTypeField.create({ title: 'Body', name: 'body', type: 'slice', options: { contentTypeIds: [slice1.id, slice2.id] }})
   ]);
 
   // Print ACL

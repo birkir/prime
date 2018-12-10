@@ -13,6 +13,7 @@ import { pageInfoType } from '../../types/pageInfoType';
 import { latestVersion } from '../external/utils/latestVersion';
 import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
   getFields, setFields } from './processFields';
+import { User } from '../../models/User';
 
 // tslint:disable max-func-body-length export-name await-promise
 export const internalGraphql = async (restart) => {
@@ -25,6 +26,11 @@ export const internalGraphql = async (restart) => {
       attributeFields(ContentTypeField),
       ['contentTypeId']
     )
+  });
+
+  const userType = new GraphQLObjectType({
+    name: 'User',
+    fields: attributeFields(User),
   });
 
   const contentTypeType = new GraphQLObjectType({
@@ -46,7 +52,8 @@ export const internalGraphql = async (restart) => {
             return opts;
           }
         })
-      }
+      },
+      entriesCount: { type: GraphQLInt },
     })
   });
 
@@ -60,6 +67,18 @@ export const internalGraphql = async (restart) => {
           before(opts, args, context, info) {
             opts.where = {
               id: info.source.contentTypeId
+            };
+
+            return opts;
+          }
+        })
+      },
+      user: {
+        type: userType,
+        resolve: resolver(User, {
+          before(opts, args, context, info) {
+            opts.where = {
+              id: info.source.userId
             };
 
             return opts;
@@ -107,13 +126,16 @@ export const internalGraphql = async (restart) => {
     args: {
       contentTypeId: { type: GraphQLID },
       language: { type: GraphQLString },
+      userId: { type: GraphQLString },
       limit: { type: GraphQLInt },
       skip: { type: GraphQLInt },
       sort: {
         type: new GraphQLEnumType({
           name: 'SortField',
           values: {
+            userId: { value: 'userId' },
             entryId: { value: 'entryId' },
+            contentTypeId: { value: 'contentTypeId' },
             updatedAt: { value: 'updatedAt' },
             createdAt: { value: 'createdAt' },
           }
@@ -140,6 +162,10 @@ export const internalGraphql = async (restart) => {
         };
         if (args.contentTypeId) {
           findOptions.where.contentTypeId = args.contentTypeId;
+        }
+
+        if (args.userId) {
+          findOptions.where.userId = args.userId;
         }
 
         const order = args.order || 'DESC';
@@ -251,10 +277,29 @@ export const internalGraphql = async (restart) => {
         limit: { type: GraphQLInt },
         order: { type: GraphQLString }
       },
-      resolve: resolver(ContentType)
+      resolve: resolver(ContentType, {
+        async after(result, args, context, info) {
+          await Promise.all(result.map(async res => {
+            if (!res.isSlice) {
+              res.entriesCount = await ContentEntry.count({
+                distinct: true,
+                col: 'entryId',
+                where: {
+                  contentTypeId: res.id
+                },
+              });
+            }
+          }));
+          return result;
+        }
+      })
     },
     allFields,
     allContentEntries,
+    allUsers: {
+      type: new GraphQLList(userType),
+      resolve: resolver(User),
+    },
     ContentType: {
       type: contentTypeType,
       args: {
@@ -411,7 +456,7 @@ export const internalGraphql = async (restart) => {
         });
 
         if (entry) {
-          return entry.draft(args.data, args.language || 'en');
+          return entry.draft(args.data, args.language || 'en', context.user.id);
         }
 
         return null;
@@ -429,7 +474,8 @@ export const internalGraphql = async (restart) => {
           isPublished: false,
           contentTypeId: args.contentTypeId,
           language: args.language || 'en',
-          data: args.data
+          data: args.data,
+          userId: context.user.id
         });
       }
     },
@@ -446,7 +492,7 @@ export const internalGraphql = async (restart) => {
         });
 
         if (entry) {
-          return entry.publish();
+          return entry.publish(context.user.id);
         }
 
         return false;

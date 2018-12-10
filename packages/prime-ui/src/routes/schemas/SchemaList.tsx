@@ -63,7 +63,7 @@ export class SchemaList extends React.Component<IProps> {
         <>
           {!record.isSlice && (
             <>
-              <Link to={`/documents/schema/${record.id}`}>Documents</Link>
+              <Link to={`/documents/schema/${record.id}`}>Documents ({record.entriesCount})</Link>
               <Divider type="vertical" />
             </>
           )}

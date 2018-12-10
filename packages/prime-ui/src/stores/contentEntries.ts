@@ -43,10 +43,11 @@ export const ContentEntries = types.model('ContentEntries', {
     return item;
   });
 
-  const create = flow(function*(contentTypeId: string, proposedData: any) {
+  const create = flow(function*(contentTypeId: string, proposedData: any, language: string) {
     const { data } = yield client.mutate({
       mutation: CREATE_CONTENT_ENTRY,
       variables: {
+        language,
         contentTypeId,
         data: proposedData,
       },

@@ -23,6 +23,7 @@ export const ContentType = types
     title: types.string,
     name: types.string,
     isSlice: types.maybeNull(types.boolean),
+    entriesCount: types.maybeNull(types.number),
     schema: types.optional(Schema, { groups: [{ title: 'Main', fields: [] } ]}),
   })
 .actions(self => {

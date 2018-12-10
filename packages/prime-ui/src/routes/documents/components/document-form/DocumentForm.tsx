@@ -81,6 +81,7 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
         <Tabs
           size="large"
           animated={false}
+          className="document-tabs"
         >
           {groups.map(this.renderGroup)}
         </Tabs>

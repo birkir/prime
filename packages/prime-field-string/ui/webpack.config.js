@@ -23,6 +23,7 @@ module.exports = {
     react: 'React',
     antd: 'Antd',
     lodash: 'lodash',
+    'braft-editor': 'BraftEditor',
   },
   output: {
     filename: 'index.js',

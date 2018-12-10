@@ -1,5 +1,5 @@
 // tslint:disable insecure-random no-any
-import { Button, Card, Divider } from 'antd';
+import { Button, Card, Divider, Form, Icon } from 'antd';
 import { get } from 'lodash';
 import * as React from 'react';
 
@@ -78,17 +78,16 @@ export class InputComponent extends React.PureComponent<IProps, any> {
     if (!key) { return null; }
 
     return (
-      <div key={key} style={{ position: 'relative' }}>
+      <Card key={key} style={{ position: 'relative', marginBottom: 16 }} bodyStyle={{ padding: 16, paddingTop: 8, paddingBottom: 0 }}>
         <Button
           data-key={key}
           shape="circle-outline"
           icon="minus"
-          style={{ position: 'absolute', top: -8, right: 0, zIndex: 2 }}
+          style={{ position: 'absolute', top: -16, right: -16, zIndex: 2 }}
           onClick={this.onRemoveClick}
         />
         {field.fields.map((f: any) => this.renderField(f, key))}
-        <Divider />
-      </div>
+      </Card>
     );
   }
 
@@ -101,14 +100,15 @@ export class InputComponent extends React.PureComponent<IProps, any> {
     const keys = getFieldValue(this.keysKey);
 
     return (
-      <Card
-        title={field.title}
-        extra={
-          <Button onClick={this.add}>Add Item</Button>
-        }
-      >
-        {keys.map(this.renderGroupItem)}
-      </Card>
+      <>
+        <Form.Item label={field.title}>
+          {keys.map(this.renderGroupItem)}
+          <Button size="large" block={true} onClick={this.add}>
+            <Icon type="plus" />
+            Add Item
+          </Button>
+        </Form.Item>
+      </>
     );
   }
 }

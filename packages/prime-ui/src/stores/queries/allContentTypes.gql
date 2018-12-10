@@ -4,5 +4,6 @@ query allContentTypes {
     title
     name
     isSlice
+    entriesCount
   }
 }

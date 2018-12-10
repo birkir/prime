@@ -74,7 +74,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
 
     return (
       <Form.Item label={field.title}>
-        {this.isDate && <DatePicker defaultValue={this.state.date} onChange={this.onDateChange} size="large" />}
+        {this.isDate && <DatePicker defaultValue={this.state.date} onChange={this.onDateChange} size="large" style={{ marginRight: 16 }} />}
         {this.isTime && <TimePicker defaultValue={this.state.time} onChange={this.onTimeChange} size="large" />}
         {form.getFieldDecorator(path, { initialValue })(
           <input type="hidden" />

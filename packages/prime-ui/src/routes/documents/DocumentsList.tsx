@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Table, Card, Layout, Button, Menu, Dropdown, Icon } from 'antd';
+import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip } from 'antd';
 import { get } from 'lodash';
 import { distanceInWordsToNow } from 'date-fns';
 import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { TitleBar } from '../../components/titlebar/TitleBar';
+import { Users } from '../../stores/users';
 
 const { Content } = Layout;
 
@@ -29,6 +30,10 @@ const GET_CONTENT_ENTRIES = gql`
       id
       title
       isSlice
+    }
+    allUsers {
+      id
+      email
     }
     allContentEntries(
       limit:$limit
@@ -53,6 +58,12 @@ const GET_CONTENT_ENTRIES = gql`
             id
             title
           }
+          user {
+            id
+            email
+            firstname
+            lastname
+          }
         }
       }
     }
@@ -61,9 +72,28 @@ const GET_CONTENT_ENTRIES = gql`
 
 const PER_PAGE = 10;
 
+const RGBToHue = (r: number, g: number, b: number) => {
+  r /= 255, g /= 255, b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  switch (max) {
+    case min: return 0;
+    case r: return ((g - b) / d + (g < b ? 6 : 0)) / 6;
+    case g: return ((b - r) / d + 2) / 6;
+    case b: return ((r - g) / d + 4) / 6;
+    default: return 0;
+  }
+}
+
+const stringToColor = (str: string) => {
+  const hash = str.split('').reduce((acc, item) => item.charCodeAt(0) + ((acc << 5) - acc), 0);
+  const [r, g, b] = [0, 1, 2].map((i) => (hash >> (i * 8)) & 0xFF);
+  return `hsl(${RGBToHue(r, g, b) * 360}, 60%, 60%)`;
+}
+
 export const DocumentsList = ({ match, history }: any) => {
   const [isLoading, setLoading] = useState(false);
-  const [contentTypeId, setContentTypeId] = useState(match.params.id);
   let timer: any;
 
   const search = new URLSearchParams(history.location.search)
@@ -85,17 +115,21 @@ export const DocumentsList = ({ match, history }: any) => {
     </Menu>
   );
 
+  let userId: any;
+  let contentTypeId = match.params.id;
+
   return (
     <Query
       query={GET_CONTENT_ENTRIES}
       client={client}
       fetchPolicy="network-only"
       variables={{
-        limit: PER_PAGE,
-        skip: 0,
         contentTypeId,
+        userId,
+        skip: 0,
+        limit: PER_PAGE,
         language: language.id,
-        sort: 'createdAt',
+        sort: 'updatedAt',
         order: 'DESC'
       }}
     >
@@ -112,23 +146,32 @@ export const DocumentsList = ({ match, history }: any) => {
         clearTimeout(timer);
         timer = setTimeout(() => (loading !== isLoading) && setLoading(loading), 330);
 
-        const onTableChange = (pagination: any, filters: any, sorter: any) => {
-          const filteredId = filters['contentType.title'];
-          setContentTypeId(filteredId && filteredId[0]);
-          refetch({
+        const formatSorterField = (field: string) => {
+          if (field === 'user.id') return 'userId';
+          return field;
+        }
+
+        const onTableChange = async (pagination: any, filters: any, sorter: any) => {
+          contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
+          userId = filters['user.id'] && filters['user.id'][0];
+
+          const variables = {
             contentTypeId,
+            userId,
             limit: pagination.pageSize,
             skip: (pagination.current - 1) * pagination.pageSize,
-            sort: sorter.field,
+            sort: formatSorterField(sorter.field),
             language: language.id,
             order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
-          });
+          };
+          refetch(variables);
         };
 
         const columns = [{
           title: 'ID',
           dataIndex: 'entryId',
           sorter: true,
+          width: '150px',
           render(_text: string, record: any) {
             return (
               <>
@@ -165,10 +208,35 @@ export const DocumentsList = ({ match, history }: any) => {
           render(text: string) {
             return distanceInWordsToNow(new Date(text)) + ' ago';
           }
+        }, {
+          title: 'Author',
+          dataIndex: 'user.id',
+          width: '120px',
+          sorter: true,
+          filters: get(data, 'allUsers', []).map(({ id, email }: any) => ({
+            text: email,
+            value: id,
+          })),
+          filteredValue: [userId] as any[],
+          filterMultiple: false,
+          align: 'center' as any,
+          render(_text: string, record: any) {
+            if (!record.user) {
+              return <Avatar icon="user" />;
+            }
+            const { firstname, lastname, email } = record.user;
+            return (
+              <Tooltip title={`${firstname} ${lastname} (${email})`}>
+                <Avatar style={{ backgroundColor: stringToColor(email) }}>
+                  {firstname.substring(0, 1)}{lastname.substring(0, 1)}
+                </Avatar>
+              </Tooltip>
+            )
+          }
         }];
 
         const onMenuClick = (e: any) => {
-          history.push(`/documents/create/${e.key}`);
+          history.push(`/documents/create/${e.key}?lang=${language.id}`);
         };
 
         const menu = (

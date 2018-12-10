@@ -9,7 +9,3 @@ export const User = types
     createdAt: types.string,
     updatedAt: types.string,
   });
-
-// lastLogin: null
-// password: "$2b$10$jRFXgwMSMNggCdFTH71KfOYX4vzr51CwyZc2Pe4leLpkcZofRozXS"
-// refreshToken: "0d3870a4-c8b1-4b06-bce8-6438655d380f"

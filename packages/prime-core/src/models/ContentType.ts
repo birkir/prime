@@ -2,8 +2,11 @@ import { startCase } from 'lodash';
 import { BeforeCreate, Column, DataType, HasMany, Is, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
 import { ContentEntry } from './ContentEntry';
 import { ContentTypeField } from './ContentTypeField';
+// import { User } from './User';
 
-@Table
+@Table({
+  timestamps: true
+})
 export class ContentType extends Model<ContentType> {
 
   @PrimaryKey
@@ -11,7 +14,7 @@ export class ContentType extends Model<ContentType> {
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4
   })
-  public id;
+  public id: any;
 
   @Is('AlphaNumeric', (value) => {
     if (!/^[A-Za-z][A-Za-z0-9]+$/.test(value)) {
@@ -29,16 +32,22 @@ export class ContentType extends Model<ContentType> {
   public isSlice: boolean;
 
   @Column(DataType.JSONB)
-  public groups;
+  public groups: any;
+
+  // @Column(DataType.UUIDV4)
+  // public userId: any;
 
   @HasMany(() => ContentEntry, {
     onUpdate: 'SET NULL',
     onDelete: 'SET NULL'
   })
-  public contentEntry: ContentEntry;
+  public contentEntries: ContentEntry;
 
   @HasMany(() => ContentTypeField)
   public fields: ContentTypeField[];
+
+  // @BelongsTo(() => User)
+  // public user: User;
 
   @BeforeCreate
   public static async SET_NAME(instance: ContentType) {
