@@ -6,5 +6,5 @@ const field = '"entryId"';
 
 export const includeLanguages = ({ published }) =>
   sequelize.literal(
-    `(SELECT array_agg(DISTINCT "language") FROM ${model} WHERE ${field} = ${model}.${field}${withField('isPublished', published)})`
+    `(SELECT array_agg(DISTINCT "language") FROM ${model} "d" WHERE "d".${field} = ${model}.${field}${withField('isPublished', published)})`
   );
