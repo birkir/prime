@@ -47,6 +47,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     file: getInitialFile(get(this.props, 'initialValue'))
   };
 
+  public url = new URL(this.props.config.PRIME_CLOUDINARY_URL.replace(/^cloudinary/, 'http'));
+
   private cropPixels = { x: 0, y: 0, width: 0, height: 0 };
 
   public componentDidMount() {
@@ -54,7 +56,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
   }
 
   public onBeforeUpload = async () => {
-    const { username, password } = new URL(this.props.config.PRIME_CLOUDINARY_URL.replace(/^cloudinary/, 'http'));
+    const { username, password } = this.url;
 
     const timestamp = Math.round(Date.now() / 1000);
     const params = {
@@ -232,7 +234,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           <div style={{ width: 112, height: 112 }}>
             <Upload
               name="file"
-              action="https://api.cloudinary.com/v1_1/primetest/upload"
+              action={`https://api.cloudinary.com/v1_1/${this.url.hostname}/upload`}
               data={uploadPayload}
               listType="picture-card"
               multiple={false}

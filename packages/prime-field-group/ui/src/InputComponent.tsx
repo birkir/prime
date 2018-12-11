@@ -23,7 +23,7 @@ export class InputComponent extends React.PureComponent<IProps, any> {
   constructor(props: any) {
     super(props);
     const { path, entry } = props;
-    const values = get(entry.data, path, []);
+    const values = get(entry, `data.${path}`, []);
 
     this.values = values;
     this.keysKey =  `${path}.keys`;
