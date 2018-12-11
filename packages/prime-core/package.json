@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -31,11 +31,11 @@
   },
   "dependencies": {
     "@primecms/field": "^0.1.0",
-    "@primecms/field-asset": "^0.1.0",
+    "@primecms/field-asset": "^0.1.1",
     "@primecms/field-datetime": "^0.1.0",
     "@primecms/field-document": "^0.1.0",
-    "@primecms/field-group": "^0.1.0",
-    "@primecms/field-slice": "^0.1.0",
+    "@primecms/field-group": "^0.1.1",
+    "@primecms/field-slice": "^0.1.1",
     "@primecms/field-string": "^0.1.0",
     "acl": "0.4.11",
     "apollo-server-express": "2.2.0",
