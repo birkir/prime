@@ -1,5 +1,5 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Button, Card, Dropdown, Menu } from 'antd';
+import { Button, Card, Dropdown, Icon, Menu, Tag } from 'antd';
 import { get } from 'lodash';
 import * as React from 'react';
 
@@ -90,19 +90,32 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
     return (
       <>
-        <div>{field.title} :</div>
+        <div className="ant-form-item-label">
+          <label>{field.title}</label>
+        </div>
         {this.state.slices.map((slice, index) => {
           if (!slice || !slice.id) { return null; }
 
           return (
             <Card
               key={`${slice.id}_${index}`}
-              title={slice.title}
+              // title={slice.title}
               style={{ marginBottom: 16 }}
-              extra={
-                <Button data-index={index} onClick={this.onRemoveClick}>Remove</Button>
-              }
+              bodyStyle={{ padding: 16 }}
+              // extra={
+              //   <Button data-index={index} onClick={this.onRemoveClick}>Remove</Button>
+              // }
             >
+              <div style={{ position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', left: 0, right: 0 }}>
+                <Tag style={{ marginTop: -12 }}>{slice.title}</Tag>
+                <Button
+                  shape="circle-outline"
+                  icon="minus"
+                  style={{ position: 'absolute', top: -16, right: -16, zIndex: 2 }}
+                  data-index={index}
+                  onClick={this.onRemoveClick}
+                />
+              </div>
               {slice.schema.fields.filter(noChildren).map(
                 (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}
@@ -115,7 +128,10 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           );
         })}
         <Dropdown overlay={menu} trigger={['click']}>
-          <Button>Add Slice</Button>
+          <Button size="large" block={true}>
+            <Icon type="plus" />
+            Add Slice
+          </Button>
         </Dropdown>
       </>
     );

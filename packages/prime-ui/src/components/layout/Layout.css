@@ -37,6 +37,10 @@
 
 .document-tabs .ant-tabs-tabpane {
   padding: 0 32px;
+  padding-bottom: 64px;
+  min-width: 45vw;
+  max-width: 1170px;
+  margin: 0 auto;
 }
 
 .document-tabs .bf-content {
