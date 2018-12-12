@@ -24,7 +24,7 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   documentForm: BaseDocumentForm | null = null;
   contentEntry: Instance<typeof ContentEntry> | null = null;
-  contentType: Instance<typeof ContentType> | null = null;
+  contentType: Instance<typeof ContentType> | undefined;
 
   langs = [{ id: 'en', flag: 'us', name: 'English' }, { id: 'is', flag: 'is', name: 'Icelandic' }];
   language: { id: string; flag: string; name: string } = this.langs[0];
@@ -61,8 +61,10 @@ export class DocumentsDetail extends React.Component<IProps> {
     try {
       const contentEntry = await ContentEntries.loadById(entryId, this.language.id);
       const contentType = await ContentTypes.loadById(contentEntry.contentTypeId);
-      await contentType.loadSchema();
-      contentEntry.setContentType(contentType);
+      if (contentType) {
+        await contentType.loadSchema();
+        contentEntry.setContentType(contentType);
+      }
       this.contentEntry = contentEntry;
       this.contentType = contentType;
       this.loaded = true;
@@ -79,7 +81,9 @@ export class DocumentsDetail extends React.Component<IProps> {
     this.loading = true;
     try {
       const contentType = await ContentTypes.loadById(contentTypeId);
-      await contentType.loadSchema();
+      if (contentType) {
+        await contentType.loadSchema();
+      }
       this.contentType = contentType;
       this.loaded = true;
     } catch (err) {
@@ -131,7 +135,9 @@ export class DocumentsDetail extends React.Component<IProps> {
       } else if (this.contentType) {
         try {
           const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.language.id);
-          this.props.history.push(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
+          if (contentEntry) {
+            this.props.history.push(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
+          }
           message.success('Document created');
         } catch(err) {
           message.error('Could not create document');
