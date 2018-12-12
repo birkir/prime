@@ -79,7 +79,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public render() {
     const { loading, defaultValue, options } = this.state;
-    const { field, path, form } = this.props;
+    const { field, path, form, initialValue } = this.props;
     const { getFieldDecorator } = form;
 
     return (
@@ -95,7 +95,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
             showSearch={{ filter } as any} // tslint:disable-line no-any
           />
         ) : null}
-        {getFieldDecorator(path)(<input type="hidden" />)}
+        {getFieldDecorator(path, {
+          initialValue
+        })(<input type="hidden" />)}
       </Form.Item>
     );
   }
