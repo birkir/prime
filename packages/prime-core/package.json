@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -34,7 +34,7 @@
     "@primecms/field-asset": "^0.1.3",
     "@primecms/field-boolean": "^0.1.3",
     "@primecms/field-datetime": "^0.1.3",
-    "@primecms/field-document": "^0.1.4",
+    "@primecms/field-document": "^0.1.5",
     "@primecms/field-group": "^0.1.4",
     "@primecms/field-slice": "^0.1.3",
     "@primecms/field-string": "^0.1.3",

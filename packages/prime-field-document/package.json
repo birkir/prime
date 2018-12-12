@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-document",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Document Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
