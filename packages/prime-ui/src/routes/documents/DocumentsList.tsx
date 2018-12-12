@@ -253,24 +253,24 @@ export const DocumentsList = ({ match, history }: any) => {
         return (
           <Layout>
             <Toolbar>
-              <p></p>
+              <div style={{ flex: 1 }}>
+                <h2 style={{ margin: 0 }}>Documents</h2>
+              </div>
+              <Dropdown overlay={languages} trigger={['click']}>
+                <Button type="default" style={{ marginRight: 16 }}>
+                  <span className={`flag-icon flag-icon-${language.flag}`} style={{ marginRight: 8 }} />
+                  {language.name}
+                  <Icon type="down" />
+                </Button>
+              </Dropdown>
+              <Dropdown overlay={menu} trigger={['click']}>
+                <Button type="primary">
+                  Create
+                  <Icon type="down" />
+                </Button>
+              </Dropdown>
             </Toolbar>
             <Content style={{ padding: 32, height: 'calc(100vh - 64px)' }}>
-              <TitleBar title="Documents">
-                <Dropdown overlay={languages} trigger={['click']}>
-                  <Button type="default" style={{ marginRight: 16 }}>
-                    <span className={`flag-icon flag-icon-${language.flag}`} style={{ marginRight: 8 }} />
-                    {language.name}
-                    <Icon type="down" />
-                  </Button>
-                </Dropdown>
-                <Dropdown overlay={menu} trigger={['click']}>
-                  <Button type="primary">
-                    Create
-                    <Icon type="down" />
-                  </Button>
-                </Dropdown>
-              </TitleBar>
               <Card
                 bodyStyle={{ padding: 0 }}
                 hoverable

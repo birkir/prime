@@ -219,11 +219,11 @@ export class DocumentsDetail extends React.Component<IProps> {
     return (
       <Layout>
         <Toolbar>
-          <div style={{ flex: 1 }}>
-            <Link to={`/documents?lang=${this.language.id}`} style={{ color: '#aaa', marginRight: 16 }}>
+          <div style={{ flex: 1, display: 'flex' }}>
+            <Link to={`/documents?lang=${this.language.id}`} className="ant-btn-back">
               <Icon type="left" />
             </Link>
-            {contentType && <strong>{contentType.title}</strong>}
+            {contentType && <h3 style={{ margin: 0 }}>{contentType.title}</h3>}
           </div>
           <Dropdown overlay={this.languagesMenu} trigger={['click']}>
             <Button type="default" style={{ marginRight: 16 }}>

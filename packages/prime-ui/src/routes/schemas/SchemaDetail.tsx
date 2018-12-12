@@ -3,18 +3,19 @@ import { Prompt } from 'react-router';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Instance, getParent, onPatch } from 'mobx-state-tree';
-import { Layout, Card, Drawer, Button, Tabs, message } from 'antd';
+import { Layout, Card, Drawer, Button, Tabs, message, Icon } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { get } from 'lodash';
 
-import { ContentTypes } from '../../stores/contentTypes';
-import { EditField } from './components/EditField';
-import { client } from '../../utils/client';
-import { Toolbar } from '../../components/toolbar/Toolbar';
-import { ContentType } from '../../stores/models/ContentType';
-import { FieldRow } from './components/field-row/FieldRow';
-import { ALL_FIELDS } from '../../stores/queries';
 import { DEFAULT_GROUP_TITLE } from '../../stores/models/Schema';
+import { ContentType } from '../../stores/models/ContentType';
+import { ContentTypes } from '../../stores/contentTypes';
+import { ALL_FIELDS } from '../../stores/queries';
+import { EditField } from './components/EditField';
+import { Toolbar } from '../../components/toolbar/Toolbar';
+import { FieldRow } from './components/field-row/FieldRow';
+import { client } from '../../utils/client';
+import { Link } from 'react-router-dom';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
@@ -369,8 +370,11 @@ export class SchemaDetail extends React.Component<IProps> {
         />
         <Layout style={{ minHeight: '100%' }}>
           <Toolbar>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ padding: 0 }}>{title}</h3>
+            <div style={{ flex: 1, display: 'flex' }}>
+              <Link to="/schemas" className="ant-btn-back">
+                <Icon type="left" />
+              </Link>
+              <h3 style={{ margin: 0 }}>{title}</h3>
             </div>
             <Button type="primary" onClick={this.onSave}>Save</Button>
           </Toolbar>

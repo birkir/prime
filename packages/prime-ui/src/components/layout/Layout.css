@@ -55,3 +55,22 @@
 .document-tabs .bf-controlbar {
   box-shadow: inset 0 -1px 0 0 rgb(217, 217, 217);
 }
+
+
+.ant-btn-back {
+  color: rgb(170, 170, 170);
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  margin-left: -50px;
+  margin-right: 16px;
+
+  transition: 0.18s ease-in-out;
+  transition-property: background-color, color;
+}
+
+.ant-btn-back:hover {
+  background-color: #f8f8f8;
+}

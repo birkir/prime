@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
-import { types, flow, getParent, Instance } from 'mobx-state-tree';
+import { types, flow } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
 import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
 
 export const ContentTypes = types.model('ContentTypes', {
-  items: types.map(ContentType),
+  items: types.map(types.late(() => ContentType)),
   loading: false,
   loaded: false,
   error: false,
@@ -45,7 +45,8 @@ export const ContentTypes = types.model('ContentTypes', {
     try {
       const { data } = yield client.query({ query: ALL_CONTENT_TYPES });
       data.allContentTypes.forEach((contentType: any) => {
-        self.items.put(contentType);
+        const item = ContentType.create(contentType);
+        self.items.put(item);
       });
       self.loaded = true;
     } catch (err) {
@@ -69,7 +70,8 @@ export const ContentTypes = types.model('ContentTypes', {
     try {
       const { data } = yield client.mutate({ mutation, variables: { input }});
       if (data.createContentType) {
-        return self.items.put(data.createContentType);
+        const item = ContentType.create(data.createContentType);
+        return self.items.put(item);
       }
     } catch (err) {
       throw new Error(err);
