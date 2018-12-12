@@ -11,13 +11,21 @@ const unknownSliceType: GraphQLObjectType = new GraphQLObjectType({
   }
 });
 
+interface IOptions {
+  multiple: boolean;
+  contentTypeIds: string[];
+}
+
 export class PrimeFieldSlice extends PrimeField {
 
   public id: string = 'slice';
   public title: string = 'Slice';
   public description: string = 'Slice field';
 
-  public defaultOptions: {} = {};
+  public defaultOptions: IOptions = {
+    multiple: true,
+    contentTypeIds: []
+  };
 
   /**
    * GraphQL type for output query
@@ -26,11 +34,13 @@ export class PrimeFieldSlice extends PrimeField {
 
     const { field, queries, contentType, contentTypes, resolveFieldType } = args;
 
-    if (!contentType || !field.options || !field.options.contentTypeIds) {
+    const options = this.getOptions(field);
+
+    if (!contentType || !options.contentTypeIds) {
       return null;
     }
 
-    const contentTypeIds = (field.options.contentTypeIds || []);
+    const contentTypeIds = (options.contentTypeIds || []);
     const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
     const sliceTypes = contentTypeIds.map((sliceId: string) => {
 
@@ -86,24 +96,28 @@ export class PrimeFieldSlice extends PrimeField {
       });
     });
 
-    return {
-      type: new GraphQLList(
-        new GraphQLUnionType({
-          name: `${contentType.name}${pascalName}Slice`,
-          types: [...types, unknownSliceType],
-          resolveType(value, context, info): GraphQLObjectType {
-            if (value.__inputname) {
-              const sliceTypeIndex = sliceTypes.findIndex((s: { id: string }) => s.id === value.__inputname);
-              if (sliceTypeIndex >= 0) {
-                return types[sliceTypeIndex];
-              }
-            }
-
-            return unknownSliceType;
+    const union = new GraphQLUnionType({
+      name: `${contentType.name}${pascalName}Slice`,
+      types: [...types, unknownSliceType],
+      resolveType(value, context, info): GraphQLObjectType {
+        if (value.__inputname) {
+          const sliceTypeIndex = sliceTypes.findIndex((s: { id: string }) => s.id === value.__inputname);
+          if (sliceTypeIndex >= 0) {
+            return types[sliceTypeIndex];
           }
-        })
-      )
-    };
+        }
+
+        return unknownSliceType;
+      }
+    });
+
+    if (options.multiple) {
+      return {
+        type: new GraphQLList(union)
+      };
+    }
+
+    return { type: union };
   }
 
   /**
@@ -111,14 +125,16 @@ export class PrimeFieldSlice extends PrimeField {
    */
   public getGraphQLInput({ field, queries, contentTypes, contentType, resolveFieldType, isUpdate }) {
 
-    if (!contentType || !field.options || !field.options.contentTypeIds) {
+    const options = this.getOptions(field);
+
+    if (!contentType || !options.contentTypeIds) {
       return null;
     }
 
     const pascalName: string = `${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`;
     const actionName = isUpdate ? 'Update' : 'Create';
 
-    const sliceTypes = (field.options.contentTypeIds || []).map((sliceId) => {
+    const sliceTypes = (options.contentTypeIds || []).map((sliceId) => {
       const sliceType = contentTypes.find((n: { id: string}) => n.id === sliceId);
       if (!sliceType) {
         return null;
@@ -169,11 +185,15 @@ export class PrimeFieldSlice extends PrimeField {
       typeKey: '__inputname'
     });
 
-    return {
-      type: new GraphQLList(
-        new GraphQLNonNull(sliceFieldType)
-      )
-    };
+    if (options.multiple) {
+      return {
+        type: new GraphQLList(
+          new GraphQLNonNull(sliceFieldType)
+        )
+      };
+    }
+
+    return { type: sliceFieldType };
   }
 
   public getGraphQLWhere() {

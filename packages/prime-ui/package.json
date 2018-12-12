@@ -67,6 +67,7 @@
   "gitHead": "330de5101b01a3604d708b7d5991943fb57db9ef",
   "dependencies": {
     "@primecms/field-asset": "^0.1.1",
+    "@primecms/field-boolean": "^0.1.0",
     "@primecms/field-datetime": "^0.1.0",
     "moment": "^2.22.2"
   }

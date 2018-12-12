@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Select, Row, Col } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { camelCase, get } from 'lodash';
+import { camelCase, get, defaultsDeep } from 'lodash';
 import { fields } from '../../../utils/fields';
 import stores from '../../../stores';
 import { config } from '../../../utils/config';
@@ -23,10 +23,12 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
   const type = form.getFieldValue('type');
   const theField = get(fields, type);
   const SchemaSettingsComponent = get(theField, 'SchemaSettingsComponent', () => null);
-  const options = {
-    ...(get(theField, 'defaultOptions', {}) || {}),
-    ...(get(field, 'options', {}) || {})
-  };
+  const fromAvailableField = availableFields.find(f => f.id === type);
+
+  const options = defaultsDeep(
+    get(field, 'options', {}),
+    get(fromAvailableField, 'defaultOptions', {})
+  );
 
   const onFormSubmit = async (e: any) => {
     e.preventDefault();
@@ -127,18 +129,24 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
 export const EditField = Form.create({
   mapPropsToFields(props: any) {
     const { field } = props;
-    const options = get(field, 'options', {}) || {};
     const res: any = {
       title: Form.createFormField({ value: field.title }),
       name: Form.createFormField({ value: field.name }),
       type: Form.createFormField({ value: field.type }),
-      // options: Form.createFormField({ value: field.options }),
-      optionsJson: Form.createFormField({ value: JSON.stringify(options) }),
     };
+
+    const fromAvailableField = props.availableFields.find((f: any) => f.id === field.type);
+
+    const options = defaultsDeep(
+      get(field, 'options', {}),
+      get(fromAvailableField, 'defaultOptions', {})
+    );
 
     Object.entries(options).forEach(([key, value]) => {
       res[`options.${key}`] = Form.createFormField({ value });
     });
+
+    res.optionsJson = Form.createFormField({ value: JSON.stringify(options) });
 
     return res;
   },

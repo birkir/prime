@@ -14,6 +14,9 @@ import { latestVersion } from '../external/utils/latestVersion';
 import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
   getFields, setFields } from './processFields';
 import { User } from '../../models/User';
+import { EntryTransformer } from '../../utils/entryTransformer';
+
+const entryTransformer = new EntryTransformer();
 
 // tslint:disable max-func-body-length export-name await-promise
 export const internalGraphql = async (restart) => {
@@ -208,8 +211,12 @@ export const internalGraphql = async (restart) => {
           })
         );
 
-        values.edges.forEach(edge => {
+        entryTransformer.resetTransformCache();
+
+        await Promise.all(values.edges.map(async (edge) => {
           const { node } = edge;
+
+          node.data = await entryTransformer.transformOutput(node.data, node.contentTypeId);
 
           if (contentTypeDisplay.has(node.contentTypeId)) {
             const displayFieldValue = get(node.data, contentTypeDisplay.get(node.contentTypeId), '');
@@ -218,7 +225,7 @@ export const internalGraphql = async (restart) => {
             const dataKeys = Object.keys(node.data);
             node.display = get(node.data, 'title', get(node.data, 'name', get(node.data, dataKeys[0], node.entryId)));
           }
-        });
+        }));
 
         return values;
       }
@@ -231,6 +238,7 @@ export const internalGraphql = async (restart) => {
       id: { type: GraphQLID },
       title: { type: GraphQLString },
       description: { type: GraphQLString },
+      defaultOptions: { type: GraphQLJSON },
       ui: { type: GraphQLString }
     }
   });
@@ -376,6 +384,9 @@ export const internalGraphql = async (restart) => {
                 ['createdAt', 'DESC']
               ]
             });
+
+            entryTransformer.resetTransformCache();
+            result.data = entryTransformer.transformOutput(result.data, result.contentTypeId);
           }
 
           return result;
@@ -458,7 +469,18 @@ export const internalGraphql = async (restart) => {
         });
 
         if (entry) {
-          return entry.draft(args.data, args.language || 'en', context.user.id);
+
+          entryTransformer.resetTransformCache();
+
+          if (args.data) {
+            args.data = await entryTransformer.transformInput(args.data, entry.contentTypeId);
+          }
+
+          const updatedEntry = await entry.draft(args.data, args.language || 'en', context.user.id);
+
+          updatedEntry.data = await entryTransformer.transformOutput(updatedEntry.data, entry.contentTypeId);
+
+          return updatedEntry;
         }
 
         return null;
@@ -472,13 +494,24 @@ export const internalGraphql = async (restart) => {
         data: { type: GraphQLJSON }
       },
       async resolve(root, args, context, info) {
-        return ContentEntry.create({
+
+        entryTransformer.resetTransformCache();
+
+        if (args.data) {
+          args.data = await entryTransformer.transformInput(args.data, args.contentTypeId);
+        }
+
+        const entry = await ContentEntry.create({
           isPublished: false,
           contentTypeId: args.contentTypeId,
           language: args.language || 'en',
           data: args.data,
           userId: context.user.id
         });
+
+        entry.data = await entryTransformer.transformOutput(entry.data, args.contentTypeId);
+
+        return entry;
       }
     },
     publishContentEntry: {
@@ -494,7 +527,9 @@ export const internalGraphql = async (restart) => {
         });
 
         if (entry) {
-          return entry.publish(context.user.id);
+          const publishedEntry = await entry.publish(context.user.id);
+          publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
+          return publishedEntry;
         }
 
         return false;

@@ -1,13 +1,19 @@
 import { PrimeField } from '@primecms/field';
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
 
+interface IDefaultOptions {
+  repeated: boolean;
+}
+
 export class PrimeFieldGroup extends PrimeField {
 
   public id: string = 'group';
   public title: string = 'Group';
   public description: string = 'Group other fields to list';
 
-  public defaultOptions: {} = {};
+  public defaultOptions: IDefaultOptions = {
+    repeated: true
+  };
 
   public getGraphQLOutput({ field, queries, contentTypes, resolveFieldType }) {
     const contentType = contentTypes.find(c => c.id === field.contentTypeId);
@@ -46,7 +52,13 @@ export class PrimeFieldGroup extends PrimeField {
         })
       });
 
-      return { type: new GraphQLList(groupFieldType) };
+      const options = this.getOptions(field);
+
+      if (options.repeated) {
+        return { type: new GraphQLList(groupFieldType) };
+      }
+
+      return { type: groupFieldType };
     }
 
     return null;
@@ -93,11 +105,17 @@ export class PrimeFieldGroup extends PrimeField {
       fields: fieldsTypes
     });
 
-    return {
-      type: new GraphQLList(
-        new GraphQLNonNull(groupFieldType)
-      )
-    };
+    const options = this.getOptions(field);
+
+    if (options.repeated) {
+      return {
+        type: new GraphQLList(
+          new GraphQLNonNull(groupFieldType)
+        )
+      };
+    }
+
+    return { type: groupFieldType };
   }
 
   /**

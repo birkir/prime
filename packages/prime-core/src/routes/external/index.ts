@@ -12,8 +12,12 @@ import { findAll } from './findAll';
 import { remove } from './remove';
 import { update } from './update';
 import { resolveFieldType } from './utils/resolveFieldType';
+import { EntryTransformer } from '../../utils/entryTransformer';
+
 // import { User } from '../../models/User';
 // import { acl } from '../../acl';
+
+export const entryTransformer = new EntryTransformer();
 
 // tslint:disable-next-line no-require-imports no-var-requires
 export const debug = require('debug')('prime:graphql');
@@ -35,6 +39,8 @@ export const externalGraphql = async () => {
       // tslint:disable-next-line no-any
       const contentTypeFields: any = await contentType.$get('fields');
       contentType.fields = contentTypeFields;
+
+      entryTransformer.cache.set(contentType.id, contentType.fields);
     })
   );
 
@@ -44,7 +50,6 @@ export const externalGraphql = async () => {
       const GraphQLContentType = new GraphQLObjectType({
         name: contentType.name,
         fields: () => ({
-          _meta: { type: contentEntryMetaType },
           id: { type: GraphQLID },
           ...contentType.fields.reduce(
             (acc, field: ContentTypeField) => {
@@ -65,7 +70,8 @@ export const externalGraphql = async () => {
               return acc;
             },
             {}
-          )
+          ),
+          _meta: { type: contentEntryMetaType }
         })
       });
 

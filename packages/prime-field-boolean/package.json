@@ -1,12 +1,20 @@
 {
-  "name": "@primecms/field",
-  "private": false,
+  "name": "@primecms/field-boolean",
   "version": "0.1.0",
-  "description": "Base interface for Prime CMS Fields",
+  "description": "Boolean Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
   "license": "MIT",
   "main": "lib/index.js",
+  "prime": "lib/ui",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "lint": "tslint -p . && npm run lint:ui",
+    "lint:ui": "tslint -p ./ui",
+    "build:ui": "cd ./ui; webpack-cli; cd -",
+    "build": "rm -rf ./lib && tsc -p . && npm run build:ui",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "directories": {
     "lib": "lib"
   },
@@ -17,18 +25,19 @@
     "type": "git",
     "url": "git+https://github.com/birkir/prime.git"
   },
-  "scripts": {
-    "prepublishOnly": "npm run build",
-    "lint": "tslint -p .",
-    "build": "rm -rf ./lib && tsc -p .",
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
   },
+  "dependencies": {
+    "@primecms/field": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.0.3",
+    "ts-loader": "5.3.0",
+    "webpack-cli": "3.1.2"
+  },
   "peerDependencies": {
     "antd": "^3.0.0",
-    "apollo-boost": "^0.1.20",
     "graphql": "^14.0.0",
     "lodash": "^4.17.11",
     "react": "^16.7.0"

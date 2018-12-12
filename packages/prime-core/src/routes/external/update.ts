@@ -3,6 +3,7 @@ import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { ensurePermitted } from './utils/ensurePermitted';
 import { resolveFieldType } from './utils/resolveFieldType';
+import { entryTransformer } from './index';
 
 export const update = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   const typeArgs: any = { // tslint:disable-line no-any
@@ -61,10 +62,12 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
         order: [['createdAt', 'DESC']]
       });
 
+      const data = await entryTransformer.transformInput(input, contentType.id);
+
       if (entry) {
 
         if (input) {
-          entry = await entry.draft(input, language);
+          entry = await entry.draft(data, language);
         }
 
         if (publish) {

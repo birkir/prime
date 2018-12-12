@@ -106,7 +106,6 @@ export class ContentEntry extends Model<ContentEntry> {
     return ContentEntry.create(res);
   }
 
-
   // --- Static methods
 
   @BeforeCreate

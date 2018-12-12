@@ -1,6 +1,7 @@
 import { FormComponentProps } from 'antd/lib/form'; // tslint:disable-line no-submodule-imports
 import { ApolloClient } from 'apollo-boost';
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInputType } from 'graphql';
+import { defaultsDeep } from 'lodash';
 
 interface IField {
   id: string;
@@ -89,6 +90,11 @@ export abstract class PrimeField {
   public abstract description: string;
 
   /**
+   * Default options
+   */
+  public defaultOptions = {};
+
+  /**
    * Return a object that can be used as GraphQL type
    * @param args All the necessery things you will need from Prime Core
    */
@@ -105,6 +111,26 @@ export abstract class PrimeField {
    * @param args All the necessery things you will need from Prime Core
    */
   public abstract getGraphQLWhere(args: IPrimeFieldGraphQLArguments): IPrimeFieldGraphQLInput;
+
+  /**
+   * Process input data
+   * @param input Object for input
+   */
+  public processInput(input) {
+    return input;
+  }
+
+  /**
+   * Process output data
+   * @param output Object for output
+   */
+  public processOutput(output) {
+    return output;
+  }
+
+  public getOptions(field: IField) {
+    return defaultsDeep(field.options, this.defaultOptions);
+  }
 }
 
 export function registerField(name: string, field: IRegisterField): IRegisterField {

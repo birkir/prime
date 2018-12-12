@@ -19,7 +19,7 @@ export class PrimeFieldDocument extends PrimeField {
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
     const { field, queries, contentTypes } = args;
-    const { options } = field;
+    const options = this.getOptions(field);
     if (options.contentTypeId) {
       const contentType = contentTypes.find(ct => ct.id === options.contentTypeId);
       if (contentType && queries[contentType.name]) {

@@ -3,6 +3,7 @@ import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { ensurePermitted } from './utils/ensurePermitted';
 import { resolveFieldType } from './utils/resolveFieldType';
+import { entryTransformer } from './index';
 
 export const create = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
 
@@ -49,11 +50,13 @@ export const create = ({ GraphQLContentType, contentType, contentTypes, queries 
       await ensurePermitted(context, contentType, 'create');
       const { language = context.language, input } = args;
 
+      const data = await entryTransformer.transformInput(input, contentType.id);
+
       const entry = await ContentEntry.create({
         contentTypeId: contentType.id,
         isPublished: true,
         language,
-        data: input
+        data
       });
 
       if (entry && queries[contentType.name]) {

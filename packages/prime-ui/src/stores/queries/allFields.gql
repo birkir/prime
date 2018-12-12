@@ -3,6 +3,7 @@ query {
     id
     title
     description
+    defaultOptions
     ui
   }
 }

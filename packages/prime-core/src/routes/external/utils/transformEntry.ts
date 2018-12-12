@@ -1,7 +1,11 @@
-export const transformEntry = (entry) => {
+import { entryTransformer } from '../index';
+
+export const transformEntry = async (entry) => {
   if (!entry) {
     return null;
   }
+
+  entry.data = await entryTransformer.transformOutput(entry.data, entry.contentTypeId);
 
   return {
     id: entry.entryId,

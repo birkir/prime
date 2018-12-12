@@ -4,13 +4,14 @@ import * as path from 'path';
 
 const fields = [
   '@primecms/field-asset',
+  '@primecms/field-boolean',
   '@primecms/field-datetime',
   '@primecms/field-document',
   '@primecms/field-group',
   '@primecms/field-slice',
   '@primecms/field-string'
 ].map(pkg => {
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     return pkg + '/src';
   }
   return pkg;

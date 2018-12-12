@@ -1,5 +1,5 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Form, Select } from 'antd';
+import { Checkbox, Form, Select } from 'antd';
 import * as React from 'react';
 
 interface IContentType {
@@ -10,7 +10,8 @@ interface IContentType {
 
 export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProps> {
   public render() {
-    const { form, stores } = this.props;
+    const { form, stores, field } = this.props;
+    const { options } = field;
 
     return (
       <>
@@ -23,6 +24,14 @@ export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProp
                 </Select.Option>
               ))}
             </Select>
+          )}
+        </Form.Item>
+        <Form.Item>
+          {form.getFieldDecorator('options.multiple', {
+            valuePropName: 'checked',
+            initialValue: options.multiple
+          })(
+            <Checkbox>Multiple</Checkbox>
           )}
         </Form.Item>
       </>

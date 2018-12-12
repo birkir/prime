@@ -11,6 +11,8 @@ export class PrimeFieldAsset extends PrimeField {
   public defaultOptions: {} = {};
 
   public getGraphQLOutput({ field }: IPrimeFieldGraphQLArguments) {
+    const options = this.getOptions(field);
+
     return {
       args: {
         crop: { type: GraphQLString }
@@ -20,7 +22,7 @@ export class PrimeFieldAsset extends PrimeField {
         const data = get(root, info.fieldName, {});
         let image = get(data, 'url', '');
 
-        const fieldCrops = get(field.options, 'crops', []);
+        const fieldCrops = get(options, 'crops', []);
         const crops = get(data, 'crops', []);
         if (args.crop) {
           const crop = crops.find((c: { name: string }) => c.name === args.crop);

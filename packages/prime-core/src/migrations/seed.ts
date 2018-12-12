@@ -10,6 +10,9 @@ import { ContentType } from '../models/ContentType';
 import { ContentTypeField } from '../models/ContentTypeField';
 import { User } from '../models/User';
 import { sequelize } from '../sequelize';
+import { EntryTransformer } from '../utils/entryTransformer';
+
+const entryTransformer = new EntryTransformer();
 
 const debug = require('debug')('prime:seed');
 
@@ -104,11 +107,11 @@ export const seed = async () => {
     const author = await ContentEntry.create({
       contentTypeId: authorType.id,
       isPublished: true,
-      data: {
+      data: await entryTransformer.transformInput({
         name: faker.name.findName(),
         bio: faker.lorem.words(15),
         dateTest: faker.date.past(),
-      },
+      }, authorType.id),
       userId: user.id,
     });
     if (author) {
@@ -122,12 +125,12 @@ export const seed = async () => {
     const blog = await ContentEntry.create({
       contentTypeId: blogType.id,
       isPublished: true,
-      data: {
+      data: await entryTransformer.transformInput({
         title: faker.lorem.lines(1),
         description: faker.lorem.paragraphs(),
         author: faker.random.arrayElement(authorIds),
-        tags: [{ tag: 'foo' }, { tag: 'bar' }]
-      },
+        tags: [{ tag: faker.hacker.phrase() }, { tag: faker.hacker.phrase() }]
+      }, blogType.id),
       userId: user.id,
     });
     if (blog) {

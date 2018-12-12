@@ -32,6 +32,7 @@
   "dependencies": {
     "@primecms/field": "^0.1.0",
     "@primecms/field-asset": "^0.1.1",
+    "@primecms/field-boolean": "^0.1.0",
     "@primecms/field-datetime": "^0.1.0",
     "@primecms/field-document": "^0.1.0",
     "@primecms/field-group": "^0.1.1",

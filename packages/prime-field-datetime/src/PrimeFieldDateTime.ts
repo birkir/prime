@@ -19,7 +19,7 @@ export class PrimeFieldDateTime extends PrimeField {
   };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
-    const { date, time } = args.field.options || this.defaultOptions;
+    const { date, time } = this.getOptions(args.field);
 
     return {
       type: date && time ? GraphQLDateTime : (time ? GraphQLTime : GraphQLDate),
@@ -34,7 +34,7 @@ export class PrimeFieldDateTime extends PrimeField {
   }
 
   public getGraphQLInput(args: IPrimeFieldGraphQLArguments) {
-    const { date, time } = args.field.options || this.defaultOptions;
+    const { date, time } = this.getOptions(args.field);
 
     return {
       type: date && time ? GraphQLDateTime : (time ? GraphQLTime : GraphQLDate)
@@ -42,7 +42,7 @@ export class PrimeFieldDateTime extends PrimeField {
   }
 
   public getGraphQLWhere({ field }: IPrimeFieldGraphQLArguments) {
-    const { date, time } = field.options || this.defaultOptions;
+    const { date, time } = this.getOptions(field);
     const type = date && time ? 'dateTime' : (time ? 'time' : 'date');
 
     return {

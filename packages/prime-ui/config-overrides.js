@@ -6,6 +6,7 @@ const rewireGqlTag = require('react-app-rewire-graphql-tag');
 const primeConfig = require('rc')('prime', {
   fields: [
     '@primecms/field-asset',
+    '@primecms/field-boolean',
     '@primecms/field-datetime',
     '@primecms/field-document',
     '@primecms/field-group',

@@ -81,7 +81,7 @@ export const getFields = async (contentTypeId: string) => {
     ]
   });
 
-  const contentType = await ContentType.find({
+  const contentType = await ContentType.findOne({
     where: {
       id: contentTypeId,
     }
@@ -216,7 +216,7 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
     }
   });
 
-  const contentType = await ContentType.find({
+  const contentType = await ContentType.findOne({
     where: {
       id: contentTypeId,
     }

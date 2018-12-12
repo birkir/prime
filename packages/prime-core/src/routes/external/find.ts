@@ -41,7 +41,7 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
 
       context.sequelizeDataLoader.prime(entry);
 
-      return transformEntry(entry);
+      return await transformEntry(entry);
     }
   };
 };

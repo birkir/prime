@@ -219,10 +219,10 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
           startCursor: entries.length > 0 && encodeCursor(entries[0].entryId),
           endCursor: entries.length > 0 && encodeCursor(entries[entries.length - 1].entryId)
         },
-        edges: entries.map(entry => ({
+        edges: await Promise.all(entries.map(async (entry) => ({
           cursor: encodeCursor(entry.entryId),
-          node: transformEntry(entry)
-        }))
+          node: await transformEntry(entry)
+        })))
       };
     }
   };

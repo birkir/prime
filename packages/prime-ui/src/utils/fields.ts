@@ -17,6 +17,7 @@ export const registerField = (id: string, field: any) => {
 // accepted into prime unless the module will be part of the cms core.
 if (process.env.NODE_ENV === 'development') {
   registerField('asset', require('@primecms/field-asset/ui/src').default);
+  registerField('boolean', require('@primecms/field-boolean/ui/src').default);
   registerField('datetime', require('@primecms/field-datetime/ui/src').default);
   registerField('document', require('@primecms/field-document/ui/src').default);
   registerField('group', require('@primecms/field-group/ui/src').default);

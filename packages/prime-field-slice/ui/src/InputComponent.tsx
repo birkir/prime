@@ -47,11 +47,11 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public async load() {
     const { field, entry, path, stores } = this.props;
     const ids = get(field.options, 'contentTypeIds', []);
-    this.values = get(entry, `data.${path}`, []);
+    const initialValue = (this.props.initialValue as any) || []; // tslint:disable-line no-any
 
     this.setState({
       contentTypes: stores.ContentTypes.list.filter((n: { id: string }) => ids.indexOf(n.id) >= 0),
-      slices: this.values.map((n: { __inputname: string }) => stores.ContentTypes.items.get(n.__inputname))
+      slices: initialValue.map((n: { __inputname: string }) => stores.ContentTypes.items.get(n.__inputname))
     });
   }
 
@@ -70,16 +70,18 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public renderField = (field: any, index: number) => { // tslint:disable-line no-any
+    const initialValue = this.props.initialValue || [];
+
     return this.props.renderField({
       ...this.props,
       field,
-      initialValue: get(this.values, `${index}.${field.name}`, ''),
+      initialValue: get(initialValue, `${index}.${field.name}`, ''),
       path: `${this.props.path}.${index}.${field.name}`
     } as any); // tslint:disable-line no-any
   }
 
   public render() {
-    const { field, form } = this.props;
+    const { field, form, path } = this.props;
     const menu = (
       <Menu onClick={this.onMenuClick}>
         {this.state.contentTypes.map((item) => (
@@ -99,12 +101,8 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           return (
             <Card
               key={`${slice.id}_${index}`}
-              // title={slice.title}
               style={{ marginBottom: 16 }}
               bodyStyle={{ padding: 16 }}
-              // extra={
-              //   <Button data-index={index} onClick={this.onRemoveClick}>Remove</Button>
-              // }
             >
               <div style={{ position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', left: 0, right: 0 }}>
                 <Tag style={{ marginTop: -12 }}>{slice.title}</Tag>
@@ -119,7 +117,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
               {slice.schema.fields.filter(noChildren).map(
                 (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}
-              {form.getFieldDecorator(`${field.name}.${index}.__inputname`, {
+              {form.getFieldDecorator(`${path}.${index}.__inputname`, {
                 initialValue: slice.id
               })(
                 <input type="hidden" />

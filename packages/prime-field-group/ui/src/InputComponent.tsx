@@ -16,6 +16,7 @@ interface IProps {
 
 export class InputComponent extends React.PureComponent<IProps, any> {
 
+  public repeated: boolean;
   public values: any;
   public keysKey: any;
   public initialValue: string[];
@@ -25,13 +26,14 @@ export class InputComponent extends React.PureComponent<IProps, any> {
     const { path, entry } = props;
     const values = get(entry, `data.${path}`, []);
 
+    this.repeated = get(props.field, 'options.repeated', false) === true;
     this.values = values;
     this.keysKey =  `${path}.keys`;
 
     if (Array.isArray(values)) {
       this.initialValue = values.map(getRandomId);
     } else {
-      this.initialValue = [];
+      this.initialValue = this.repeated ? [] : [{} as any];
     }
   }
 
@@ -60,9 +62,9 @@ export class InputComponent extends React.PureComponent<IProps, any> {
   public renderField = (field: any, key: string) => {
     const { getFieldValue } = this.props.form;
     const keys = getFieldValue(this.keysKey);
-    const index = keys.indexOf(key);
-    const path = `${this.props.path}.${index}.${field.name}`;
-    const initialValue = get(this.values, `${index}.${field.name}`);
+    const index = this.repeated ? `${keys.indexOf(key)}.` : '';
+    const path = `${this.props.path}.${index}${field.name}`;
+    const initialValue = get(this.values, `${index}${field.name}`);
 
     return this.props.renderField({
       ...this.props,
@@ -79,13 +81,13 @@ export class InputComponent extends React.PureComponent<IProps, any> {
 
     return (
       <Card key={key} style={{ position: 'relative', marginBottom: 16 }} bodyStyle={{ padding: 16, paddingTop: 8, paddingBottom: 0 }}>
-        <Button
+        {this.repeated && <Button
           data-key={key}
           shape="circle-outline"
           icon="minus"
           style={{ position: 'absolute', top: -16, right: -16, zIndex: 2 }}
           onClick={this.onRemoveClick}
-        />
+        />}
         {field.fields.map((f: any) => this.renderField(f, key))}
       </Card>
     );
@@ -103,10 +105,12 @@ export class InputComponent extends React.PureComponent<IProps, any> {
       <>
         <Form.Item label={field.title}>
           {keys.map(this.renderGroupItem)}
-          <Button size="large" block={true} onClick={this.add}>
-            <Icon type="plus" />
-            Add Item
-          </Button>
+          {this.repeated && (
+            <Button size="large" block={true} onClick={this.add}>
+              <Icon type="plus" />
+              Add Item
+            </Button>
+          )}
         </Form.Item>
       </>
     );
