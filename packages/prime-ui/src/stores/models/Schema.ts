@@ -100,7 +100,7 @@ export const Schema = types
             id: id,
             name: obj.name,
             title: obj.title,
-            isDisplay: false,
+            isDisplay: obj.type === 'string' && !self.fields.find(f => f.isDisplay),
             type: obj.type || DEFAULT_TYPE,
             group: obj.group || DEFAULT_GROUP_TITLE,
             options: {},
