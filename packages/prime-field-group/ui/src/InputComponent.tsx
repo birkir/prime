@@ -23,8 +23,9 @@ export class InputComponent extends React.PureComponent<IProps, any> {
 
   constructor(props: any) {
     super(props);
-    const { path, entry } = props;
-    const values = get(entry, `data.${path}`, []);
+    const { path, entry, initialValue } = props;
+    const values = initialValue;
+    // get(entry, `data.${path}`, []);
 
     this.repeated = get(props.field, 'options.repeated', false) === true;
     this.values = values;

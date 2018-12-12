@@ -40,13 +40,13 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public async load() {
-    const { field, form, stores } = this.props;
+    const { field, stores, initialValue } = this.props;
 
     this.setState({ loading: true });
 
     const contentType = await stores.ContentTypes.loadById(field.options.contentTypeId);
     const items = await stores.ContentEntries.loadByContentType(contentType.id);
-    const value = form.getFieldValue(field.name);
+    const value = initialValue;
 
     const state: IState = {
       options: [{
@@ -73,13 +73,13 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public onChange = (value: string[]) => {
     const entryId = value.slice(0).pop();
     this.props.form.setFieldsValue({
-      [this.props.field.name]: entryId
+      [this.props.path]: entryId
     });
   }
 
   public render() {
     const { loading, defaultValue, options } = this.state;
-    const { field, form } = this.props;
+    const { field, path, form } = this.props;
     const { getFieldDecorator } = form;
 
     return (
@@ -95,7 +95,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
             showSearch={{ filter } as any} // tslint:disable-line no-any
           />
         ) : null}
-        {getFieldDecorator(field.name)(<input type="hidden" />)}
+        {getFieldDecorator(path)(<input type="hidden" />)}
       </Form.Item>
     );
   }

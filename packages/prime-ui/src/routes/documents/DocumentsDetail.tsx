@@ -102,7 +102,7 @@ export class DocumentsDetail extends React.Component<IProps> {
           return vals.map(parse);
         }
         if (typeof vals === 'object') {
-          return Object.entries(vals).reduce(
+          return Object.entries(vals || {}).reduce(
             (acc: any, [key, value]) => {
               if (typeof value === 'object') {
                 const entries = Object.entries(value);

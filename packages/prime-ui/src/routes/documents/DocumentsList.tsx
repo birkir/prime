@@ -171,7 +171,7 @@ export const DocumentsList = ({ match, history }: any) => {
           title: 'ID',
           dataIndex: 'entryId',
           sorter: true,
-          width: '150px',
+          width: '170px',
           render(_text: string, record: any) {
             return (
               <>

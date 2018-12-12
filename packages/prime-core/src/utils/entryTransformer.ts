@@ -69,6 +69,9 @@ export class EntryTransformer {
             .filter(item => Object.keys(item).length > 0);
         } else {
           value = await this.transform(subFields, value, io, Types.GROUP);
+          if (Object.keys(value).length === 0) {
+            continue;
+          }
         }
       }
 
@@ -83,6 +86,12 @@ export class EntryTransformer {
             return {};
           })))
             .filter(item => Object.keys(item).length > 0);
+        } else {
+          const fields = await this.getFields(value.__inputname);
+          value = await this.transform(fields, value, io, Types.SLICE);
+          if (Object.keys(value).length === 0) {
+            continue;
+          }
         }
       }
 
