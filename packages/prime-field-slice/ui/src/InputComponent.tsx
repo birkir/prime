@@ -91,29 +91,38 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     );
 
     return (
-      <>
-        <div className="ant-form-item-label">
-          <label>{field.title}</label>
-        </div>
+      <div className="prime-slice">
+        <div className="prime-slice-spacer-top" />
         {this.state.slices.map((slice, index) => {
           if (!slice || !slice.id) { return null; }
 
           return (
             <Card
               key={`${slice.id}_${index}`}
-              style={{ marginBottom: 16 }}
-              bodyStyle={{ padding: 16 }}
+              className="prime-slice-item"
             >
-              <div style={{ position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', left: 0, right: 0 }}>
-                <Tag style={{ marginTop: -12 }}>{slice.title}</Tag>
-                <Button
-                  shape="circle-outline"
-                  icon="minus"
-                  style={{ position: 'absolute', top: -16, right: -16, zIndex: 2 }}
+              <div className="prime-slice-item-actions">
+                <Icon
+                  className="prime-slice-item-button disabled"
+                  type="up"
+                  data-index={index}
+                />
+                <Icon
+                  className="prime-slice-item-button disabled"
+                  type="down"
+                  data-index={index}
+                />
+                <Icon
+                  className="prime-slice-item-button"
+                  type="minus"
                   data-index={index}
                   onClick={this.onRemoveClick}
                 />
               </div>
+
+              {/* <div style={{ position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', left: 0, right: 0 }}>
+                <Tag style={{ marginTop: -12 }}>{slice.title}</Tag>
+              </div> */}
               {slice.schema.fields.filter(noChildren).map(
                 (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}
@@ -126,12 +135,13 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           );
         })}
         <Dropdown overlay={menu} trigger={['click']}>
-          <Button size="large" block={true}>
+          <Button size="large" block={true} className="prime-slice-add">
             <Icon type="plus" />
             Add Slice
           </Button>
         </Dropdown>
-      </>
+        <div className="prime-slice-spacer-bottom" />
+      </div>
     );
   }
 }

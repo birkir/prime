@@ -47,7 +47,12 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     file: getInitialFile(get(this.props, 'initialValue'))
   };
 
-  public url = new URL(this.props.config.PRIME_CLOUDINARY_URL.replace(/^cloudinary/, 'http'));
+  public url = (() => {
+    try {
+      return new URL(String(this.props.config.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http'));
+    } catch (err) {}
+    return new URL('http://localhost');
+  })();
 
   private cropPixels = { x: 0, y: 0, width: 0, height: 0 };
 
@@ -255,59 +260,61 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           {getFieldDecorator(`${path}.url`, { initialValue: get(file, 'url', '') })(
             <input type="hidden" />
           )}
+
+          {crops.map((crop: { name: string }, index: number) => (
+            <React.Fragment key={crop.name}>
+              {getFieldDecorator(`${path}.crops.${index}.name`, { initialValue: get(crop, 'name', '') })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.x`, { initialValue: get(crop, 'crop.x', -1) })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.y`, { initialValue: get(crop, 'crop.y', -1) })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.width`, { initialValue: get(crop, 'crop.width', -1) })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.height`, { initialValue: get(crop, 'crop.height', -1) })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.zoom`, { initialValue: get(crop, 'crop.zoom', '') })(<input type="hidden" />)}
+            </React.Fragment>
+          ))}
+
+          {crops.length > 0 && (
+            <Dropdown overlay={menu}>
+              <Button>Edit cropped version</Button>
+            </Dropdown>
+          )}
+
+          <Modal
+            visible={cropVisible}
+            title="Crop Image"
+            width={800}
+            onCancel={this.onCropCancel}
+            onOk={this.onCropConfirm}
+            maskClosable={false}
+          >
+            <div style={{
+              height: 800,
+              overflow: 'hidden',
+              position: 'relative',
+              margin: -24
+            }}>
+              <Cropper
+                style={{
+                  containerStyle: {
+                    width: CROP_SIZE,
+                    height: CROP_SIZE
+                  }
+                }}
+                image={file && file.imageUrl}
+                crop={cropOffset}
+                zoom={cropZoom}
+                minZoom={1}
+                maxZoom={6}
+                aspect={this.state.crop.width / this.state.crop.height}
+                onCropChange={this.onCropChange}
+                onCropComplete={this.onCropComplete}
+                onZoomChange={this.onZoomChange}
+              />
+            </div>
+          </Modal>
+          <Modal visible={previewVisible} footer={null} onCancel={this.onClosePreview}>
+            <img alt="Preview Picture" style={{ width: '100%' }} src={String(file && file.url)} />
+          </Modal>
         </Form.Item>
-
-        {crops.map((crop: { name: string }, index: number) => (
-          <React.Fragment key={crop.name}>
-            {getFieldDecorator(`${path}.crops.${index}.name`, { initialValue: get(crop, 'name', '') })(<input type="hidden" />)}
-            {getFieldDecorator(`${path}.crops.${index}.x`, { initialValue: get(crop, 'crop.x', -1) })(<input type="hidden" />)}
-            {getFieldDecorator(`${path}.crops.${index}.y`, { initialValue: get(crop, 'crop.y', -1) })(<input type="hidden" />)}
-            {getFieldDecorator(`${path}.crops.${index}.width`, { initialValue: get(crop, 'crop.width', -1) })(<input type="hidden" />)}
-            {getFieldDecorator(`${path}.crops.${index}.height`, { initialValue: get(crop, 'crop.height', -1) })(<input type="hidden" />)}
-            {getFieldDecorator(`${path}.crops.${index}.zoom`, { initialValue: get(crop, 'crop.zoom', '') })(<input type="hidden" />)}
-          </React.Fragment>
-        ))}
-
-        <Dropdown overlay={menu}>
-          <Button>Edit cropped version</Button>
-        </Dropdown>
-
-        <Modal
-          visible={cropVisible}
-          title="Crop Image"
-          width={800}
-          onCancel={this.onCropCancel}
-          onOk={this.onCropConfirm}
-          maskClosable={false}
-        >
-          <div style={{
-            height: 800,
-            overflow: 'hidden',
-            position: 'relative',
-            margin: -24
-          }}>
-            <Cropper
-              style={{
-                containerStyle: {
-                  width: CROP_SIZE,
-                  height: CROP_SIZE
-                }
-              }}
-              image={file && file.imageUrl}
-              crop={cropOffset}
-              zoom={cropZoom}
-              minZoom={1}
-              maxZoom={6}
-              aspect={this.state.crop.width / this.state.crop.height}
-              onCropChange={this.onCropChange}
-              onCropComplete={this.onCropComplete}
-              onZoomChange={this.onZoomChange}
-            />
-          </div>
-        </Modal>
-        <Modal visible={previewVisible} footer={null} onCancel={this.onClosePreview}>
-          <img alt="Preview Picture" style={{ width: '100%' }} src={String(file && file.url)} />
-        </Modal>
       </>
     );
   }

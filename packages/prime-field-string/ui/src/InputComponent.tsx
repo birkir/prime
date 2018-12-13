@@ -49,7 +49,6 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     return (
       <Form.Item label={field.title}>
         <BraftEditor
-          style={{ backgroundColor: 'white', borderRadius: 4, border: '1px solid #d9d9d9' }}
           controls={controls}
           value={this.state.value}
           onChange={this.onChange}

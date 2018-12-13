@@ -77,16 +77,17 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
   render() {
     const { groups } = this.props.schema;
     return (
-      <Form onSubmit={this.onSubmit}>
-        <Tabs
-          size="large"
-          animated={false}
-          className="document-tabs"
-        >
-          {groups.map(this.renderGroup)}
-        </Tabs>
-        <button type="submit" hidden />
-      </Form>
+      <div className="prime-document">
+        <Form onSubmit={this.onSubmit}>
+          <Tabs
+            type="card"
+            animated={false}
+          >
+            {groups.map(this.renderGroup)}
+          </Tabs>
+          <button type="submit" hidden />
+        </Form>
+      </div>
     );
   }
 }

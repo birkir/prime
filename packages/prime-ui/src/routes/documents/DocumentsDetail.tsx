@@ -11,6 +11,7 @@ import { ContentTypes } from '../../stores/contentTypes';
 import { ContentEntry } from '../../stores/models/ContentEntry';
 import { DocumentForm, BaseDocumentForm } from './components/document-form/DocumentForm';
 import { ContentType } from '../../stores/models/ContentType';
+import './DocumentDetail.less';
 
 const { Content, Sider } = Layout;
 
