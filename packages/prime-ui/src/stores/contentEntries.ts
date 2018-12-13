@@ -5,7 +5,7 @@ import { CONTENT_ENTRY_BY_ID, CONTENT_ENTRIES_BY_CONTENT_TYPE } from './queries'
 import { CREATE_CONTENT_ENTRY } from './mutations';
 
 export const ContentEntries = types.model('ContentEntries', {
-  items: types.map(ContentEntry),
+  items: types.map(types.late(() => ContentEntry)),
   loading: false,
   loaded: false,
   error: false,

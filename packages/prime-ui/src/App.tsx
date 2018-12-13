@@ -1,8 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
-import { SchemaList } from './routes/schemas/SchemaList';
-import { SchemaDetail } from './routes/schemas/SchemaDetail';
 import { Layout } from './components/layout/Layout';
 import { DocumentsList } from './routes/documents/DocumentsList';
 import { DocumentsDetail } from './routes/documents/DocumentsDetail';
@@ -13,6 +11,7 @@ import { Auth } from './stores/auth';
 import { Logout } from './routes/logout/Logout';
 import { Playground } from './routes/playground/Playground';
 import { Onboarding } from './routes/onboarding/Onboarding';
+import { Schemas } from './routes/schemas/Schemas';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
@@ -40,25 +39,50 @@ export class App extends React.Component {
 
     return (
       <BrowserRouter>
-        <Switch>
-          <Route path="/setup" exact component={Onboarding} />
-          <Route path="/login" exact component={Login} />
-          <Route path="/logout" exact component={Logout} />
-          <Private>
-            <Layout>
-              <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/playground" exact component={Playground} />
-                <Route path="/schemas" exact component={SchemaList} />
-                <Route path="/schemas/:id" component={SchemaDetail} />
-                <Route path="/documents" exact component={DocumentsList} />
-                <Route path="/documents/schema/:id" component={DocumentsList} />
-                <Route path="/documents/doc/:entryId" component={DocumentsDetail} />
-                <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
-              </Switch>
-            </Layout>
-          </Private>
-        </Switch>
+        <Route
+          render={({ location }) => {
+            let key = location.pathname;
+            let preKey = 'private';
+            const parts = key.split('/');
+            const section = parts[1];
+
+            switch (section) {
+              case 'schemas':
+                key = 'schemas';
+                break;
+              case 'setup':
+              case 'login':
+              case 'logout':
+                preKey = section;
+                break;
+            }
+
+            return (
+              <>
+                <Switch key={preKey} location={location}>
+                  <Route path="/setup" exact component={Onboarding} />
+                  <Route path="/login" exact component={Login} />
+                  <Route path="/logout" exact component={Logout} />
+                  <Private>
+                    <Layout>
+                      <Switch key={key} location={location}>
+                        <Route path="/" exact render={() => <Redirect to="/documents" />} />
+                        <Route path="/schemas" component={Schemas} />
+                        <Route path="/documents" exact component={DocumentsList} />
+                        <Route path="/documents/schema/:id" component={DocumentsList} />
+                        <Route path="/documents/doc/:entryId" component={DocumentsDetail} />
+                        <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
+                      </Switch>
+                      <div hidden={section !== 'playground'}>
+                        <Playground />
+                      </div>
+                    </Layout>
+                  </Private>
+                </Switch>
+              </>
+            );
+          }}
+        />
       </BrowserRouter>
     );
   }
