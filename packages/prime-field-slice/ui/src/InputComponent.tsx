@@ -93,6 +93,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     return (
       <div className="prime-slice">
         <div className="prime-slice-spacer-top" />
+        <div className="ant-form-item-label">
+          <label title={field.title}>{field.title}</label>
+        </div>
         {this.state.slices.map((slice, index) => {
           if (!slice || !slice.id) { return null; }
 
@@ -119,17 +122,13 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
                   onClick={this.onRemoveClick}
                 />
               </div>
-
-              {/* <div style={{ position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', left: 0, right: 0 }}>
-                <Tag style={{ marginTop: -12 }}>{slice.title}</Tag>
-              </div> */}
-              {slice.schema.fields.filter(noChildren).map(
-                (f: any) => this.renderField(f, index) // tslint:disable-line no-any
-              )}
               {form.getFieldDecorator(`${path}.${index}.__inputname`, {
                 initialValue: slice.id
               })(
                 <input type="hidden" />
+              )}
+              {slice.schema.fields.filter(noChildren).map(
+                (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}
             </Card>
           );

@@ -81,14 +81,30 @@ export class InputComponent extends React.PureComponent<IProps, any> {
     if (!key) { return null; }
 
     return (
-      <Card key={key} style={{ position: 'relative', marginBottom: 16 }} bodyStyle={{ padding: 16, paddingTop: 8, paddingBottom: 0 }}>
-        {this.repeated && <Button
-          data-key={key}
-          shape="circle-outline"
-          icon="minus"
-          style={{ position: 'absolute', top: -16, right: -16, zIndex: 2 }}
-          onClick={this.onRemoveClick}
-        />}
+      <Card
+        key={key}
+        className="prime-group-item"
+      >
+        {this.repeated && (
+          <div className="prime-slice-item-actions">
+            {/* <Icon
+              className="prime-slice-item-button disabled"
+              type="up"
+              data-index={index}
+            />
+            <Icon
+              className="prime-slice-item-button disabled"
+              type="down"
+              data-index={index}
+            /> */}
+            <Icon
+              className="prime-slice-item-button"
+              type="minus"
+              data-key={key}
+              onClick={this.onRemoveClick}
+            />
+          </div>
+        )}
         {field.fields.map((f: any) => this.renderField(f, key))}
       </Card>
     );
@@ -104,10 +120,10 @@ export class InputComponent extends React.PureComponent<IProps, any> {
 
     return (
       <>
-        <Form.Item label={field.title}>
+        <Form.Item label={field.title} className="prime-group">
           {keys.map(this.renderGroupItem)}
           {this.repeated && (
-            <Button size="large" block={true} onClick={this.add}>
+            <Button size="large" block={true} onClick={this.add} className="prime-slice-add">
               <Icon type="plus" />
               Add Item
             </Button>

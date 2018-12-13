@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Button, Input, notification, Checkbox } from 'antd';
+import React, { useState } from 'react';
+import { Form, Button, Input, notification, Checkbox, Select, Switch, Divider } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { startCase } from 'lodash';
 import { ContentTypes } from '../../../stores/contentTypes';
@@ -13,6 +13,16 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
 
   const { getFieldDecorator } = form;
 
+  const [type, setType] = useState('contentType');
+
+  const onTypeChange = (option: any) => {
+    form.setFieldsValue({
+      isSlice: option === 'slice',
+      isTemplate: option === 'template',
+    });
+    setType(option);
+  }
+
   const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
@@ -25,7 +35,7 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
       return onSubmit(result);
     } catch (err) {
       notification.error({
-        message: 'Could not create content type',
+        message: 'Could not create Schema',
         description: err.message.replace(/^Error: /, ''),
         duration: 0,
         placement: 'bottomRight',
@@ -46,17 +56,75 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
       <Form layout="vertical" hideRequiredMark onSubmit={onFormSubmit}>
         <Form.Item label="Title">
           {getFieldDecorator('title', {
-            rules: [{ required: true, message: 'please enter title' }],
-          })(<Input autoFocus onKeyUp={updateApiField} placeholder="Please enter title" />)}
+            rules: [{
+              required: true,
+              message: 'Required field'
+            }],
+          })(
+            <Input
+              autoFocus
+              autoComplete="off"
+              size="large"
+              onKeyUp={updateApiField}
+              placeholder="e.g. Custom page"
+            />
+          )}
         </Form.Item>
-        <Form.Item label="API">
+
+        <Form.Item label="API Name">
           {getFieldDecorator('name', {
-            rules: [{ message: 'please enter api id' }],
-          })(<Input placeholder="Please enter api id" />)}
+            rules: [{
+              required: true,
+              message: 'Required field'
+            }, {
+              pattern: /^[A-Z][A-Za-z]+(?:[A-Za-z]+)*$/,
+              message: 'Must be CamelCase',
+            }],
+          })(
+            <Input
+              placeholder="e.g. CustomPage"
+              autoComplete="off"
+              size="large"
+            />
+          )}
         </Form.Item>
-        <Form.Item label="Slice">
-          {getFieldDecorator('isSlice')(<Checkbox />)}
+
+        <Form.Item label="Type">
+          <Select value={type} size="large" onChange={onTypeChange}>
+            <Select.Option key="contentType">Content Type</Select.Option>
+            <Select.Option key="template">Template</Select.Option>
+            <Select.Option key="slice">Slice</Select.Option>
+          </Select>
         </Form.Item>
+
+        {getFieldDecorator('isTemplate')(<input type="hidden" />)}
+        {getFieldDecorator('isSlice')(<input type="hidden" />)}
+
+        {type === 'contentType' && (
+          <>
+            <Divider dashed />
+
+            <Form.Item label="Templates">
+              {getFieldDecorator('settings.templates')(
+                <Select
+                  mode="multiple"
+                  size="large"
+                  style={{ width: '100%' }}
+                  placeholder="No templates"
+                  defaultValue={[]}
+                  onChange={() => null}
+                >
+                  <Select.Option key="opt1">SEO</Select.Option>
+                  <Select.Option key="opt2">Open Graph</Select.Option>
+                </Select>
+              )}
+            </Form.Item>
+            <Form.Item label="Mutations">
+              {getFieldDecorator('settings.mutations')(<Switch />)}
+            </Form.Item>
+          </>
+        )}
+
         <div
           style={{
             position: 'absolute',

@@ -15,6 +15,7 @@ import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
   getFields, setFields } from './processFields';
 import { User } from '../../models/User';
 import { EntryTransformer } from '../../utils/entryTransformer';
+import { Sentry } from '../../utils/Sentry';
 
 const entryTransformer = new EntryTransformer();
 
@@ -555,10 +556,25 @@ export const internalGraphql = async (restart) => {
     context: async ({ req }) => {
       const { user } = req;
       if (!user) {
-        throw new AuthenticationError('Not logged in');
+        throw new AuthenticationError('Not authenticated');
+      }
+
+      if (Sentry) {
+        Sentry.configureScope(scope => {
+          if (user) {
+            scope.setUser({ id: user.id });
+          }
+        });
       }
 
       return { user };
+    },
+    formatError(error) {
+      if (Sentry) {
+        Sentry.captureException(error);
+      }
+
+      return error;
     }
   });
 

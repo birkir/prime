@@ -183,7 +183,7 @@ export class SchemaList extends React.Component<any> {
 
         <Drawer
           title="Edit Schema"
-          width={280}
+          width={360}
           placement="right"
           maskClosable={true}
           onClose={this.onCloseDrawer}
@@ -200,7 +200,7 @@ export class SchemaList extends React.Component<any> {
 
         <Drawer
           title="Create Schema"
-          width={280}
+          width={360}
           placement="right"
           maskClosable={true}
           onClose={this.onCloseDrawer}

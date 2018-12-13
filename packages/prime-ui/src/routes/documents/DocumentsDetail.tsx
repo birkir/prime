@@ -243,9 +243,15 @@ export class DocumentsDetail extends React.Component<IProps> {
         <Layout>
           <Content style={{ height: 'calc(100vh - 64px)' }}>
             {loading && (
-              <Card style={{ marginTop: 100 }}>
-                <Skeleton loading={true} />
-              </Card>
+              <div className="prime-document">
+                <div style={{ width: 65, height: 40, borderTopLeftRadius: 3, borderTopRightRadius: 3, backgroundColor: 'white' }} />
+                <Card bordered={false} style={{ borderRadius: 3, borderTopLeftRadius: 0, marginBottom: 16 }}>
+                  <Skeleton loading={true} />
+                </Card>
+                {/* <Card bordered={false} style={{ borderRadius: 3 }}>
+                  <Skeleton loading={true} />
+                </Card> */}
+              </div>
             )}
             {!loading && (
               <DocumentForm

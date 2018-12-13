@@ -29,7 +29,7 @@ export class EntryTransformer {
     return fields;
   }
 
-  transform = async (fields, data, io = Types.INPUT, type = Types.ROOT) => {
+  transform = async (fields, data, contentTypeId, io = Types.INPUT, type = Types.ROOT) => {
     const output = {};
 
     if (type === Types.SLICE) {
@@ -65,10 +65,10 @@ export class EntryTransformer {
       if (field.type === 'group') {
         const subFields = fields.filter(f => f.contentTypeFieldId === field.id);
         if (options.repeated && Array.isArray(value)) {
-          value = (await Promise.all(value.map(item => this.transform(subFields, item, io, Types.GROUP))))
+          value = (await Promise.all(value.map(item => this.transform(subFields, item, contentTypeId, io, Types.GROUP))))
             .filter(item => Object.keys(item).length > 0);
         } else {
-          value = await this.transform(subFields, value, io, Types.GROUP);
+          value = await this.transform(subFields, value, contentTypeId, io, Types.GROUP);
           if (Object.keys(value).length === 0) {
             continue;
           }
@@ -109,11 +109,11 @@ export class EntryTransformer {
 
   transformInput = async (data, contentTypeId) => {
     const fields = await this.getFields(contentTypeId);
-    return this.transform(fields, data, Types.INPUT);
+    return this.transform(fields, data, contentTypeId, Types.INPUT);
   }
 
   transformOutput = async (data, contentTypeId) => {
     const fields = await this.getFields(contentTypeId);
-    return this.transform(fields, data, Types.OUTPUT);
+    return this.transform(fields, data, contentTypeId, Types.OUTPUT);
   }
 }

@@ -7,7 +7,7 @@
 
   .ant-tabs.ant-tabs-card {
 
-    overflow-x: visible;
+    overflow: visible;
 
     > .ant-tabs-content {
       margin-top: -18px;
@@ -148,6 +148,10 @@
     margin: -16px;
     margin-bottom: 16px;
     background-color: #f0f2f5;
+
+    > .ant-form-item-label {
+      margin-bottom: 8px;
+    }
   }
 
   .prime-slice-spacer-top {
@@ -171,8 +175,12 @@
     margin-top: 32px;
   }
 
-  .prime-slice:last-child .prime-slice-spacer-bottom {
-    display: none;
+  .prime-slice:last-child {
+    margin-bottom: -16px;
+
+    .prime-slice-spacer-bottom {
+      display: none;
+    }
   }
 
   .prime-slice-item {
@@ -225,5 +233,44 @@
     &:last-child {
       border-top-right-radius: 3px;
     }
+  }
+
+  .prime-group {
+    border-left: 0;
+    margin-left: -16px;
+    margin-right: -16px;
+    background-color: #f8f8f8;
+    padding-top: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+
+    > .ant-form-item-label {
+      margin-bottom: 8px;
+    }
+  }
+
+  .prime-group-item {
+    position: relative;
+    margin-bottom: 16px;
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 16px;
+    border-radius: 3px;
+
+    > .ant-card-body {
+      padding: 16px;
+      padding-bottom: 0;
+      padding-top: 24px;
+    }
+  }
+
+  .prime-slice .prime-group {
+    margin-left: -32px;
+    margin-right: -32px;
+    padding-right: 32px;
+    padding-bottom: 24px;
+    margin-bottom: 0;
+    padding-left: 32px;
   }
 }

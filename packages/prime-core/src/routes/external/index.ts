@@ -13,6 +13,7 @@ import { remove } from './remove';
 import { update } from './update';
 import { resolveFieldType } from './utils/resolveFieldType';
 import { EntryTransformer } from '../../utils/entryTransformer';
+import { Sentry } from '../../utils/Sentry';
 
 // import { User } from '../../models/User';
 // import { acl } from '../../acl';
@@ -150,6 +151,13 @@ export const externalGraphql = async () => {
       context.contentReleaseId = null;
 
       return context;
+    },
+    formatError(error) {
+      if (Sentry) {
+        Sentry.captureException(error);
+      }
+
+      return error;
     }
   });
 
