@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-asset",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Asset Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
