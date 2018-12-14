@@ -184,13 +184,13 @@ export const DocumentsList = ({ match, history }: any) => {
           }
         }, {
           title: 'Title',
-          width: '50%',
           dataIndex: 'data.title',
           render(_text: string, record: any) {
             return record.display;
           }
         }, {
           title: 'Type',
+          width: '100px',
           dataIndex: 'contentType.title',
           filters: get(data, 'allContentTypes', [])
             .filter((n: any) => !n.isSlice)
@@ -202,6 +202,7 @@ export const DocumentsList = ({ match, history }: any) => {
           filterMultiple: false,
         }, {
           title: 'Updated',
+          width: '130px',
           dataIndex: 'updatedAt',
           sorter: true,
           defaultSortOrder: 'descend' as any,

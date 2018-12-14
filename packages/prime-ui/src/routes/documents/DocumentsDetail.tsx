@@ -18,6 +18,7 @@ const { Content, Sider } = Layout;
 interface IProps {
   match: any;
   history: any;
+  location: any;
 }
 
 @observer
@@ -38,6 +39,15 @@ export class DocumentsDetail extends React.Component<IProps> {
     const search = new URLSearchParams(window.location.search)
     this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
     this.load();
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    if (this.props.location.search !== nextProps.location.search) {
+      const search = new URLSearchParams(nextProps.location.search)
+      this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
+      this.loaded = false;
+      this.load();
+    }
   }
 
   async load() {
