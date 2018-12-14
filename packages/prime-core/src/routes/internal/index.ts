@@ -401,7 +401,7 @@ export const internalGraphql = async (restart) => {
       type: GraphQLBoolean,
       args: {
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
-        schema: { type: new GraphQLNonNull(new GraphQLList(ContentTypeFieldGroupInputType)) }
+        schema: { type: new GraphQLNonNull(new GraphQLList(ContentTypeFieldGroupInputType)) },
       },
       async resolve(root, args, context, info) {
         await setFields(args.contentTypeId, args.schema);
@@ -418,8 +418,10 @@ export const internalGraphql = async (restart) => {
             name: 'CreateContentTypeInput',
             fields: {
               title: { type: new GraphQLNonNull(GraphQLString) },
-              name: { type: GraphQLString },
-              isSlice: { type: GraphQLBoolean }
+              name: { type: new GraphQLNonNull(GraphQLString) },
+              isSlice: { type: GraphQLBoolean },
+              isTemplate: { type: GraphQLBoolean },
+              settings: { type: GraphQLJSON },
             }
           })
         }
@@ -428,11 +430,48 @@ export const internalGraphql = async (restart) => {
         const entry = await ContentType.create({
           name: args.input.name,
           title: args.input.title,
-          isSlice: args.input.isSlice
+          isSlice: args.input.isSlice,
+          isTemplate: args.input.isTemplate,
+          settings: args.input.settings,
+          userId: context.user.id,
         });
         restart();
 
         return entry;
+      }
+    },
+    updateContentType: {
+      type: queryFields.ContentType.type,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: {
+          type: new GraphQLInputObjectType({
+            name: 'UpdateContentTypeInput',
+            fields: {
+              name: { type: new GraphQLNonNull(GraphQLString) },
+              title: { type: new GraphQLNonNull(GraphQLString) },
+              settings: { type: GraphQLJSON },
+            }
+          })
+        }
+      },
+      async resolve(root, args, context, info) {
+        const contentType = await ContentType.findOne({
+          where: { id: args.id },
+        });
+
+        if (contentType) {
+          const { title, name, settings } = args.input;
+
+          await contentType.update({
+            title,
+            name,
+            settings,
+          })
+          restart();
+        }
+
+        return contentType;
       }
     },
     removeContentType: {
@@ -535,6 +574,20 @@ export const internalGraphql = async (restart) => {
 
         return false;
       }
+    },
+    removeContentEntry: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      async resolve(root, args, context, info) {
+        const success = await ContentEntry.destroy({
+          where: {
+            entryId: args.id,
+          }
+        });
+        return Boolean(success);
+      },
     }
   };
 

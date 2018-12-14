@@ -1,9 +1,13 @@
 query allContentTypes {
   allContentTypes(order: "title") {
     id
-    title
     name
+    title
+    groups
+    settings
     isSlice
+    isTemplate
+
     entriesCount
   }
 }

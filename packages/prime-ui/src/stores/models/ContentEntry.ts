@@ -3,7 +3,7 @@ import { JSONObject } from '../../interfaces/JSONObject';
 import { ContentType } from './ContentType';
 import { ContentTypes } from '../contentTypes';
 import { client } from '../../utils/client';
-import { UPDATE_CONTENT_ENTRY, PUBLISH_CONTENT_ENTRY } from '../mutations';
+import { UPDATE_CONTENT_ENTRY, PUBLISH_CONTENT_ENTRY, REMOVE_CONTENT_ENTRY } from '../mutations';
 
 const ContentTypeRef = types.reference(ContentType, {
   get(identifier: string) {
@@ -113,10 +113,20 @@ export const ContentEntry = types
       }
     });
 
+    const remove = flow(function*() {
+      return yield client.mutate({
+        mutation: REMOVE_CONTENT_ENTRY,
+        variables: {
+          id: self.entryId,
+        }
+      });
+    });
+
     return {
       setContentType,
       setHasChanged,
       setIsPublished,
+      remove,
       update,
       publish,
     };

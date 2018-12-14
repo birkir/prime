@@ -1,5 +1,8 @@
+@spacing: 32px;
+@borderRadius: 3px;
+
 .prime-document {
-  padding: 32px;
+  padding: @spacing;
 
   max-width: 1024px;
   margin-left: auto;
@@ -14,8 +17,8 @@
 
       > .ant-tabs-tabpane {
         background: #fff;
-        padding: 16px;
-        border-radius: 3px;
+        padding: @spacing;
+        border-radius: @borderRadius;
       }
     }
 
@@ -44,13 +47,13 @@
     transition: border-left-color ease-in-out 0.33s;
 
     &:focus-within {
-      border-left-color: #f0f0f0;
+      border-left-color: #e5e5e5;
     }
   }
 
   .ant-form-item,
   .ant-form-item-with-help {
-    margin-bottom: 24px;
+    margin-bottom: @spacing;
   }
 
   .ant-form-item-label {
@@ -59,9 +62,10 @@
     margin-top: -4px;
 
     label {
-      text-transform: uppercase;
-      font-size: 11px;
-      opacity: 0.5;
+      opacity: 0.35;
+      font-family: "Noto Sans SC", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-weight: 400;
+      font-size: 13px;
 
       &:after {
         display: none;
@@ -91,6 +95,18 @@
       border: none !important;
       box-shadow: none !important;
     }
+  }
+
+  .ant-input,
+  .ant-cascader-picker-label,
+  .ant-time-picker-input {
+    font-size: 21px;
+    font-family: "Noto Sans SC", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: 300;
+  }
+
+  .ant-cascader-picker-label {
+    padding-bottom: 30px;
   }
 
   .ant-input-lg {
@@ -123,6 +139,7 @@
     padding: 8px;
     border-radius: 5px;
     margin-left: -6px;
+
     &:focus,
     &:hover {
       box-shadow: 0 1px 7px rgba(0,0,0,0.075) !important;
@@ -132,6 +149,10 @@
   .ant-calendar-picker,
   .ant-time-picker {
     margin-top: 8px;
+  }
+
+  .ant-time-picker-large .ant-time-picker-input {
+    height: 47px;
   }
 
   .ant-cascader-input {
@@ -145,7 +166,7 @@
   }
 
   .prime-slice {
-    margin: -16px;
+    margin: -@spacing;
     margin-bottom: 16px;
     background-color: #f0f2f5;
 
@@ -155,28 +176,28 @@
   }
 
   .prime-slice-spacer-top {
-    height: 3px;
+    height: @borderRadius;
     width: 100%;
     background-color: white;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: @borderRadius;
+    border-bottom-right-radius: @borderRadius;
 
-    padding-top: 16px;
-    margin-bottom: 32px;
+    padding-top: @spacing;
+    margin-bottom: @spacing;
   }
 
   .prime-slice-spacer-bottom {
-    height: 3px;
+    height: @borderRadius;
     width: 100%;
     background-color: white;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    border-top-left-radius: @borderRadius;
+    border-top-right-radius: @borderRadius;
 
-    margin-top: 32px;
+    margin-top: @spacing;
   }
 
   .prime-slice:last-child {
-    margin-bottom: -16px;
+    margin-bottom: -@spacing;
 
     .prime-slice-spacer-bottom {
       display: none;
@@ -186,9 +207,10 @@
   .prime-slice-item {
     margin-bottom: 16px;
     border: none;
-    border-radius: 3px;
+    border-radius: @borderRadius;
 
     .ant-card-body {
+      padding: @spacing;
       padding-bottom: 0;
     }
   }
@@ -231,18 +253,18 @@
     }
 
     &:last-child {
-      border-top-right-radius: 3px;
+      border-top-right-radius: @borderRadius;
     }
   }
 
   .prime-group {
     border-left: 0;
-    margin-left: -16px;
-    margin-right: -16px;
+    margin-left: -@spacing;
+    margin-right: -@spacing;
     background-color: #f8f8f8;
-    padding-top: 16px;
-    padding-right: 16px;
-    padding-bottom: 16px;
+    padding-top: @spacing;
+    padding-right: @spacing;
+    padding-bottom: @spacing;
 
     > .ant-form-item-label {
       margin-bottom: 8px;
@@ -251,26 +273,30 @@
 
   .prime-group-item {
     position: relative;
-    margin-bottom: 16px;
     border: none;
     padding: 0;
     margin: 0;
     margin-bottom: 16px;
-    border-radius: 3px;
+    border-radius: @borderRadius;
 
     > .ant-card-body {
       padding: 16px;
       padding-bottom: 0;
-      padding-top: 24px;
+      padding-top: @spacing;
     }
   }
 
   .prime-slice .prime-group {
-    margin-left: -32px;
-    margin-right: -32px;
-    padding-right: 32px;
-    padding-bottom: 24px;
+    margin-left: -@spacing;
+    margin-right: -@spacing;
+    padding-right: @spacing;
+    padding-bottom: @spacing;
     margin-bottom: 0;
-    padding-left: 32px;
+    padding-left: @spacing;
+  }
+
+  .ant-calendar-picker-clear, .ant-calendar-picker-icon {
+    width: 16px;
+    height: 16px;
   }
 }

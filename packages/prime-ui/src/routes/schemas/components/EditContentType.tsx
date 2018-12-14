@@ -1,35 +1,39 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import { Form, Button, Input, notification, Checkbox, Select, Switch, Divider } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { startCase } from 'lodash';
+import { get, startCase } from 'lodash';
 import { ContentTypes } from '../../../stores/contentTypes';
+import { toJS } from 'mobx';
 
 interface IProps extends FormComponentProps {
   onCancel(): void;
   onSubmit(data: any): void;
+  contentTypeId: string | null;
+  contentTypes: any;
+  item?: any;
 }
 
-const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
+const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
 
   const { getFieldDecorator } = form;
-
-  const [type, setType] = useState('contentType');
-
-  const onTypeChange = (option: any) => {
-    form.setFieldsValue({
-      isSlice: option === 'slice',
-      isTemplate: option === 'template',
-    });
-    setType(option);
-  }
 
   const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
-    const data = form.getFieldsValue();
+    const data: any = { ...form.getFieldsValue() };
+    const type = data.type;
+    delete data.type;
+    data.isSlice = (type === 'slice');
+    data.isTemplate = (type === 'template');
 
     try {
-      const result = await ContentTypes.create(data as any);
+      let result = null;
+      if (contentTypeId && item) {
+        await item.update(data);
+      } else {
+        result = await ContentTypes.create(data as any);
+      }
+
       form.resetFields();
 
       return onSubmit(result);
@@ -89,38 +93,42 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
           )}
         </Form.Item>
 
-        <Form.Item label="Type">
-          <Select value={type} size="large" onChange={onTypeChange}>
-            <Select.Option key="contentType">Content Type</Select.Option>
-            <Select.Option key="template">Template</Select.Option>
-            <Select.Option key="slice">Slice</Select.Option>
-          </Select>
-        </Form.Item>
+        {contentTypeId ? getFieldDecorator('type')(
+          <input type="hidden" />
+        ) : (
+          <Form.Item label="Type">
+            {getFieldDecorator('type')(
+              <Select size="large">
+                <Select.Option key="contentType">Content Type</Select.Option>
+                <Select.Option key="template">Template</Select.Option>
+                <Select.Option key="slice">Slice</Select.Option>
+              </Select>
+            )}
+          </Form.Item>
+        )}
 
-        {getFieldDecorator('isTemplate')(<input type="hidden" />)}
-        {getFieldDecorator('isSlice')(<input type="hidden" />)}
-
-        {type === 'contentType' && (
+        {form.getFieldValue('type') === 'contentType' && (
           <>
             <Divider dashed />
-
             <Form.Item label="Templates">
-              {getFieldDecorator('settings.templates')(
+              {getFieldDecorator('settings.contentTypeIds')(
                 <Select
                   mode="multiple"
                   size="large"
                   style={{ width: '100%' }}
                   placeholder="No templates"
-                  defaultValue={[]}
-                  onChange={() => null}
                 >
-                  <Select.Option key="opt1">SEO</Select.Option>
-                  <Select.Option key="opt2">Open Graph</Select.Option>
+                  {[].concat(contentTypes).filter((item: any) => item.isTemplate).map((item: any) => (
+                    <Select.Option key={item.id}>{item.title}</Select.Option>
+                  ))}
                 </Select>
               )}
             </Form.Item>
             <Form.Item label="Mutations">
-              {getFieldDecorator('settings.mutations')(<Switch />)}
+              {getFieldDecorator('settings.mutations', {
+                initialValue: true,
+                valuePropName: 'checked',
+              })(<Switch />)}
             </Form.Item>
           </>
         )}
@@ -146,4 +154,26 @@ const CreateFormBase = ({ form, onCancel, onSubmit }: IProps) => {
   );
 }
 
-export const CreateForm = Form.create()(CreateFormBase);
+export const EditContentType = Form.create({
+  mapPropsToFields(props: any) {
+    const type = (() => {
+      if (props.item && props.item.isSlice) return 'slice';
+      if (props.item && props.item.isTemplate) return 'template';
+      return 'contentType';
+    })();
+
+    const res: any = {
+      type: Form.createFormField({ value: type }),
+    };
+
+    if (props.item) {
+      const item = toJS(props.item);
+      res.title = Form.createFormField({ value: get(item, 'title', '') });
+      res.name = Form.createFormField({ value: get(item, 'name', '') });
+      res['settings.contentTypeIds'] = Form.createFormField({ value: get(item, 'settings.contentTypeIds', []) });
+      res['settings.mutations'] = Form.createFormField({ value: get(item, 'settings.mutations', true) });
+    }
+
+    return res;
+  }
+})(EditContentTypeBase);

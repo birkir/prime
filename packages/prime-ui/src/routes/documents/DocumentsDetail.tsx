@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Button, Icon, message, Skeleton, Card, Alert, Dropdown, Menu } from 'antd';
+import { Layout, Button, Icon, message, Skeleton, Card, Alert, Dropdown, Menu, Popover, Popconfirm } from 'antd';
 import { Link } from 'react-router-dom';
 import { observable } from 'mobx';
 import { Instance } from 'mobx-state-tree';
@@ -258,9 +258,6 @@ export class DocumentsDetail extends React.Component<IProps> {
                 <Card bordered={false} style={{ borderRadius: 3, borderTopLeftRadius: 0, marginBottom: 16 }}>
                   <Skeleton loading={true} />
                 </Card>
-                {/* <Card bordered={false} style={{ borderRadius: 3 }}>
-                  <Skeleton loading={true} />
-                </Card> */}
               </div>
             )}
             {!loading && (
@@ -276,7 +273,7 @@ export class DocumentsDetail extends React.Component<IProps> {
             width={320}
             theme="light"
           >
-            <div style={{ padding: 16 }}>
+            <div style={{ padding: 16, flex: 1 }}>
               {contentEntry && contentEntry.versions.length > 0 ? this.renderStatus() : (
                 <Alert
                   type="warning"
@@ -285,6 +282,18 @@ export class DocumentsDetail extends React.Component<IProps> {
                   banner
                 />
               )}
+            </div>
+            <div style={{ padding: 16 }}>
+              <Popconfirm
+                title="Are you sure?"
+                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                onConfirm={async () => {
+                  await contentEntry.remove();
+                  this.props.history.push('/documents');
+                }}
+              >
+                <Button type="danger" block>Delete</Button>
+              </Popconfirm>
             </div>
           </Sider>
         </Layout>

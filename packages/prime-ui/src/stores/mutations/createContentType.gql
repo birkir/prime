@@ -1,0 +1,11 @@
+mutation CreateContentType($input:CreateContentTypeInput) {
+  createContentType(input:$input) {
+    id
+    name
+    title
+    groups
+    settings
+    isSlice
+    isTemplate
+  }
+}

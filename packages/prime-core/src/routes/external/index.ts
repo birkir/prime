@@ -2,6 +2,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { createContext } from 'dataloader-sequelize';
 import * as express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { get } from 'lodash';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { sequelize } from '../../sequelize';
@@ -37,9 +38,19 @@ export const externalGraphql = async () => {
 
   await Promise.all(
     contentTypes.map(async (contentType) => {
-      // tslint:disable-next-line no-any
-      const contentTypeFields: any = await contentType.$get('fields');
-      contentType.fields = contentTypeFields;
+      const contentTypeIds = get(contentType, 'settings.contentTypeIds', []);
+      contentTypeIds.push(contentType.id);
+
+      const fields = await ContentTypeField.findAll({
+        where: {
+          contentTypeId: contentTypeIds
+        }
+      });
+
+      contentType.fields = [
+        ...fields.filter(field => field.contentTypeId === contentType.id),
+        ...fields.filter(field => field.contentTypeId !== contentType.id),
+      ];
 
       entryTransformer.cache.set(contentType.id, contentType.fields);
     })
@@ -82,6 +93,12 @@ export const externalGraphql = async () => {
         return null;
       }
 
+      if (contentType.isTemplate) {
+        debug('content type %s is a template', contentType.id);
+
+        return null;
+      }
+
       debug(
         'created content type:',
         `${contentType.name}(${contentType.fields.map(field => field.name).join(', ')})`
@@ -89,9 +106,12 @@ export const externalGraphql = async () => {
 
       queries[contentType.name]             = find({ GraphQLContentType, contentType, contentTypes, queries });
       queries[`all${contentType.name}`]  = findAll({ GraphQLContentType, contentType, contentTypes, queries });
-      inputs[`create${contentType.name}`] = create({ GraphQLContentType, contentType, contentTypes, queries });
-      inputs[`update${contentType.name}`] = update({ GraphQLContentType, contentType, contentTypes, queries });
-      inputs[`remove${contentType.name}`] = remove({ GraphQLContentType, contentType, contentTypes, queries });
+
+      if (get(contentType, 'settings.mutations', true) === true) {
+        inputs[`create${contentType.name}`] = create({ GraphQLContentType, contentType, contentTypes, queries });
+        inputs[`update${contentType.name}`] = update({ GraphQLContentType, contentType, contentTypes, queries });
+        inputs[`remove${contentType.name}`] = remove({ GraphQLContentType, contentType, contentTypes, queries });
+      }
     })
   );
 
@@ -104,7 +124,7 @@ export const externalGraphql = async () => {
         return true;
       }
     };
-  } else {
+  } else if (Object.keys(inputs).length > 0) {
     queriesAndMutations.mutation = new GraphQLObjectType({
       name: 'Mutation',
       fields: inputs

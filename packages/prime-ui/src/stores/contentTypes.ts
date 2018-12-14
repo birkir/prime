@@ -3,6 +3,7 @@ import { types, flow } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
 import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
+import { CREATE_CONTENT_TYPE } from './mutations';
 
 export const ContentTypes = types.model('ContentTypes', {
   items: types.map(types.late(() => ContentType)),
@@ -43,7 +44,9 @@ export const ContentTypes = types.model('ContentTypes', {
     }
 
     try {
-      const { data } = yield client.query({ query: ALL_CONTENT_TYPES });
+      const { data } = yield client.query({
+        query: ALL_CONTENT_TYPES
+      });
       data.allContentTypes.forEach((contentType: any) => {
         const item = ContentType.create(contentType);
         self.items.put(item);
@@ -56,19 +59,12 @@ export const ContentTypes = types.model('ContentTypes', {
     self.loading = false;
   });
 
-  const create = flow(function*(input: { title: string; name?: string; isSlice?: boolean; }) {
-    const mutation = gql`
-      mutation CreateContentType($input:CreateContentTypeInput) {
-        createContentType(input:$input) {
-          id
-          name
-          title
-          isSlice
-        }
-      }
-    `;
+  const create = flow(function*(input: any) {
     try {
-      const { data } = yield client.mutate({ mutation, variables: { input }});
+      const { data } = yield client.mutate({
+        mutation: CREATE_CONTENT_TYPE,
+        variables: { input }
+      });
       if (data.createContentType) {
         const item = ContentType.create(data.createContentType);
         return self.items.put(item);

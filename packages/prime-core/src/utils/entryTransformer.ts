@@ -1,5 +1,6 @@
 import { get, defaultsDeep } from 'lodash';
 import { ContentTypeField } from '../models/ContentTypeField';
+import { ContentType } from '../models/ContentType';
 
 const Types = {
   ROOT: 0,
@@ -18,9 +19,16 @@ export class EntryTransformer {
       return this.cache.get(id);
     }
 
+    const contentTypeIds: string[] = [id];
+    const contentType = await ContentType.findOne({ where: { id } });
+
+    if (contentType) {
+      contentTypeIds.push(...get(contentType, 'settings.contentTypeIds', []));
+    }
+
     const fields = await ContentTypeField.findAll({
       where: {
-        contentTypeId: id,
+        contentTypeId: contentTypeIds
       }
     });
 

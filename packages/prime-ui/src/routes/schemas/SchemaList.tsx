@@ -7,10 +7,10 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Instance } from 'mobx-state-tree';
 import { get } from 'lodash';
 
-import { CreateForm } from './components/CreateForm';
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { ContentType } from '../../stores/models/ContentType';
 import { ContentTypes } from '../../stores/contentTypes';
+import { EditContentType } from './components/EditContentType';
 
 const { Content } = Layout;
 
@@ -20,9 +20,9 @@ const tabs = [{
 }, {
   key: 'slices',
   tab: 'Slices',
-// }, {
-//   key: 'templates',
-//   tab: 'Templates'
+}, {
+  key: 'templates',
+  tab: 'Templates'
 }];
 
 interface IContentType extends Instance<typeof ContentType> {}
@@ -33,8 +33,7 @@ export class SchemaList extends React.Component<any> {
   formRef: any = React.createRef();
 
   state = {
-    settingsVisible: false,
-    createVisible: false,
+    visible: false,
     settingsId: null,
     tab: get(this.props, 'match.params.tab', ''),
   }
@@ -63,7 +62,7 @@ export class SchemaList extends React.Component<any> {
       key: 'action',
       render: (text, record) => (
         <>
-          {!record.isSlice && (
+          {!record.isSlice && !record.isTemplate && (
             <>
               <Link to={`/documents/schema/${record.id}`}>Documents ({record.entriesCount})</Link>
               <Divider type="vertical" />
@@ -104,9 +103,8 @@ export class SchemaList extends React.Component<any> {
   }
 
   onRouteCreate = () => {
-    console.log('create');
-    if (this.state.createVisible === false) {
-      this.setState({ createVisible: true });
+    if (this.state.visible === false) {
+      this.setState({ visible: true, settingsId: null });
     }
 
     return null;
@@ -124,21 +122,15 @@ export class SchemaList extends React.Component<any> {
 
   onRouteSettings = ({ match }: any) => {
     const settingsId = match.params.id;
-    if (this.state.settingsVisible === false) {
-      this.setState({ settingsVisible: true });
-    }
     if (this.state.settingsId !== settingsId) {
       this.setState({ settingsId });
     }
-    return null;
+    return this.onRouteCreate();
   }
 
   onRouteDefault = () => {
-    if (this.state.createVisible === true) {
-      this.setState({ createVisible: false });
-    }
-    if (this.state.settingsVisible === true) {
-      this.setState({ settingsVisible: false });
+    if (this.state.visible === true) {
+      this.setState({ visible: false });
     }
 
     return null;
@@ -173,7 +165,16 @@ export class SchemaList extends React.Component<any> {
             activeTabKey={this.state.tab}
           >
             <Table
-              dataSource={this.data.filter(n => this.state.tab === 'slices' ? n.isSlice : !n.isSlice )}
+              dataSource={this.data.filter(n => {
+                switch (this.state.tab) {
+                  case 'slices':
+                    return n.isSlice;
+                  case 'templates':
+                    return n.isTemplate;
+                  default:
+                    return !n.isSlice && !n.isTemplate;
+                }
+              })}
               columns={this.columns}
               pagination={false}
               rowKey="id"
@@ -182,41 +183,32 @@ export class SchemaList extends React.Component<any> {
         </Content>
 
         <Drawer
-          title="Edit Schema"
+          title={`${this.state.settingsId ? 'Edit' : 'Create'} Content Type`}
           width={360}
           placement="right"
           maskClosable={true}
           onClose={this.onCloseDrawer}
-          visible={this.state.settingsVisible}
+          visible={this.state.visible}
           style={{
             height: 'calc(100% - 55px)',
             overflow: 'auto',
             paddingBottom: 53,
           }}
         >
-          <h3>Schema settings</h3>
-          <p>{this.state.settingsId}</p>
-        </Drawer>
-
-        <Drawer
-          title="Create Schema"
-          width={360}
-          placement="right"
-          maskClosable={true}
-          onClose={this.onCloseDrawer}
-          visible={this.state.createVisible}
-          style={{
-            height: 'calc(100% - 55px)',
-            overflow: 'auto',
-            paddingBottom: 53,
-          }}
-        >
-          <CreateForm
+          <EditContentType
             ref={this.formRef}
+            contentTypeId={this.state.settingsId}
+            item={this.state.settingsId ? this.data.find(n => n.id === this.state.settingsId) : {
+              isSlice: this.state.tab === 'slices',
+              isTemplate: this.state.tab === 'templates',
+            }}
+            contentTypes={this.data}
             onCancel={this.onCloseDrawer}
             onSubmit={(contentType) => {
               this.onCloseDrawer();
-              this.props.history.push(`/schemas/edit/${contentType.id}`);
+              if (contentType) {
+                this.props.history.push(`/schemas/edit/${contentType.id}`);
+              }
             }}
           />
         </Drawer>

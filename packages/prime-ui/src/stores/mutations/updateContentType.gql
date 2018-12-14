@@ -1,0 +1,17 @@
+mutation UpdateContentType(
+  $id: ID!
+  $input: UpdateContentTypeInput
+) {
+  updateContentType(
+    id: $id
+    input: $input
+  ) {
+    id
+    name
+    title
+    groups
+    settings
+    isSlice
+    isTemplate
+  }
+}

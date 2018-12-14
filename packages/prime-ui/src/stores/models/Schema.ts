@@ -19,6 +19,7 @@ export const SchemaField = types
     name: types.string,
     title: types.string,
     isDisplay: types.optional(types.boolean, false),
+    contentTypeId: types.maybeNull(types.string),
     options: types.frozen<JSONObject>(),
     group: DEFAULT_GROUP_TITLE,
     fields: types.maybeNull(
@@ -28,10 +29,14 @@ export const SchemaField = types
     ),
     __typename: types.maybeNull(types.string),
   })
+  .preProcessSnapshot(snapshot => ({
+      ...snapshot,
+      fields: snapshot.fields || []
+  }))
   .views(self => ({
     get isLeaf() {
       return !hasParentOfType(self, SchemaField);
-    }
+    },
   }))
   .actions(self => ({
     update(obj: { name: string; title: string; type: string; options: JSONObject }) {
@@ -95,12 +100,15 @@ export const Schema = types
         const node = self.fields.find(node => node.id === nodeId);
         const group = self.groups.find(node => node.title === groupName);
         const tree = nodeId ? (node && node.fields) : (group && group.fields);
+        const contentType = getParent(self) as any;
+
         if (tree) {
           const newField = SchemaField.create({
             id: id,
             name: obj.name,
             title: obj.title,
             isDisplay: obj.type === 'string' && !self.fields.find(f => f.isDisplay),
+            contentTypeId: contentType.id,
             type: obj.type || DEFAULT_TYPE,
             group: obj.group || DEFAULT_GROUP_TITLE,
             options: {},
@@ -116,6 +124,10 @@ export const Schema = types
         node.setIsDisplay(true);
       },
       addGroup(title: string) {
+        if (self.groups.find(g => g.title.toLowerCase() === title.toLowerCase())) {
+          return;
+        }
+
         self.groups.push(SchemaGroup.create({
           title,
           fields: [],

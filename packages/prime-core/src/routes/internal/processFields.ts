@@ -1,8 +1,7 @@
 import { GraphQLID, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLBoolean } from 'graphql';
 import * as GraphQLJSON from 'graphql-type-json';
-import { defaultsDeep } from 'lodash';
+import { defaultsDeep, get } from 'lodash';
 import { fields as allFields } from '../../fields';
-
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { ContentType } from '../../models/ContentType';
 
@@ -16,6 +15,7 @@ type IField = {
   position?: number;
   options?: any; // tslint:disable-line no-any
   isDisplay?: boolean;
+  contentTypeId: string;
 };
 
 type IGroup = {
@@ -34,6 +34,7 @@ export const ContentTypeType = new GraphQLObjectType({
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
     isDisplay: { type: GraphQLBoolean },
+    contentTypeId: { type: GraphQLID },
     fields: { type: new GraphQLList(ContentTypeType) }
   })
 });
@@ -56,6 +57,7 @@ export const ContentTypeInputType = new GraphQLInputObjectType({
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
     isDisplay: { type: GraphQLBoolean },
+    contentTypeId: { type: GraphQLID },
     fields: { type: new GraphQLList(ContentTypeInputType) }
   })
 });
@@ -69,23 +71,35 @@ export const ContentTypeFieldGroupInputType = new GraphQLInputObjectType({
 });
 
 // Get fields for a specific content type
-export const getFields = async (contentTypeId: string) => {
+export const getFields = async (contentTypeId: string, inheritance = true) => {
 
-  // Get all fields for content type
-  const fields = await ContentTypeField.findAll({
-    where: {
-      contentTypeId
-    },
-    order: [
-      ['position', 'ASC']
-    ]
-  });
+  const contentTypeIds = [contentTypeId];
 
   const contentType = await ContentType.findOne({
     where: {
       id: contentTypeId,
     }
   });
+
+  // Find other content types
+  if (contentType && inheritance) {
+    contentTypeIds.push(...get(contentType, 'settings.contentTypeIds', []));
+  }
+
+  // Get all fields for content type
+  const fieldsSource = await ContentTypeField.findAll({
+    where: {
+      contentTypeId: contentTypeIds
+    },
+    order: [
+      ['position', 'ASC']
+    ]
+  });
+
+  const fields = [
+    ...fieldsSource.filter(f => f.contentTypeId === contentTypeId),
+    ...fieldsSource.filter(f => f.contentTypeId !== contentTypeId),
+  ];
 
   const groups = (contentType && contentType.groups || ['Main'])
     .map(title => ({ title, fields: [] }));
@@ -149,6 +163,7 @@ export const getFields = async (contentTypeId: string) => {
 };
 
 export const setFields = async (contentTypeId, groups: IGroup[]) => {
+
   const originalFields = await ContentTypeField.findAll({
     where: {
       contentTypeId
@@ -158,6 +173,11 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
   const removeFieldIds = new Set(originalFields.map(f => f.id));
 
   const updateOrCreateField = async (field: IField, group: string, position: number, parent?: IField) => {
+
+    if (field.contentTypeId && field.contentTypeId !== contentTypeId) {
+      return null;
+    }
+
     const obj: any = { // tslint:disable-line no-any
       contentTypeId,
       position,

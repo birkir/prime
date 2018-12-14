@@ -25,8 +25,16 @@ module.exports = function override(config, env) {
     modifyVars: {
       '@primary-color': '#318E9F',
       '@link-color': '#318E9F',
-      '@font-family': '"Noto Sans TC", "Helvetica Neue", Helvetica, Arial, sans-serif',
+      '@font-family': '"Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      '@code-family': '"Source Code Pro", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;',
       // '@layout-header-background': '#010102',
+      '@font-size-base': '16px',
+
+      // '@padding-lg': '32px',
+      // '@padding-md': '24px',
+      // '@padding-sm': '16px',
+      // '@padding-xs': '8px',
+
       '@layout-header-background': '#1F3E44',
       // @link-color: #1890ff;                            // link color
       // @success-color: #52c41a;                         // success state color

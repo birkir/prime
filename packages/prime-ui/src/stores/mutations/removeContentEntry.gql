@@ -1,0 +1,7 @@
+mutation removeContentEntry(
+  $id:ID!
+) {
+  removeContentEntry(
+    id: $id
+  )
+}

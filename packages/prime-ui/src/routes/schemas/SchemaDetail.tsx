@@ -257,7 +257,7 @@ export class SchemaDetail extends React.Component<IProps> {
       this.onGroupAdd();
     } else if (action === 'remove') {
       if (confirm('Are you sure?')) {
-        this.contentType!.schema.removeGroup(targetKey);
+        this.contentType!.removeGroup(targetKey);
       }
     }
   }
@@ -265,7 +265,7 @@ export class SchemaDetail extends React.Component<IProps> {
   onGroupAdd = () => {
     const title = prompt('Enter group name', '');
     if (title) {
-      this.contentType!.schema.addGroup(title);
+      this.contentType!.addGroup(title);
     }
   }
 
@@ -281,7 +281,7 @@ export class SchemaDetail extends React.Component<IProps> {
           style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)', padding: 16 }}
           {...droppableProvided.droppableProps}
         >
-          {(field.fields || []).map(this.renderField)}
+          {field.fields.map(this.renderField)}
           {droppableProvided.placeholder}
         </div>
       )}
@@ -324,29 +324,33 @@ export class SchemaDetail extends React.Component<IProps> {
     </Draggable>
   );
 
-  renderGroup = (group: any) => (
-    <TabPane
-      key={group.title}
-      tab={group.title}
-      closable={group.title !== DEFAULT_GROUP_TITLE}
-    >
-      <Droppable
-        droppableId={`Group.${group.title}`}
-        isDropDisabled={this.state.disabledDroppables.indexOf(`Group.${group.title}`) >= 0}
+  renderGroup = (groupName: any) => {
+    const group = this.contentType!.schema.groups.find(g => g.title.toLowerCase() === groupName.toLowerCase());
+
+    return (
+      <TabPane
+        key={groupName}
+        tab={groupName}
       >
-        {(droppableProvided, droppableSnapshot) => (
-          <div
-            ref={droppableProvided.innerRef}
-            style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
-          >
-            {group.fields.map(this.renderField)}
-            {droppableProvided.placeholder}
-            <div style={{ height: 80 }} />
-          </div>
-        )}
-      </Droppable>
-    </TabPane>
-  );
+        <Droppable
+          key={groupName}
+          droppableId={`Group.${groupName}`}
+          isDropDisabled={this.state.disabledDroppables.indexOf(`Group.${groupName}`) >= 0}
+        >
+          {(droppableProvided, droppableSnapshot) => (
+            <div
+              ref={droppableProvided.innerRef}
+              style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
+            >
+              {group && group.fields.filter((n: any) => n.contentTypeId === this.contentType!.id).map(this.renderField)}
+              {droppableProvided.placeholder}
+              <div style={{ height: 80 }} />
+            </div>
+          )}
+        </Droppable>
+      </TabPane>
+    );
+  }
 
   render() {
     const { contentType, availableFields } = this;
@@ -356,7 +360,7 @@ export class SchemaDetail extends React.Component<IProps> {
     if (flush || !contentType) {
       return null;
     }
-    const { schema } = contentType;
+    const { schema, groups } = contentType;
     const title = get(contentType, 'title');
 
     return (
@@ -388,7 +392,7 @@ export class SchemaDetail extends React.Component<IProps> {
                 type="editable-card"
                 ref={this.tabs}
               >
-                {schema.groups.map(this.renderGroup)}
+                {groups.map(this.renderGroup)}
               </Tabs>
             </Content>
             <Sider

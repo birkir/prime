@@ -30,6 +30,7 @@ const GET_CONTENT_ENTRIES = gql`
       id
       title
       isSlice
+      isTemplate
     }
     allUsers {
       id
@@ -193,7 +194,7 @@ export const DocumentsList = ({ match, history }: any) => {
           width: '100px',
           dataIndex: 'contentType.title',
           filters: get(data, 'allContentTypes', [])
-            .filter((n: any) => !n.isSlice)
+            .filter((n: any) => !n.isSlice && !n.isTemplate)
             .map(({ id, title }: any) => ({
               text: title,
               value: id,
@@ -202,7 +203,7 @@ export const DocumentsList = ({ match, history }: any) => {
           filterMultiple: false,
         }, {
           title: 'Updated',
-          width: '130px',
+          width: '160px',
           dataIndex: 'updatedAt',
           sorter: true,
           defaultSortOrder: 'descend' as any,
@@ -242,7 +243,7 @@ export const DocumentsList = ({ match, history }: any) => {
 
         const menu = (
           <Menu onClick={onMenuClick}>
-            {get(data, 'allContentTypes', []).filter((n: any) => !n.isSlice).map(({ id, title }: any) => (
+            {get(data, 'allContentTypes', []).filter((n: any) => !n.isSlice && !n.isTemplate).map(({ id, title }: any) => (
               <Menu.Item key={id}>{title}</Menu.Item>
             ))}
           </Menu>

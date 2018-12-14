@@ -38,7 +38,7 @@ export const seed = async () => {
   // ---
 
   debug('adding ContentType: %s', 'Author');
-  const authorType = await ContentType.create({ title: 'Author' });
+  const authorType = await ContentType.create({ title: 'Author', userId: user.id });
   const authorFields = [
     await ContentTypeField.create({ title: 'Name', name: 'name', type: 'string', isDisplay: true }),
     await ContentTypeField.create({ title: 'Bio', name: 'bio', type: 'string' }),
@@ -46,10 +46,21 @@ export const seed = async () => {
   ];
   await authorType.$add('fields', authorFields);
 
+
+  // ---
+  debug('adding ContentType: %s (template)', 'SEO');
+  const seoType = await ContentType.create({ title: 'SEO', userId: user.id, isTemplate: true, groups: ['SEO'] });
+  const seoFields = [
+    await ContentTypeField.create({ title: 'Meta Title', name: 'metaTitle', type: 'string', group: 'SEO' }),
+    await ContentTypeField.create({ title: 'Meta Description', name: 'metaDescription', type: 'string', options: { multiline: true }, group: 'SEO' }),
+    await ContentTypeField.create({ title: 'Meta Image', name: 'metaImage', type: 'asset', group: 'SEO' }),
+  ];
+  await seoType.$add('fields', seoFields);
+
   // ---
 
   debug('adding ContentType: %s', 'Blog');
-  const blogType = await ContentType.create({ title: 'Blog' });
+  const blogType = await ContentType.create({ title: 'Blog', userId: user.id, settings: { contentTypeIds: [seoType.id] } });
   const blogFields = [
     await ContentTypeField.create({
       title: 'Title',
@@ -140,13 +151,15 @@ export const seed = async () => {
 
   const slice1 = await ContentType.create({
     title: 'Slice Test 1',
-    isSlice: true
+    isSlice: true,
+    userId: user.id
   });
   await slice1.$add('fields', [await ContentTypeField.create({ title: 'Foo', name: 'foo', type: 'string' })]);
   // next slice type
   const slice2 = await ContentType.create({
     title: 'Slice Test 2',
-    isSlice: true
+    isSlice: true,
+    userId: user.id
   });
   await slice2.$add('fields', [await ContentTypeField.create({ title: 'Bar', name: 'bar', type: 'string' })]);
   authorType.$add('fields', [

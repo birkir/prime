@@ -52,6 +52,10 @@ export class PrimeFieldGroup extends PrimeField {
         })
       });
 
+      if (Object.keys(fieldsTypes).length === 0) {
+        return null;
+      }
+
       const options = this.getOptions(field);
 
       if (options.repeated) {
@@ -94,7 +98,7 @@ export class PrimeFieldGroup extends PrimeField {
       {}
     );
 
-    if (fieldsTypes.length === 0) {
+    if (Object.keys(fieldsTypes).length === 0) {
       return null;
     }
 

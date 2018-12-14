@@ -69,7 +69,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       <Form.Item label={field.title}>
         {getFieldDecorator(path, { initialValue })(
           <Input.TextArea
-            autosize={{ minRows: 2, maxRows: 8 }}
+            autosize={{ minRows: 1 }}
           />
         )}
       </Form.Item>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Input, Select, Row, Col } from 'antd';
+import { toJS } from 'mobx';
 import { FormComponentProps } from 'antd/lib/form';
 import { camelCase, get, defaultsDeep } from 'lodash';
 import { fields } from '../../../utils/fields';
@@ -26,8 +27,9 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
   const fromAvailableField = availableFields.find(f => f.id === type);
 
   const options = defaultsDeep(
-    get(field, 'options', {}),
-    get(fromAvailableField, 'defaultOptions', {})
+    {},
+    field ? toJS(field.options) : {},
+    fromAvailableField ? toJS(fromAvailableField.defaultOptions) : {}
   );
 
   const onFormSubmit = async (e: any) => {
@@ -46,7 +48,6 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
     return false;
   }
 
-
   const onNameKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     setAutoName(e.currentTarget.value === '');
   };
@@ -57,7 +58,6 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
       name: camelCase(form.getFieldValue('title')),
     });
   }
-
 
   return (
     <>
