@@ -89,14 +89,14 @@ export class EntryTransformer {
           value = (await Promise.all(value.map(async item => {
             const fields = await this.getFields(item.__inputname);
             if (fields) {
-              return await this.transform(fields, item, io, Types.SLICE);
+              return await this.transform(fields, item, contentTypeId, io, Types.SLICE);
             }
             return {};
           })))
             .filter(item => Object.keys(item).length > 0);
         } else {
           const fields = await this.getFields(value.__inputname);
-          value = await this.transform(fields, value, io, Types.SLICE);
+          value = await this.transform(fields, value, contentTypeId, io, Types.SLICE);
           if (Object.keys(value).length === 0) {
             continue;
           }
