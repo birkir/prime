@@ -126,7 +126,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
       }
 
       if (args.where) {
-        findAllOptions.where = processWhereQuery(args.where);
+        findAllOptions.where = processWhereQuery(args.where, contentType.fields);
       }
 
       findAllOptions.where = {
