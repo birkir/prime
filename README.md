@@ -26,7 +26,43 @@ There are a lot of headless SaaS solutions out there, and many of them better th
 
 ## Screenshots
 
-<i>(Placeholder)</i>
+<table>
+  <tr>
+    <td>
+      <img src="https://i.imgur.com/yI7unrf.png" width="200" alt="List of documents">
+    </td>
+    <td>
+      <img src="https://i.imgur.com/7YpBPvX.png" width="200" alt="Edit document">
+    </td>
+    <td>
+      <img src="https://i.imgur.com/e65QyzC.png" width="200" alt="Edit schema">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><i>Content Management</i></td>
+    <td align="center"><i>Content Editing</i></td>
+    <td align="center"><i>Schema Modeling</i></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>
+      <img src="https://i.imgur.com/NnpKUJV.png" width="200" alt="GraphQL Queries">
+    </td>
+    <td>
+      <img src="https://i.imgur.com/p7ZvhFf.png" width="200" alt="GraphQL Mutations">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <i>GraphQL Queries</i>
+    </td>
+    <td align="center">
+      <i>GraphQL Mutations</i>
+    </td>
+  </tr>
+</table>
 
 ## Getting Started
 
