@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Prime" width="330px" src="docs/_assets/prime.png" />
+  <a href="https://birkir.github.io/prime/"><img alt="Prime" width="330px" src="docs/_assets/prime.png" /></a>
 </p>
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
@@ -23,6 +23,8 @@ There are a lot of headless SaaS solutions out there, and many of them better th
 - 🔑 Resource and user access control
 - 📆 Plan and schedule releases
 - ... and many more
+
+See the [feature comparison](https://birkir.github.io/prime/#/features) to Prismic, Contentful and Strapi.
 
 ## Screenshots
 
