@@ -1,11 +1,19 @@
-# `@prime/frontend`
+# @primecms/ui
 
-> TODO: description
+> Front-end interface for prime
 
-## Usage
+See our [docs](https://birkir.github.io/prime) for more information or the [issues](https://github.com/birkir/prime/issues) associated with this package.
 
+## Install
+
+Using npm:
+
+```sh
+npm install --save-dev @primecms/ui
 ```
-const frontend = require('@prime/frontend');
 
-// TODO: DEMONSTRATE API
+or using yarn:
+
+```sh
+yarn add @primecms/ui --dev
 ```
