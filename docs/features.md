@@ -7,6 +7,7 @@ This is a comparison table of the top headless GraphQL CMS
 | GraphQL | ✅ | beta | beta | ✅ |
 | Mutations | ✅ | no | no | no |
 | Custom Content Types | ✅ | ✅ | ✅ | ✅ |
+| Inherit Content Types | ✅ | no | no | no |
 | Custom Fields | ✅ | partial | partial | ✅ |
 | Drag and Drop Editor | ✅ | ✅ | ✅ | no |
 | Rich Text Editor | ✅ | ✅ | ✅ | ✅ |
