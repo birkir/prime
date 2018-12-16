@@ -1,5 +1,6 @@
 - [Introduction](README)
 - [Getting Started](getstarted)
+- [Features](features)
 - [Guides](guides)
 - [Plugins](plugins)
 - [Deploying](deploying)
