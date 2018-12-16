@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.org/birkir/prime.svg?branch=master)](https://travis-ci.org/birkir/prime)
 [![license](https://img.shields.io/github/license/birkir/prime.svg)](https://opensource.org/licenses/MIT)
 
-Prime is a standalone, self-hosted, headless CMS powered by TypeScript with a GraphQL interface.
+Prime is a standalone, self-hosted, headless CMS with a GraphQL interface powered by TypeScript.
 
 ## Why Prime?
 
