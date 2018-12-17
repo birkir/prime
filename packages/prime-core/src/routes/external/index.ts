@@ -207,6 +207,11 @@ export const externalGraphql = async () => {
         }
       }
 
+      // /graphql requests
+      if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.header['x-prime-published']) {
+        context.published = null;
+      }
+
       return context;
     } catch (err) {
       console.error(err);

@@ -7,7 +7,7 @@ const logicalOperators = {
 
 const compareOperators = {
   eq: Op.eq,
-  ne: Op.ne,
+  neq: Op.ne,
   gt: Op.gt,
   gte: Op.gte,
   lt: Op.lt,
