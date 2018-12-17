@@ -182,8 +182,7 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   onPreviewPress = async () => {
     const preview = Settings.previews[0];
-    const hostname = 'http://localhost:3003';
-    const url = encodeURIComponent(hostname + preview.pathname + '?' + this.contentEntry!.versionId);
+    const url = encodeURIComponent(preview.hostname + preview.pathname + '?' + this.contentEntry!.versionId);
     window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
   }
 
