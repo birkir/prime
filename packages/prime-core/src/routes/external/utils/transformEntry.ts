@@ -12,9 +12,9 @@ export const transformEntry = async (entry) => {
     _meta: {
       language: entry.language,
       languages: [].concat(entry.dataValues.languages),
-      isPublished: entry.isPublished,
-      createdAt: entry.createdAt.toISOString(),
-      updatedAt: entry.updatedAt.toISOString()
+      published: entry.isPublished,
+      timestamp: entry.updatedAt.toISOString(),
+      versionId: entry.versionId,
     },
     ...entry.data
   };

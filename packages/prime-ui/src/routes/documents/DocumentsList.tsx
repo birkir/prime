@@ -191,7 +191,7 @@ export const DocumentsList = ({ match, history }: any) => {
           }
         }, {
           title: 'Type',
-          width: '100px',
+          width: '120px',
           dataIndex: 'contentType.title',
           filters: get(data, 'allContentTypes', [])
             .filter((n: any) => !n.isSlice && !n.isTemplate)
