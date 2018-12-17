@@ -1,6 +1,6 @@
 # Comparison of features
 
-This is a comparison table of the top headless GraphQL CMS
+This is a comparison table of the top GraphQL headless CMS's
 
 | | Prime | Prismic | Contentful | Strapi
 |--|--|--|--|--|
@@ -15,15 +15,15 @@ This is a comparison table of the top headless GraphQL CMS
 | Dynamic Layout (Slices) | ✅ | ✅ | no | no |
 | Slices per Content Type | unlimited | 1 | _n/a_ | _n/a_ |
 | Media Library | 3rd-party | ✅ | ✅ | 3rd-party |
-| Image Manipulation | ✅ | no | ✅ | 3rd-party |
+| Image Manipulation | 3rd-party | no | ✅ | 3rd-party |
 | Image Crops | ✅ | ✅ | no | no |
 | Asset CDN | 3rd-party | ✅ | ✅ | 3rd-party |
-| Preview Drafts | not yet | ✅ | ✅ | no |
+| Previews | ✅ | ✅ | ✅ | no |
 | Releases | not yet | ✅ | no | no |
 | Localization | ✅ | ✅ | ✅ | no |
 | Localized fields | no | no | ✅ | no |
 | Revision history | ✅ | ✅ | ✅ | no |
-| Custom Permissions | no | no | ✅ | ✅ |
+| Custom Permissions | not yet | no | ✅ | ✅ |
 | Custom Roles | not yet | no | no | ✅ |
 | Document Tree Hierarchy | not yet | no | no | no |
 | Webhooks | not yet | ✅ | ✅ | ✅ |
