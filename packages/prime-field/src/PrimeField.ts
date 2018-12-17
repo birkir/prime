@@ -30,15 +30,15 @@ export interface IPrimeFieldProps {
   form: FormComponentProps['form'];
   client: typeof ApolloClient;
   stores: {
+    Auth: any; // tslint:disable-line no-any
+    Settings: any; // tslint:disable-line no-any
     ContentEntries: any; // tslint:disable-line no-any
     ContentTypes: any; // tslint:disable-line no-any
+    Users: any; // tslint:disable-line no-any
   };
   entry: {
     entryId: string;
     data: object;
-  };
-  config: {
-    [key: string]: string;
   };
   path: string;
   renderField(args: IPrimeFieldProps): React.ReactNode;

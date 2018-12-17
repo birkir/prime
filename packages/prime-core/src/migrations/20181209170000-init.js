@@ -27,6 +27,7 @@ exports.down = function down(db) {
     db.dropTable('ContentTypeField'),
     db.dropTable('Navigation'),
     db.dropTable('Session'),
+    db.dropTable('Settings'),
     db.dropTable('User'),
   ]);
 };

@@ -1,11 +1,10 @@
 import React from 'react';
-import { config } from '../../utils/config';
-
+import { Settings } from '../../stores/settings';
 
 
 export const Playground = () => (
   <iframe
-    src={`${config.coreUrl}/graphql`}
+    src={`${Settings.coreUrl}/graphql`}
     frameBorder="0"
     style={{
       width: '100%',

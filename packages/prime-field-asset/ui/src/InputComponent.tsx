@@ -49,7 +49,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
   public url = (() => {
     try {
-      return new URL(String(this.props.config.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http'));
+      return new URL(String(this.props.stores.Settings.env.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http'));
     } catch (err) {
       console.warn('No "PRIME_CLOUDINARY_URL" set');
     }

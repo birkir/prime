@@ -3,7 +3,7 @@ import { User } from './models/User';
 import { client } from '../utils/client';
 import { ALL_FIELDS } from './queries';
 import { fields } from '../utils/fields';
-import { config, getConfig } from '../utils/config';
+import { Settings } from './settings';
 
 export const Auth = types
   .model('Auth', {
@@ -15,22 +15,19 @@ export const Auth = types
 
     const ensureFields = async () => {
       if (!self.isLoggedIn) return;
-      await getConfig();
-      const { data }: any = await client.query({ query: ALL_FIELDS });
-      if (data.allFields) {
-        data.allFields.forEach((field: any) => {
-          if (field.ui && !fields[field.id]) {
-            const script = document.createElement('script');
-            script.src = `${config.coreUrl}/fields/${field.id}/index.js`;
-            script.id = `Prime_Field_${field.id}`;
-            document.body.appendChild(script);
-          }
-        });
-      }
+      await Settings.read();
+      Settings.fields.forEach((field: any) => {
+        if (field.ui && !fields[field.id]) {
+          const script = document.createElement('script');
+          script.src = `${Settings.coreUrl}/fields/${field.id}/index.js`;
+          script.id = `Prime_Field_${field.id}`;
+          document.body.appendChild(script);
+        }
+      });
     };
 
     const login = flow(function*(email: string, password: string) {
-      const res: any = yield fetch(`${config.coreUrl}/auth/login`, {
+      const res: any = yield fetch(`${Settings.coreUrl}/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -48,7 +45,7 @@ export const Auth = types
     });
 
     const logout = flow(function*() {
-      yield fetch(`${config.coreUrl}/auth/logout`, {
+      yield fetch(`${Settings.coreUrl}/auth/logout`, {
         credentials: 'include',
       });
       self.isLoggedIn = false;
@@ -56,7 +53,7 @@ export const Auth = types
     });
 
     const checkLogin = flow(function*() {
-      const res: any = yield fetch(`${config.coreUrl}/auth/user`, {
+      const res: any = yield fetch(`${Settings.coreUrl}/auth/user`, {
         credentials: 'include',
         headers: {
           'content-type': 'application/json',
@@ -74,7 +71,7 @@ export const Auth = types
     });
 
     const register = flow(function*({ firstname = '', lastname = '', email, password }: { firstname?: string, lastname?: string, email: string, password: string }) {
-      const res: any = yield fetch(`${config.coreUrl}/auth/register`, {
+      const res: any = yield fetch(`${Settings.coreUrl}/auth/register`, {
         method: 'POST',
         credentials: 'include',
         headers: {

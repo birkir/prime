@@ -11,6 +11,7 @@ import { ContentTypeField } from '../models/ContentTypeField';
 import { User } from '../models/User';
 import { sequelize } from '../sequelize';
 import { EntryTransformer } from '../utils/entryTransformer';
+import { Settings } from '../models/Settings';
 
 const entryTransformer = new EntryTransformer();
 
@@ -27,6 +28,25 @@ export const seed = async () => {
     lastname: 'Doe',
     email: 'demo@local.me',
     password: 'demo'
+  });
+
+  // Create settings
+  await Settings.create({
+    data: {
+      accessType: 'public', // 'private'
+      previews: [{
+        name: 'Production',
+        hostname: 'http://localhost:3000',
+        pathname: '/preview',
+      }],
+      locales: [{
+        id: 'en', // RFC-5646 (example: en, en-US)
+        name: 'English (US)',
+        flag: 'us',
+        master: true,
+      }],
+    },
+    userId: user.id,
   });
 
   debug('sample user %s', user.dataValues.id);

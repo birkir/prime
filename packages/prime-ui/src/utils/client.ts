@@ -1,8 +1,10 @@
 import ApolloClient from 'apollo-boost';
-import { config }  from './config';
+import { Settings } from '../stores/settings';
+
+const coreUrl: string = Settings.coreUrl;
 
 export const client = new ApolloClient({
-  uri: `${config.coreUrl}/internal/graphql`,
+  uri: `${coreUrl}/internal/graphql`,
   credentials: 'include',
 });
 

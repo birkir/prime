@@ -3,6 +3,7 @@ import { omit } from 'lodash';
 import * as passport from 'passport';
 import * as LocalStrategy from 'passport-local';
 import { User } from '../../models/User';
+import { Settings } from '../../models/Settings';
 
 interface IRequest extends express.Request {
   user?: {
@@ -51,9 +52,14 @@ auth.get('/user', async (req: IRequest, res) => {
   const setup = (await User.count()) === 0;
   const user = req.user;
   const success = Boolean(user);
+
+  const cookie = String(req.headers.cookie);
+  const cookies = new Map(cookie.split(';').map(n => n.trim().split('=')) as any);
+
   res.json({
     user: success ? omit(user && user.dataValues || {}, ['password']) : null,
     setup,
+    versionId: cookies.get('prime.versionId'),
     success
   });
 });
@@ -73,16 +79,49 @@ auth.post('/register', async (req: IRequest, res, next) => {
   const setup = (await User.count()) === 0;
 
   if (setup) {
-    await User.create({
+    const user = await User.create({
       firstname: req.body.firstname || '',
       lastname: req.body.lastname || '',
       email: req.body.email,
       password: req.body.password
     });
+
+    await Settings.create({
+      data: {
+        accessType: 'public',
+        previews: [],
+        locales: [{
+          id: 'en',
+          name: 'English (US)',
+          flag: 'us',
+          master: true,
+        }],
+      },
+      userId: user.id
+    });
   }
 
   next();
 }, passport.authenticate('local'), login);
+
+auth.get('/preview', (req: IRequest, res) => {
+  const { user } = req;
+  if (!user) return res.json({ success: false });
+
+  const [url] = Object.keys(req.query) || [null];
+
+  if (url) {
+    const versionId = url.substr(url.indexOf('?') + 1);
+    if (versionId.length === 36) {
+      res.cookie('prime.versionId', versionId.toLowerCase(), { path: '/', maxAge: 86400000 });
+      res.redirect(303, url.toLowerCase().replace('?', '?versionId='));
+      return;
+    }
+  }
+
+  res.clearCookie('prime.versionId');
+  res.json({ success: false });
+});
 
 auth.get('/logout', (req: IRequest, res) => {
   const { user, session } = req;

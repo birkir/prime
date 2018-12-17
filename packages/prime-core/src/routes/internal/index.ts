@@ -16,6 +16,7 @@ import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
 import { User } from '../../models/User';
 import { EntryTransformer } from '../../utils/entryTransformer';
 import { Sentry } from '../../utils/Sentry';
+import { Settings } from '../../models/Settings';
 
 const entryTransformer = new EntryTransformer();
 
@@ -252,11 +253,16 @@ export const internalGraphql = async (restart) => {
   };
 
   const queryFields = {
-    getConfig: {
+    getSettings: {
       type: GraphQLJSON,
       async resolve() {
+        const settings = await Settings.findOne({
+          order: [['updatedAt', 'DESC']]
+        });
+
         return {
-          ...pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0),
+          env: pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0),
+          ...(settings && settings.data),
         };
       },
     },

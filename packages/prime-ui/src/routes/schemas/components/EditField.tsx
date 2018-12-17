@@ -5,7 +5,6 @@ import { FormComponentProps } from 'antd/lib/form';
 import { camelCase, get, defaultsDeep } from 'lodash';
 import { fields } from '../../../utils/fields';
 import stores from '../../../stores';
-import { config } from '../../../utils/config';
 
 const { Option } = Select;
 
@@ -100,7 +99,6 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
         <SchemaSettingsComponent
           field={field}
           form={form}
-          config={config}
           options={options}
           stores={stores}
         />

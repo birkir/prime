@@ -11,6 +11,7 @@ import { ContentTypes } from '../../stores/contentTypes';
 import { ContentEntry } from '../../stores/models/ContentEntry';
 import { DocumentForm, BaseDocumentForm } from './components/document-form/DocumentForm';
 import { ContentType } from '../../stores/models/ContentType';
+import { Settings } from '../../stores/settings';
 import './DocumentDetail.less';
 
 const { Content, Sider } = Layout;
@@ -179,6 +180,13 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
   }
 
+  onPreviewPress = async () => {
+    const preview = Settings.previews[0];
+    const hostname = 'http://localhost:3003';
+    const url = encodeURIComponent(hostname + preview.pathname + '?' + this.contentEntry!.versionId);
+    window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
+  }
+
   renderVersion = (version: any) => {
     const draftLabel = this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
@@ -243,12 +251,13 @@ export class DocumentsDetail extends React.Component<IProps> {
               <Icon type="down" />
             </Button>
           </Dropdown>
-          {!loading && (
-            <>
-              <Button onClick={this.onSave} type="default" style={{ marginRight: 16 }}>Save</Button>
-              <Button onClick={this.onPublish} type="primary" disabled={!contentEntry || contentEntry.isPublished}>Publish</Button>
-            </>
-          )}
+          <Button onClick={this.onSave} type="default" disabled={loading} style={{ marginRight: 16 }}>Save</Button>
+          <Button onClick={this.onPublish} type="primary" disabled={loading || !contentEntry || contentEntry.isPublished} style={{ marginRight: 16 }}>Publish</Button>
+          <Button
+            onClick={this.onPreviewPress}
+            disabled={loading}
+            icon="eye"
+          />
         </Toolbar>
         <Layout>
           <Content style={{ height: 'calc(100vh - 64px)' }}>

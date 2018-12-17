@@ -15,9 +15,21 @@ import { update } from './update';
 import { resolveFieldType } from './utils/resolveFieldType';
 import { EntryTransformer } from '../../utils/entryTransformer';
 import { Sentry } from '../../utils/Sentry';
+import { Settings } from '../../models/Settings';
+import { ISettings } from '../../types/settings';
+import { ContentEntry } from '../../models/ContentEntry';
 
 // import { User } from '../../models/User';
 // import { acl } from '../../acl';
+
+interface IContext {
+  settings: any;
+  sequelizeDataLoader: any;
+  public: boolean;
+  published: null | boolean;
+  contentReleaseId: null | string;
+  versionId: null | string;
+};
 
 export const entryTransformer = new EntryTransformer();
 
@@ -31,6 +43,19 @@ export const externalGraphql = async () => {
 
   const queries = {};
   const inputs = {};
+
+  const settings: ISettings = await Settings.findOne({
+    order: [['updatedAt', 'DESC']],
+  }).then(res => {
+    if (res) {
+      const result = res.data;
+      const masterLocale = result.locales.find((n: any) => n.master);
+      if (masterLocale) {
+        result.masterLocale = masterLocale;
+      }
+      return result;
+    }
+  });
 
   const contentTypes = await ContentType.findAll();
 
@@ -142,35 +167,51 @@ export const externalGraphql = async () => {
     introspection: true,
     tracing: true,
     schema,
-    context: async ({ req, connection }) => {
-      const context: any = {}; // tslint:disable-line no-any
-      context.sequelizeDataLoader = createContext(sequelize);
-      const token = req.headers.authorization || '';
+    context: async ({ req }) => {
+      try {
+      const cookie = String(req.headers.cookie);
+      const cookies = new Map(cookie.split(';').map(n => n.trim().split('=')) as any);
 
-      // Make the entire API public
-      context.public = true;
-
-      if (!token || String(token) === '') {
-        debug('context: no token');
-      } else {
-        debug('invalid token');
-        // const user = await User.findOne({});
-        // if (user) {
-        //   debug('context: user', user.email);
-        //   debug('context: roles', await acl.userRoles(user.id));
-        //   context.user = user;
-        // } else {
-        //   debug('context: invalid token');
-        // }
+      if (req.headers['x-prime-version-id'] && req.headers['x-prime-version-id'].length === 36) {
+        cookies.set('prime.versionId', req.headers['x-prime-version-id']);
       }
 
-      // Some flags that will have to become globally on the requests (Cookie etc.)
-      // Published flag
-      context.published = true;
-      // Given release?
-      context.contentReleaseId = null;
+      const context: IContext = {
+        settings,
+        sequelizeDataLoader: createContext(sequelize),
+        public: (settings.accessType === 'public'),
+        published: true,
+        contentReleaseId: null,
+        versionId: null,
+      };
+
+      debug('context.public %o', context.public);
+
+      if (cookies.has('prime.versionId')) {
+        const versionId = cookies.get('prime.versionId') as string;
+        debug('context.versionId %o', versionId);
+        if (versionId.length === 36) {
+          const entry = await ContentEntry.findOne({ where: { versionId }});
+          if (entry) {
+            if (entry.contentReleaseId) {
+              context.contentReleaseId = entry.contentReleaseId;
+            } else if (!entry.isPublished) {
+              context.published = null;
+            }
+          }
+
+          context.versionId = versionId;
+
+          debug('context.published %o', context.published);
+          debug('context.contentReleaseId %o', context.contentReleaseId);
+        }
+      }
 
       return context;
+    } catch (err) {
+      console.error(err);
+      return {};
+    }
     },
     formatError(error) {
       if (Sentry) {
@@ -181,7 +222,12 @@ export const externalGraphql = async () => {
     }
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: true
+    }
+  });
 
   return app;
 };
