@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-number",
-  "version": "0.1.10",
+  "version": "0.1.12",
   "description": "Number Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
