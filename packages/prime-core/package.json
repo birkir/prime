@@ -36,6 +36,7 @@
     "@primecms/field-datetime": "^0.1.10",
     "@primecms/field-document": "^0.1.10",
     "@primecms/field-group": "^0.1.10",
+    "@primecms/field-number": "^0.1.10",
     "@primecms/field-slice": "^0.1.10",
     "@primecms/field-string": "^0.1.10",
     "acl": "0.4.11",
