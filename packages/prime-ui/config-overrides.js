@@ -10,6 +10,7 @@ const primeConfig = require('rc')('prime', {
     '@primecms/field-datetime',
     '@primecms/field-document',
     '@primecms/field-group',
+    '@primecms/field-number',
     '@primecms/field-slice',
     '@primecms/field-string'
   ]

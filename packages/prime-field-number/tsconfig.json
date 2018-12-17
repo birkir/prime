@@ -1,0 +1,15 @@
+{
+  "extends": "../prime-core/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "declaration": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./ui"
+  ]
+}

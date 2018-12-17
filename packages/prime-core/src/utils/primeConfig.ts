@@ -8,6 +8,7 @@ const fields = [
   '@primecms/field-datetime',
   '@primecms/field-document',
   '@primecms/field-group',
+  '@primecms/field-number',
   '@primecms/field-slice',
   '@primecms/field-string'
 ].map(pkg => {
