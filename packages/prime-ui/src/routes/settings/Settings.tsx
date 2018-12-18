@@ -9,6 +9,7 @@ import { Previews } from './Previews';
 import { Locales } from './Locales';
 import { Webhooks } from './Webhooks';
 import './Settings.less';
+import { Redirect } from 'react-router';
 
 const nav = [{
   key: 'account',
@@ -68,6 +69,7 @@ export const Settings = (props: any) => {
               {nav.map(({ key, component }) => (
                 <Route path={`${path}/${key}`} component={component} key={key} />
               ))}
+              <Redirect to={`${path}/account`} />
             </Switch>
           </div>
         </Card>

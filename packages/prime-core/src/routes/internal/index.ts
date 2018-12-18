@@ -18,6 +18,7 @@ import { EntryTransformer } from '../../utils/entryTransformer';
 import { Sentry } from '../../utils/Sentry';
 import { Settings } from '../../models/Settings';
 import { sequelize } from '../../sequelize';
+import { GraphQLSettingsInput } from '../../types/settings';
 
 const entryTransformer = new EntryTransformer();
 
@@ -417,6 +418,24 @@ export const internalGraphql = async (restart) => {
   };
 
   const mutationFields = {
+    setSettings: {
+      type: GraphQLBoolean,
+      args: {
+        input: { type: GraphQLSettingsInput },
+      },
+      async resolve(root, args, context, info) {
+        const settings = await Settings.findOne({
+          order: [['updatedAt', 'DESC']]
+        });
+
+        const done = await Settings.create({
+          data: args.input,
+          userId: context.user.id,
+        });
+
+        return Boolean(done);
+      },
+    },
     setContentTypeSchema: {
       type: GraphQLBoolean,
       args: {

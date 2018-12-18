@@ -159,7 +159,7 @@ export class DocumentsDetail extends React.Component<IProps> {
       // Update values
       if (this.contentEntry) {
         await this.contentEntry!.update(parsed);
-        this.documentForm.props.form.resetFields();  
+        this.documentForm.props.form.resetFields();
         message.info('Document was saved');
       } else if (this.contentType) {
         try {
@@ -198,8 +198,9 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
   }
 
-  onPreviewPress = async () => {
-    const preview = Settings.previews[0];
+  onPreviewPress = async (e: any) => {
+    const index = Number(e.key || 0);
+    const preview = Settings.previews[index];
     const url = encodeURIComponent(preview.hostname + preview.pathname + '?' + this.contentEntry!.versionId);
     window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
   }
@@ -247,6 +248,41 @@ export class DocumentsDetail extends React.Component<IProps> {
     )
   }
 
+  renderPreview(loading: boolean) {
+    if (Settings.previews.length === 0) {
+      return null;
+    }
+
+    if (Settings.previews.length === 1) {
+      return (
+        <Button
+          onClick={this.onPreviewPress}
+          style={{ marginLeft: 16 }}
+          disabled={loading}
+          icon="eye"
+        />
+      );
+    }
+
+    const menu = <Menu onClick={this.onPreviewPress}>
+      {Settings.previews.map(({ name }, index: number) => (
+        <Menu.Item key={index}>
+          {name}
+        </Menu.Item>
+      ))}
+    </Menu>
+
+    return (
+      <Dropdown overlay={menu} trigger={['click']}>
+        <Button
+          style={{ marginLeft: 16 }}
+          disabled={loading}
+          icon="eye"
+        />
+      </Dropdown>
+    );
+  }
+
   render() {
     const loading = (!this.loaded || this.loading);
     const contentEntry = this.contentEntry!;
@@ -262,19 +298,15 @@ export class DocumentsDetail extends React.Component<IProps> {
             {contentType && <h3 style={{ margin: 0 }}>{contentType.title}</h3>}
           </div>
           <Dropdown overlay={this.languagesMenu} trigger={['click']}>
-            <Button type="default" style={{ marginRight: 16 }}>
-              <span className={`flag-icon flag-icon-${this.language.flag}`} style={{ marginRight: 8 }} />
+            <Button type="default">
+              <span className={`flagstrap-icon flagstrap-${this.language.flag}`} style={{ marginRight: 8 }} />
               {this.language.name}
               <Icon type="down" />
             </Button>
           </Dropdown>
-          <Button onClick={this.onSave} type="default" disabled={loading} style={{ marginRight: 16 }}>Save</Button>
-          <Button onClick={this.onPublish} type="primary" disabled={loading || !contentEntry || contentEntry.isPublished} style={{ marginRight: 16 }}>Publish</Button>
-          <Button
-            onClick={this.onPreviewPress}
-            disabled={loading}
-            icon="eye"
-          />
+          <Button onClick={this.onSave} type="default" disabled={loading} style={{ marginLeft: 16 }}>Save</Button>
+          <Button onClick={this.onPublish} type="primary" disabled={loading || !contentEntry || contentEntry.isPublished} style={{ marginLeft: 16 }}>Publish</Button>
+          {this.renderPreview(loading)}
         </Toolbar>
         <Layout>
           <Content style={{ height: 'calc(100vh - 64px)' }}>

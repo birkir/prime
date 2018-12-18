@@ -1,15 +1,17 @@
 import React from 'react';
 import { Query } from 'react-apollo';
+import { Table, } from 'antd';
 import gql from 'graphql-tag';
 import { client } from '../../utils/client';
-import { Table, Button } from 'antd';
 
 const columns = [{
+  key: 'name',
   title: 'Name',
   render(text: string, record: any) {
     return [record.firstname, record.lastname].join(' ');
   }
 }, {
+  key: 'email',
   title: 'Email',
   dataIndex: 'email',
 }];
@@ -39,7 +41,6 @@ export const Users = () => (
             dataSource={data.allUsers}
             rowKey="id"
           />
-          <Button type="primary">Add User</Button>
         </>
       )
     }}

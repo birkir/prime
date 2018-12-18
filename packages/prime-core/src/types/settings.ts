@@ -1,3 +1,5 @@
+import { GraphQLInputObjectType, GraphQLEnumType, GraphQLList, GraphQLString, GraphQLID, GraphQLBoolean } from "graphql";
+
 interface ISettingsPreview {
   name: string;
   hostname: string;
@@ -17,3 +19,39 @@ export interface ISettings {
   locales: ISettingsLocale[];
   masterLocale: ISettingsLocale;
 }
+
+const SettingsAccessType = new GraphQLEnumType({
+  name: 'SettingsAccessType',
+  values: {
+    public: { value: 'public' },
+    private: { value: 'private' },
+  },
+});
+
+const SettingsPreviewInput = new GraphQLInputObjectType({
+  name: 'SettingsPreviewInput',
+  fields: {
+    name: { type: GraphQLString },
+    hostname: { type: GraphQLString },
+    pathname: { type: GraphQLString },
+  }
+});
+
+const SettingsLocaleInput = new GraphQLInputObjectType({
+  name: 'SettingsLocaleInput',
+  fields: {
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    flag: { type: GraphQLString },
+    master: { type: GraphQLBoolean },
+  }
+});
+
+export const GraphQLSettingsInput = new GraphQLInputObjectType({
+  name: 'SettingsInput',
+  fields: {
+    accessType: { type: SettingsAccessType },
+    previews: { type: new GraphQLList(SettingsPreviewInput) },
+    locales: { type: new GraphQLList(SettingsLocaleInput) },
+  },
+});

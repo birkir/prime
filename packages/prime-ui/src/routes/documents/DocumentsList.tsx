@@ -178,11 +178,11 @@ export const DocumentsList = ({ match, history }: any) => {
 
             const backgroundColor = record.publishedVersionId ? '#79cea3' : '#faad14';
             const icon = record.publishedVersionId ? 'caret-right' : 'exclamation';
-            const dot = !record.publishedVersionId || record.isPublished ? undefined : <Icon type="exclamation" style={{ width: 0, marginLeft: -12 }} /> as any;
+            const dot = !record.publishedVersionId || record.isPublished ? false : true;
 
             return (
               <Link to={`/documents/doc/${record.entryId}?lang=${language.id}`}>
-                <Badge count={dot} style={{ backgroundColor: '#faad14' }}>
+                <Badge count={dot ? '!' : 0} style={{ backgroundColor: '#faad14' }}>
                   <div style={{ width: 32, height: 32, borderRadius: 4, backgroundColor, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 21, paddingLeft: 2, color: 'white' }}>
                     <Icon type={icon} />
                   </div>

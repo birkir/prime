@@ -70,9 +70,13 @@
 .prime__sidebar__logout {
   background: rgba(0, 0, 0, 0.2);
   margin: 0 !important;
-  padding-top: 8px !important;
-  padding-bottom: 8px;
   height: 56px;
+}
+
+.ant-layout-sider-collapsed .prime__sidebar__logout {
+  padding-top: 8px !important;
+  height: 40px;
+  line-height: 40px;
 }
 
 .ant-menu-dark .ant-menu-item.prime__sidebar__logout:hover {
