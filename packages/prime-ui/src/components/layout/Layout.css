@@ -67,6 +67,11 @@
   text-decoration: none;
 }
 
+.ant-table-filter-dropdown-btns {
+  position: relative;
+  z-index: 100;
+}
+
 .prime__sidebar__logout {
   background: rgba(0, 0, 0, 0.2);
   margin: 0 !important;
