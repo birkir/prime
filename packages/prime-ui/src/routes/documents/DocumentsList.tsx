@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip } from 'antd';
+import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip, Badge } from 'antd';
 import { get } from 'lodash';
 import { distanceInWordsToNow } from 'date-fns';
 import { client } from '../../utils/client';
@@ -52,6 +52,7 @@ const GET_CONTENT_ENTRIES = gql`
           contentReleaseId
           language
           isPublished
+          publishedVersionId
           updatedAt
           data
           display
@@ -169,18 +170,24 @@ export const DocumentsList = ({ match, history }: any) => {
         };
 
         const columns = [{
-          title: 'ID',
+          title: '',
           dataIndex: 'entryId',
-          sorter: true,
-          width: '170px',
+          sorter: false,
+          width: '52px',
           render(_text: string, record: any) {
+
+            const backgroundColor = record.publishedVersionId ? '#79cea3' : '#faad14';
+            const icon = record.publishedVersionId ? 'caret-right' : 'exclamation';
+            const dot = !record.publishedVersionId || record.isPublished ? undefined : <Icon type="exclamation" style={{ width: 0, marginLeft: -12 }} /> as any;
+
             return (
-              <>
-                <Link to={`/documents/doc/${record.entryId}?lang=${language.id}`}>
-                  {record.entryId}
-                </Link>
-                {!record.isPublished && <Icon style={{ marginLeft: 16 }} type="info-circle" />}
-              </>
+              <Link to={`/documents/doc/${record.entryId}?lang=${language.id}`}>
+                <Badge count={dot} style={{ backgroundColor: '#faad14' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 4, backgroundColor, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 21, paddingLeft: 2, color: 'white' }}>
+                    <Icon type={icon} />
+                  </div>
+                </Badge>
+              </Link>
             );
           }
         }, {
@@ -191,7 +198,7 @@ export const DocumentsList = ({ match, history }: any) => {
           }
         }, {
           title: 'Type',
-          width: '120px',
+          width: '175px',
           dataIndex: 'contentType.title',
           filters: get(data, 'allContentTypes', [])
             .filter((n: any) => !n.isSlice && !n.isTemplate)
@@ -203,7 +210,7 @@ export const DocumentsList = ({ match, history }: any) => {
           filterMultiple: false,
         }, {
           title: 'Updated',
-          width: '160px',
+          width: '175px',
           dataIndex: 'updatedAt',
           sorter: true,
           defaultSortOrder: 'descend' as any,
@@ -275,7 +282,7 @@ export const DocumentsList = ({ match, history }: any) => {
             <Content style={{ padding: 32, height: 'calc(100vh - 64px)' }}>
               <Card
                 bodyStyle={{ padding: 0 }}
-                hoverable
+                bordered={false}
                 className="with-table-pagination"
               >
                 <Table
@@ -283,10 +290,16 @@ export const DocumentsList = ({ match, history }: any) => {
                   rowKey="entryId"
                   dataSource={items}
                   pagination={pagination}
+                  rowClassName={() => 'prime-row-click'}
                   loading={isLoading ? {
                     wrapperClassName: 'table-fast-spin',
                   } : false}
                   onChange={onTableChange}
+                  onRow={(record) => ({
+                    onClick: () => {
+                      history.push(`/documents/doc/${record.entryId}?lang=${language.id}`);
+                    },
+                  })}
                 />
               </Card>
               <div style={{ height: 180 }} />

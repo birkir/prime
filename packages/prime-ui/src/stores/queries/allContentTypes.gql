@@ -7,7 +7,6 @@ query allContentTypes {
     settings
     isSlice
     isTemplate
-
     entriesCount
   }
 }

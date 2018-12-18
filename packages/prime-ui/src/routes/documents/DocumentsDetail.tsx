@@ -32,6 +32,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   langs = [{ id: 'en', flag: 'us', name: 'English' }, { id: 'is', flag: 'is', name: 'Icelandic' }];
   language: { id: string; flag: string; name: string } = this.langs[0];
 
+  @observable promptEnabled = true;
   @observable loading = false;
   @observable loaded = false;
   @observable error: Error | null = null;
@@ -40,6 +41,12 @@ export class DocumentsDetail extends React.Component<IProps> {
     const search = new URLSearchParams(window.location.search)
     this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
     this.load();
+
+    document.addEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillReceiveProps(nextProps: any) {
@@ -107,6 +114,15 @@ export class DocumentsDetail extends React.Component<IProps> {
     this.loading = false;
   }
 
+  onKeyDown = (e: any) => {
+    if (e.which == 83 && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.onSave(e);
+      return false;
+    }
+    return true;
+  }
+
   onSave = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (this.documentForm) {
@@ -143,12 +159,14 @@ export class DocumentsDetail extends React.Component<IProps> {
       // Update values
       if (this.contentEntry) {
         await this.contentEntry!.update(parsed);
+        this.documentForm.props.form.resetFields();  
         message.info('Document was saved');
       } else if (this.contentType) {
         try {
           const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.language.id);
           if (contentEntry) {
-            this.props.history.push(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
+            this.loadEntry(contentEntry.entryId);
+            this.props.history.replace(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
           }
           message.success('Document created');
         } catch(err) {
@@ -207,7 +225,7 @@ export class DocumentsDetail extends React.Component<IProps> {
 
     return (
       <>
-        {(lastDraft >= 0 && lastDraft < lastPublished) && this.renderVersion(contentEntry.versions[lastDraft])}
+        {(lastDraft >= 0 && (lastPublished === -1 || lastDraft < lastPublished)) && this.renderVersion(contentEntry.versions[lastDraft])}
         {lastPublished >= 0 && this.renderVersion(contentEntry.versions[lastPublished])}
       </>
     );
@@ -271,6 +289,7 @@ export class DocumentsDetail extends React.Component<IProps> {
             {!loading && (
               <DocumentForm
                 wrappedComponentRef={this.onFormRef}
+                promptEnabled={this.promptEnabled}
                 onSave={this.onSave}
                 entry={contentEntry}
                 schema={contentType.schema}
@@ -292,16 +311,19 @@ export class DocumentsDetail extends React.Component<IProps> {
               )}
             </div>
             <div style={{ padding: 16 }}>
-              <Popconfirm
-                title="Are you sure?"
-                icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-                onConfirm={async () => {
-                  await contentEntry.remove();
-                  this.props.history.push('/documents');
-                }}
-              >
-                <Button type="danger" block>Delete</Button>
-              </Popconfirm>
+              {contentEntry && (
+                <Popconfirm
+                  title="Are you sure?"
+                  icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                  onConfirm={async () => {
+                    await contentEntry.remove();
+                    this.promptEnabled = false;
+                    this.props.history.push('/documents');
+                  }}
+                >
+                  <Button type="danger" block>Delete</Button>
+                </Popconfirm>
+              )}
             </div>
           </Sider>
         </Layout>

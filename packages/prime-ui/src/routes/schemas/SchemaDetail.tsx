@@ -331,6 +331,7 @@ export class SchemaDetail extends React.Component<IProps> {
       <TabPane
         key={groupName}
         tab={groupName}
+        style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}
       >
         <Droppable
           key={groupName}
@@ -340,7 +341,7 @@ export class SchemaDetail extends React.Component<IProps> {
           {(droppableProvided, droppableSnapshot) => (
             <div
               ref={droppableProvided.innerRef}
-              style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
+              style={{ minHeight: '100%', transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
             >
               {group && group.fields.filter((n: any) => n.contentTypeId === this.contentType!.id).map(this.renderField)}
               {droppableProvided.placeholder}

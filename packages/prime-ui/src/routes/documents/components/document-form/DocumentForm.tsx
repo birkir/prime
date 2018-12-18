@@ -1,6 +1,7 @@
 import React from 'react';
+import { Prompt } from 'react-router';
 import { get } from 'lodash';
-import { Form, Tabs } from 'antd';
+import { Form, Tabs, Button } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import { hasParentOfType } from 'mobx-state-tree';
 
@@ -12,6 +13,7 @@ import stores from '../../../../stores';
 export interface IDocumentFormProps extends FormComponentProps {
   entry?: any;
   schema: any;
+  promptEnabled: boolean;
   onSave(e: React.MouseEvent<any> | React.FormEvent<any>): void;
 }
 
@@ -41,13 +43,6 @@ function renderInputField({ field, path, initialValue, form, entry, client, stor
 
 export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
 
-  onSubmit = (e: React.FormEvent<HTMLElement>) => {
-    e.preventDefault();
-    if (typeof this.props.onSave === 'function') {
-      this.props.onSave(e);
-    }
-  }
-
   renderField = (field: any, index: number) => {
     const { form } = this.props;
     return renderInputField({
@@ -76,7 +71,11 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
     const { groups } = this.props.schema;
     return (
       <div className="prime-document">
-        <Form onSubmit={this.onSubmit}>
+        <Prompt
+          when={this.props.promptEnabled && this.props.form.isFieldsTouched()}
+          message="You have unsaved changes. Are you sure you want to leave?"
+        />
+        <Form>
           <Tabs
             type="card"
             animated={false}

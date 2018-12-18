@@ -17,6 +17,7 @@ import { User } from '../../models/User';
 import { EntryTransformer } from '../../utils/entryTransformer';
 import { Sentry } from '../../utils/Sentry';
 import { Settings } from '../../models/Settings';
+import { sequelize } from '../../sequelize';
 
 const entryTransformer = new EntryTransformer();
 
@@ -35,7 +36,7 @@ export const internalGraphql = async (restart) => {
 
   const userType = new GraphQLObjectType({
     name: 'User',
-    fields: attributeFields(User),
+    fields: omit(attributeFields(User), ['password']),
   });
 
   const contentTypeType = new GraphQLObjectType({
@@ -91,6 +92,7 @@ export const internalGraphql = async (restart) => {
         })
       },
       display: { type: GraphQLString },
+      publishedVersionId: { type: GraphQLID },
       versions: {
         type: new GraphQLList(
           new GraphQLObjectType({
@@ -162,9 +164,20 @@ export const internalGraphql = async (restart) => {
         const language = args.language || 'en';
         const published = null;
         const contentReleaseId = null;
-        findOptions.having = {
-          versionId: latestVersion({ language, published, contentReleaseId })
+
+        findOptions.attributes = {
+          include: [
+            [
+              sequelize.literal(`(SELECT "versionId" "vId" from "ContentEntry" "b" WHERE "b"."entryId" = "ContentEntry"."entryId" AND "b"."isPublished" = true ORDER BY "updatedAt" DESC LIMIT 1)`),
+              'publishedVersionId'
+            ],
+          ]
         };
+
+        findOptions.having = {
+          versionId: latestVersion({ language, published, contentReleaseId }),
+        };
+
         if (args.contentTypeId) {
           findOptions.where.contentTypeId = args.contentTypeId;
         }
@@ -177,7 +190,6 @@ export const internalGraphql = async (restart) => {
         const sort = args.sort || 'updatedAt';
 
         findOptions.order = [[sort, order]];
-
         findOptions.offset = args.skip;
         findOptions.group = ['versionId'];
 
@@ -227,6 +239,8 @@ export const internalGraphql = async (restart) => {
             const dataKeys = Object.keys(node.data);
             node.display = get(node.data, 'title', get(node.data, 'name', get(node.data, dataKeys[0], node.entryId)));
           }
+
+          node.publishedVersionId = node.dataValues.publishedVersionId;
         }));
 
         return values;

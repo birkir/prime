@@ -47,35 +47,65 @@ export class SchemaList extends React.Component<any> {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
-      render(_text: string, record: any) {
-        return (<Link to={`/schemas/edit/${record.id}`}>{record.title}</Link>);
-      }
     }, {
-      title: 'API',
+      title: 'API Name',
       dataIndex: 'name',
       key: 'name',
       render(_text: string, record: any) {
         return (<i>{record.name}</i>);
       }
     }, {
-      title: 'Action',
+      title: 'Type',
+      key: 'type',
+      render: (text: string, record: any) => {
+        return record.settings.single ? 'Single' : 'Repeatable';
+      },
+    }, {
+      title: 'Documents',
+      key: 'documents',
+      render: (text, record) => (
+        <Link
+          to={`/documents/schema/${record.id}`}
+          onClick={(e: any) => e.stopPropagation()}
+        >
+          {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
+        </Link>
+      )
+    }, {
+      title: '',
       key: 'action',
+      align: 'right',
       render: (text, record) => (
         <>
-          {!record.isSlice && !record.isTemplate && (
-            <>
-              <Link to={`/documents/schema/${record.id}`}>Documents ({record.entriesCount})</Link>
-              <Divider type="vertical" />
-              <Link to={`/schemas/settings/${record.id}`}>Settings</Link>
-              <Divider type="vertical" />
-            </>
-          )}
+          <Button
+            style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
+            onClick={(e: any) => {
+              this.props.history.push(`/schemas/settings/${record.id}`)
+              e.stopPropagation()
+            }}
+          >
+            <Icon
+              type="setting"
+              theme="filled"
+            />
+          </Button>
           <Popconfirm
             title="Are you sure?"
             icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-            onConfirm={record.remove}
+            onConfirm={(e: any) => {
+              e.stopPropagation();
+              record.remove()
+            }}
+            onCancel={(e: any) => {
+              e.stopPropagation();
+            }}
           >
-            <a href="#">Delete</a>
+            <Button style={{ paddingLeft: 8, paddingRight: 8 }} onClick={(e: any) => e.stopPropagation()}>
+              <Icon
+                type="delete"
+                theme="filled"
+              />
+            </Button>
           </Popconfirm>
         </>
       )
@@ -159,12 +189,13 @@ export class SchemaList extends React.Component<any> {
           <Card
             tabList={tabs}
             bodyStyle={{ padding: 0 }}
-            className="with-table-pagination"
-            hoverable
+            className="prime-table with-table-pagination"
             onTabChange={this.onTabChange}
             activeTabKey={this.state.tab}
+            bordered={false}
           >
             <Table
+              rowClassName={() => 'prime-row-click'}
               dataSource={this.data.filter(n => {
                 switch (this.state.tab) {
                   case 'slices':
@@ -175,9 +206,17 @@ export class SchemaList extends React.Component<any> {
                     return !n.isSlice && !n.isTemplate;
                 }
               })}
-              columns={this.columns}
+              columns={this.columns.filter(n => {
+                if (this.state.tab !== 'slices' && this.state.tab !== 'templates') {
+                  return true;
+                }
+                return n.key !== 'type' && n.key !== 'documents';
+              })}
               pagination={false}
               rowKey="id"
+              onRow={(record) => ({
+                onClick: () => this.props.history.push(`/schemas/edit/${record.id}`),
+              })}
             />
           </Card>
         </Content>

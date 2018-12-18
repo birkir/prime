@@ -124,6 +124,12 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
                 </Select>
               )}
             </Form.Item>
+            <Form.Item label="Single">
+              {getFieldDecorator('settings.single', {
+                initialValue: false,
+                valuePropName: 'checked',
+              })(<Switch />)}
+            </Form.Item>
             <Form.Item label="Mutations">
               {getFieldDecorator('settings.mutations', {
                 initialValue: true,
@@ -171,6 +177,7 @@ export const EditContentType = Form.create({
       res.title = Form.createFormField({ value: get(item, 'title', '') });
       res.name = Form.createFormField({ value: get(item, 'name', '') });
       res['settings.contentTypeIds'] = Form.createFormField({ value: get(item, 'settings.contentTypeIds', []) });
+      res['settings.single'] = Form.createFormField({ value: get(item, 'settings.single', false) });
       res['settings.mutations'] = Form.createFormField({ value: get(item, 'settings.mutations', true) });
     }
 

@@ -1,0 +1,35 @@
+.prime__settings {
+
+  &__content {
+    padding: 32px;
+  }
+
+  &__card.ant-card .ant-card-body {
+    display: flex;
+    flex-direction: row;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  &__left {
+    min-width: 220px;
+  }
+
+  &__right {
+    flex: 1;
+    padding-left: 32px;
+    padding-right: 32px;
+
+    min-height: 640px;
+  }
+
+  &__menu {
+    height: 100%;
+
+    &.ant-menu:not(.ant-menu-horizontal) {
+      .ant-menu-item-selected {
+        background-color: rgba(209, 222, 222, 0.35);
+      }
+    }
+  }
+}

@@ -17,17 +17,18 @@ export const Layout = withRouter(({ children, history, location }: any) => {
         width={280}
         theme="dark"
         trigger={null}
-        collapsed={!isOpen}
+        collapsed={isOpen}
         collapsible
       >
-        <Header style={{ alignItems: 'center', display: 'flex' }}>
-          <div style={{ color: 'white', fontSize: 24, marginLeft: -24, fontFamily: 'system' }}>prime</div>
+        <Header className="prime__sidebar__header">
+          <Link to="/" className="prime__sidebar__logo">prime</Link>
         </Header>
         <Menu
           theme="dark"
           mode="inline"
-          style={{ borderRight: 0 }}
+          className="prime__sidebar__menu"
           defaultSelectedKeys={[selected]}
+          key={selected}
         >
           <Menu.Item key="documents">
             <NavLink to="/documents" className="nav-text">
@@ -47,12 +48,23 @@ export const Layout = withRouter(({ children, history, location }: any) => {
               <span>Playground</span>
             </NavLink>
           </Menu.Item>
+          <Menu.Item key="settings">
+            <NavLink to="/settings" className="nav-text">
+              <Icon type="setting" />
+              <span>Settings</span>
+            </NavLink>
+          </Menu.Item>
+          <Menu.Item key="null" className="prime__sidebar__spacer" />
+          <Menu.Item key="logout" className="prime__sidebar__logout">
+            <NavLink to="/logout" className="nav-text">
+              <Icon type="logout" />
+              <span>Logout</span>
+            </NavLink>
+          </Menu.Item>
         </Menu>
-        <div style={{ flex: 1 }} />
-        <Link style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)', padding: 16 }} to="/logout">
-          <Icon type="logout" style={{ marginRight: 16 }} />
-          <span>Logout</span>
-        </Link>
+        <div className="prime__sidebar__toggle" onClick={toggleMenu}>
+          <Icon type="left" />
+        </div>
       </Sider>
       <AntLayout>
         <Content style={{ flex: 1 }}>
