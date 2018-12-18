@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Button, Icon, message, Skeleton, Card, Alert, Dropdown, Menu, Popover, Popconfirm } from 'antd';
 import { Link } from 'react-router-dom';
 import { observable } from 'mobx';
-import { Instance } from 'mobx-state-tree';
+import { Instance, clone } from 'mobx-state-tree';
 import { observer } from 'mobx-react';
 import { distanceInWordsToNow } from 'date-fns';
 import { Toolbar } from '../../components/toolbar/Toolbar';
@@ -28,9 +28,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   documentForm: BaseDocumentForm | null = null;
   contentEntry: Instance<typeof ContentEntry> | null = null;
   contentType: Instance<typeof ContentType> | undefined;
-
-  langs = [{ id: 'en', flag: 'us', name: 'English' }, { id: 'is', flag: 'is', name: 'Icelandic' }];
-  language: { id: string; flag: string; name: string } = this.langs[0];
+  locale = Settings.masterLocale;
 
   @observable promptEnabled = true;
   @observable loading = false;
@@ -39,7 +37,7 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   componentDidMount() {
     const search = new URLSearchParams(window.location.search)
-    this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
+    this.locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
     this.load();
 
     document.addEventListener('keydown', this.onKeyDown, false);
@@ -52,7 +50,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   componentWillReceiveProps(nextProps: any) {
     if (this.props.location.search !== nextProps.location.search) {
       const search = new URLSearchParams(nextProps.location.search)
-      this.language = this.langs.find(l => l.id === search.get('lang')) || this.langs[0];
+      this.locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
       this.loaded = false;
       this.load();
     }
@@ -78,7 +76,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   async loadEntry(entryId: string) {
     this.loading = true;
     try {
-      const contentEntry = await ContentEntries.loadById(entryId, this.language.id);
+      const contentEntry = await ContentEntries.loadById(entryId, this.locale.id);
       const contentType = await ContentTypes.loadById(contentEntry.contentTypeId);
       if (contentType) {
         await contentType.loadSchema();
@@ -163,10 +161,10 @@ export class DocumentsDetail extends React.Component<IProps> {
         message.info('Document was saved');
       } else if (this.contentType) {
         try {
-          const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.language.id);
+          const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.locale.id);
           if (contentEntry) {
             this.loadEntry(contentEntry.entryId);
-            this.props.history.replace(`/documents/doc/${contentEntry.entryId}?lang=${this.language.id}`);
+            this.props.history.replace(`/documents/doc/${contentEntry.entryId}?locale=${this.locale.id}`);
           }
           message.success('Document created');
         } catch(err) {
@@ -187,14 +185,14 @@ export class DocumentsDetail extends React.Component<IProps> {
     this.documentForm = ref;
   }
 
-  onLanguageClick = (e: any) => {
+  onLocaleClick = (e: any) => {
     const { match, history } = this.props;
     const { params } = match;
 
     if (params.entryId) {
-      history.push(`/documents/doc/${params.entryId}?lang=${e.key}`);
+      history.push(`/documents/doc/${params.entryId}?locale=${e.key}`);
     } else if (params.contentTypeId) {
-      history.push(`/documents/create/${params.contentTypeId}?lang=${e.key}`);
+      history.push(`/documents/create/${params.contentTypeId}?locale=${e.key}`);
     }
   }
 
@@ -232,15 +230,15 @@ export class DocumentsDetail extends React.Component<IProps> {
     );
   }
 
-  get languagesMenu() {
+  get localesMenu() {
     return (
       <Menu
-        onClick={this.onLanguageClick}
-        selectedKeys={[this.language.id]}
+        onClick={this.onLocaleClick}
+        selectedKeys={[this.locale.id]}
       >
-        {this.langs.map(({ id, flag, name }) => (
+        {Settings.locales.map(({ id, flag, name }) => (
           <Menu.Item key={id}>
-            <span className={`flag-icon flag-icon-${flag}`} style={{ marginRight: 8 }} />
+            <span className={`flagstrap-icon flagstrap-${flag}`} style={{ marginRight: 8 }} />
             {name}
           </Menu.Item>
         ))}
@@ -292,15 +290,15 @@ export class DocumentsDetail extends React.Component<IProps> {
       <Layout>
         <Toolbar>
           <div style={{ flex: 1, display: 'flex' }}>
-            <Link to={`/documents?lang=${this.language.id}`} className="ant-btn-back">
+            <Link to={`/documents?locale=${this.locale.id}`} className="ant-btn-back">
               <Icon type="left" />
             </Link>
             {contentType && <h3 style={{ margin: 0 }}>{contentType.title}</h3>}
           </div>
-          <Dropdown overlay={this.languagesMenu} trigger={['click']}>
+          <Dropdown overlay={this.localesMenu} trigger={['click']}>
             <Button type="default">
-              <span className={`flagstrap-icon flagstrap-${this.language.flag}`} style={{ marginRight: 8 }} />
-              {this.language.name}
+              <span className={`flagstrap-icon flagstrap-${this.locale.flag}`} style={{ marginRight: 8 }} />
+              {this.locale.name}
               <Icon type="down" />
             </Button>
           </Dropdown>

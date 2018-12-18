@@ -7,8 +7,8 @@ import { distanceInWordsToNow } from 'date-fns';
 import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
 import { Toolbar } from '../../components/toolbar/Toolbar';
-import { TitleBar } from '../../components/titlebar/TitleBar';
-import { Users } from '../../stores/users';
+import { Settings } from '../../stores/settings';
+import { clone } from 'mobx-state-tree';
 
 const { Content } = Layout;
 
@@ -98,19 +98,18 @@ export const DocumentsList = ({ match, history }: any) => {
   const [isLoading, setLoading] = useState(false);
   let timer: any;
 
-  const search = new URLSearchParams(history.location.search)
-  const langs = [{ id: 'en', flag: 'us', name: 'English' }, { id: 'is', flag: 'is', name: 'Icelandic' }];
-  const language = langs.find(l => l.id === search.get('lang')) || langs[0];
+  const search = new URLSearchParams(history.location.search);
+  const locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
 
-  const onLanguageClick = (e: any) => {
-    history.push(`/documents?lang=${e.key}`);
+  const onLocaleClick = (e: any) => {
+    history.push(`/documents?locale=${e.key}`);
   }
 
-  const languages = (
-    <Menu onClick={onLanguageClick}>
-      {langs.map(({ id, flag, name }) => (
+  const locales = (
+    <Menu onClick={onLocaleClick}>
+      {Settings.locales.map(({ id, flag, name }) => (
         <Menu.Item key={id}>
-          <span className={`flag-icon flag-icon-${flag}`} style={{ marginRight: 8 }} />
+          <span className={`flagstrap-icon flagstrap-${flag}`} style={{ marginRight: 8 }} />
           {name}
         </Menu.Item>
       ))}
@@ -130,7 +129,7 @@ export const DocumentsList = ({ match, history }: any) => {
         userId,
         skip: 0,
         limit: PER_PAGE,
-        language: language.id,
+        language: locale.id,
         sort: 'updatedAt',
         order: 'DESC'
       }}
@@ -163,7 +162,7 @@ export const DocumentsList = ({ match, history }: any) => {
             limit: pagination.pageSize,
             skip: (pagination.current - 1) * pagination.pageSize,
             sort: formatSorterField(sorter.field),
-            language: language.id,
+            language: locale.id,
             order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
           };
           refetch(variables);
@@ -181,7 +180,7 @@ export const DocumentsList = ({ match, history }: any) => {
             const dot = !record.publishedVersionId || record.isPublished ? false : true;
 
             return (
-              <Link to={`/documents/doc/${record.entryId}?lang=${language.id}`}>
+              <Link to={`/documents/doc/${record.entryId}?locale=${locale.id}`}>
                 <Badge count={dot ? '!' : 0} style={{ backgroundColor: '#faad14' }}>
                   <div style={{ width: 32, height: 32, borderRadius: 4, backgroundColor, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 21, paddingLeft: 2, color: 'white' }}>
                     <Icon type={icon} />
@@ -245,7 +244,7 @@ export const DocumentsList = ({ match, history }: any) => {
         }];
 
         const onMenuClick = (e: any) => {
-          history.push(`/documents/create/${e.key}?lang=${language.id}`);
+          history.push(`/documents/create/${e.key}?locale=${locale.id}`);
         };
 
         const menu = (
@@ -265,10 +264,10 @@ export const DocumentsList = ({ match, history }: any) => {
               <div style={{ flex: 1 }}>
                 <h2 style={{ margin: 0 }}>Documents</h2>
               </div>
-              <Dropdown overlay={languages} trigger={['click']}>
+              <Dropdown overlay={locales} trigger={['click']}>
                 <Button type="default" style={{ marginRight: 16 }}>
-                  <span className={`flag-icon flag-icon-${language.flag}`} style={{ marginRight: 8 }} />
-                  {language.name}
+                  <span className={`flagstrap-icon flagstrap-${locale.flag}`} style={{ marginRight: 8 }} />
+                  {locale.name}
                   <Icon type="down" />
                 </Button>
               </Dropdown>
@@ -297,7 +296,7 @@ export const DocumentsList = ({ match, history }: any) => {
                   onChange={onTableChange}
                   onRow={(record) => ({
                     onClick: () => {
-                      history.push(`/documents/doc/${record.entryId}?lang=${language.id}`);
+                      history.push(`/documents/doc/${record.entryId}?locale=${locale.id}`);
                     },
                   })}
                 />

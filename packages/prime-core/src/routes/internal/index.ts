@@ -424,10 +424,6 @@ export const internalGraphql = async (restart) => {
         input: { type: GraphQLSettingsInput },
       },
       async resolve(root, args, context, info) {
-        const settings = await Settings.findOne({
-          order: [['updatedAt', 'DESC']]
-        });
-
         const done = await Settings.create({
           data: args.input,
           userId: context.user.id,

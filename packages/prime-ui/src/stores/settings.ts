@@ -49,6 +49,9 @@ const Locale = types.model('Locale', {
   },
 }));
 
+
+export const defaultLocale = Locale.create({ id: 'en', name: 'English', flag: 'en', master: true });
+
 export const Settings = types.model('Settings', {
   isProd,
   coreUrl,
@@ -58,6 +61,11 @@ export const Settings = types.model('Settings', {
   previews: types.array(Preview),
   locales: types.array(Locale),
 })
+.views(self => ({
+  get masterLocale() {
+    return self.locales.find(({ master }) => master) || defaultLocale;
+  }
+}))
 .actions(self => {
   const read = flow(function*() {
     const { data } = yield client.query({
