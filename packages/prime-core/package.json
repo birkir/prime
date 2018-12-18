@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
