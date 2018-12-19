@@ -12,5 +12,8 @@ export const sequelize = new Sequelize({
   modelPaths: [`${__dirname}/models`],
   operatorsAliases: Op as any,
   logging: false,
-  url: DATABASE_URL
+  url: DATABASE_URL,
+  dialectOptions: {
+    ssl: String(DATABASE_URL).indexOf('?ssl=true') >= 0,
+  },
 });
