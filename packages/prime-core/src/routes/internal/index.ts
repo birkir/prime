@@ -660,13 +660,16 @@ export const internalGraphql = async (restart) => {
       type: GraphQLBoolean,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
+        language: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
-        const success = await ContentEntry.destroy({
-          where: {
-            entryId: args.id,
-          }
-        });
+        const where: any = {
+          entryId: args.id,
+        };
+        if (args.language) {
+          where.language = args.language;
+        }
+        const success = await ContentEntry.destroy({ where });
         return Boolean(success);
       },
     }
