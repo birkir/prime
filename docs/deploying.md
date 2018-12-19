@@ -8,7 +8,7 @@ One-click deployment is available for Heroku:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku)
 
-You will have to have a payment information on file for Cloudinary, but it's still free!
+Includes support for addons like Cloudinary, Newrelic, Algolia and Sentry.
 
 ## AWS EC2
 
