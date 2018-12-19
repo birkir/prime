@@ -10,9 +10,11 @@
     "primecms": "./cli.js"
   },
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "migrations": "migrations"
   },
   "files": [
+    "migrations",
     "lib",
     "cli.js"
   ],
@@ -22,10 +24,10 @@
     "build": "rm -rf ./lib && tsc -p .",
     "dev": "DEBUG=prime* ts-node src",
     "dev:debug": "DEBUG=* ts-node src",
-    "db:init": "DEBUG=prime* ts-node src/migrations/init.ts",
-    "db:seed": "DEBUG=prime* ts-node src/migrations/seed.ts",
-    "db:up": "db-migrate --migrations-dir ./src/migrations up",
-    "db:down": "db-migrate --migrations-dir ./src/migrations down",
+    "db:init": "DEBUG=prime* ts-node src/db/init.ts",
+    "db:seed": "DEBUG=prime* ts-node src/db/seed.ts",
+    "db:up": "db-migrate --migrations-dir ./migrations up",
+    "db:down": "db-migrate --migrations-dir ./migrations down",
     "rebuild-deps": "lerna run build --ignore @primecms/core --ignore @primecms/ui",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

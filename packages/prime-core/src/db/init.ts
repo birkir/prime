@@ -1,14 +1,17 @@
 // tslint:disable no-require-imports no-var-requires no-console
 require('dotenv').config();
 
-import { sequelize } from '../sequelize';
+import * as path from 'path';
 import * as DBMigrate from 'db-migrate';
+import { sequelize } from '../sequelize';
 
 const dbmigrate = DBMigrate.getInstance(true, {
-  cwd: './src',
+  cwd: path.join(__dirname + '/../..')
 });
 
-dbmigrate.silence(true);
+if (process.env.NODE_ENV !== 'production') {
+  dbmigrate.silence(true);
+}
 
 export const init = async () => {
   await sequelize.sync({ force: true });
@@ -28,8 +31,9 @@ export const init = async () => {
     if (!migrations) {
       console.log('This is will wipe previous database. If you are sure, run:');
       console.log('npx primecms db:init --force');
+    } else {
+      console.log('Database was initialized');
     }
-    console.log('Database was initialized');
   } else {
     await init()
     console.log('Database was (force) initialized');
