@@ -19,17 +19,17 @@ const [command] = args._;
         return require('./lib/index.js');
 
       case 'db:seed':
-        return require('./lib/migrations/seed.js');
+        return require('./lib/db/seed.js');
 
       case 'db:init':
-        return require('./lib/migrations/init.js');
+        return require('./lib/db/init.js');
     }
   }
   if (args['--version']) {
     return console.log(require('./package.json').version);
   }
 
-  if (args['--help']) {
+  if (args['--help'] || !command) {
     return console.log(`Usage: primecms [command] [options]
         primecms start
 
