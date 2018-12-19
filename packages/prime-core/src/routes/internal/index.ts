@@ -587,6 +587,52 @@ export const internalGraphql = async (restart) => {
         return entry;
       }
     },
+    unpublishContentEntry: {
+      type: contentEntryType,
+      args: {
+        versionId: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.findOne({
+          where: {
+            versionId: args.versionId
+          }
+        });
+
+        entryTransformer.resetTransformCache();
+
+        if (entry) {
+          await ContentEntry.update({
+            isPublished: false
+          }, {
+            where: {
+              entryId: entry.entryId,
+              language: entry.language,
+            }
+          });
+          return {
+            ...entry.dataValues,
+            isPublished: false,
+            data: await entryTransformer.transformOutput(entry.data, entry.contentTypeId),
+            versions: await ContentEntry.findAll({
+              attributes: [
+                'versionId',
+                'isPublished',
+                'createdAt',
+                'updatedAt'
+              ],
+              where: {
+                entryId: args.entryId,
+                language: entry.language
+              },
+              order: [
+                ['createdAt', 'DESC']
+              ]
+            }),
+          };
+        }
+      }
+    },
     publishContentEntry: {
       type: contentEntryType,
       args: {
@@ -598,6 +644,8 @@ export const internalGraphql = async (restart) => {
             versionId: args.versionId
           }
         });
+
+        entryTransformer.resetTransformCache();
 
         if (entry) {
           const publishedEntry = await entry.publish(context.user.id);
