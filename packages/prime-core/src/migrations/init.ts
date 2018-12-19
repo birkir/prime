@@ -8,7 +8,8 @@ const dbmigrate = DBMigrate.getInstance(true, {
   cwd: './src',
 });
 
-// tslint:disable-next-line max-func-body-length
+dbmigrate.silence(true);
+
 export const init = async () => {
   await sequelize.sync({ force: true });
 
@@ -21,11 +22,19 @@ export const init = async () => {
   );
 };
 
-if (process.argv.indexOf('--yes') === -1) {
-  console.log('This is will wipe previous database. If you are sure, run:');
-  console.log('npm run db:init -- --yes');
-} else {
-  init()
-    .then(() => process.exit(0));
-}
+(async () => {
+  if (process.argv.indexOf('--force') === -1) {
+    const migrations = await dbmigrate.up();
+    if (!migrations) {
+      console.log('This is will wipe previous database. If you are sure, run:');
+      console.log('npx primecms db:init --force');
+    }
+    console.log('Database was initialized');
+  } else {
+    await init()
+    console.log('Database was (force) initialized');
+  }
+
+  process.exit(0)
+})();
 

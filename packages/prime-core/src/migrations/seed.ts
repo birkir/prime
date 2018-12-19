@@ -34,11 +34,7 @@ export const seed = async () => {
   await Settings.create({
     data: {
       accessType: 'public', // 'private'
-      previews: [{
-        name: 'Production',
-        hostname: 'http://localhost:3000',
-        pathname: '/preview',
-      }],
+      previews: [],
       locales: [{
         id: 'en', // RFC-5646 (example: en, en-US)
         name: 'English (US)',

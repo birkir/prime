@@ -41,6 +41,7 @@
     "@primecms/field-string": "^0.1.10",
     "acl": "0.4.11",
     "apollo-server-express": "2.2.0",
+    "arg": "^3.0.0",
     "bcrypt": "3.0.2",
     "body-parser": "1.18.3",
     "connect-session-sequelize": "6.0.0",
