@@ -3,7 +3,6 @@ import { omit } from 'lodash';
 import * as passport from 'passport';
 import * as LocalStrategy from 'passport-local';
 import { User } from '../../models/User';
-import { Settings } from '../../models/Settings';
 
 interface IRequest extends express.Request {
   user?: {
@@ -79,25 +78,11 @@ auth.post('/register', async (req: IRequest, res, next) => {
   const setup = (await User.count()) === 0;
 
   if (setup) {
-    const user = await User.create({
+    await User.create({
       firstname: req.body.firstname || '',
       lastname: req.body.lastname || '',
       email: req.body.email,
       password: req.body.password
-    });
-
-    await Settings.create({
-      data: {
-        accessType: 'public',
-        previews: [],
-        locales: [{
-          id: 'en',
-          name: 'English (US)',
-          flag: 'us',
-          master: true,
-        }],
-      },
-      userId: user.id
     });
   }
 

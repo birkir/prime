@@ -16,7 +16,6 @@ import { resolveFieldType } from './utils/resolveFieldType';
 import { EntryTransformer } from '../../utils/entryTransformer';
 import { Sentry } from '../../utils/Sentry';
 import { Settings } from '../../models/Settings';
-import { ISettings } from '../../types/settings';
 import { ContentEntry } from '../../models/ContentEntry';
 
 // import { User } from '../../models/User';
@@ -44,18 +43,7 @@ export const externalGraphql = async () => {
   const queries = {};
   const inputs = {};
 
-  const settings: ISettings = await Settings.findOne({
-    order: [['updatedAt', 'DESC']],
-  }).then(res => {
-    if (res) {
-      const result = res.data;
-      const masterLocale = result.locales.find((n: any) => n.master);
-      if (masterLocale) {
-        result.masterLocale = masterLocale;
-      }
-      return result;
-    }
-  });
+  const settings = await Settings.get();
 
   const contentTypes = await ContentType.findAll();
 
@@ -207,9 +195,9 @@ export const externalGraphql = async () => {
         }
       }
 
-      // /graphql requests
-      if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.header['x-prime-published']) {
+      if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.headers['x-prime-published']) {
         context.published = null;
+        debug('context.published %o %s', context.published, '(overwrite)');
       }
 
       return context;

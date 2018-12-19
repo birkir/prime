@@ -271,13 +271,11 @@ export const internalGraphql = async (restart) => {
     getSettings: {
       type: GraphQLJSON,
       async resolve() {
-        const settings = await Settings.findOne({
-          order: [['updatedAt', 'DESC']]
-        });
+        const settings = await Settings.get();
 
         return {
           env: pickBy(process.env, (val, key: string) => key.indexOf('PRIME_') === 0),
-          ...(settings && settings.data),
+          ...settings,
         };
       },
     },
