@@ -16,8 +16,6 @@ These are the requirements for prime:
  - PostgreSQL 9.4+
  - Node (Active LTS)
 
-Platform specific installation guides below:
-
 <details><summary>Mac OS X</summary>
 <p>
 
