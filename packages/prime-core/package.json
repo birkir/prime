@@ -42,6 +42,7 @@
     "@primecms/field-slice": "^0.1.10",
     "@primecms/field-string": "^0.1.10",
     "acl": "0.4.11",
+    "algoliasearch": "^3.32.0",
     "apollo-server-express": "2.2.0",
     "arg": "^3.0.0",
     "bcrypt": "3.0.2",
@@ -75,6 +76,7 @@
   },
   "devDependencies": {
     "@types/acl": "0.4.35",
+    "@types/algoliasearch": "^3.30.1",
     "@types/bcrypt": "3.0.0",
     "@types/db-migrate-base": "0.0.5",
     "@types/faker": "4.1.4",

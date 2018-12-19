@@ -19,6 +19,7 @@ import { Sentry } from '../../utils/Sentry';
 import { Settings } from '../../models/Settings';
 import { sequelize } from '../../sequelize';
 import { GraphQLSettingsInput } from '../../types/settings';
+import { algolia } from '../../utils/algolia';
 
 const entryTransformer = new EntryTransformer();
 
@@ -443,6 +444,41 @@ export const internalGraphql = async (restart) => {
         return true;
       }
     },
+    syncAlgolia: {
+      type: GraphQLBoolean,
+      async resolve(root, args, context, info) {
+        if (!algolia.index) {
+          throw new Error('No algolia client configured');
+        }
+
+        await algolia.index.clearIndex();
+
+        const entries = await ContentEntry.findAll({
+          attributes: [
+            'entryId',
+            [sequelize.literal('(SELECT "versionId" FROM "ContentEntry" "ce" WHERE "ce"."entryId" = "ContentEntry"."entryId" AND "isPublished" = TRUE ORDER BY "updatedAt" LIMIT 1)'), 'versionId']
+          ],
+          where: { isPublished: true },
+          group: ['entryId', 'language']
+        });
+
+        entryTransformer.resetTransformCache();
+
+        await Promise.all(entries.map(async ({ versionId }) => {
+          const entry = await ContentEntry.findOne({ where: { versionId } });
+          if (entry) {
+            const doc = await entryTransformer.transformOutput(entry.data, entry.contentTypeId);
+            algolia.index.saveObject({
+              objectID: `${entry.entryId}-${entry.language}`,
+              _entryId: entry.entryId,
+              _language: entry.language,
+              ...doc,
+            });
+          }
+        }));
+
+      },
+    },
     createContentType: {
       type: queryFields.ContentType.type,
       args: {
@@ -650,6 +686,16 @@ export const internalGraphql = async (restart) => {
         if (entry) {
           const publishedEntry = await entry.publish(context.user.id);
           publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
+
+          if (algolia.index) {
+            algolia.index.saveObject({
+              objectID: `${entry.entryId}-${entry.language}`,
+              _entryId: entry.entryId,
+              _language: entry.language,
+              ...publishedEntry.data,
+            });
+          }
+
           return publishedEntry;
         }
 
@@ -668,6 +714,11 @@ export const internalGraphql = async (restart) => {
         };
         if (args.language) {
           where.language = args.language;
+          if (algolia.index) {
+            await algolia.index.deleteObject(args.id);
+          }
+        } else if (algolia.index) {
+          await algolia.index.deleteBy({ filters: `_entryId:${args.id}` });
         }
         const success = await ContentEntry.destroy({ where });
         return Boolean(success);
