@@ -170,7 +170,7 @@ export const internalGraphql = async (restart) => {
         findOptions.attributes = {
           include: [
             [
-              sequelize.literal(`(SELECT "versionId" "vId" from "ContentEntry" "b" WHERE "b"."entryId" = "ContentEntry"."entryId" AND "b"."isPublished" = true ORDER BY "updatedAt" DESC LIMIT 1)`),
+              sequelize.literal(`(SELECT "versionId" "vId" from "ContentEntry" "b" WHERE "b"."entryId" = "ContentEntry"."entryId" AND "b"."isPublished" = true AND "b"."language" = ${sequelize.escape(language)} ORDER BY "updatedAt" DESC LIMIT 1)`),
               'publishedVersionId'
             ],
           ]

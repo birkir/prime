@@ -209,6 +209,7 @@ export class DocumentsDetail extends React.Component<IProps> {
       <Alert
         key={version.versionId}
         type={version.isPublished ? 'info' : 'warning'}
+        icon={version.isPublished ? <Icon type="check-circle" /> : <Icon type="info-circle" />}
         message={version.isPublished ? 'Published' : draftLabel}
         description={`${distanceInWordsToNow(version.updatedAt)} ago`}
         style={{ marginBottom: 16 }}
@@ -334,13 +335,26 @@ export class DocumentsDetail extends React.Component<IProps> {
               {contentEntry && contentEntry.versions.length > 0 ? this.renderStatus() : (
                 <Alert
                   type="warning"
-                  message="Unsaved document"
+                  message="New document"
+                  description="Unsaved changes"
                   style={{ marginBottom: 16 }}
                   banner
                 />
               )}
             </div>
             <div style={{ padding: 16 }}>
+              {contentEntry && contentEntry.isPublished && (
+
+                <Popconfirm
+                  title="Are you sure?"
+                  icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+                  onConfirm={async () => {
+                    await contentEntry.unpublish();
+                  }}
+                >
+                  <Button type="dashed" style={{ marginBottom: 8 }} block>Unpublish</Button>
+                </Popconfirm>
+              )}
               {contentEntry && (
                 <Popconfirm
                   title="Are you sure?"
