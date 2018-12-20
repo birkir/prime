@@ -16,8 +16,8 @@ import { resolveFieldType } from './utils/resolveFieldType';
 import { transformEntry } from './utils/transformEntry';
 
 function sortByProcessor(acc, field: ContentTypeField) {
-  acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.name}`), 'ASC'] };
-  acc[`${field.name}_DESC`] = { value: [sequelize.json(`data.${field.name}`), 'DESC'] };
+  acc[`${field.name}_ASC`] = { value: [sequelize.json(`data.${field.id}`), 'ASC'] };
+  acc[`${field.name}_DESC`] = { value: [sequelize.json(`data.${field.id}`), 'DESC'] };
 
   return acc;
 }

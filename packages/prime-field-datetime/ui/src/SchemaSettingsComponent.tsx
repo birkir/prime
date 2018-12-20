@@ -1,10 +1,9 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Checkbox, Form } from 'antd';
+import { Form, Switch } from 'antd';
 import * as React from 'react';
 
 type IProps = IPrimeFieldProps & {
   options: {
-    date?: boolean;
     time?: boolean;
   };
 };
@@ -15,20 +14,12 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
     return (
       <>
-        <Form.Item>
-          {form.getFieldDecorator('options.date', {
-            valuePropName: 'checked',
-            initialValue: options.date
-          })(
-            <Checkbox>Date</Checkbox>
-          )}
-        </Form.Item>
-        <Form.Item>
+        <Form.Item label="Time">
           {form.getFieldDecorator('options.time', {
             valuePropName: 'checked',
             initialValue: options.time
           })(
-            <Checkbox>Time</Checkbox>
+            <Switch />
           )}
         </Form.Item>
       </>

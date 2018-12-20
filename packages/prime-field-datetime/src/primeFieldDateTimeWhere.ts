@@ -1,5 +1,5 @@
 import { GraphQLInputObjectType } from 'graphql';
-import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 
 export const primeFieldDateTimeWhere = {
   dateTime: new GraphQLInputObjectType({
@@ -11,17 +11,6 @@ export const primeFieldDateTimeWhere = {
       lt: { type: GraphQLDateTime },
       gte: { type: GraphQLDateTime },
       lte: { type: GraphQLDateTime }
-    }
-  }),
-  time: new GraphQLInputObjectType({
-    name: 'PrimeFieldDateTimeWhereTime',
-    fields: {
-      neq: { type: GraphQLTime },
-      eq: { type: GraphQLTime },
-      gt: { type: GraphQLTime },
-      lt: { type: GraphQLTime },
-      gte: { type: GraphQLTime },
-      lte: { type: GraphQLTime }
     }
   }),
   date: new GraphQLInputObjectType({

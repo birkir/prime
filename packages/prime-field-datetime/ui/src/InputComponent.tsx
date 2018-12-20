@@ -1,72 +1,37 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { DatePicker, Form, TimePicker } from 'antd';
-import { get } from 'lodash'; // tslint:disable-line no-implicit-dependencies
+import { get, isEmpty } from 'lodash'; // tslint:disable-line no-implicit-dependencies
 import moment from 'moment'; // tslint:disable-line no-implicit-dependencies
 import * as React from 'react';
 
 interface IState {
   date: any; // tslint:disable-line no-any
-  time: any; // tslint:disable-line no-any
 }
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState> {
 
-  public isDate: Boolean;
-  public isTime: Boolean;
+  public isTime: Boolean = get(this.props.field.options, 'time', false);
 
-  constructor(props: IPrimeFieldProps) {
-    super(props);
-    const { field, initialValue } = props;
-    const [desiredDate, desiredTime] = String(initialValue || '').split(' ');
-    this.isDate = get(field.options, 'date', true);
-    this.isTime = get(field.options, 'time', false);
+  public state = {
+    date: isEmpty(this.props.initialValue) ? undefined : moment(this.props.initialValue)
+  };
 
-    const state: any = { // tslint:disable-line no-any
-      date: undefined,
-      time: undefined
-    };
-
-    if (this.isDate && desiredDate) {
-      state.date = moment(desiredDate);
-
-      if (this.isTime && desiredTime) {
-        state.time = moment(`2000-01-01 ${desiredTime}`);
-      }
-    } else if (this.isTime && desiredDate) {
-      state.time = moment(`2000-01-01 ${desiredDate}`);
-    }
-
-    this.state = state;
-  }
-
-  public update = ({ date, time }: { date?: any; time?: any }) => { // tslint:disable-line no-any
-    if (date) {
-      this.setState({ date }, this.updateValue);
-    } else if (time) {
-      this.setState({ time }, this.updateValue);
-    }
-  }
-
-  public updateValue = () => {
-    const { date, time } = this.state;
+  public sync = () => {
+    const { date} = this.state;
     const { form, path } = this.props;
-
-    const dateStr = moment(date).format('YYYY-MM-DD');
-    const timeStr = moment(time).format('hh:mm:ss');
-
-    form.setFieldsValue({
-      [path]: this.isTime
-        ? (this.isDate ? moment([dateStr, timeStr].join(' ')).format('YYYY-MM-DD hh:mm:ss') : dateStr)
-        : timeStr
-    });
+    if (date) {
+      form.setFieldsValue({
+        [path]: date.toISOString()
+      });
+    }
   }
 
   public onDateChange = (date: any) => { // tslint:disable-line no-any
-    this.update({ date });
+    this.setState({ date: moment(`${date.format('YYYY-MM-DD')} ${moment(this.state.date).format('HH:mm:ss')}`) }, this.sync);
   }
 
   public onTimeChange = (time: any) => { // tslint:disable-line no-any
-    this.update({ time });
+    this.setState({ date: moment(`${moment(this.state.date).format('YYYY-MM-DD')} ${time.format('HH:mm:ss')}`) }, this.sync);
   }
 
   public render() {
@@ -74,8 +39,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
 
     return (
       <Form.Item label={field.title}>
-        {this.isDate && <DatePicker defaultValue={this.state.date} onChange={this.onDateChange} size="large" style={{ marginRight: 16 }} />}
-        {this.isTime && <TimePicker defaultValue={this.state.time} onChange={this.onTimeChange} size="large" />}
+        <DatePicker defaultValue={this.state.date} onChange={this.onDateChange} size="large" style={{ marginRight: 16 }} />
+        {this.isTime && <TimePicker defaultValue={this.state.date} onChange={this.onTimeChange} size="large" />}
         {form.getFieldDecorator(path, { initialValue })(
           <input type="hidden" />
         )}

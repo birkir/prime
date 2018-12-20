@@ -76,8 +76,6 @@ const GET_CONTENT_ENTRIES = gql`
 const PER_PAGE = 10;
 
 export const DocumentsList = ({ match, history }: any) => {
-  const [isLoading, setLoading] = useState(false);
-  let timer: any;
 
   const search = new URLSearchParams(history.location.search);
   const locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
@@ -124,9 +122,6 @@ export const DocumentsList = ({ match, history }: any) => {
           total: get(data, 'allContentEntries.totalCount'),
           pageSize: PER_PAGE,
         };
-
-        clearTimeout(timer);
-        timer = setTimeout(() => (loading !== isLoading) && setLoading(loading), 330);
 
         const formatSorterField = (field: string) => {
           if (field === 'user.id') return 'userId';
@@ -271,9 +266,6 @@ export const DocumentsList = ({ match, history }: any) => {
                   dataSource={items}
                   pagination={pagination}
                   rowClassName={() => 'prime-row-click'}
-                  loading={isLoading ? {
-                    wrapperClassName: 'table-fast-spin',
-                  } : false}
                   onChange={onTableChange}
                   onRow={(record) => ({
                     onClick: () => {

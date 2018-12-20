@@ -7,6 +7,8 @@ export const transformEntry = async (entry) => {
 
   entry.data = await entryTransformer.transformOutput(entry.data, entry.contentTypeId);
 
+  console.log(entry.data);
+
   return {
     id: entry.entryId,
     _meta: {
