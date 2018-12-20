@@ -9,7 +9,9 @@ Prime is a standalone, self-hosted, headless CMS with a GraphQL interface powere
 
 ## Why Prime?
 
-There are a lot of headless SaaS solutions out there, and many of them better than Prime, but sometimes there is a need to host the CMS locally and while most open source projects work well for that, they are missing key features that Prime has.
+There are a lot of headless SaaS solutions out there, and many of them better than Prime, but sometimes there is a need to host the CMS locally and while most open source projects work well for that, they are missing key features.
+
+> Please don’t forget to star this repo if you found it useful
 
 ## Features
 
