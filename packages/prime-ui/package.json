@@ -1,6 +1,6 @@
 {
   "name": "@primecms/ui",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "User Interface for Prime CMS Core",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -68,7 +68,7 @@
   "dependencies": {
     "@primecms/field-asset": "^0.1.10",
     "@primecms/field-boolean": "^0.1.10",
-    "@primecms/field-datetime": "^0.1.10",
+    "@primecms/field-datetime": "^0.1.23",
     "@primecms/field-number": "^0.1.12",
     "moment": "^2.22.2"
   }
