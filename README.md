@@ -3,8 +3,7 @@
 </p>
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
-[![Build Status](https://travis-ci.org/birkir/prime.svg?branch=master)](https://travis-ci.org/birkir/prime)
-[![license](https://img.shields.io/github/license/birkir/prime.svg)](https://opensource.org/licenses/MIT)
+[![npm downloads](https://img.shields.io/npm/dt/@primecms/core.svg)](https://www.npmjs.com/package/@primecms/core) ![last commit](https://img.shields.io/github/last-commit/google/skia.svg) [![license](https://img.shields.io/github/license/birkir/prime.svg)](https://opensource.org/licenses/MIT)
 
 Prime is a standalone, self-hosted, headless CMS with a GraphQL interface powered by TypeScript.
 

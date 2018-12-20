@@ -1,15 +1,23 @@
 # Get Started
 
-Getting Started is easy, there are not many requirements.
+Getting Started is very easy if you already have node and postgres.
 
-## Requirements
+Super Quick Start:
+
+```bash
+npx primecms init
+npm start
+```
+
+## Installing requirements
+
+These are the requirements for prime:
 
  - PostgreSQL 9.4+
  - Node (Active LTS)
 
-## Installing
-
-### Mac OS X
+<details><summary>Mac OS X</summary>
+<p>
 
 Install brew
 ```bash
@@ -21,28 +29,37 @@ Install postgresql and node
 brew install node postgresql
 brew services start postgresql
 ```
+</p>
+</details>
 
-### Windows
+<details><summary>Windows</summary>
+<p>
 
  - [Download NodeJS](https://nodejs.org/en/)
  - [Download PostgreSQL](https://www.postgresql.org/download/windows/)
+</p>
+</details>
 
-### Linux (Ubuntu/debian)
+<details><summary>Linux (Ubuntu/debian)</summary>
+<p>
 
 ```bash
 sudo apt-get install -y postgresql nodejs
 sudo update-rc.d postgresql enable
 ```
+</p>
+</details>  
 
-## Quick start
+## Starting prime
 
-Start by creating a folder containing your Prime installation
 ```bash
-mkdir prime
-cd prime
+npx primecms start
 ```
 
+## Manual installation
+
 Install the dependencies and create database
+
 ```bash
 npm init
 npm install -S @primecms/core @primecms/ui
@@ -53,9 +70,4 @@ createdb prime
 Edit your `.env`:
 ```js
 DATABASE_URL=postgresql://username@localhost:5432/prime
-```
-
-Start Prime
-```bash
-npx primecms
 ```
