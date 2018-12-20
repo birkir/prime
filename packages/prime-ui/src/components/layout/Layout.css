@@ -65,6 +65,8 @@
   font-size: 24px;
   font-family: 'system';
   text-decoration: none;
+  font-style: italic;
+  text-decoration: none !important;
 }
 
 .ant-table-filter-dropdown-btns {
@@ -76,6 +78,43 @@
   background: rgba(0, 0, 0, 0.2);
   margin: 0 !important;
   height: 56px;
+}
+
+.prime__drawer__bottom {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #e8e8e8;
+  padding: 10px 16px;
+  text-align: right;
+  background-color: #fff;
+}
+
+.prime__drawer {
+  height: calc(100% - 55px);
+  overflow: auto;
+  padding-bottom: 53px;
+}
+
+.prime__drawer .ant-form-item-label {
+  line-height: 36px;
+}
+
+.prime__drawer .ant-row.ant-form-item.ant-form-item-with-help {
+  margin-bottom: -7px;
+}
+
+.prime__drawer .ant-form-item {
+  margin-bottom: 12px;
+}
+
+.prime__drawer .ant-form {
+  margin-bottom: 55px;
+}
+
+.prime__drawer .ant-form-explain {
+  font-size: 14px;
 }
 
 .ant-layout-sider-collapsed .prime__sidebar__logout {

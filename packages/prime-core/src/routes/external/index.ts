@@ -19,7 +19,7 @@ import { Settings } from '../../models/Settings';
 import { ContentEntry } from '../../models/ContentEntry';
 
 // import { User } from '../../models/User';
-// import { acl } from '../../acl';
+import { acl } from '../../acl';
 
 interface IContext {
   settings: any;
@@ -37,6 +37,11 @@ export const debug = require('debug')('prime:graphql');
 
 // tslint:disable-next-line max-func-body-length
 export const externalGraphql = async () => {
+
+  acl.addUserRoles(
+    '46ca9dce-5a28-44bf-897c-01e3c1a96cf5',
+    ['admin']
+  );
 
   const app = express();
 

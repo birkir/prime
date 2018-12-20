@@ -7,7 +7,6 @@ import { Users } from './Users';
 import { Security } from './Security';
 import { Previews } from './Previews';
 import { Locales } from './Locales';
-import { Webhooks } from './Webhooks';
 import './Settings.less';
 import { Redirect } from 'react-router';
 
@@ -31,10 +30,6 @@ const nav = [{
   key: 'locales',
   title: 'Locales',
   component: Locales,
-}, {
-  key: 'webhooks',
-  title: 'Webhooks',
-  component: Webhooks,
 }]
 
 export const Settings = (props: any) => {
@@ -46,7 +41,7 @@ export const Settings = (props: any) => {
     <Layout className="prime__settings">
       <Toolbar>
         <div style={{ flex: 1 }}>
-          <h2 style={{ margin: 0 }}>Settings (WIP)</h2>
+          <h2 style={{ margin: 0 }}>Settings</h2>
         </div>
       </Toolbar>
       <Layout.Content className="prime__settings__content">

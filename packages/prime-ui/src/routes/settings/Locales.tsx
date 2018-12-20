@@ -116,20 +116,24 @@ export const Locales = Form.create()(({ form }) => {
         maskClosable={true}
         onClose={hideDialog}
         visible={isVisible}
-        style={{
-          height: 'calc(100% - 55px)',
-          overflow: 'auto',
-          paddingBottom: 53,
-        }}
+        className="prime__drawer"
       >
         <Form onSubmit={onSubmit}>
           <Form.Item label="ID">
             {form.getFieldDecorator('id', {
               rules: [{
                 required: true,
+              }, {
+                pattern: /^[a-z]{2}(\-[A-Za-z]+)?$/,
+                message: 'Must be in a format like: is or en-GB',
               }]
             })(
-              <Input disabled={isEditing} placeholder="eg. en-GB" />
+              <Input
+                size="large"
+                disabled={isEditing}
+                placeholder="eg. en-GB"
+                autoFocus={!isEditing}
+              />
             )}
           </Form.Item>
           <Form.Item label="Name">
@@ -138,7 +142,7 @@ export const Locales = Form.create()(({ form }) => {
                 required: true
               }]
             })(
-              <Input placeholder="eg. English (GB)" />
+              <Input size="large" placeholder="eg. English (GB)" />
             )}
           </Form.Item>
           <Form.Item label="Flag">
@@ -160,19 +164,7 @@ export const Locales = Form.create()(({ form }) => {
               </Select>
             )}
           </Form.Item>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              width: '100%',
-              borderTop: '1px solid #e8e8e8',
-              padding: '10px 16px',
-              textAlign: 'right',
-              left: 0,
-              background: '#fff',
-              borderRadius: '0 0 4px 4px',
-            }}
-          >
+          <div className="prime__drawer__bottom">
             <Button style={{ marginRight: 8 }} onClick={hideDialog}>Cancel</Button>
             <Button onClick={onSubmit} type="primary" htmlType="submit">{isEditing ? 'Save' : 'Create'}</Button>
           </div>

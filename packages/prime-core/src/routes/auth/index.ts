@@ -3,6 +3,7 @@ import { omit } from 'lodash';
 import * as passport from 'passport';
 import * as LocalStrategy from 'passport-local';
 import { User } from '../../models/User';
+import { acl } from '../../acl';
 
 interface IRequest extends express.Request {
   user?: {
@@ -78,12 +79,15 @@ auth.post('/register', async (req: IRequest, res, next) => {
   const setup = (await User.count()) === 0;
 
   if (setup) {
-    await User.create({
+    const user = await User.create({
       firstname: req.body.firstname || '',
       lastname: req.body.lastname || '',
       email: req.body.email,
       password: req.body.password
     });
+    if (user) {
+      await acl.addUserRoles(user.id, ['admin']);
+    }
   }
 
   next();

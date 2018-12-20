@@ -1,4 +1,4 @@
-import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError, UserInputError } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLList,
   GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLEnumType } from 'graphql';
@@ -20,6 +20,7 @@ import { Settings } from '../../models/Settings';
 import { sequelize } from '../../sequelize';
 import { GraphQLSettingsInput } from '../../types/settings';
 import { algolia } from '../../utils/algolia';
+import { acl } from '../../acl';
 
 const entryTransformer = new EntryTransformer();
 
@@ -38,7 +39,10 @@ export const internalGraphql = async (restart) => {
 
   const userType = new GraphQLObjectType({
     name: 'User',
-    fields: omit(attributeFields(User), ['password']),
+    fields: {
+      ...omit(attributeFields(User), ['password']),
+      roles: { type: new GraphQLList(GraphQLString) },
+    },
   });
 
   const contentTypeType = new GraphQLObjectType({
@@ -329,7 +333,14 @@ export const internalGraphql = async (restart) => {
     allContentEntries,
     allUsers: {
       type: new GraphQLList(userType),
-      resolve: resolver(User),
+      resolve: resolver(User, {
+        async after(users) {
+          return await Promise.all(users.map(async user => {
+            user.roles = await acl.userRoles(user.id);
+            return user;
+          }));
+        }
+      }),
     },
     ContentType: {
       type: contentTypeType,
@@ -477,6 +488,104 @@ export const internalGraphql = async (restart) => {
           }
         }));
 
+      },
+    },
+    createUser: {
+      type: userType,
+      args: {
+        input: {
+          type: new GraphQLInputObjectType({
+            name: 'CreateUserInput',
+            fields: {
+              firstname: { type: GraphQLString },
+              lastname: { type: GraphQLString },
+              email: { type: new GraphQLNonNull(GraphQLString) },
+              password: { type: new GraphQLNonNull(GraphQLString) },
+              roles: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))) },
+            }
+          })
+        },
+      },
+      async resolve(root, args, context, info) {
+        const user = await User.create({
+          firstname: args.input.firstname,
+          lastname: args.input.lastname,
+          email: args.input.email,
+          password: args.input.password,
+        });
+        if (user) {
+          await acl.addUserRoles(user.id, args.input.roles);
+          (user as any).roles = args.input.roles;
+        }
+        return user;
+      },
+    },
+    removeUser: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      async resolve(root, args, context, info) {
+        if (context.user.id === args.id) {
+          throw new UserInputError('You can not remove yourself');
+        }
+        // @todo acl
+        const success = await User.destroy({ where: { id: args.id }});
+        // @todo nuke roles and so on
+        return Boolean(success);
+      },
+    },
+    updateProfile: {
+      type: GraphQLBoolean,
+      args: {
+        firstname: { type: GraphQLString },
+        lastname: { type: GraphQLString },
+        displayName: { type: GraphQLString },
+        avatarUrl: { type: GraphQLString },
+      },
+      async resolve(root, args, context, info) {
+        const success = await context.user.update({
+          firstname: args.firstname,
+          lasstname: args.lastname,
+          displayName: args.displayName,
+          avatarUrl: args.avatarUrl,
+        });
+        return Boolean(success);
+      },
+    },
+    updatePassword: {
+      type: GraphQLBoolean,
+      args: {
+        oldpassword: { type: new GraphQLNonNull(GraphQLString) },
+        newpassword: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(root, args, context, info) {
+        if (!context.user.isPasswordMatch(args.oldpassword)) {
+          throw new UserInputError('Incorrect password');
+        }
+        const success = await context.user.updatePassword(args.newpassword);
+        await context.user.update({ lastPasswordChange: new Date() });
+        return Boolean(success);
+      },
+    },
+    updateEmail: {
+      type: GraphQLBoolean,
+      args: {
+        oldpassword: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(root, args, context, info) {
+        if (!context.user.isPasswordMatch(args.oldpassword)) {
+          throw new UserInputError('Incorrect password');
+        }
+        const exists = await User.count({ where: { email: args.email }});
+        if (exists > 0) {
+          throw new UserInputError('Email already in use');
+        }
+        const success = await context.user.update({
+          email: args.email,
+        })
+        return Boolean(success);
       },
     },
     createContentType: {

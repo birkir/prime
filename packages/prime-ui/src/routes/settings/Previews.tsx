@@ -104,18 +104,14 @@ export const Previews = Form.create()(({ form }) => {
         maskClosable={true}
         onClose={hideDialog}
         visible={isVisible}
-        style={{
-          height: 'calc(100% - 55px)',
-          overflow: 'auto',
-          paddingBottom: 53,
-        }}
+        className="prime__drawer"
       >
         <Form onSubmit={onSubmit}>
           <Form.Item label="Name">
             {form.getFieldDecorator('name', {
               rules: [{ required: true }]
             })(
-              <Input placeholder="eg. Staging" />
+              <Input size="large" placeholder="eg. Staging" />
             )}
           </Form.Item>
           <Form.Item label="Preview URL">
@@ -127,27 +123,15 @@ export const Previews = Form.create()(({ form }) => {
                 message: 'Must a valid URL',
               }]
             })(
-              <Input placeholder="https://yoursite.com" />
+              <Input size="large" placeholder="https://yoursite.com" />
             )}
           </Form.Item>
           <Form.Item label="Preview Path">
             {form.getFieldDecorator('pathname')(
-              <Input placeholder="/preview" />
+              <Input size="large" placeholder="/preview" />
             )}
           </Form.Item>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              width: '100%',
-              borderTop: '1px solid #e8e8e8',
-              padding: '10px 16px',
-              textAlign: 'right',
-              left: 0,
-              background: '#fff',
-              borderRadius: '0 0 4px 4px',
-            }}
-          >
+          <div className="prime__drawer__bottom">
             <Button style={{ marginRight: 8 }} onClick={hideDialog}>Cancel</Button>
             <Button onClick={onSubmit} type="primary" htmlType="submit">{isEditing ? 'Save' : 'Create'}</Button>
           </div>

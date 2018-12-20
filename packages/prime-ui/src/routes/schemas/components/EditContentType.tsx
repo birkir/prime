@@ -139,19 +139,7 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
           </>
         )}
 
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            borderTop: '1px solid #e8e8e8',
-            padding: '10px 16px',
-            textAlign: 'right',
-            left: 0,
-            background: '#fff',
-            borderRadius: '0 0 4px 4px',
-          }}
-        >
+        <div className="prime__drawer__bottom">
           <Button style={{ marginRight: 8 }} onClick={onCancel}>Cancel</Button>
           <Button onClick={onFormSubmit} type="primary" htmlType="submit">Submit</Button>
         </div>

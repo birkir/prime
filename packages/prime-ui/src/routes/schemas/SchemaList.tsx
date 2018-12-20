@@ -76,12 +76,11 @@ export class SchemaList extends React.Component<any> {
       key: 'action',
       align: 'right',
       render: (text, record) => (
-        <>
+        <span onClick={e => e.stopPropagation()}>
           <Button
             style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
             onClick={(e: any) => {
               this.props.history.push(`/schemas/settings/${record.id}`)
-              e.stopPropagation()
             }}
           >
             <Icon
@@ -92,22 +91,16 @@ export class SchemaList extends React.Component<any> {
           <Popconfirm
             title="Are you sure?"
             icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-            onConfirm={(e: any) => {
-              e.stopPropagation();
-              record.remove()
-            }}
-            onCancel={(e: any) => {
-              e.stopPropagation();
-            }}
+            onConfirm={() => record.remove()}
           >
-            <Button style={{ paddingLeft: 8, paddingRight: 8 }} onClick={(e: any) => e.stopPropagation()}>
+            <Button style={{ paddingLeft: 8, paddingRight: 8 }}>
               <Icon
                 type="delete"
                 theme="filled"
               />
             </Button>
           </Popconfirm>
-        </>
+        </span>
       )
     }]
   }
@@ -228,11 +221,7 @@ export class SchemaList extends React.Component<any> {
           maskClosable={true}
           onClose={this.onCloseDrawer}
           visible={this.state.visible}
-          style={{
-            height: 'calc(100% - 55px)',
-            overflow: 'auto',
-            paddingBottom: 53,
-          }}
+          className="prime__drawer"
         >
           <EditContentType
             ref={this.formRef}
