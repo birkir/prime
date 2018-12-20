@@ -168,3 +168,8 @@
 .prime-table .ant-table-tbody > tr:last-child > td {
   border-bottom-width: 0;
 }
+
+.prime__sidebar .ant-menu.ant-menu-dark .ant-menu-item-selected,
+.prime__sidebar .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+  background-color: rgba(49, 142, 159, 0.5);
+}

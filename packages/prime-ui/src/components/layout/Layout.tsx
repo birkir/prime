@@ -19,6 +19,7 @@ export const Layout = withRouter(({ children, history, location }: any) => {
         trigger={null}
         collapsed={isOpen}
         collapsible
+        className="prime__sidebar"
       >
         <Header className="prime__sidebar__header">
           <Link to="/" className="prime__sidebar__logo">prime</Link>

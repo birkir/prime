@@ -16,7 +16,7 @@ export function contract(args: any) {
   }
 }
 
-contract.params = function () {
+(contract as any).params = function () {
   this.fulfilled |= checkParams(this.args, toArray(arguments)) as any;
   if (this.fulfilled){
     return noop;
@@ -26,7 +26,7 @@ contract.params = function () {
   }
 };
 
-contract.end = function (){
+(contract as any).end = function (){
   if (!this.fulfilled){
     printParamsError(this.args, this.checkedParams);
     throw new Error('Broke parameter contract');
