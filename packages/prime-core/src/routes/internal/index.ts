@@ -342,6 +342,25 @@ export const internalGraphql = async (restart) => {
         }
       }),
     },
+    isContentTypeAvailable: {
+      type: GraphQLBoolean,
+      args: {
+        name: { type: GraphQLString },
+        isSlice: { type: GraphQLBoolean },
+        isTemplate: { type: GraphQLBoolean },
+      },
+      async resolve(root, args, context, info) {
+        const count = await ContentType.count({
+          where: {
+            name: args.name,
+            isSlice: Boolean(args.isSlice),
+            isTemplate: Boolean(args.isTemplate),
+          },
+        });
+
+        return count === 0;
+      }
+    },
     ContentType: {
       type: contentTypeType,
       args: {

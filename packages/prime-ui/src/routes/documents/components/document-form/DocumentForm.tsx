@@ -57,7 +57,7 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
     });
   }
 
-  renderGroup = (group: any) => (
+  renderGroup = (group: any, index: number, groups: any[]) => (
     <Tabs.TabPane
       key={group.title}
       tab={group.title}

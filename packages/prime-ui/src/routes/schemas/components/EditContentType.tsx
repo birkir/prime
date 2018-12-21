@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { Form, Button, Input, notification, Checkbox, Select, Switch, Divider } from 'antd';
+import { Form, Button, Input, notification, Checkbox, Select, Switch, Divider, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { get, startCase } from 'lodash';
+import { get, startCase, debounce } from 'lodash';
 import { ContentTypes } from '../../../stores/contentTypes';
 import { toJS } from 'mobx';
+import { client } from '../../../utils/client';
+import gql from 'graphql-tag';
+import { props } from 'bluebird';
 
 interface IProps extends FormComponentProps {
   onCancel(): void;
@@ -13,39 +16,75 @@ interface IProps extends FormComponentProps {
   item?: any;
 }
 
+type IValidateStatus = 'success' | 'warning' | 'error' | 'validating' | undefined;
+
 const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
 
   const { getFieldDecorator } = form;
 
+  const checkNameAvailability = async () => {
+    const { data } = await client.query({
+      query: gql`
+        query isContentTypeAvailable($name:String, $isSlice:Boolean, $isTemplate:Boolean) {
+          isContentTypeAvailable(
+            name: $name
+            isSlice: $isSlice
+            isTemplate: $isTemplate
+          )
+        }
+      `,
+      variables: {
+        name: form.getFieldValue('name'),
+        isSlice: form.getFieldValue('type') === 'slice',
+        isTemplate: form.getFieldValue('type') === 'template',
+      },
+    });
+
+    return data && (data as any).isContentTypeAvailable;
+  };
+
   const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
-    const data: any = { ...form.getFieldsValue() };
-    const type = data.type;
-    delete data.type;
-    data.isSlice = (type === 'slice');
-    data.isTemplate = (type === 'template');
+    form.validateFieldsAndScroll(async (err, values) => {
 
-    try {
-      let result = null;
-      if (contentTypeId && item) {
-        await item.update(data);
-      } else {
-        result = await ContentTypes.create(data as any);
+      const isAvailable = (item.name === values.name) || await checkNameAvailability();
+      if (!isAvailable) {
+        form.setFields({
+          name: {
+            value: values.name,
+            errors: [new Error('This name is already taken')],
+          },
+        });
+        return;
       }
 
-      form.resetFields();
+      const data: any = { ...values };
+      const type = data.type;
+      delete data.type;
+      data.isSlice = (type === 'slice');
+      data.isTemplate = (type === 'template');
 
-      return onSubmit(result);
-    } catch (err) {
-      notification.error({
-        message: 'Could not create Schema',
-        description: err.message.replace(/^Error: /, ''),
-        duration: 0,
-        placement: 'bottomRight',
-      });
-    }
+      try {
+        let result = null;
+        if (contentTypeId && item) {
+          await item.update(data);
+        } else {
+          result = await ContentTypes.create(data as any);
+        }
 
+        form.resetFields();
+
+        return onSubmit(result);
+      } catch (err) {
+        notification.error({
+          message: 'Could not create Schema',
+          description: err.message.replace(/^Error: /, ''),
+          duration: 0,
+          placement: 'bottomRight',
+        });
+      }
+    });
     return null;
   }
 
