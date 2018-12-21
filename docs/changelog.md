@@ -8,7 +8,7 @@
 
 This is the first public release of Prime in an alpha state to gather feedback
 
-- Missing releases
+- Missing releases feature
 - Missing ACL UI
 - Missing fields: color, embed, link and geopoint
 - Missing documentation
