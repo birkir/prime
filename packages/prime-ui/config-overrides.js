@@ -11,6 +11,7 @@ const primeConfig = require('rc')('prime', {
     '@primecms/field-document',
     '@primecms/field-group',
     '@primecms/field-number',
+    '@primecms/field-select',
     '@primecms/field-slice',
     '@primecms/field-string'
   ]

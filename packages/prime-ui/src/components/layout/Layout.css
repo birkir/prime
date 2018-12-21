@@ -173,3 +173,40 @@
 .prime__sidebar .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
   background-color: rgba(49, 142, 159, 0.5);
 }
+
+
+.prime__settings__table .ant-row,
+.prime__settings__table .ant-form-item,
+.prime__settings__table .ant-form-item-with-help {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.prime__settings__table .ant-form-explain {
+  position: absolute;
+  z-index: 100;
+  font-size: 13px;
+  border: 1px solid;
+  top: 35px;
+  left: -24px;
+  padding: 5px 16px;
+  width: 168px;
+  border-radius: 4px;
+  border-color: #dedede;
+  background: #f8f8f8;
+}
+
+.prime__settings__table .ant-form-explain:after {
+  bottom: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(238, 238, 238, 0);
+  border-bottom-color: #dedede;
+  border-width: 4px;
+  margin-left: -4px;
+}

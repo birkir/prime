@@ -70,6 +70,7 @@
     "@primecms/field-boolean": "^0.1.10",
     "@primecms/field-datetime": "^0.1.23",
     "@primecms/field-number": "^0.1.12",
+    "@primecms/field-select": "^0.1.12",
     "moment": "^2.22.2"
   }
 }

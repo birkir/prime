@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   registerField('document', require('@primecms/field-document/ui/src').default);
   registerField('group', require('@primecms/field-group/ui/src').default);
   registerField('number', require('@primecms/field-number/ui/src').default);
+  registerField('select', require('@primecms/field-select/ui/src').default);
   registerField('slice', require('@primecms/field-slice/ui/src').default);
   registerField('string', require('@primecms/field-string/ui/src').default);
 
