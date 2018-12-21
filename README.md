@@ -69,6 +69,12 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
 
 ## Getting Started
 
+#### [📖 Read Docs](https://birkir.github.io/prime/)
+
+🚨 Not recommended in production!
+
+Prime is still in alpha, but fear not, it's moving very quickly towards beta.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku)
 
 ## Credits
