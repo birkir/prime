@@ -40,11 +40,11 @@ GraphQL is the foundation of Prime, not an addon.
 In Prismic, the biggest downside is typing, most of their fields just output a JSON Scalar. Also their where query interface is not very flexible. Contentful has way better graphql interface, but both of them lack mutations.
 
 
-## Supported Fields
+# Supported Fields
 
 Included with Prime are these set of core fields
 
-### String
+## String
 
 This field will keep a string value with various options
 
@@ -57,7 +57,7 @@ Options:
 Input/Output: `GraphQLString`
 
 
-### Number
+## Number
 
 This field will keep a numerical value with an optional floating point property
 
@@ -68,7 +68,7 @@ Options:
 
 Input/Output: `GraphQLFloat` or `GraphQLInt`
 
-### Boolean
+## Boolean
 
 This field will keep an boolean value
 
@@ -79,7 +79,7 @@ Options:
 
 Input/Output: `GraphQLBoolean`
 
-### DateTime
+## DateTime
 
 This field will keep an Date or DateTime value
 
@@ -91,7 +91,7 @@ Options:
 Input/Output: `GraphQLDateTime` or `GraphQLDate` based on the time property.
 
 
-### Group
+## Group
 
 This field will keep a collection of multiple fields.
 
@@ -102,7 +102,7 @@ Options:
  
  Input/Output: `GraphQLList(GraphQLObjectType)` or `GraphQLObjectType`
  
-### Asset
+## Asset
  
 This field will keep an reference to asset URL from cloudinary.
 
@@ -114,15 +114,44 @@ Options:
 Input: currently not supported _@todo_
 Output: `GraphQLString`
 
-### Document
+## Document
 
 Allow the editor to pick another document.
 
-### Select
+Package: [`@primecms/field-document`](https://github.com/birkir/prime/tree/master/packages/prime-field-document)
+
+Options:
+ - **Content Types** _string[]_ - Select what content types are allowed for selection by the editor.
+ - **Multiple** _boolean_ - Allow the editor to pick multiple documents
+
+Input: ID of remote document _@todo: allow raw objects to create sub-document_
+Output: Outputs single or a list of GraphQLObject with the linked document
+
+Example with `example` as a document field, and its document has a title field:
+```graphql
+{
+  example {
+    id
+    title
+  }
+}
+```
+
+## Select
 
 Allow the editor to pick from a list.
 
-### Slice
+Package: [`@primecms/field-select`](https://github.com/birkir/prime/tree/master/packages/prime-field-select)
+
+Options:
+ - **Items** _string[][]_ - List of key value pairs as options in select field
+ - **Enum** _boolean_ - Output an `GraphQLEnumeration` (strict)
+ - **Multiple** _boolean_ - Allow the editor to pick multiple options
+
+Input: `GraphQLEnumeration`
+Output: `GraphQLEnumeration` or `GraphQLString`
+
+## Slice
 
 Probably the most advanced field of them all. But here you can use other Content Types to define a set of nested sections of fields.
 
