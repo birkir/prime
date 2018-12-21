@@ -66,7 +66,9 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
         onSubmit={onFormSubmit}
       >
         <Form.Item style={{ marginBottom: 8 }}>
-          {getFieldDecorator('title')(
+          {getFieldDecorator('title', {
+            rules: [{ required: true }]
+          })(
             <Input
               addonBefore="Title"
               onKeyUp={onTitleKeyUp}
@@ -77,17 +79,28 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
-          {getFieldDecorator('name')(
+          {getFieldDecorator('name', {
+            rules: [{
+              required: true,
+            }, {
+              pattern: /^[A-Za-z][A-Za-z0-9_]+$/,
+              message: 'Must be alphanumeric and start with non-number',
+            }]
+          })(
             <Input
               addonBefore="API"
               onKeyUp={onNameKeyUp}
-              placeholder="Please enter api id"
+              placeholder="Please enter api name"
             />
           )}
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
-          {getFieldDecorator('type')(
+          {getFieldDecorator('type', {
+            rules: [{
+              required: true,
+            }]
+          })(
             <Select placeholder="Field Type">
               {availableFields.map((field) => (
                 <Option value={field.id} key={field.id}>{field.title}</Option>
