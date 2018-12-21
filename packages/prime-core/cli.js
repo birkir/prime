@@ -1,5 +1,9 @@
 #!/usr/bin/env node
+const path = require('path');
 const arg = require('arg');
+const fs = require('fs');
+const exec = require('child_process').exec;
+
 
 const spec = {
   '--force': Boolean,
@@ -10,11 +14,33 @@ const spec = {
 };
 
 const args = arg(spec);
-const [command] = args._;
+const [command, ...commands] = args._;
+
+const init = () => {
+  const [projectName = '.'] = commands;
+  const dir = path.join(__dirname, projectName);
+
+  if (fs.existsSync(dir)) {
+    if (fs.readdirSync(dir).length > 0) {
+      return console.log('directory not empty');
+    }
+  } else {
+    fs.mkdirSync(dir);
+  }
+  console.log('please wait while installing...');
+  const npm = exec(`cd ${dir}; npm init -y >/dev/null; npm install -S @primecms/core @primecms/ui`);
+  npm.stdout.pipe(process.stdout);
+  console.log('')
+  console.log('installation finished');
+  console.log(`cd ./${projectName}`);
+  console.log('npx primecms start');
+};
 
 (() => {
   if (command) {
     switch (command) {
+      case 'init':
+        return init();
       case 'start':
         return require('./lib/index.js');
 
