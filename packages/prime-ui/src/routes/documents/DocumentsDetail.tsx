@@ -154,6 +154,14 @@ export class DocumentsDetail extends React.Component<IProps> {
 
       const parsed = parse(values);
 
+      Object.entries(parsed).forEach(([key, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          if (value[0].__index) {
+            value.sort((a, b) => Number(a.__index) - Number(b.__index));
+          }
+        }
+      });
+
       // Update values
       if (this.contentEntry) {
         await this.contentEntry!.update(parsed);
