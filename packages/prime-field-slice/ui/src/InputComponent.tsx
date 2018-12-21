@@ -44,7 +44,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       });
   }
 
-  public componentWillReceiveProps(nextProps: any) {
+  public componentWillReceiveProps(nextProps: any) { // tslint:disable-line no-any
     if (JSON.stringify(this.props.initialValue) !== JSON.stringify(nextProps.initialValue)) {
       this.setState({
         slices: nextProps.initialValue.map((n: { __inputname: string }, index: number) => ({

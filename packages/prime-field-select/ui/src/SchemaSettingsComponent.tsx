@@ -15,7 +15,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
   public state = {
     dataSource: get(this.props, 'options.items', [])
-      .filter((item: any) => !!item && item.key !== '')
+      .filter((item: any) => !!item && item.key !== '') // tslint:disable-line no-any
       .map((item: any, index: number) => ({ // tslint:disable-line no-any
         id: index,
         ...item
@@ -42,8 +42,8 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   }
 
   public ensureUnique = (id: number) => (rule: any, value: any, callback: (input?: string) => void) => { // tslint:disable-line no-any
-    const values = this.props.form.getFieldsValue() as any;
-    const found = values.options.items.find((item: any, index: number) => {
+    const values = this.props.form.getFieldsValue() as any; // tslint:disable-line no-any
+    const found = values.options.items.find((item: any, index: number) => { // tslint:disable-line no-any
       return item.key === value && index !== id;
     });
 

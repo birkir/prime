@@ -14,7 +14,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       <Form.Item label={field.title}>
         {getFieldDecorator(path, { initialValue })(
           <Select>
-            {items.map(({ key, value }: any) => (
+            {items.map(({ key, value }: any) => (// tslint:disable-line no-any
               <Select.Option key={key}>{value}</Select.Option>
             ))}
           </Select>
