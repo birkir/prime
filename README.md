@@ -75,6 +75,8 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
 
 Prime is still in alpha, but fear not, it's moving very quickly towards beta.
 
+To get a sandbox to play with, just hit the Deploy button:
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku)
 
 ## Credits
