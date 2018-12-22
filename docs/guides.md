@@ -12,7 +12,7 @@ Custom field has to have couple of things
 
 For a good and simple template, see https://github.com/birkir/prime/tree/master/packages/prime-field-number
 
-> Tutorial
+#### Tutorial
 
 1. Lets create a new field called demo-field in a folder `./lib/demo-field`
 
@@ -43,7 +43,7 @@ export default DemoField extends PrimeField {
 }
 ```
 
-2. Next you will need an UI component for your field, we rely heavilly on ant design for user interface implementations.
+2. Next you will need an UI component for your field. 
 
 ```js
 import { registerField } from '@primecms/field';
@@ -58,8 +58,9 @@ export default registerField('demo', {
     );
   }
 });
+```
 
-3. To register your field in prime, you can add a `.primerc` and provide the path to your field source files like in the following sample:
+3. To register your field, you have to add a `.primerc` in your project root and provide the path to your field source files like in the following sample (works also for npm packages)
 
 ```json
 {
