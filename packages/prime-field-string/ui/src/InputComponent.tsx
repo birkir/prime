@@ -6,6 +6,8 @@ import { debounce } from 'lodash'; // tslint:disable-line
 import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js'; // tslint:disable-line
 import * as React from 'react';
 
+const defaultControls = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
+
 const allControls = [
   'headings', 'separator',
   'bold', 'italic', 'code', 'blockquote', 'separator',
@@ -45,13 +47,14 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
   public renderMarkdown = (rules: ValidationRule[]) => {
     const { form, field, path, initialValue = '' } = this.props;
     const { getFieldDecorator } = form;
+    const features = field.options.md || defaultControls;
 
     const controls = allControls.filter(item => {
       if (item === 'separator') {
         return true;
       }
 
-      return field.options.md.indexOf(item) >= 0;
+      return features.indexOf(item) >= 0;
     })
     .filter((item, index, arr) => {
       if (item === 'separator' && (index === 0 || arr[index - 1] === item || (index - 1) === arr.length)) {
