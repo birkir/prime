@@ -10,6 +10,7 @@ type IField = {
   type: string;
   name: string;
   title: string;
+  description: string;
   group: string;
   fields?: IField[];
   position?: number;
@@ -30,6 +31,7 @@ export const ContentTypeType = new GraphQLObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     name: { type: new GraphQLNonNull(GraphQLString) },
+    description: { type: GraphQLString },
     type: { type: GraphQLString },
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
@@ -53,6 +55,7 @@ export const ContentTypeInputType = new GraphQLInputObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     name: { type: new GraphQLNonNull(GraphQLString) },
+    description: { type: GraphQLString },
     type: { type: GraphQLString },
     group: { type: GraphQLString },
     options: { type: GraphQLJSON },
@@ -183,6 +186,7 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
       position,
       type: field.type,
       name: field.name,
+      description: field.description,
       group: group,
       title: field.title,
       isDisplay: field.isDisplay || false,

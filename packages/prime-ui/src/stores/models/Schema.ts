@@ -5,6 +5,7 @@ export type ISchemaField = Instance<typeof SchemaField>;
 export interface IAddField {
   name: string;
   title: string;
+  description: string;
   group?: string;
   type?: string;
 }
@@ -18,6 +19,7 @@ export const SchemaField = types
     type: types.string,
     name: types.string,
     title: types.string,
+    description: types.maybeNull(types.string),
     isDisplay: types.optional(types.boolean, false),
     contentTypeId: types.maybeNull(types.string),
     options: types.frozen<JSONObject>(),
@@ -39,9 +41,10 @@ export const SchemaField = types
     },
   }))
   .actions(self => ({
-    update(obj: { name: string; title: string; type: string; options: JSONObject }) {
+    update(obj: { name: string; title: string; description: string; type: string; options: JSONObject }) {
       self.name = obj.name;
       self.title= obj.title;
+      self.description = obj.description;
       self.type = obj.type;
       self.options = obj.options;
     },
@@ -107,6 +110,7 @@ export const Schema = types
             id: id,
             name: obj.name,
             title: obj.title,
+            description: obj.description,
             isDisplay: obj.type === 'string' && !self.fields.find(f => f.isDisplay),
             contentTypeId: contentType.id,
             type: obj.type || DEFAULT_TYPE,

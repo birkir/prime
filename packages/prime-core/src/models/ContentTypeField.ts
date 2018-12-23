@@ -20,6 +20,9 @@ export class ContentTypeField extends Model<ContentTypeField> {
   public title: string;
 
   @Column
+  public description: string;
+
+  @Column
   public type: string;
 
   @Default('Main')

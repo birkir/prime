@@ -68,6 +68,11 @@ export class SchemaDetail extends React.Component<IProps> {
 
   componentDidMount() {
     this.load();
+    document.addEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   async load() {
@@ -99,6 +104,15 @@ export class SchemaDetail extends React.Component<IProps> {
 
   flushSchema() {
     this.setState({ flush: true }, () => this.setState({ flush: false }));
+  }
+
+  onKeyDown = (e: any) => {
+    if (e.which == 83 && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.saveSchema();
+      return false;
+    }
+    return true;
   }
 
   onOpenDrawer = () => {
@@ -172,6 +186,7 @@ export class SchemaDetail extends React.Component<IProps> {
       const addedField = this.contentType.schema.add({
           name: '',
           title: '',
+          description: '',
           group: this.selectedGroup,
           type: fieldId,
         },
@@ -238,6 +253,7 @@ export class SchemaDetail extends React.Component<IProps> {
       this.selectedField.update({
         name: field.name,
         title: field.title,
+        description: field.description,
         type: field.type,
         options: field.options,
       });
@@ -387,6 +403,7 @@ export class SchemaDetail extends React.Component<IProps> {
               </Link>
               <h3 style={{ margin: 0 }}>{title}</h3>
             </div>
+            <Button type="dashed" disabled style={{ marginRight: 8 }} title="WIP">Import</Button>
             <Button type="primary" onClick={this.onSave}>Save</Button>
           </Toolbar>
           <Layout>
@@ -431,6 +448,7 @@ export class SchemaDetail extends React.Component<IProps> {
               ref={this.editField}
               availableFields={availableFields}
               field={this.selectedField}
+              schema={schema}
               onCancel={this.onEditFieldCancel}
               onSubmit={this.onEditFieldSubmit}
             />)}

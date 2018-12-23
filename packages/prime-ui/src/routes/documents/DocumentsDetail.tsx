@@ -124,62 +124,67 @@ export class DocumentsDetail extends React.Component<IProps> {
   onSave = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (this.documentForm) {
-      this.documentForm.props.form.validateFields();
-      const values: any = this.documentForm.props.form.getFieldsValue();
+      const { form } = this.documentForm.props;
 
-      const parse = (vals: any): any => {
-        if (Array.isArray(vals)) {
-          return vals.map(parse);
-        }
-        if (typeof vals === 'object') {
-          return Object.entries(vals || {}).reduce(
-            (acc: any, [key, value]) => {
-              if (typeof value === 'object') {
-                const entries = Object.entries(value);
-                const indexes = entries.filter(([k]) => Number.isInteger(Number(k)));
-                const isArrayLike = (indexes.length > 0);
-                if (isArrayLike) {
-                  acc[key] = indexes.map(([k, v]) => parse(v));
+      form.validateFieldsAndScroll(async (err, values) => {
+        if (err) {
+          message.error('Document has validation errors');
+        } else {
+          const parse = (vals: any): any => {
+            if (Array.isArray(vals)) {
+              return vals.map(parse);
+            }
+            if (typeof vals === 'object') {
+              return Object.entries(vals || {}).reduce(
+                (acc: any, [key, value]) => {
+                  if (typeof value === 'object') {
+                    const entries = Object.entries(value);
+                    const indexes = entries.filter(([k]) => Number.isInteger(Number(k)));
+                    const isArrayLike = (indexes.length > 0);
+                    if (isArrayLike) {
+                      acc[key] = indexes.map(([k, v]) => parse(v));
+                      return acc;
+                    }
+                  }
+                  acc[key] = parse(value);
                   return acc;
-                }
+                },
+                {}
+              );
+            }
+            return vals;
+          };
+
+          const parsed = parse(values);
+
+          Object.entries(parsed).forEach(([key, value]) => {
+            if (Array.isArray(value) && value.length > 0) {
+              if (value[0].__index) {
+                value.sort((a, b) => Number(a.__index) - Number(b.__index));
               }
-              acc[key] = parse(value);
-              return acc;
-            },
-            {}
-          );
-        }
-        return vals;
-      };
+            }
+          });
 
-      const parsed = parse(values);
-
-      Object.entries(parsed).forEach(([key, value]) => {
-        if (Array.isArray(value) && value.length > 0) {
-          if (value[0].__index) {
-            value.sort((a, b) => Number(a.__index) - Number(b.__index));
+          // Update values
+          if (this.contentEntry) {
+            await this.contentEntry!.update(parsed);
+            form.resetFields();
+            message.info('Document was saved');
+          } else if (this.contentType) {
+            try {
+              const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.locale.id);
+              if (contentEntry) {
+                this.loadEntry(contentEntry.entryId);
+                this.props.history.replace(`/documents/doc/${contentEntry.entryId}?locale=${this.locale.id}`);
+              }
+              message.success('Document created');
+            } catch(err) {
+              message.error('Could not create document');
+              console.error(err);
+            }
           }
         }
       });
-
-      // Update values
-      if (this.contentEntry) {
-        await this.contentEntry!.update(parsed);
-        this.documentForm.props.form.resetFields();
-        message.info('Document was saved');
-      } else if (this.contentType) {
-        try {
-          const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.locale.id);
-          if (contentEntry) {
-            this.loadEntry(contentEntry.entryId);
-            this.props.history.replace(`/documents/doc/${contentEntry.entryId}?locale=${this.locale.id}`);
-          }
-          message.success('Document created');
-        } catch(err) {
-          message.error('Could not create document');
-          console.error(err);
-        }
-      }
     }
   }
 

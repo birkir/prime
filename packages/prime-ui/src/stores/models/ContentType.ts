@@ -23,6 +23,7 @@ export const ContentType = types
     id: types.identifier,
     name: types.string,
     title: types.string,
+    description: types.maybeNull(types.string),
     groups: types.array(types.string),
     settings: types.frozen<JSONObject>(),
     isSlice: types.maybeNull(types.boolean),

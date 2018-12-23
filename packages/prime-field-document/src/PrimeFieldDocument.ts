@@ -29,6 +29,16 @@ export class PrimeFieldDocument extends PrimeField {
       options.contentTypeIds.push(options.contentTypeId);
     }
 
+    const types = options.contentTypeIds.map(contentTypeId => {
+      const contentType = contentTypes.find(ct => ct.id === contentTypeId);
+      if (!contentType || !queries[contentType.name]) {
+        return null;
+      }
+      const query = queries[contentType.name];
+
+      return { contentTypeId, type: query.type, resolve: query.resolve };
+    });
+
     const entryMap = new Map();
     const getEntryType = async (id: string) => {
       if (!id || typeof id !== 'string') {
@@ -58,16 +68,6 @@ export class PrimeFieldDocument extends PrimeField {
 
       return type;
     };
-
-    const types = options.contentTypeIds.map(contentTypeId => {
-      const contentType = contentTypes.find(ct => ct.id === contentTypeId);
-      if (!contentType || !queries[contentType.name]) {
-        return null;
-      }
-      const query = queries[contentType.name];
-
-      return { contentTypeId, type: query.type, resolve: query.resolve };
-    });
 
     if (types.filter(n => !!n).length === 0) {
       return null;

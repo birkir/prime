@@ -14,6 +14,6 @@ export const sequelize = new Sequelize({
   logging: false,
   url: DATABASE_URL,
   dialectOptions: {
-    ssl: String(DATABASE_URL).indexOf('?ssl=true') >= 0,
+    ssl: String(DATABASE_URL).indexOf('ssl=true') >= 0,
   },
 });

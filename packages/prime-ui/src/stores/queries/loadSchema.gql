@@ -11,6 +11,7 @@ query loadSchema(
       id
       name
       title
+      description
       type
       options
       isDisplay
@@ -19,6 +20,7 @@ query loadSchema(
         id
         name
         title
+        description
         type
         options
       }

@@ -7,6 +7,7 @@ interface IField {
   id: string;
   name: string;
   title: string;
+  description: string;
   type: string;
   group: string;
   position: number;

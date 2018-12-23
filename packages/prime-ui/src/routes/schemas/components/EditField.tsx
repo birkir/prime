@@ -6,16 +6,15 @@ import { camelCase, get, defaultsDeep } from 'lodash';
 import { fields } from '../../../utils/fields';
 import stores from '../../../stores';
 
-const { Option } = Select;
-
 interface IProps extends FormComponentProps {
   field: any;
   availableFields: any[];
+  schema: any;
   onCancel(): void;
   onSubmit(data: any): void;
 }
 
-const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IProps) => {
+const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableFields }: IProps) => {
   const { getFieldDecorator } = form;
 
   const [autoName, setAutoName] = useState(form.getFieldValue('name') === '');
@@ -53,10 +52,22 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
 
   const onTitleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!autoName) return;
+    const name = camelCase(form.getFieldValue('title'));
+    let proposedName = name;
+    let i = 1;
+    while (schema.fields.find((f: any) => f !== field && f.name === proposedName)) {
+      proposedName = `${name}${i}`;
+      i += 1;
+    }
     form.setFieldsValue({
-      name: camelCase(form.getFieldValue('title')),
+      name: proposedName,
     });
   }
+
+  const ensureUniqueName = (rule: any, value: any, callback: (input?: string) => void) => {
+    const hasMatch = schema.fields.find((f: any) => f !== field && f.name === value);
+    callback(hasMatch ? 'Field with that name already exists' : undefined);
+  };
 
   return (
     <>
@@ -70,7 +81,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
             rules: [{ required: true }]
           })(
             <Input
-              addonBefore="Title"
+              addonBefore="Title*"
               onKeyUp={onTitleKeyUp}
               placeholder="Please enter title"
               autoFocus
@@ -85,12 +96,25 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
             }, {
               pattern: /^[A-Za-z][A-Za-z0-9_]+$/,
               message: 'Must be alphanumeric and start with non-number',
+            }, {
+              validator: ensureUniqueName
             }]
           })(
             <Input
-              addonBefore="API"
+              addonBefore="API*"
               onKeyUp={onNameKeyUp}
               placeholder="Please enter api name"
+            />
+          )}
+        </Form.Item>
+
+        <Form.Item style={{ marginBottom: 8 }}>
+          {getFieldDecorator('description', {
+            rules: [{ max: 80 }]
+          })(
+            <Input
+              addonBefore="Description"
+              placeholder="(optional)"
             />
           )}
         </Form.Item>
@@ -115,8 +139,9 @@ export const EditField = Form.create({
   mapPropsToFields(props: any) {
     const { field } = props;
     const res: any = {
-      title: Form.createFormField({ value: field.title }),
       name: Form.createFormField({ value: field.name }),
+      title: Form.createFormField({ value: field.title }),
+      description: Form.createFormField({ value: field.description }),
       type: Form.createFormField({ value: field.type }),
     };
 
