@@ -1,0 +1,20 @@
+mutation createContentRelease(
+  $name: String
+  $description: String
+  $scheduledAt: String
+) {
+  createContentRelease(
+    name: $name
+    description: $description
+    scheduledAt: $scheduledAt
+  ) {
+    id
+    name
+    description
+    scheduledAt
+    publishedAt
+    publishedBy
+    updatedAt
+    createdAt
+  }
+}

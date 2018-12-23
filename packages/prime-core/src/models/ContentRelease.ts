@@ -1,18 +1,25 @@
-import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
 
 @Table({ timestamps: true })
 export class ContentRelease extends Model<ContentRelease> {
 
   @PrimaryKey
-  @Column({
-      type: DataType.UUID,
-      defaultValue: DataType.UUIDV4
-  })
-  public id;
+  @Default(DataType.UUIDV4)
+  @Column(DataType.UUID)
+  public id: any;
 
   @Column
   public name: string;
 
   @Column
-  public publishAt: Date;
+  public description: string;
+
+  @Column
+  public scheduledAt: Date;
+
+  @Column
+  public publishedAt: Date;
+
+  @Column(DataType.UUID)
+  public publishedBy: any;
 }

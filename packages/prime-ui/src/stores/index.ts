@@ -1,4 +1,5 @@
 import { Auth } from './auth';
+import { ContentReleases } from './contentReleases';
 import { ContentEntries } from './contentEntries';
 import { ContentTypes } from './contentTypes';
 import { Users } from './users';
@@ -7,6 +8,7 @@ import { Settings } from './settings';
 const stores = {
   Auth,
   Settings,
+  ContentReleases,
   ContentEntries,
   ContentTypes,
   Users,

@@ -21,6 +21,7 @@ import { sequelize } from '../../sequelize';
 import { GraphQLSettingsInput } from '../../types/settings';
 import { algolia } from '../../utils/algolia';
 import { acl } from '../../acl';
+import { ContentRelease } from '../../models/ContentRelease';
 
 const entryTransformer = new EntryTransformer();
 
@@ -67,6 +68,11 @@ export const internalGraphql = async (restart) => {
       },
       entriesCount: { type: GraphQLInt },
     })
+  });
+
+  const contentReleaseType = new GraphQLObjectType({
+    name: 'ContentRelease',
+    fields: () => attributeFields(ContentRelease),
   });
 
   const contentEntryType = new GraphQLObjectType({
@@ -330,6 +336,10 @@ export const internalGraphql = async (restart) => {
       })
     },
     allFields,
+    allContentReleases: {
+      type: new GraphQLList(contentReleaseType),
+      resolve: resolver(ContentRelease),
+    },
     allContentEntries,
     allUsers: {
       type: new GraphQLList(userType),
@@ -443,7 +453,14 @@ export const internalGraphql = async (restart) => {
           return result;
         }
       })
-    }
+    },
+    ContentRelease: {
+      type: contentReleaseType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      resolve: resolver(ContentRelease)
+    },
   };
 
   const mutationFields = {
@@ -688,40 +705,89 @@ export const internalGraphql = async (restart) => {
         return false;
       }
     },
-    updateContentEntry: {
-      type: contentEntryType,
+    createContentRelease: {
+      type: contentReleaseType,
       args: {
-        entryId: { type: new GraphQLNonNull(GraphQLID) },
-        language: { type: GraphQLString },
-        data: { type: GraphQLJSON }
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        scheduleAt: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
-        const entry = await ContentEntry.findOne({
-          where: {
-            entryId: args.entryId
-          },
-          order: [
-            ['createdAt', 'DESC']
-          ]
+        const contentRelease = await ContentRelease.create({
+          name: args.name,
+          description: args.description,
+          scheduleAt: args.scheduleAt,
         });
 
-        if (entry) {
-
-          entryTransformer.resetTransformCache();
-
-          if (args.data) {
-            args.data = await entryTransformer.transformInput(args.data, entry.contentTypeId);
-          }
-
-          const updatedEntry = await entry.draft(args.data, args.language || 'en', context.user.id);
-
-          updatedEntry.data = await entryTransformer.transformOutput(updatedEntry.data, entry.contentTypeId);
-
-          return updatedEntry;
+        return contentRelease;
+      }
+    },
+    updateContentRelease: {
+      type: contentReleaseType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        scheduleAt: { type: GraphQLString },
+      },
+      async resolve(root, args, context, info) {
+        const contentRelease = await ContentRelease.findOne({ where: { id: args.id } });
+        if (contentRelease) {
+          await contentRelease.update({
+            name: args.name,
+            description: args.description,
+            publishAt: args.publishAt,
+          });
         }
 
-        return null;
+        return contentRelease;
       }
+    },
+    publishContentRelease: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      async resolve(root, args, context, info) {
+        const entries = await ContentEntry.findAll({
+          having: {
+            versionId: sequelize.literal(`"ContentEntry"."versionId" = (
+              SELECT "ce"."versionId"
+              FROM "ContentEntry" AS "ce"
+              WHERE "ce"."contentReleaseId" = ${sequelize.escape(args.id)}
+              ORDER BY "ce"."updatedAt" DESC
+              LIMIT 1
+            )`),
+          } as any,
+          where: {
+            contentReleaseId: args.id,
+          },
+        });
+        await Promise.all(entries.map(entry => entry.publish()));
+        const contentRelease = await ContentRelease.findOne({ where: { id: args.id }});
+        if (contentRelease) {
+          contentRelease.update({
+            publishedAt: new Date(),
+            publishedBy: context.user.id,
+          });
+        }
+        return true;
+      },
+    },
+    removeContentRelease: {
+      type: GraphQLBoolean,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+      },
+      async resolve(root, args, context, info) {
+        await ContentEntry.destroy({
+          where: {
+            contentReleaseId: args.id,
+          }
+        });
+        await ContentRelease.destroy({ where: { id: args.id }});
+        return true;
+      },
     },
     createContentEntry: {
       type: contentEntryType,
@@ -749,6 +815,79 @@ export const internalGraphql = async (restart) => {
         entry.data = await entryTransformer.transformOutput(entry.data, args.contentTypeId);
 
         return entry;
+      }
+    },
+    updateContentEntry: {
+      type: contentEntryType,
+      args: {
+        entryId: { type: new GraphQLNonNull(GraphQLID) },
+        contentReleaseId: { type: GraphQLID },
+        language: { type: GraphQLString },
+        data: { type: GraphQLJSON }
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.findOne({
+          where: {
+            entryId: args.entryId
+          },
+          order: [
+            ['createdAt', 'DESC']
+          ]
+        });
+
+        if (entry) {
+
+          entryTransformer.resetTransformCache();
+
+          if (args.data) {
+            args.data = await entryTransformer.transformInput(args.data, entry.contentTypeId);
+          }
+
+          if (args.contentReleaseId) {
+            entry.contentReleaseId = args.contentReleaseId;
+          }
+
+          const updatedEntry = await entry.draft(args.data, args.language || 'en', context.user.id);
+
+          updatedEntry.data = await entryTransformer.transformOutput(updatedEntry.data, entry.contentTypeId);
+
+          return updatedEntry;
+        }
+
+        return null;
+      }
+    },
+    publishContentEntry: {
+      type: contentEntryType,
+      args: {
+        versionId: { type: new GraphQLNonNull(GraphQLID) }
+      },
+      async resolve(root, args, context, info) {
+        const entry = await ContentEntry.findOne({
+          where: {
+            versionId: args.versionId
+          }
+        });
+
+        entryTransformer.resetTransformCache();
+
+        if (entry) {
+          const publishedEntry = await entry.publish(context.user.id);
+          publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
+
+          if (algolia.index) {
+            algolia.index.saveObject({
+              objectID: `${entry.entryId}-${entry.language}`,
+              _entryId: entry.entryId,
+              _language: entry.language,
+              ...publishedEntry.data,
+            });
+          }
+
+          return publishedEntry;
+        }
+
+        return false;
       }
     },
     unpublishContentEntry: {
@@ -795,39 +934,6 @@ export const internalGraphql = async (restart) => {
             }),
           };
         }
-      }
-    },
-    publishContentEntry: {
-      type: contentEntryType,
-      args: {
-        versionId: { type: new GraphQLNonNull(GraphQLID) }
-      },
-      async resolve(root, args, context, info) {
-        const entry = await ContentEntry.findOne({
-          where: {
-            versionId: args.versionId
-          }
-        });
-
-        entryTransformer.resetTransformCache();
-
-        if (entry) {
-          const publishedEntry = await entry.publish(context.user.id);
-          publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
-
-          if (algolia.index) {
-            algolia.index.saveObject({
-              objectID: `${entry.entryId}-${entry.language}`,
-              _entryId: entry.entryId,
-              _language: entry.language,
-              ...publishedEntry.data,
-            });
-          }
-
-          return publishedEntry;
-        }
-
-        return false;
       }
     },
     removeContentEntry: {

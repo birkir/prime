@@ -96,7 +96,7 @@ export class ContentEntry extends Model<ContentEntry> {
     const res = {
       entryId: this.entryId,
       contentTypeId: this.contentTypeId,
-      contentReleaseId: this.contentReleaseId,
+      contentReleaseId: null,
       language: this.language,
       isPublished: true,
       data: this.data,

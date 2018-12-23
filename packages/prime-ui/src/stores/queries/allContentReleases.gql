@@ -1,0 +1,12 @@
+query allContentReleases {
+  allContentReleases {
+    id
+    name
+    title
+    scheduledAt
+    publishedAt
+    publishedBy
+    updatedAt
+    createdAt
+  }
+}
