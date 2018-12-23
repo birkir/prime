@@ -1,6 +1,6 @@
 {
   "name": "@primecms/ui",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "User Interface for Prime CMS Core",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -20,11 +20,11 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@primecms/field": "^0.2.1",
-    "@primecms/field-document": "^0.2.1",
-    "@primecms/field-group": "^0.2.1",
-    "@primecms/field-slice": "^0.2.1",
-    "@primecms/field-string": "^0.2.2",
+    "@primecms/field": "^0.2.4",
+    "@primecms/field-document": "^0.2.4",
+    "@primecms/field-group": "^0.2.4",
+    "@primecms/field-slice": "^0.2.4",
+    "@primecms/field-string": "^0.2.4",
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.9",
     "@types/lodash": "4.14.118",
@@ -66,11 +66,11 @@
   },
   "gitHead": "4bf69d568f639f0b7c414141d3d565b428cd99a3",
   "dependencies": {
-    "@primecms/field-asset": "^0.2.1",
-    "@primecms/field-boolean": "^0.2.1",
-    "@primecms/field-datetime": "^0.2.1",
-    "@primecms/field-number": "^0.2.1",
-    "@primecms/field-select": "^0.2.1",
+    "@primecms/field-asset": "^0.2.4",
+    "@primecms/field-boolean": "^0.2.4",
+    "@primecms/field-datetime": "^0.2.4",
+    "@primecms/field-number": "^0.2.4",
+    "@primecms/field-select": "^0.2.4",
     "moment": "^2.22.2"
   }
 }
