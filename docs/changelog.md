@@ -1,5 +1,12 @@
 # Changelog
 
+### 0.2.4-alpha
+
+ - Added field descriptions to graphql types
+ - Refactored field options for all fields
+ - String and number fields now have validation options
+ - GraphQL input type now fail on validation errors
+
 ### 0.2.1-alpha
 
  - Markdown editor toolbar now always visible
