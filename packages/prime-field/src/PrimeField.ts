@@ -13,6 +13,7 @@ interface IField {
   contentTypeId: string;
   contentTypeFieldId: string;
   options: any; // tslint:disable-line no-any
+  apiName: string;
 }
 
 interface IContentType {
@@ -48,6 +49,9 @@ export interface IPrimeFieldGraphQLArguments {
   field: IField;
   queries: {
     [key: string]: any; // tslint:disable-line no-any
+  };
+  models: {
+    ContentEntry: any; // tslint:disable-line no-any
   };
   contentType: IContentType;
   contentTypes: IContentType[];

@@ -27,12 +27,9 @@ export class PrimeFieldSlice extends PrimeField {
     contentTypeIds: []
   };
 
-  /**
-   * GraphQL type for output query
-   */
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
 
-    const { field, queries, contentType, contentTypes, resolveFieldType } = args;
+    const { field, queries, contentType, contentTypes } = args;
 
     const options = this.getOptions(field);
 
@@ -41,63 +38,29 @@ export class PrimeFieldSlice extends PrimeField {
     }
 
     const contentTypeIds = (options.contentTypeIds || []);
-    const pascalName = field.name.charAt(0).toUpperCase() + field.name.slice(1);
     const sliceTypes = contentTypeIds.map((sliceId: string) => {
 
       const sliceType = contentTypes
         .find((contentTypeItem) => contentTypeItem.id === sliceId);
 
-      if (!sliceType) {
-        return null;
+      if (sliceType && queries.__slices[sliceType.name]) {
+        return {
+          id: sliceId,
+          type: queries.__slices[sliceType.name].outputType
+        };
       }
 
-      const fieldsTypes = sliceType.fields.reduce(
-        (acc, nfield: any) => { // tslint:disable-line no-any
-          const fieldType = resolveFieldType(nfield, true);
-          if (fieldType) {
-            acc[nfield.name] = fieldType.getGraphQLOutput({
-              field: nfield,
-              queries,
-              contentTypes,
-              resolveFieldType
-            });
-          }
-
-          if (!acc[nfield.name]) {
-            delete acc[nfield.name];
-          }
-
-          return acc;
-        },
-        {}
-      );
-
-      const pascalType: string = sliceType.name.charAt(0).toUpperCase() + sliceType.name.slice(1);
-
-      return {
-        id: sliceId,
-        name: `${contentType.name}${pascalName}${pascalType}`,
-        fields: fieldsTypes
-      };
+      return null;
     });
 
     if (sliceTypes.filter((n) => !!n).length === 0) {
       return null;
     }
 
-    const types: GraphQLObjectType[] = sliceTypes.map((type) => {
-      if (!type) {
-        return null;
-      }
-
-      return new GraphQLObjectType({
-        name: type.name,
-        fields: type.fields
-      });
-    });
+    const types = sliceTypes.map(({ type }) => type);
 
     const union = new GraphQLUnionType({
-      name: `${contentType.name}${pascalName}Slice`,
+      name: `${contentType.name}_${field.apiName}`,
       types: [...types, unknownSliceType],
       resolveType(value, context, info): GraphQLObjectType {
         if (value.__inputname) {
@@ -131,7 +94,6 @@ export class PrimeFieldSlice extends PrimeField {
       return null;
     }
 
-    const pascalName: string = `${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`;
     const actionName = isUpdate ? 'Update' : 'Create';
 
     const sliceTypes = (options.contentTypeIds || []).map((sliceId) => {
@@ -163,10 +125,10 @@ export class PrimeFieldSlice extends PrimeField {
 
       return {
         id: sliceId,
-        name: `${contentType.name}${pascalName}${sliceType.name}`,
+        name: `${contentType.name}_${field.apiName}_${sliceType.name}`,
         fields: fieldsTypes,
         type: new GraphQLInputObjectType({
-          name: `${contentType.name}${pascalName}${sliceType.name}`,
+          name: `${contentType.name}_${field.apiName}_${sliceType.name}`,
           fields: {
             __inputname: { type: GraphQLString },
             ...fieldsTypes
@@ -180,7 +142,7 @@ export class PrimeFieldSlice extends PrimeField {
     }
 
     const sliceFieldType = GraphQLUnionInputType({
-      name: `${contentType.name}${pascalName}${actionName}Input`,
+      name: `${contentType.name}_${field.apiName}${actionName}Input`,
       inputTypes: sliceTypes.map((s) => s.type),
       typeKey: '__inputname'
     });

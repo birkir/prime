@@ -24,7 +24,7 @@ export class PrimeFieldSelect extends PrimeField {
   private enumType;
   private values;
 
-  public getEnumType = (name, items) => {
+  public getEnumType = ({ contentType, field }, items) => {
     const key = JSON.stringify(items);
 
     if (this.key === key) {
@@ -50,10 +50,8 @@ export class PrimeFieldSelect extends PrimeField {
       return null;
     }
 
-    const id = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-
     this.enumType = new GraphQLEnumType({
-      name: `PrimeFieldSelect${id}`,
+      name: `${contentType.name}_${field.apiName}`,
       values: this.values
     });
 
@@ -62,7 +60,7 @@ export class PrimeFieldSelect extends PrimeField {
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
     const { items, enum: enumeration, multiple } = this.getOptions(args.field);
-    const outputType = enumeration ? this.getEnumType(args.field.name, items) : GraphQLString;
+    const outputType = enumeration ? this.getEnumType(args, items) : GraphQLString;
 
     if (!outputType) {
       return null;
@@ -84,7 +82,7 @@ export class PrimeFieldSelect extends PrimeField {
 
   public getGraphQLInput(args: IPrimeFieldGraphQLArguments) {
     const { items, multiple } = this.getOptions(args.field);
-    const enumType = this.getEnumType(args.field.name, items);
+    const enumType = this.getEnumType(args, items);
 
     if (!enumType) {
       return null;
@@ -96,20 +94,17 @@ export class PrimeFieldSelect extends PrimeField {
   }
 
   public getGraphQLWhere(args: IPrimeFieldGraphQLArguments) {
-    const { name } = args.field;
     const { items, multiple } = this.getOptions(args.field);
-    const enumType = this.getEnumType(name, items);
+    const enumType = this.getEnumType(args, items);
 
     if (!enumType) {
       return null;
     }
 
     if (!multiple) {
-      const id = `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-
       return {
         type: new GraphQLInputObjectType({
-          name: `PrimeFieldSelectWhere${id}`,
+          name: `PrimeFieldSelectWhere${args.contentType.name}_${args.field.apiName}`,
           fields: {
             eq: { type: enumType }
           }

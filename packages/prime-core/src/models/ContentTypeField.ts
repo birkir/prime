@@ -54,4 +54,12 @@ export class ContentTypeField extends Model<ContentTypeField> {
   public get field() {
     return fields.find(f => f.id === this.type);
   }
+
+  public prefix = '';
+
+  public get apiName() {
+    const { name, prefix = '' } = this;
+
+    return `${prefix}${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+  }
 }

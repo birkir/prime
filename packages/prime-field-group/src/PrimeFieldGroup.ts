@@ -15,18 +15,18 @@ export class PrimeFieldGroup extends PrimeField {
     repeated: true
   };
 
-  public getGraphQLOutput({ field, queries, contentTypes, resolveFieldType }) {
-    const contentType = contentTypes.find(c => c.id === field.contentTypeId);
+  public getGraphQLOutput({ field, queries, contentType, contentTypes, resolveFieldType }) {
     if (contentType) {
       const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
-      const pascalName = `${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`;
       const fieldsTypes = subFields.reduce(
         (acc, nfield: any) => {// tslint:disable-line no-any
           const fieldType = resolveFieldType(nfield, true);
           if (fieldType) {
+            nfield.prefix = `${field.apiName}_`;
             acc[nfield.name] = fieldType.getGraphQLOutput({
               field: nfield,
               queries,
+              contentType,
               contentTypes,
               resolveFieldType
             });
@@ -46,7 +46,7 @@ export class PrimeFieldGroup extends PrimeField {
       }
 
       const groupFieldType = new GraphQLObjectType({
-        name: `${contentType.name}${pascalName}`,
+        name: `${contentType.name}_${field.apiName}`,
         fields: () => ({
           ...fieldsTypes
         })
@@ -75,7 +75,6 @@ export class PrimeFieldGroup extends PrimeField {
     if (!contentType || !contentType.fields) {
       return null;
     }
-    const pascalName = `${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`;
     const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
     const fieldsTypes = subFields.reduce(
       (acc, nfield: any) => { // tslint:disable-line no-any
@@ -105,7 +104,7 @@ export class PrimeFieldGroup extends PrimeField {
     const actionName = isUpdate ? 'Update' : 'Create';
 
     const groupFieldType = new GraphQLInputObjectType({
-      name: `${contentType.name}${pascalName}${actionName}Input`,
+      name: `${contentType.name}_${field.apiName}${actionName}Input`,
       fields: fieldsTypes
     });
 

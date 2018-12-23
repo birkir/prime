@@ -1,10 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Cascader, Form } from 'antd';
+import { Form, TreeSelect } from 'antd';
 import * as React from 'react';
-
-function filter(inputValue: string, path: { label: string }[]) {
-  return path.some((option: { label: string }) => (option.label).toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
-}
 
 interface IContentType {
   entryId: string;
@@ -12,15 +8,16 @@ interface IContentType {
 }
 
 interface IOption {
+  key: string;
   value: string;
-  label: string;
+  title: string;
   isLeaf: boolean;
   children?: IOption[];
 }
 
 interface IState {
   options: IOption[];
-  defaultValue: string[];
+  defaultValue: undefined | string | string[];
   loading: boolean;
 }
 
@@ -28,7 +25,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public state: IState = {
     options: [],
-    defaultValue: [],
+    defaultValue: undefined,
     loading: false
   };
 
@@ -44,36 +41,56 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
     this.setState({ loading: true });
 
-    const contentType = await stores.ContentTypes.loadById(field.options.contentTypeId);
-    const items = await stores.ContentEntries.loadByContentType(contentType.id);
-    const value = initialValue;
+    const contentTypeIds = field.options.contentTypeIds || [];
+    if (field.options.contentTypeId) {
+      contentTypeIds.push(field.options.contentTypeId);
+    }
+
+    const contentTypes = await Promise.all(
+      contentTypeIds.map(async (contentTypeId: string) => {
+        const contentType = await stores.ContentTypes.loadById(contentTypeId);
+        const items = await stores.ContentEntries.loadByContentType(contentType.id);
+
+        return { contentType, items };
+      })
+    );
 
     const state: IState = {
-      options: [{
+      options: contentTypes.map(({ contentType, items }: any) => ({ // tslint:disable-line no-any
+        key: contentType.id,
         value: contentType.id,
-        label: contentType.title,
+        title: contentType.title,
+        selectable: false,
         isLeaf: false,
         children: items.map((item: IContentType) => ({
+          key: item.entryId,
           value: item.entryId,
-          label: item.display,
+          title: item.display,
           isLeaf: true
         }))
-      }],
-      defaultValue: [],
+      })),
+      defaultValue: undefined,
       loading: false
     };
 
-    if (value) {
-      state.defaultValue.push(contentType.id, value);
+    const { multiple = false } = field.options;
+
+    if (multiple) {
+      if (typeof initialValue === 'string') {
+        state.defaultValue = [initialValue];
+      } else if (Array.isArray(initialValue)) {
+        state.defaultValue = [].concat((initialValue || []));
+      }
+    } else if (initialValue) {
+      state.defaultValue = Array.isArray(initialValue) ? initialValue[0] : initialValue;
     }
 
     this.setState(state);
   }
 
-  public onChange = (value: string[]) => {
-    const entryId = value.slice(0).pop();
+  public onChange = (value: string | string[]) => {
     this.props.form.setFieldsValue({
-      [this.props.path]: entryId
+      [this.props.path]: value
     });
   }
 
@@ -85,14 +102,17 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     return (
       <Form.Item label={field.title}>
         {loading === false ? (
-          <Cascader
+          <TreeSelect
+            style={{ width: 300 }}
             defaultValue={defaultValue}
-            options={options}
-            onChange={this.onChange}
-            changeOnSelect
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            showSearch={true}
             size="large"
-            placeholder="Please select"
-            showSearch={{ filter } as any} // tslint:disable-line no-any
+            treeData={options}
+            placeholder="Pick document(s)"
+            multiple={field.options.multiple || false}
+            treeNodeFilterProp="title"
+            onChange={this.onChange}
           />
         ) : null}
         {getFieldDecorator(path, {

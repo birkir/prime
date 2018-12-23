@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { createContext } from 'dataloader-sequelize';
 import * as express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { get } from 'lodash';
+import { get, omit } from 'lodash';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
 import { sequelize } from '../../sequelize';
@@ -19,7 +19,7 @@ import { Settings } from '../../models/Settings';
 import { ContentEntry } from '../../models/ContentEntry';
 
 // import { User } from '../../models/User';
-import { acl } from '../../acl';
+// import { acl } from '../../acl';
 
 interface IContext {
   settings: any;
@@ -38,15 +38,16 @@ export const debug = require('debug')('prime:graphql');
 // tslint:disable-next-line max-func-body-length
 export const externalGraphql = async () => {
 
-  acl.addUserRoles(
-    '46ca9dce-5a28-44bf-897c-01e3c1a96cf5',
-    ['admin']
-  );
-
   const app = express();
 
-  const queries = {};
+  const queries = {
+    __slices: {},
+  };
   const inputs = {};
+  const models = {
+    ContentEntry,
+    ContentType,
+  };
 
   const settings = await Settings.get();
 
@@ -74,40 +75,52 @@ export const externalGraphql = async () => {
     })
   );
 
+  // slices are prio
+  contentTypes.sort((a: any, b: any) => b.isSlice - a.isSlice);
+
   await Promise.all(
     contentTypes.map(async (contentType) => {
+      const outputFields = () => contentType.fields.reduce(
+        (acc, field: ContentTypeField) => {
+          const fieldType = resolveFieldType(field);
+          if (fieldType) {
+            acc[field.name] = fieldType.getGraphQLOutput({
+              field,
+              queries,
+              models,
+              contentType,
+              contentTypes,
+              resolveFieldType
+            });
+          }
+          if (!acc[field.name]) {
+            delete acc[field.name];
+          }
+
+          return acc;
+        },
+        {}
+      );
+
       // tslint:disable-next-line variable-name
       const GraphQLContentType = new GraphQLObjectType({
         name: contentType.name,
         fields: () => ({
           id: { type: GraphQLID },
-          ...contentType.fields.reduce(
-            (acc, field: ContentTypeField) => {
-              const fieldType = resolveFieldType(field);
-              if (fieldType) {
-                acc[field.name] = fieldType.getGraphQLOutput({
-                  field,
-                  queries,
-                  contentType,
-                  contentTypes,
-                  resolveFieldType
-                });
-              }
-              if (!acc[field.name]) {
-                delete acc[field.name];
-              }
-
-              return acc;
-            },
-            {}
-          ),
+          ...outputFields(),
           _meta: { type: contentEntryMetaType }
         })
       });
 
       if (contentType.isSlice) {
         debug('content type %s is a slice', contentType.id);
-
+        queries.__slices[contentType.name] = {
+          outputType: new GraphQLObjectType({
+            name: `${contentType.name}Slice`,
+            fields: outputFields,
+          }),
+          inputType: null, // @todo we maybe want to store this type for further reuse
+        }
         return null;
       }
 
@@ -134,9 +147,10 @@ export const externalGraphql = async () => {
   );
 
   const queriesAndMutations: any = {}; // tslint:disable-line no-any
+  const realQueries = omit(queries, '__slices') as any;
 
-  if (Object.keys(queries).length === 0) {
-    queries[`isEmpty`] = {
+  if (Object.keys(realQueries).length === 0) {
+    realQueries[`isEmpty`] = {
       type: GraphQLBoolean,
       resolve() {
         return true;
@@ -151,7 +165,7 @@ export const externalGraphql = async () => {
 
   queriesAndMutations.query = new GraphQLObjectType({
     name: 'Query',
-    fields: queries
+    fields: realQueries
   });
 
   const schema = new GraphQLSchema(queriesAndMutations);

@@ -95,20 +95,6 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, availableFields }: IPr
           )}
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 8 }}>
-          {getFieldDecorator('type', {
-            rules: [{
-              required: true,
-            }]
-          })(
-            <Select placeholder="Field Type">
-              {availableFields.map((field) => (
-                <Option value={field.id} key={field.id}>{field.title}</Option>
-              ))}
-            </Select>
-          )}
-        </Form.Item>
-
         <SchemaSettingsComponent
           field={field}
           form={form}

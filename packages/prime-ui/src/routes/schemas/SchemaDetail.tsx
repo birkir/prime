@@ -315,10 +315,16 @@ export class SchemaDetail extends React.Component<IProps> {
           style={{ ...draggableProvided.draggableProps.style, marginBottom: 10 }}
         >
           <Card
-            title={field.title}
-            bodyStyle={{ display: 'none' }}
+            style={{ borderStyle: 'dashed' }}
+            bodyStyle={{
+              padding: '8px 16px',
+              fontSize: 14
+            }}
             hoverable
-          />
+          >
+            <div><strong>{field.title}</strong></div>
+            <div style={{ color: '#999' }}>{field.description}</div>
+          </Card>
         </div>
       )}
     </Draggable>
@@ -401,7 +407,7 @@ export class SchemaDetail extends React.Component<IProps> {
               width={300}
               trigger={null}
               collapsed={false}
-              style={{ padding: 16 }}
+              style={{ padding: 16, maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
             >
               <Droppable droppableId="AvailableFields" isDropDisabled>
                 {(droppableProvided) => (
