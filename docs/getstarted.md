@@ -5,8 +5,9 @@ Getting Started is very easy if you already have node and postgres.
 Super Quick Start:
 
 ```bash
-npx primecms init
-npm start
+npm init -y
+npm install -S @primecms/core @primecms/ui
+npx primecms start
 ```
 
 ## Installing requirements
