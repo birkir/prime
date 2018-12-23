@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -41,7 +41,7 @@
     "@primecms/field-number": "^0.2.1",
     "@primecms/field-select": "^0.2.1",
     "@primecms/field-slice": "^0.2.1",
-    "@primecms/field-string": "^0.2.1",
+    "@primecms/field-string": "^0.2.2",
     "acl": "0.4.11",
     "algoliasearch": "^3.32.0",
     "apollo-server-express": "2.2.0",
