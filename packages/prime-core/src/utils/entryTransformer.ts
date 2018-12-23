@@ -56,9 +56,9 @@ export class EntryTransformer {
 
       if (field.field) {
         if (io === Types.INPUT && field.field.processInput) {
-          value = await field.field.processInput(value);
+          value = await field.field.processInput(value, field);
         } else if (io === Types.OUTPUT && field.field.processOutput) {
-          value = await field.field.processOutput(value);
+          value = await field.field.processOutput(value, field);
         }
       }
 

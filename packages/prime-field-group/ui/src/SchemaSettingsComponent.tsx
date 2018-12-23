@@ -1,5 +1,5 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Checkbox, Form } from 'antd';
+import { Form, Switch } from 'antd';
 import * as React from 'react';
 
 type IProps = IPrimeFieldProps & {
@@ -14,13 +14,15 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
     return (
       <>
+        <Form.Item label="Options" style={{ marginBottom: -8 }} />
         <Form.Item>
           {form.getFieldDecorator('options.repeated', {
             valuePropName: 'checked',
             initialValue: options.repeated
           })(
-            <Checkbox>Repeated</Checkbox>
+            <Switch />
           )}
+          <label htmlFor="options.repeated" style={{ marginLeft: 8 }}>Repeatable</label>
         </Form.Item>
       </>
     );

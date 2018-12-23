@@ -210,3 +210,12 @@
   border-width: 4px;
   margin-left: -4px;
 }
+
+.prime__inputnumber {
+  -moz-appearance: textfield;
+}
+.prime__inputnumber::-webkit-inner-spin-button,
+.prime__inputnumber::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

@@ -22,6 +22,19 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
       }))
   };
 
+  public componentWillReceiveProps(nextProps: IProps) {
+    if (this.props.field.id !== nextProps.field.id) {
+      this.setState({
+        dataSource: get(nextProps, 'options.items', [])
+          .filter((item: any) => !!item && item.key !== '') // tslint:disable-line no-any
+          .map((item: any, index: number) => ({ // tslint:disable-line no-any
+            id: index,
+            ...item
+          }))
+      });
+    }
+  }
+
   public onAddClick = () => {
     const { dataSource } = this.state;
     const id = Math.max(...[...dataSource.map((n: any) => n.id), 0]) + 1; // tslint:disable-line no-any
@@ -55,31 +68,32 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
     return (
       <>
-        <Form.Item>
-          {form.getFieldDecorator('options.multiple', {
-            valuePropName: 'checked',
-            initialValue: options.multiple
-          })(
-            <Switch style={{ marginRight: 8 }} />
-          )}
-          <strong>Multiple</strong>
+        <Form.Item label="Options" style={{ marginBottom: -8 }} />
+        <Form.Item style={{ marginBottom: 0 }}>
+            {form.getFieldDecorator('options.multiple', {
+              valuePropName: 'checked',
+              initialValue: options.multiple
+            })(
+              <Switch />
+            )}
+            <label htmlFor="options.multiple" style={{ marginLeft: 8 }}>Multiple selection</label>
         </Form.Item>
-        <Form.Item>
+        <Form.Item style={{ marginBottom: 8 }}>
           {form.getFieldDecorator('options.enum', {
             valuePropName: 'checked',
             initialValue: options.enum
           })(
-            <Switch style={{ marginRight: 8 }} />
+            <Switch />
           )}
-          <strong>Enums</strong><i> (output enum keys)</i>
+          <label htmlFor="options.enum" style={{ marginLeft: 8 }}>Enum</label>
         </Form.Item>
-        <Form.Item label="Options">
+        <Form.Item label="Items">
           <Table
             style={{ marginBottom: 8 }}
             className="prime__settings__table"
             size="small"
             pagination={false}
-            // showHeader={false}
+            locale={{ emptyText: 'No items' }}
             columns={[{
               title: 'Key',
               dataIndex: 'key',
@@ -129,7 +143,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
             }]}
             dataSource={this.state.dataSource}
           />
-          <Button size="small" onClick={this.onAddClick}>Add</Button>
+          <Button size="small" onClick={this.onAddClick}>Add item</Button>
         </Form.Item>
       </>
     );

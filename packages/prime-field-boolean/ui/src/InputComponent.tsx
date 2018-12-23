@@ -16,6 +16,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
         })(
           <Switch />
         )}
+        {field.description && field.description !== '' && (
+          <label htmlFor={path} style={{ marginLeft: 8 }}>{field.description}</label>
+        )}
       </Form.Item>
     );
   }

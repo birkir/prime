@@ -138,57 +138,56 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
           </Form.Item>
         )}
 
-        <Form.Item label="Rules">
-          <div>
-            {form.getFieldDecorator('options.rules.required', {
-              valuePropName: 'checked',
-              initialValue: get(options, 'rules.required', false)
-            })(
-              <Switch />
-            )}
-            <span style={{ marginLeft: 8 }}>Required</span>
-          </div>
+        <Form.Item label="Options" style={{ marginBottom: -8 }} />
+        <Form.Item style={{ margin: 0 }}>
+          {form.getFieldDecorator('options.rules.required', {
+            valuePropName: 'checked',
+            initialValue: get(options, 'rules.required', false)
+          })(
+            <Switch />
+          )}
+          <label htmlFor="options.rules.required" style={{ marginLeft: 8 }}>Required</label>
+        </Form.Item>
 
           {isSingleline && (<>
-            <div>
+            <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.urlsafe', {
                 valuePropName: 'checked',
                 initialValue: get(options, 'rules.urlsafe', false)
               })(
                 <Switch />
               )}
-              <span style={{ marginLeft: 8 }}>URL Safe</span>
-            </div>
-            <div>
+              <label htmlFor="options.rules.urlsafe" style={{ marginLeft: 8 }}>URL Safe</label>
+            </Form.Item>
+            <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.min', {
                 valuePropName: 'checked',
                 initialValue: get(options, 'rules.min', false)
               })(
                 <Switch />
               )}
-              <span style={{ marginLeft: 8 }}>Min chars: </span>
+              <label htmlFor="options.rules.min" style={{ marginLeft: 8 }}>Min chars: </label>
               {form.getFieldDecorator('options.rules.minValue', {
                 initialValue: get(options, 'rules.minValue')
               })(
                 <Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />
               )}
-            </div>
-            <div>
+            </Form.Item>
+            <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.max', {
                 valuePropName: 'checked',
                 initialValue: get(options, 'rules.max', false)
               })(
                 <Switch />
               )}
-              <span style={{ marginLeft: 8 }}>Max chars: </span>
+              <label htmlFor="options.rules.max" style={{ marginLeft: 8 }}>Max chars: </label>
               {form.getFieldDecorator('options.rules.maxValue', {
                 initialValue: get(options, 'rules.maxValue')
               })(
                 <Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />
               )}
-            </div>
+            </Form.Item>
           </>)}
-        </Form.Item>
       </>
     );
   }

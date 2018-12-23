@@ -1,5 +1,5 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Button, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { get } from 'lodash';
 import * as React from 'react';
 
@@ -32,7 +32,7 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
   public static BEFORE_SUBMIT(options: IOptions) {
     if (options.crops) {
       options.crops = options.crops.filter((n) => {
-        if (n.name === '' && n.width === '' && n.height === '') {
+        if (n.name === '' || n.width === '' || n.height === '') {
           return false;
         }
 
@@ -43,7 +43,11 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     const opts = this.props.field.options || {};
-    this.initialCropSizes = get(opts, 'crops', []);
+    this.initialCropSizes = get(opts, 'crops', [{
+      name: '',
+      width: '',
+      height: ''
+    }]);
     this.setState({ cropSizes: this.initialCropSizes.map(() => true) });
   }
 
@@ -81,8 +85,9 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
             initialValue: get(this.initialCropSizes, `${index}.width`, '')
           })(
             <Input
-              type="text"
-              placeholder="Width"
+              type="number"
+              placeholder="width"
+              className="prime__inputnumber"
               style={{ width: 60, padding: '0 8px', textAlign: 'center' }}
             />
           )}
@@ -98,7 +103,8 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
           })(
             <Input
               type="number"
-              placeholder="Height"
+              placeholder="height"
+              className="prime__inputnumber"
               style={{ width: 60, padding: '0 8px', borderLeft: 0 }}
             />
           )}
@@ -128,9 +134,9 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
 
     return (
       <>
-        <h3>Crop Sizes</h3>
+        <Form.Item label="Crops" style={{ margin: 0 }} />
         {this.state.cropSizes.map(this.renderCropSize)}
-        <Button onClick={this.onAddCropSize}>Add</Button>
+        <Button onClick={this.onAddCropSize}>Add crop</Button>
       </>
     );
   }

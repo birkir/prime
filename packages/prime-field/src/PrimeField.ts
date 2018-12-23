@@ -121,7 +121,7 @@ export abstract class PrimeField {
    * Process input data
    * @param input Object for input
    */
-  public processInput(input) {
+  public processInput(input, field: IField) {
     return input;
   }
 
@@ -129,7 +129,7 @@ export abstract class PrimeField {
    * Process output data
    * @param output Object for output
    */
-  public processOutput(output) {
+  public processOutput(output, field: IField) {
     return output;
   }
 

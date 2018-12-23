@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Input, Select, Row, Col } from 'antd';
+import { Form, Button, Input, Select, Row, Col, Divider } from 'antd';
 import { toJS } from 'mobx';
 import { FormComponentProps } from 'antd/lib/form';
 import { camelCase, get, defaultsDeep } from 'lodash';
@@ -118,6 +118,8 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
             />
           )}
         </Form.Item>
+
+        <Divider dashed />
 
         <SchemaSettingsComponent
           field={field}

@@ -42,6 +42,7 @@
   },
   "peerDependencies": {
     "antd": "^3.0.0",
+    "apollo-server-core": "^2.3.1",
     "graphql": "^14.0.0",
     "react": "^16.7.0"
   },

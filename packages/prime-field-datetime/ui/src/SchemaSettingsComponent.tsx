@@ -14,13 +14,15 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
     return (
       <>
-        <Form.Item label="Time">
+        <Form.Item label="Options" style={{ marginBottom: -8 }} />
+        <Form.Item>
           {form.getFieldDecorator('options.time', {
             valuePropName: 'checked',
             initialValue: options.time
           })(
             <Switch />
           )}
+          <label htmlFor="options.time" style={{ marginLeft: 8 }}>Show time picker</label>
         </Form.Item>
       </>
     );
