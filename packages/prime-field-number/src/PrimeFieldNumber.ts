@@ -73,14 +73,14 @@ export class PrimeFieldNumber extends PrimeField {
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
-      if (value.length <= min) {
+      if (value.length < min) {
         throw new ValidationError(`Field '${field.name}' must be greater or equal to ${min}`);
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
-      if (value.length >= max) {
+      if (value.length > max) {
         throw new ValidationError(`Field '${field.name}' must be less or equal to ${max}`);
       }
     }
