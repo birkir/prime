@@ -24,7 +24,7 @@ This is a comparison table of the top GraphQL headless CMS's
 | Localized fields | no | no | ✅ | no |
 | Revision history | ✅ | ✅ | ✅ | no |
 | Custom Permissions | not yet | no | ✅ | ✅ |
-| Custom Roles | not yet | no | no | ✅ |
+| Custom Roles | not yet | no | ✅ | ✅ |
 | Document Tree Hierarchy | not yet | no | no | no |
 | Webhooks | not yet | ✅ | ✅ | ✅ |
 | Multi workspace | no | ✅ | ✅ | no |
