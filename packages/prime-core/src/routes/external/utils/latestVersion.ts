@@ -7,16 +7,15 @@ const field = '"versionId"';
 const idField = '"entryId"';
 
  // tslint:disable-next-line no-any
-export const latestVersion = ({ language, published, contentReleaseId }): any => {
+export const latestVersion = ({ language, published, contentReleaseId, preview = false }): any => {
   let order = `${versionModel}."createdAt" DESC`;
-  let withRelease = '';
+  let withRelease = `AND ${versionModel}."contentReleaseId" IS NULL`;
   if (contentReleaseId) {
     order = `${versionModel}."contentReleaseId" DESC, ${order}`;
     withRelease = `
       AND (
         ${versionModel}."contentReleaseId" = ${sequelize.escape(contentReleaseId)}
-        OR
-        ${versionModel}."contentReleaseId" IS NULL
+        ${preview ? `OR ${versionModel}."contentReleaseId" IS NULL` : ''}
       )
     `;
   }

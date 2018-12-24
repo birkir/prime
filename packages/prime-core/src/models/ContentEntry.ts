@@ -69,19 +69,25 @@ export class ContentEntry extends Model<ContentEntry> {
 
   // --- Model methods
 
-  public draft(data, language, userId?: string) {
+  public draft(data, language, contentReleaseId?: string, userId?: string) {
     const res = {
       entryId: this.entryId,
       contentTypeId: this.contentTypeId,
-      contentReleaseId: this.contentReleaseId,
+      contentReleaseId: contentReleaseId || this.contentReleaseId,
       language: language || this.language,
       isPublished: false,
-      data,
+      data: data || this.data,
       userId,
     };
 
-    if (!this.isPublished && (language === this.language)) {
-      // And later check if its the same user account
+    // Calculate flag if we want to keep a revision history
+    const isNewDraft = this.isPublished
+      || language !== this.language
+      || contentReleaseId !== this.contentReleaseId
+      || userId !== this.userId;
+      // || this.updatedAt > new Date(+new Date() - 3600 * 1000)
+
+    if (!isNewDraft) {
       return this.update({
         language,
         data,

@@ -17,12 +17,14 @@ exports.setup = function(options, seedLink) {
 exports.up = async (db) => {
   await db.renameColumn('ContentRelease', 'publishAt', 'scheduledAt');
   await db.addColumn('ContentRelease', 'publishedAt', { type: 'timestamp' });
+  await db.addColumn('ContentRelease', 'description', { type: 'string', length: 255 });
   await db.runSql('ALTER TABLE "ContentRelease" ADD COLUMN "publishedBy" uuid;');
   return null;
 };
 
 exports.down = async (db) => {
   await db.renameColumn('ContentRelease', 'scheduledAt', 'publishAt');
+  await db.removeColumn('ContentRelease', 'description');
   await db.removeColumn('ContentRelease', 'publishedAt');
   await db.removeColumn('ContentRelease', 'publishedBy');
   return null;

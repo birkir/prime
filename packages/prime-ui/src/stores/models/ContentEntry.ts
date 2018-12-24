@@ -33,6 +33,7 @@ export const ContentEntry = types
     entryId: types.identifier,
     versionId: types.string,
     contentTypeId: types.string,
+    contentReleaseId: types.maybeNull(types.string),
     language: types.string,
     isPublished: types.boolean,
     contentType: types.maybe(ContentTypeRef),
@@ -94,9 +95,22 @@ export const ContentEntry = types
       const { data } = yield client.mutate({
         mutation: UPDATE_CONTENT_ENTRY,
         variables: {
-          entryId: self.entryId,
+          versionId: self.versionId,
           language: self.language,
           data: proposedData,
+        },
+      });
+      if (data && data.updateContentEntry) {
+        updateSelf(data.updateContentEntry);
+      }
+    });
+
+    const release = flow(function*(contentReleaseId: string) {
+      const { data } = yield client.mutate({
+        mutation: UPDATE_CONTENT_ENTRY,
+        variables: {
+          versionId: self.versionId,
+          contentReleaseId,
         },
       });
       if (data && data.updateContentEntry) {
@@ -143,6 +157,7 @@ export const ContentEntry = types
       setIsPublished,
       remove,
       update,
+      release,
       publish,
       unpublish,
     };

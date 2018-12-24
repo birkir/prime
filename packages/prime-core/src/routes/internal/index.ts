@@ -144,6 +144,7 @@ export const internalGraphql = async (restart) => {
     type: contentEntryConnectionType,
     args: {
       contentTypeId: { type: GraphQLID },
+      contentReleaseId: { type: GraphQLID },
       language: { type: GraphQLString },
       userId: { type: GraphQLString },
       limit: { type: GraphQLInt },
@@ -175,7 +176,7 @@ export const internalGraphql = async (restart) => {
       before: (findOptions, args, context) => {
         const language = args.language || 'en';
         const published = null;
-        const contentReleaseId = null;
+        const contentReleaseId = args.contentReleaseId || null;
 
         findOptions.attributes = {
           include: [
@@ -762,8 +763,10 @@ export const internalGraphql = async (restart) => {
           where: {
             contentReleaseId: args.id,
           },
+          group: ['versionId'],
         });
-        await Promise.all(entries.map(entry => entry.publish()));
+        await Promise.all(entries.map(entry => entry.publish(context.user.id)));
+        await ContentEntry.update({ contentReleaseId: null }, { where: { contentReleaseId: args.id } })
         const contentRelease = await ContentRelease.findOne({ where: { id: args.id }});
         if (contentRelease) {
           contentRelease.update({
@@ -793,6 +796,7 @@ export const internalGraphql = async (restart) => {
       type: contentEntryType,
       args: {
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
+        contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
         data: { type: GraphQLJSON }
       },
@@ -807,6 +811,7 @@ export const internalGraphql = async (restart) => {
         const entry = await ContentEntry.create({
           isPublished: false,
           contentTypeId: args.contentTypeId,
+          contentReleaseId: args.contentReleaseId,
           language: args.language || 'en',
           data: args.data,
           userId: context.user.id
@@ -820,7 +825,7 @@ export const internalGraphql = async (restart) => {
     updateContentEntry: {
       type: contentEntryType,
       args: {
-        entryId: { type: new GraphQLNonNull(GraphQLID) },
+        versionId: { type: new GraphQLNonNull(GraphQLID) },
         contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
         data: { type: GraphQLJSON }
@@ -828,11 +833,8 @@ export const internalGraphql = async (restart) => {
       async resolve(root, args, context, info) {
         const entry = await ContentEntry.findOne({
           where: {
-            entryId: args.entryId
+            versionId: args.versionId
           },
-          order: [
-            ['createdAt', 'DESC']
-          ]
         });
 
         if (entry) {
@@ -843,11 +845,7 @@ export const internalGraphql = async (restart) => {
             args.data = await entryTransformer.transformInput(args.data, entry.contentTypeId);
           }
 
-          if (args.contentReleaseId) {
-            entry.contentReleaseId = args.contentReleaseId;
-          }
-
-          const updatedEntry = await entry.draft(args.data, args.language || 'en', context.user.id);
+          const updatedEntry = await entry.draft(args.data, args.language || 'en', args.contentReleaseId, context.user.id);
 
           updatedEntry.data = await entryTransformer.transformOutput(updatedEntry.data, entry.contentTypeId);
 

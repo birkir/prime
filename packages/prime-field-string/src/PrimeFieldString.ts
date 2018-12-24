@@ -67,14 +67,14 @@ export class PrimeFieldString extends PrimeField {
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
-      if (value.length <= min) {
+      if (value.length < min) {
         throw new ValidationError(`Field '${field.name}' must be ${min} character${min === 1 ? '' : 's'} or more`);
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
-      if (value.length >= max) {
+      if (value.length > max) {
         throw new ValidationError(`Field '${field.name}' must be ${max} character${max === 1 ? '' : 's'} or less`);
       }
     }

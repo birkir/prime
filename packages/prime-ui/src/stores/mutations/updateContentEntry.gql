@@ -1,12 +1,14 @@
 mutation updateContentEntry(
-  $entryId: ID!
-  $data: JSON!
+  $versionId: ID!
+  $data: JSON
   $language: String
+  $contentReleaseId: ID
 ) {
   updateContentEntry(
-    entryId: $entryId
+    versionId: $versionId
     data: $data
     language: $language
+    contentReleaseId: $contentReleaseId
   ) {
     versionId
     entryId

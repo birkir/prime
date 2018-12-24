@@ -2,7 +2,7 @@ query allContentReleases {
   allContentReleases {
     id
     name
-    title
+    description
     scheduledAt
     publishedAt
     publishedBy
