@@ -6,6 +6,7 @@ import * as React from 'react';
 type IProps = IPrimeFieldProps & {
   options: {
     items: string[][];
+    required: boolean;
     enum: boolean;
     multiple: boolean;
   };
@@ -57,7 +58,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   public ensureUnique = (id: number) => (rule: any, value: any, callback: (input?: string) => void) => { // tslint:disable-line no-any
     const values = this.props.form.getFieldsValue() as any; // tslint:disable-line no-any
     const found = values.options.items.find((item: any, index: number) => { // tslint:disable-line no-any
-      return item.key === value && index !== id;
+      return item && item.key === value && index !== id;
     });
 
     callback(found ? 'must be unique' : undefined);
@@ -70,6 +71,15 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
       <>
         <Form.Item label="Options" style={{ marginBottom: -8 }} />
         <Form.Item style={{ marginBottom: 0 }}>
+          {form.getFieldDecorator('options.required', {
+            valuePropName: 'checked',
+            initialValue: options.required
+          })(
+            <Switch />
+          )}
+          <label htmlFor="options.required" style={{ marginLeft: 8 }}>Required</label>
+        </Form.Item>
+        <Form.Item style={{ marginBottom: 0 }}>
             {form.getFieldDecorator('options.multiple', {
               valuePropName: 'checked',
               initialValue: options.multiple
@@ -78,7 +88,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
             )}
             <label htmlFor="options.multiple" style={{ marginLeft: 8 }}>Multiple selection</label>
         </Form.Item>
-        <Form.Item style={{ marginBottom: 8 }}>
+        <Form.Item style={{ marginBottom: 0 }}>
           {form.getFieldDecorator('options.enum', {
             valuePropName: 'checked',
             initialValue: options.enum

@@ -98,6 +98,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     );
   }
 
+  // tslint:disable-next-line cyclomatic-complexity
   public render() {
     const { form, field, path, initialValue = '' } = this.props;
     const { getFieldDecorator } = form;
@@ -145,6 +146,31 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     const error = form.getFieldError(path);
     const help = field.description && field.description !== '' ? `${field.description}${error ? ` - ${error}` : ''}` : undefined;
+    const styles: any = {}; // tslint:disable-line no-any
+
+    if (field.options.appearance) {
+      switch (field.options.appearance) {
+        case 'heading1':
+          styles.fontSize = 36;
+          break;
+        case 'heading2':
+          styles.fontSize = 32;
+          break;
+        case 'heading3':
+          styles.fontSize = 28;
+          break;
+        case 'heading4':
+          styles.fontSize = 24;
+          break;
+        case 'heading5':
+          styles.fontSize = 20;
+          break;
+        case 'pre':
+          styles.fontFamily = '"Source Code Pro", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace';
+          break;
+        default:
+      }
+    }
 
     return (
       <Form.Item label={field.title} help={help}>
@@ -152,7 +178,10 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           initialValue,
           rules: fieldRules
         })(
-          <Input size="large" />
+          <Input
+            size="large"
+            style={styles}
+          />
         )}
       </Form.Item>
     );

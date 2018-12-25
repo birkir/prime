@@ -2,9 +2,10 @@ import React from 'react';
 import { Layout, Button, Icon, message, Skeleton, Card, Alert, Dropdown, Menu, Popover, Popconfirm } from 'antd';
 import { Link } from 'react-router-dom';
 import { observable } from 'mobx';
-import { Instance, clone } from 'mobx-state-tree';
+import { Instance } from 'mobx-state-tree';
 import { observer } from 'mobx-react';
 import { distanceInWordsToNow } from 'date-fns';
+import { isObject } from 'lodash';
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { ContentEntries } from '../../stores/contentEntries';
 import { ContentTypes } from '../../stores/contentTypes';
@@ -135,11 +136,11 @@ export class DocumentsDetail extends React.Component<IProps> {
             if (Array.isArray(vals)) {
               return vals.map(parse);
             }
-            if (typeof vals === 'object') {
+            if (isObject(vals)) {
               return Object.entries(vals || {}).reduce(
                 (acc: any, [key, value]) => {
-                  if (typeof value === 'object') {
-                    const entries = Object.entries(value);
+                  if (isObject(value)) {
+                    const entries = Object.entries(value || {});
                     const indexes = entries.filter(([k]) => Number.isInteger(Number(k)));
                     const isArrayLike = (indexes.length > 0);
                     if (isArrayLike) {
