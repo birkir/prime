@@ -192,15 +192,8 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   onPublish = async (e: any) => {
     if (this.contentEntry) {
-      if (e.key === 'publish') {
-        await this.contentEntry.publish();
-        message.success('Document was published');
-      } else {
-        console.log(e.key);
-        await this.contentEntry.release(e.key);
-        message.success('Document added to release');
-        this.props.history.replace(`/documents/doc/${this.contentEntry.entryId}?release=${e.key}&locale=${this.locale.id}`);
-      }
+      await this.contentEntry.publish();
+      message.success('Document was published');
     }
   }
 

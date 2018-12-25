@@ -1,4 +1,6 @@
-import { types } from 'mobx-state-tree';
+import { types, flow } from 'mobx-state-tree';
+import { client } from '../../utils/client';
+import { PUBLISH_CONTENT_RELEASE } from '../mutations';
 
 export const ContentRelease = types
   .model('ContentRelease', {
@@ -23,7 +25,15 @@ export const ContentRelease = types
       self.description = description;
       self.scheduledAt = scheduledAt ? new Date(scheduledAt) : null;
     },
-    setIsPublished() {
-      self.publishedAt = new Date();
-    },
+    publish: flow(function*() {
+      const res: any = yield client.mutate({
+        mutation: PUBLISH_CONTENT_RELEASE,
+        variables: {
+          id: self.id,
+        }
+      });
+      if (res.data && res.data.publishContentRelease) {
+        self.publishedAt = new Date();
+      }
+    }),
   }))

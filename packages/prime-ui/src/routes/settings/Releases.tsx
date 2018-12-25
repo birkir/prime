@@ -40,16 +40,8 @@ export class Releases extends React.Component<any> {
   }
 
   onClickPublish = async (contentRelease: Instance<typeof ContentRelease>) => {
-    const res: any = await client.mutate({
-      mutation: PUBLISH_CONTENT_RELEASE,
-      variables: {
-        id: contentRelease.id,
-      }
-    });
-    if (res.data && res.data.publishContentRelease) {
-      contentRelease.setIsPublished();
-      this.forceUpdate();
-    }
+    await contentRelease.publish();
+    this.forceUpdate();
   }
 
   get columns() {

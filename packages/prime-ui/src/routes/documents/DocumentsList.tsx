@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip, Badge } from 'antd';
+import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip, Badge, Modal, message } from 'antd';
 import { get } from 'lodash';
 import { distanceInWordsToNow } from 'date-fns';
 import { client } from '../../utils/client';
@@ -82,6 +82,8 @@ export const DocumentsList = ({ match, history }: any) => {
 
   const search = new URLSearchParams(history.location.search);
   const locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
+
+  React.useEffect(() => { ContentReleases.loadAll() }, [match.location]);
 
   const onLocaleClick = (e: any) => {
     history.push(`${match.url}?locale=${e.key}`);
@@ -256,12 +258,27 @@ export const DocumentsList = ({ match, history }: any) => {
           ? ContentReleases.items.get(contentReleaseId)
           : null;
 
+        const publishRelease = () => {
+          Modal.confirm({
+            title: `Do you want to publish ${contentRelease!.name}?`,
+            content: `This release contains ${pagination.total} documents`,
+            onOk: async () => {
+              await contentRelease!.publish();
+              message.success('Release has been published');
+              history.push('/documents');
+            },
+          });
+        };
+
         return (
           <Layout>
             <Toolbar>
               <div style={{ flex: 1 }}>
                 <h2 style={{ margin: 0 }}>{contentRelease ? `Release "${contentRelease.name}"` : 'Documents'}</h2>
               </div>
+              {contentRelease && (
+                <Button type="default" style={{ marginRight: 16 }} onClick={publishRelease} disabled={Boolean(contentRelease.publishedAt)}>Publish</Button>
+              )}
               <Dropdown overlay={locales} trigger={['click']}>
                 <Button type="default" style={{ marginRight: 16 }}>
                   <span className={`flagstrap-icon flagstrap-${locale.flag}`} style={{ marginRight: 8 }} />

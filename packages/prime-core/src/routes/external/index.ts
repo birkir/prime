@@ -28,6 +28,7 @@ interface IContext {
   published: null | boolean;
   contentReleaseId: null | string;
   versionId: null | string;
+  entryId: null | string;
 };
 
 export const entryTransformer = new EntryTransformer();
@@ -176,54 +177,59 @@ export const externalGraphql = async () => {
     schema,
     context: async ({ req }) => {
       try {
-      const cookie = String(req.headers.cookie);
-      const cookies = new Map(cookie.split(';').map(n => n.trim().split('=')) as any);
+        const cookie = String(req.headers.cookie);
+        const cookies = new Map(cookie.split(';').map(n => n.trim().split('=')) as any);
 
-      if (req.headers['x-prime-version-id'] && req.headers['x-prime-version-id'].length === 36) {
-        cookies.set('prime.versionId', req.headers['x-prime-version-id']);
-      }
+        if (req.headers['x-prime-version-id'] && req.headers['x-prime-version-id'].length === 36) {
+          cookies.set('prime.versionId', req.headers['x-prime-version-id']);
+        }
 
-      const context: IContext = {
-        settings,
-        sequelizeDataLoader: createContext(sequelize),
-        public: (settings.accessType === 'public'),
-        published: true,
-        contentReleaseId: null,
-        versionId: null,
-      };
+        const context: IContext = {
+          settings,
+          sequelizeDataLoader: createContext(sequelize),
+          public: (settings.accessType === 'public'),
+          published: true,
+          contentReleaseId: null,
+          versionId: null,
+          entryId: null,
+        };
 
-      debug('context.public %o', context.public);
+        debug('context.public %o', context.public);
 
-      if (cookies.has('prime.versionId')) {
-        const versionId = cookies.get('prime.versionId') as string;
-        debug('context.versionId %o', versionId);
-        if (versionId.length === 36) {
-          const entry = await ContentEntry.findOne({ where: { versionId }});
-          if (entry) {
-            if (entry.contentReleaseId) {
-              context.contentReleaseId = entry.contentReleaseId;
-            } else if (!entry.isPublished) {
+        if (cookies.has('prime.versionId')) {
+          const versionId = cookies.get('prime.versionId') as string;
+          debug('context.versionId %o', versionId);
+          if (versionId.length === 36) {
+            const entry = await ContentEntry.findOne({ where: { versionId }});
+            if (entry) {
+              context.entryId = entry.id;
+              if (entry.contentReleaseId) {
+                context.contentReleaseId = entry.contentReleaseId;
+              } else if (!entry.isPublished) {
+                context.published = null;
+              }
+            } else {
+              context.contentReleaseId = versionId;
               context.published = null;
             }
+
+            context.versionId = versionId;
+
+            debug('context.published %o', context.published);
+            debug('context.contentReleaseId %o', context.contentReleaseId);
           }
-
-          context.versionId = versionId;
-
-          debug('context.published %o', context.published);
-          debug('context.contentReleaseId %o', context.contentReleaseId);
         }
-      }
 
-      if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.headers['x-prime-published']) {
-        context.published = null;
-        debug('context.published %o %s', context.published, '(overwrite)');
-      }
+        if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.headers['x-prime-published']) {
+          context.published = null;
+          debug('context.published %o %s', context.published, '(overwrite)');
+        }
 
-      return context;
-    } catch (err) {
-      console.error(err);
-      return {};
-    }
+        return context;
+      } catch (err) {
+        console.error(err);
+        return {};
+      }
     },
     formatError(error) {
       if (Sentry) {
