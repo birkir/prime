@@ -111,7 +111,7 @@ export const Previews = Form.create()(({ form }) => {
             {form.getFieldDecorator('name', {
               rules: [{ required: true }]
             })(
-              <Input size="large" placeholder="eg. Staging" />
+              <Input autoFocus={!isEditing} size="large" placeholder="eg. Staging" />
             )}
           </Form.Item>
           <Form.Item label="Preview URL">

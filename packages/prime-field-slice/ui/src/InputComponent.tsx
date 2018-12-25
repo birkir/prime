@@ -47,7 +47,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public componentWillReceiveProps(nextProps: any) { // tslint:disable-line no-any
     if (JSON.stringify(this.props.initialValue) !== JSON.stringify(nextProps.initialValue)) {
       this.setState({
-        slices: nextProps.initialValue.map((n: { __inputname: string }, index: number) => ({
+        slices: [].concat(nextProps.initialValue || []).map((n: { __inputname: string }, index: number) => ({
           ...this.props.stores.ContentTypes.items.get(n.__inputname),
           index
         }))
@@ -177,12 +177,17 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
             </Card>
           );
         })}
-        <Dropdown overlay={menu} trigger={['click']}>
-          <Button size="large" block={true} className="prime-slice-add">
-            <Icon type="plus" />
-            Add Slice
-          </Button>
-        </Dropdown>
+        <div style={{ textAlign: 'center' }}>
+          <Dropdown placement="bottomCenter" overlay={menu} trigger={['click']}>
+            <Button
+              size="large"
+              shape="circle"
+              // block={true}
+              icon="plus"
+              className="prime-slice-add"
+            />
+          </Dropdown>
+        </div>
         <div className="prime-slice-spacer-bottom" />
       </div>
     );

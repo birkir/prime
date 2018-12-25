@@ -36,6 +36,8 @@ export class DocumentsDetail extends React.Component<IProps> {
   @observable loading = false;
   @observable loaded = false;
   @observable error: Error | null = null;
+  @observable loadingReleases = false;
+  @observable loadedReleases = false;
 
   componentDidMount() {
     const search = new URLSearchParams(window.location.search);
@@ -123,14 +125,17 @@ export class DocumentsDetail extends React.Component<IProps> {
     return true;
   }
 
-  onSave = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
+  onSave = (e: React.MouseEvent<HTMLElement>) => new Promise((resolve, reject) => {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     if (this.documentForm) {
       const { form } = this.documentForm.props;
 
       form.validateFieldsAndScroll(async (err, values) => {
         if (err) {
           message.error('Document has validation errors');
+          reject(err);
         } else {
           const parse = (vals: any): any => {
             if (Array.isArray(vals)) {
@@ -181,6 +186,7 @@ export class DocumentsDetail extends React.Component<IProps> {
                 this.props.history.replace(`/documents/doc/${contentEntry.entryId}?${search}`);
               }
               message.success('Document created');
+              resolve();
             } catch(err) {
               message.error('Could not create document');
               console.error(err);
@@ -189,12 +195,26 @@ export class DocumentsDetail extends React.Component<IProps> {
         }
       });
     }
-  }
+  });
 
   onPublish = async (e: any) => {
     if (this.contentEntry) {
       await this.contentEntry.publish();
       message.success('Document was published');
+    }
+  }
+
+  onReleaseClick = async (e: any) => {
+    if (this.contentEntry) {
+      try {
+        await this.contentEntry.release(e.key);
+        message.success('Document was added to release');
+        const search = new URLSearchParams(this.props.location.search);
+        search.append('release', e.key);
+        this.props.history.replace(`/documents/doc/${this.contentEntry.entryId}?${search}`);
+      } catch (err) {
+        message.error('Something went wrong');
+      }
     }
   }
 
@@ -304,26 +324,15 @@ export class DocumentsDetail extends React.Component<IProps> {
     const contentEntry = this.contentEntry!;
     const contentType = this.contentType!;
 
-    const contentReleases = (
-      <Menu onClick={this.onPublish}>
-        <Menu.Item key="publish">Publish now</Menu.Item>
-        <Menu.Divider />
-        {ContentReleases.list.map(contentRelease => (
-          <Menu.Item key={contentRelease.id}>
-            {contentRelease.name}
-          </Menu.Item>
-        ))}
-      </Menu>
-    );
-
     const { params } = this.props.match;
     const search = new URLSearchParams(this.props.location.search);
+    const contentReleaseId = search.get('release');
 
     const backUrl = (() => {
       const qs = `?locale=${this.locale.id}`;
 
-      if (search.get('release')) {
-        return `/documents/release/${search.get('release')}${qs}`;
+      if (contentReleaseId) {
+        return `/documents/release/${contentReleaseId}${qs}`;
       } else if (params.contentTypeId) {
         return `/documents/schema/${params.contentTypeId}${qs}`;
       } else if (search.get('schema') && this.contentType) {
@@ -331,6 +340,14 @@ export class DocumentsDetail extends React.Component<IProps> {
       }
       return `/documents/${qs}`;
     })();
+
+    const contentReleasesMenu = (
+      <Menu onClick={this.onReleaseClick}>
+        {ContentReleases.list.map((contentRelease) => (
+          <Menu.Item key={contentRelease.id}>{contentRelease.name}</Menu.Item>
+        ))}
+      </Menu>
+    );
 
     return (
       <Layout>
@@ -388,8 +405,30 @@ export class DocumentsDetail extends React.Component<IProps> {
               )}
             </div>
             <div style={{ padding: 16 }}>
+              {contentEntry && !contentReleaseId && !contentEntry.isPublished && (
+                <Dropdown
+                  overlay={contentReleasesMenu}
+                  trigger={['click']}
+                  placement="topCenter"
+                >
+                  <Button
+                    type="dashed"
+                    style={{ marginBottom: 8 }}
+                    block
+                    loading={this.loadingReleases}
+                    onClick={async () => {
+                      this.loadingReleases = true;
+                      await ContentReleases.loadAll();
+                      setTimeout(() => {
+                        this.loadingReleases = false;
+                      }, 330);
+                    }}
+                  >
+                    Add to release
+                  </Button>
+                </Dropdown>
+              )}
               {contentEntry && contentEntry.isPublished && (
-
                 <Popconfirm
                   title="Are you sure?"
                   icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}

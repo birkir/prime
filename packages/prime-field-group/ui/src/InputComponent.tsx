@@ -123,10 +123,15 @@ export class InputComponent extends React.PureComponent<IProps, any> {
         <Form.Item label={field.title} className="prime-group">
           {keys.map(this.renderGroupItem)}
           {this.repeated && (
-            <Button size="large" block={true} onClick={this.add} className="prime-slice-add">
-              <Icon type="plus" />
-              Add Item
-            </Button>
+            <div style={{ textAlign: 'center' }}>
+              <Button
+                size="large"
+                shape="circle"
+                onClick={this.add}
+                icon="plus"
+                className="prime-slice-add"
+              />
+            </div>
           )}
         </Form.Item>
       </>

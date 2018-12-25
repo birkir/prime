@@ -1,4 +1,4 @@
-import { ApolloServer, AuthenticationError, UserInputError } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError, UserInputError, ForbiddenError } from 'apollo-server-express';
 import * as express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLList,
   GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLEnumType } from 'graphql';
@@ -495,6 +495,7 @@ export const internalGraphql = async (restart) => {
         input: { type: GraphQLSettingsInput },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('settings', 'update');
         const done = await Settings.create({
           data: args.input,
           userId: context.user.id,
@@ -510,6 +511,7 @@ export const internalGraphql = async (restart) => {
         schema: { type: new GraphQLNonNull(new GraphQLList(ContentTypeFieldGroupInputType)) },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('schema', 'update');
         await setFields(args.contentTypeId, args.schema);
         restart();
 
@@ -568,6 +570,8 @@ export const internalGraphql = async (restart) => {
         },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('user', 'create');
+
         const user = await User.create({
           firstname: args.input.firstname,
           lastname: args.input.lastname,
@@ -581,12 +585,58 @@ export const internalGraphql = async (restart) => {
         return user;
       },
     },
+    updateUser: {
+      type: userType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: {
+          type: new GraphQLInputObjectType({
+            name: 'UpdateUserInput',
+            fields: {
+              firstname: { type: GraphQLString },
+              lastname: { type: GraphQLString },
+              email: { type: new GraphQLNonNull(GraphQLString) },
+              password: { type: new GraphQLNonNull(GraphQLString) },
+              roles: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))) },
+            }
+          })
+        },
+      },
+      async resolve(root, args, context, info) {
+        await context.ensureAllowed('user', 'edit');
+
+        const user = await User.findOne({
+          where: {
+            id: args.id,
+          }
+        });
+
+        if (user) {
+
+          await user.update({
+            firstname: args.input.firstname,
+            lastname: args.input.lastname,
+            email: args.input.email,
+            password: args.input.password,
+          });
+
+          const roles = await acl.userRoles(user.id);
+          await acl.removeUserRoles(user.id, roles);
+          await acl.addUserRoles(user.id, args.input.roles);
+
+          (user as any).roles = args.input.roles;
+        }
+        return user;
+      },
+    },
     removeUser: {
       type: GraphQLBoolean,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('user', 'delete');
+
         if (context.user.id === args.id) {
           throw new UserInputError('You can not remove yourself');
         }
@@ -666,6 +716,8 @@ export const internalGraphql = async (restart) => {
         }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('schema', 'create');
+
         const entry = await ContentType.create({
           name: args.input.name,
           title: args.input.title,
@@ -695,6 +747,7 @@ export const internalGraphql = async (restart) => {
         }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('schema', 'update');
         const contentType = await ContentType.findOne({
           where: { id: args.id },
         });
@@ -719,6 +772,7 @@ export const internalGraphql = async (restart) => {
         id: { type: GraphQLID }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('schema', 'delete');
         const contentType = await ContentType.findById(args.id);
         if (contentType) {
           await contentType.destroy();
@@ -738,6 +792,7 @@ export const internalGraphql = async (restart) => {
         scheduledAt: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('release', 'create');
         const contentRelease = await ContentRelease.create({
           name: args.name,
           description: args.description,
@@ -756,6 +811,7 @@ export const internalGraphql = async (restart) => {
         scheduledAt: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('release', 'update');
         const contentRelease = await ContentRelease.findOne({ where: { id: args.id } });
         if (contentRelease) {
           await contentRelease.update({
@@ -774,6 +830,7 @@ export const internalGraphql = async (restart) => {
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('document', 'publish');
         const entries = await ContentEntry.findAll({
           having: {
             versionId: sequelize.literal(`"ContentEntry"."versionId" = (
@@ -807,6 +864,8 @@ export const internalGraphql = async (restart) => {
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('release', 'delete');
+
         await ContentRelease.destroy({
           where: { id: args.id },
         });
@@ -827,6 +886,8 @@ export const internalGraphql = async (restart) => {
         data: { type: GraphQLJSON }
       },
       async resolve(root, args, context, info) {
+
+        await context.ensureAllowed('document', 'create');
 
         entryTransformer.resetTransformCache();
 
@@ -857,6 +918,8 @@ export const internalGraphql = async (restart) => {
         data: { type: GraphQLJSON }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('document', 'update');
+
         const entry = await ContentEntry.findOne({
           where: {
             versionId: args.versionId
@@ -887,6 +950,7 @@ export const internalGraphql = async (restart) => {
         versionId: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('document', 'publish');
         const entry = await ContentEntry.findOne({
           where: {
             versionId: args.versionId
@@ -896,6 +960,13 @@ export const internalGraphql = async (restart) => {
         entryTransformer.resetTransformCache();
 
         if (entry) {
+          await ContentEntry.update({ contentReleaseId: null }, {
+            where: {
+              entryId: entry.entryId,
+              contentReleaseId: entry.contentReleaseId,
+            },
+          });
+
           const publishedEntry = await entry.publish(context.user.id);
           publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
 
@@ -920,6 +991,8 @@ export const internalGraphql = async (restart) => {
         versionId: { type: new GraphQLNonNull(GraphQLID) }
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('document', 'unpublish');
+
         const entry = await ContentEntry.findOne({
           where: {
             versionId: args.versionId
@@ -967,6 +1040,8 @@ export const internalGraphql = async (restart) => {
         language: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
+        await context.ensureAllowed('document', 'delete');
+
         const where: any = {
           entryId: args.id,
         };
@@ -1005,6 +1080,13 @@ export const internalGraphql = async (restart) => {
         throw new AuthenticationError('Not authenticated');
       }
 
+      const ensureAllowed = async (resources, permissions) => {
+        const isAllowed = await acl.isAllowed(user.id, resources, permissions);
+        if (!isAllowed) {
+          throw new ForbiddenError('Insufficient permissions');
+        }
+      };
+
       if (Sentry) {
         Sentry.configureScope(scope => {
           if (user) {
@@ -1013,7 +1095,7 @@ export const internalGraphql = async (restart) => {
         });
       }
 
-      return { user };
+      return { user, ensureAllowed };
     },
     formatError(error) {
       if (Sentry) {

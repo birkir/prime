@@ -47,23 +47,22 @@ SequelizeBackend.prototype = {
 	 * @param  {string|number}   key
 	 * @return {Promise<Sequelize.Row>}
 	 */
-	findRow(bucket: string, key: string | number): Promise<TInstance | null> {
+	async findRow(bucket: string, key: string | number): Promise<TInstance | null> {
 		let perm = false;
 		if (bucket.indexOf('allows_') === 0) {
 			key    = bucket;
 			bucket = 'permissions';
 			perm   = true;
 		}
-		return this.getModel(bucket).findOne({
+		const row = await this.getModel(bucket).findOne({
 			where: {key: key.toString()},
 			attributes: ['key', 'value']
-    }).then(row => {
-      if (!row) {
-        return null;
-      }
-      row.value = row.value || (perm ? {} : []);
-      return row;
     });
+    if (!row) {
+      return null;
+    }
+    row.value = row.value || (perm ? {} : []);
+    return row;
 	},
 
 	/**
@@ -102,14 +101,13 @@ SequelizeBackend.prototype = {
 	 * @param  {Function} cb
 	 * @return {Promise}
 	 */
-	end(transaction: Function[], cb: Function): Promise<any> {
-		(contract(arguments) as any).params('object', 'function').end();
-		// Execute transaction
-		return this.Promise.reduce(transaction, (res, func) => {
-			return func().then(() => {});
-		}, null).then(res => {
-			return res;
-		}).nodeify(cb);
+	async end(transaction: Function[], cb: Function): Promise<any> {
+    (contract(arguments) as any)
+      .params('object', 'function')
+      .end();
+
+    await Promise.all(transaction);
+    cb();
 	},
 
 
@@ -123,8 +121,8 @@ SequelizeBackend.prototype = {
 	 */
 	clean(cb) {
 		(contract(arguments) as any).params('function').end();
-    return clean(this.db, this.options);
-    // .nodeify();
+    clean(this.db, this.options);
+    return cb();
 	},
 
 
@@ -138,20 +136,19 @@ SequelizeBackend.prototype = {
 	 * @param  {Function} cb
 	 * @return {Promise}
 	 */
-	get(bucket, key, cb) {
+	async get(bucket, key, cb) {
 		(contract(arguments) as any)
       .params('string', 'string|number', 'function')
       .end();
 
-		return this.findRow(bucket, key).then(row => {
-				if (!row) {
-					return [];
-				}
-				if (bucket.indexOf('allows_') === 0) {
-					return this.getPermission(key, row);
-				}
-				return row.value;
-			}).nodeify(cb);
+    const row = await this.findRow(bucket, key);
+    if (!row) {
+      return cb(undefined, []);
+    }
+    if (bucket.indexOf('allows_') === 0) {
+      return cb(undefined, this.getPermission(key, row));
+    }
+    return cb(undefined, row.value);
 	},
 
 	/**
@@ -167,7 +164,7 @@ SequelizeBackend.prototype = {
 	union(bucket: string, keys: string[], cb: Function): Promise<any> {
 		(contract(arguments) as any)
 			.params('string', 'array', 'function')
-			.end();
+      .end();
 
 		return this.findRows(bucket, keys)
 			.then(rows => {
@@ -178,7 +175,8 @@ SequelizeBackend.prototype = {
 						return row.value;
 					}));
 				}
-			}).nodeify(cb);
+      })
+      .then((rows) => cb(undefined, rows));
 	},
 
 	/**
@@ -202,6 +200,7 @@ SequelizeBackend.prototype = {
 		transaction.push(() => {
 			return this.findRow(bucket, key)
 				.then(row => {
+
 					let update;
 					if (bucket.indexOf('allows_') === 0) {
 						update = row && row.value || {};

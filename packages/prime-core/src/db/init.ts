@@ -4,6 +4,7 @@ require('dotenv').config();
 import * as path from 'path';
 import * as DBMigrate from 'db-migrate';
 import { sequelize } from '../sequelize';
+import { acl } from '../acl';
 
 const dbmigrate = DBMigrate.getInstance(true, {
   cwd: path.join(__dirname + '/../..')
@@ -15,28 +16,27 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const init = async () => {
   await sequelize.sync({ force: true });
-
-  const migrations = await dbmigrate.check();
-
-  await Promise.all(
-    migrations.map(async (migration) => {
-      return sequelize.query(`INSERT INTO migrations ("name", "run_on") VALUES (${sequelize.escape('/' + migration.name)}, now())`);
-    })
-  );
+  await dbmigrate.up();
 };
 
 (async () => {
+
+  console.log('Setup default roles...');
+  await acl.allow(['admin'], ['document', 'schema', 'settings', 'user', 'release'], '*');
+  await acl.allow('developer', ['document', 'schema', 'release', 'settings'], '*');
+  await acl.allow('publisher', ['document', 'release'], '*');
+  await acl.allow('editor', 'document', ['read', 'create', 'update', 'deleteOwnDraft']);
+
   if (process.argv.indexOf('--force') === -1) {
+    await sequelize.sync();
     const migrations = await dbmigrate.up();
-    if (!migrations) {
-      console.log('This is will wipe previous database. If you are sure, run:');
-      console.log('npx primecms db:init --force');
-    } else {
-      console.log('Database was initialized');
+    if (migrations) {
+      console.log('Database was migrated');
     }
+    console.log('Use --force to initialize fresh database (will overwrite data)');
   } else {
     await init()
-    console.log('Database was (force) initialized');
+    console.log('Database was initialized');
   }
 
   process.exit(0)

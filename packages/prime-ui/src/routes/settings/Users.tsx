@@ -10,6 +10,7 @@ import { Auth } from '../../stores/auth';
 export const Users = Form.create()(({ form }) => {
   const [confirmDirty, setConfirmDirty] = React.useState(false);
   const [isVisible, setVisible] = React.useState(false);
+  const [user, setUser] = React.useState(null);
 
   let refetchTable: any;
 

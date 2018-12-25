@@ -155,8 +155,8 @@
     border: none;
     box-shadow: 0 1px 7px rgba(0,0,0,0.075) !important;
     border-radius: 5px;
-    height: 40px;
-    padding: 4px 0px;
+    min-height: 40px;
+    padding: 4px 8px;
 
     &:focus,
     &:hover {
@@ -284,6 +284,10 @@
     > .ant-form-item-label {
       margin-bottom: 8px;
     }
+  }
+
+  .prime-group:nth-last-child(2) {
+    margin-bottom: -(@spacing * 2);
   }
 
   .prime-group-item {
