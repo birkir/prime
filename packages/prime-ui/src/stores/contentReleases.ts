@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, destroy } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentRelease } from './models/ContentRelease';
 import { ALL_CONTENT_RELEASES } from './queries';
@@ -17,6 +17,14 @@ export const ContentReleases = types.model('ContentReleases', {
   }
 }))
 .actions((self) => {
+
+  const add = (item: any) => {
+    self.items.put(item);
+  }
+
+  const remove = (item: any) => {
+    destroy(item);
+  }
 
   const loadAll = flow(function*(clear = true){
     self.loading = true;
@@ -43,6 +51,8 @@ export const ContentReleases = types.model('ContentReleases', {
 
   return {
     loadAll,
+    remove,
+    add
   };
 })
 .create();

@@ -11,7 +11,6 @@ import { Playground } from './routes/playground/Playground';
 import { Onboarding } from './routes/onboarding/Onboarding';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
-import { Releases } from './routes/releases/Releases';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
@@ -74,7 +73,6 @@ export class App extends React.Component {
                         <Route path="/documents/release/:contentReleaseId" component={DocumentsList} />
                         <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
                         <Route path="/settings" component={Settings} />
-                        <Route path="/releases" component={Releases} />
                       </Switch>
                       <div hidden={section !== 'playground'}>
                         <Playground />

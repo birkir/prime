@@ -10,10 +10,10 @@ import { ContentEntries } from '../../stores/contentEntries';
 import { ContentTypes } from '../../stores/contentTypes';
 import { ContentEntry } from '../../stores/models/ContentEntry';
 import { DocumentForm, BaseDocumentForm } from './components/document-form/DocumentForm';
+import { ContentReleases } from '../../stores/contentReleases';
 import { ContentType } from '../../stores/models/ContentType';
 import { Settings } from '../../stores/settings';
 import './DocumentDetail.less';
-import { ContentReleases } from '../../stores/contentReleases';
 
 const { Content, Sider } = Layout;
 
@@ -58,7 +58,6 @@ export class DocumentsDetail extends React.Component<IProps> {
   }
 
   async load() {
-    await ContentReleases.loadAll();
     await ContentTypes.loadAll();
     await Promise.all(
       ContentTypes.list
@@ -356,9 +355,7 @@ export class DocumentsDetail extends React.Component<IProps> {
             </Button>
           </Dropdown>
           <Button onClick={this.onSave} type="default" disabled={loading} style={{ marginLeft: 16 }}>Save</Button>
-          <Dropdown overlay={contentReleases} trigger={['click']}>
-            <Button type="primary" disabled={loading || !contentEntry || contentEntry.isPublished} style={{ marginLeft: 16 }}>Publish</Button>
-          </Dropdown>
+          <Button onClick={this.onPublish} type="primary" disabled={loading || !contentEntry || contentEntry.isPublished} style={{ marginLeft: 16 }}>Publish</Button>
           {this.renderPreview(loading)}
         </Toolbar>
         <Layout>

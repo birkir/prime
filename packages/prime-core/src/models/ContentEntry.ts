@@ -60,7 +60,11 @@ export class ContentEntry extends Model<ContentEntry> {
   })
   public contentType: ContentType;
 
-  @BelongsTo(() => ContentRelease, 'contentReleaseId')
+  @BelongsTo(() => ContentRelease, {
+    foreignKey: 'contentReleaseId',
+    onDelete: 'SET NULL',
+    onUpdate: 'SET NULL'
+  })
   public contentRelease: ContentRelease;
 
   @BelongsTo(() => User, 'userId')

@@ -1,0 +1,3 @@
+mutation publishContentRelease($id: ID!) {
+  publishContentRelease(id: $id)
+}

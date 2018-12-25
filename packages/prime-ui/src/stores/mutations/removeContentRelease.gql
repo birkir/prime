@@ -1,0 +1,3 @@
+mutation removeContentRelease($id: ID!) {
+  removeContentRelease(id: $id)
+}

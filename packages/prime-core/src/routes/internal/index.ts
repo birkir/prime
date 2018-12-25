@@ -72,7 +72,10 @@ export const internalGraphql = async (restart) => {
 
   const contentReleaseType = new GraphQLObjectType({
     name: 'ContentRelease',
-    fields: () => attributeFields(ContentRelease),
+    fields: () => ({
+      ...attributeFields(ContentRelease),
+      documents: { type: GraphQLInt },
+    }),
   });
 
   const contentEntryType = new GraphQLObjectType({
@@ -212,13 +215,17 @@ export const internalGraphql = async (restart) => {
         if (args.contentTypeId) {
           values.where.contentTypeId = args.contentTypeId;
         }
+        const where = {
+          ...values.where,
+          language: args.language,
+        };
+        if (args.contentReleaseId) {
+          where.contentReleaseId = args.contentReleaseId;
+        }
         const totalCount = await ContentEntry.count({
           distinct: true,
           col: 'entryId',
-          where: {
-            ...values.where,
-            language: args.language,
-          },
+          where,
         });
         values.totalCount = totalCount;
 
@@ -339,7 +346,24 @@ export const internalGraphql = async (restart) => {
     allFields,
     allContentReleases: {
       type: new GraphQLList(contentReleaseType),
-      resolve: resolver(ContentRelease),
+      resolve: resolver(ContentRelease, {
+        async before(options) {
+          options.attributes = {
+            include: [
+              [
+                sequelize.literal(`(SELECT COUNT(DISTINCT "entryId") FROM "ContentEntry" "c" WHERE "c"."contentReleaseId" = "ContentRelease"."id")`),
+                'documents'
+              ],
+            ]
+          };
+          return options;
+        },
+        after(values) {
+          return values.map(({ dataValues }) => ({
+            ...dataValues,
+          }));
+        }
+      }),
     },
     allContentEntries,
     allUsers: {
@@ -711,13 +735,13 @@ export const internalGraphql = async (restart) => {
       args: {
         name: { type: GraphQLString },
         description: { type: GraphQLString },
-        scheduleAt: { type: GraphQLString },
+        scheduledAt: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
         const contentRelease = await ContentRelease.create({
           name: args.name,
           description: args.description,
-          scheduleAt: args.scheduleAt,
+          scheduledAt: args.scheduledAt,
         });
 
         return contentRelease;
@@ -729,7 +753,7 @@ export const internalGraphql = async (restart) => {
         id: { type: new GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
-        scheduleAt: { type: GraphQLString },
+        scheduledAt: { type: GraphQLString },
       },
       async resolve(root, args, context, info) {
         const contentRelease = await ContentRelease.findOne({ where: { id: args.id } });
@@ -737,7 +761,7 @@ export const internalGraphql = async (restart) => {
           await contentRelease.update({
             name: args.name,
             description: args.description,
-            publishAt: args.publishAt,
+            scheduledAt: args.scheduledAt,
           });
         }
 
@@ -783,12 +807,14 @@ export const internalGraphql = async (restart) => {
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
+        await ContentRelease.destroy({
+          where: { id: args.id },
+        });
         await ContentEntry.destroy({
           where: {
             contentReleaseId: args.id,
           }
         });
-        await ContentRelease.destroy({ where: { id: args.id }});
         return true;
       },
     },
