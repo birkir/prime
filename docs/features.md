@@ -19,7 +19,7 @@ This is a comparison table of the top GraphQL headless CMS's
 | Image Crops | ✅ | ✅ | no | no |
 | Asset CDN | 3rd-party | ✅ | ✅ | 3rd-party |
 | Previews | ✅ | ✅ | ✅ | no |
-| Releases | not yet | ✅ | no | no |
+| Releases | ✅ | ✅ | no | no |
 | Localization | ✅ | ✅ | ✅ | no |
 | Localized fields | no | no | ✅ | no |
 | Revision history | ✅ | ✅ | ✅ | no |
