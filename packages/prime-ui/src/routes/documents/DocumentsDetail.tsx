@@ -10,6 +10,7 @@ import { ContentEntries } from '../../stores/contentEntries';
 import { ContentTypes } from '../../stores/contentTypes';
 import { ContentEntry } from '../../stores/models/ContentEntry';
 import { DocumentForm, BaseDocumentForm } from './components/document-form/DocumentForm';
+import { ContentReleases } from '../../stores/contentReleases';
 import { ContentType } from '../../stores/models/ContentType';
 import { Settings } from '../../stores/settings';
 import './DocumentDetail.less';
@@ -36,7 +37,7 @@ export class DocumentsDetail extends React.Component<IProps> {
   @observable error: Error | null = null;
 
   componentDidMount() {
-    const search = new URLSearchParams(window.location.search)
+    const search = new URLSearchParams(window.location.search);
     this.locale = Settings.locales.find(({ id }) => id === search.get('locale')) || Settings.masterLocale;
     this.load();
 
@@ -172,10 +173,11 @@ export class DocumentsDetail extends React.Component<IProps> {
             message.info('Document was saved');
           } else if (this.contentType) {
             try {
-              const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.locale.id);
+              const search = new URLSearchParams(window.location.search);
+              const contentEntry = await ContentEntries.create(this.contentType.id, parsed, this.locale.id, search.get('release'));
               if (contentEntry) {
-                this.loadEntry(contentEntry.entryId);
-                this.props.history.replace(`/documents/doc/${contentEntry.entryId}?locale=${this.locale.id}`);
+                await this.loadEntry(contentEntry.entryId);
+                this.props.history.replace(`/documents/doc/${contentEntry.entryId}?${search}`);
               }
               message.success('Document created');
             } catch(err) {
@@ -188,10 +190,11 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
   }
 
-  onPublish = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    await this.contentEntry!.publish();
-    message.success('Document was published');
+  onPublish = async (e: any) => {
+    if (this.contentEntry) {
+      await this.contentEntry.publish();
+      message.success('Document was published');
+    }
   }
 
   onFormRef = (ref: BaseDocumentForm) => {
@@ -300,11 +303,39 @@ export class DocumentsDetail extends React.Component<IProps> {
     const contentEntry = this.contentEntry!;
     const contentType = this.contentType!;
 
+    const contentReleases = (
+      <Menu onClick={this.onPublish}>
+        <Menu.Item key="publish">Publish now</Menu.Item>
+        <Menu.Divider />
+        {ContentReleases.list.map(contentRelease => (
+          <Menu.Item key={contentRelease.id}>
+            {contentRelease.name}
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
+
+    const { params } = this.props.match;
+    const search = new URLSearchParams(this.props.location.search);
+
+    const backUrl = (() => {
+      const qs = `?locale=${this.locale.id}`;
+
+      if (search.get('release')) {
+        return `/documents/release/${search.get('release')}${qs}`;
+      } else if (params.contentTypeId) {
+        return `/documents/schema/${params.contentTypeId}${qs}`;
+      } else if (search.get('schema') && this.contentType) {
+        return `/documents/schema/${this.contentType.id}${qs}`;
+      }
+      return `/documents/${qs}`;
+    })();
+
     return (
       <Layout>
         <Toolbar>
           <div style={{ flex: 1, display: 'flex' }}>
-            <Link to={`/documents?locale=${this.locale.id}`} className="ant-btn-back">
+            <Link to={backUrl} className="ant-btn-back">
               <Icon type="left" />
             </Link>
             {contentType && <h3 style={{ margin: 0 }}>{contentType.title}</h3>}

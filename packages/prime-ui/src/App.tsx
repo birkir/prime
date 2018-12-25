@@ -1,12 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-
+import { observer } from 'mobx-react';
 import { Layout } from './components/layout/Layout';
 import { DocumentsList } from './routes/documents/DocumentsList';
 import { DocumentsDetail } from './routes/documents/DocumentsDetail';
-import { Home } from './routes/Home';
 import { Login } from './routes/login/Login';
-import { observer } from 'mobx-react';
 import { Auth } from './stores/auth';
 import { Logout } from './routes/logout/Logout';
 import { Playground } from './routes/playground/Playground';
@@ -70,8 +68,9 @@ export class App extends React.Component {
                         <Route path="/" exact render={() => <Redirect to="/documents" />} />
                         <Route path="/schemas" component={Schemas} />
                         <Route path="/documents" exact component={DocumentsList} />
-                        <Route path="/documents/schema/:id" component={DocumentsList} />
                         <Route path="/documents/doc/:entryId" component={DocumentsDetail} />
+                        <Route path="/documents/schema/:contentTypeId" component={DocumentsList} />
+                        <Route path="/documents/release/:contentReleaseId" component={DocumentsList} />
                         <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
                         <Route path="/settings" component={Settings} />
                       </Switch>

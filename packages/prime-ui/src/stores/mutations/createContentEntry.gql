@@ -1,10 +1,12 @@
 mutation createContentEntry(
   $contentTypeId: ID!
+  $contentReleaseId: ID
   $data: JSON!
   $language: String
 ) {
   createContentEntry(
     contentTypeId: $contentTypeId
+    contentReleaseId: $contentReleaseId
     data: $data
     language: $language
   ) {
