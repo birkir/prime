@@ -20,7 +20,7 @@ exports.up = async (db) => {
   await db.addColumn('ContentRelease', 'description', { type: 'string', length: 255 });
   await db.runSql('ALTER TABLE "ContentRelease" ADD COLUMN "publishedBy" uuid;');
   await db.runSql('ALTER TABLE "ContentEntry" DROP CONSTRAINT IF EXISTS "ContentEntry_contentReleaseId_fkey"');
-  await db.runSql('ALTER TABLE "ContentEntry" ADD CONSTRAINT ADD CONSTRAINT "ContentEntry_contentReleaseId_fkey" FOREIGN KEY ("contentReleaseId") REFERENCES "ContentRelease"(id) ON UPDATE SET NULL ON DELETE SET NULL');
+  await db.runSql('ALTER TABLE "ContentEntry" ADD CONSTRAINT "ContentEntry_contentReleaseId_fkey" FOREIGN KEY ("contentReleaseId") REFERENCES "ContentRelease"(id) ON UPDATE SET NULL ON DELETE SET NULL');
   return null;
 };
 
