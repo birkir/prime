@@ -15,7 +15,8 @@ export class PrimeFieldGroup extends PrimeField {
     repeated: true
   };
 
-  public getGraphQLOutput({ field, queries, contentType, contentTypes, resolveFieldType }) {
+  public getGraphQLOutput(args) {
+    const { field, models, queries, contentType, contentTypes, resolveFieldType } = args;
     if (contentType) {
       const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
       const fieldsTypes = subFields.reduce(
@@ -24,11 +25,8 @@ export class PrimeFieldGroup extends PrimeField {
           if (fieldType) {
             nfield.prefix = `${field.apiName}_`;
             acc[nfield.name] = fieldType.getGraphQLOutput({
-              field: nfield,
-              queries,
-              contentType,
-              contentTypes,
-              resolveFieldType
+              ...args,
+              field: nfield
             });
           }
 
