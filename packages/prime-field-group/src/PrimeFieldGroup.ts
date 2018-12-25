@@ -16,7 +16,7 @@ export class PrimeFieldGroup extends PrimeField {
   };
 
   public getGraphQLOutput(args) {
-    const { field, models, queries, contentType, contentTypes, resolveFieldType } = args;
+    const { field, contentType, resolveFieldType } = args;
     if (contentType) {
       const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
       const fieldsTypes = subFields.reduce(
