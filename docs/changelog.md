@@ -1,5 +1,20 @@
 # Changelog
 
+### 0.2.9-alpha
+ - Added default permissions to migration script
+ - Added onKeyUp filter for url safe strings
+ - Added update user mutation
+ - Fixes for ACL backend
+ - UI improvements for document editing
+
+### 0.2.6 - 0.2.8
+ - Fix migration:up
+ - Fix graphqlOutput has no models in groups
+
+### 0.2.5-alpha
+ - Releases
+ - Fix GraphQL validation for min/max
+
 ### 0.2.4-alpha
 
  - Added field descriptions to graphql types
