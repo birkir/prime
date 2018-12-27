@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-datetime",
-  "version": "0.2.4",
+  "version": "0.2.9",
   "description": "DateTime Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",

@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-string",
-  "version": "0.2.5",
+  "version": "0.2.9",
   "description": "String Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
