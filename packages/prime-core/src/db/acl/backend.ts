@@ -106,7 +106,12 @@ SequelizeBackend.prototype = {
       .params('object', 'function')
       .end();
 
-    await Promise.all(transaction);
+    await Promise.all(transaction.map((transaction: any) => {
+      if (typeof transaction === 'function') {
+        return transaction();
+      }
+      return transaction;
+    }));
     cb();
 	},
 
