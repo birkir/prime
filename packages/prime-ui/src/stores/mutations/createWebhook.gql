@@ -1,0 +1,10 @@
+mutation CreateWebhook($input:WebhookInput!) {
+  createWebhook(input:$input) {
+    id
+    name
+    url
+    method
+    createdAt
+    updatedAt
+  }
+}

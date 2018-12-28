@@ -10,6 +10,7 @@ import { Previews } from './Previews';
 import { Locales } from './Locales';
 import { Releases } from './Releases';
 import './Settings.less';
+import { Webhooks } from './Webhooks';
 
 const nav = [{
   key: 'account',
@@ -23,6 +24,10 @@ const nav = [{
   key: 'security',
   title: 'Security',
   component: Security,
+}, {
+  key: 'webhooks',
+  title: 'Webhooks',
+  component: Webhooks,
 }, {
   key: 'releases',
   title: 'Releases',

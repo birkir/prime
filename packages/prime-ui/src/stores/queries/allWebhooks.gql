@@ -1,0 +1,11 @@
+query allWebhooks {
+  allWebhooks {
+    id
+    name
+    url
+    method
+    options
+    createdAt
+    updatedAt
+  }
+}

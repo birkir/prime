@@ -1,0 +1,3 @@
+mutation removeWebhook($id: ID!) {
+  removeWebhook(id: $id)
+}

@@ -112,19 +112,19 @@ ALTER TABLE ONLY public."User"
     ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
 
 ALTER TABLE ONLY public."ContentEntry"
-    ADD CONSTRAINT "ContentEntry_contentReleaseId_fkey" FOREIGN KEY ("contentReleaseId") REFERENCES public."ContentRelease"(id) ON UPDATE CASCADE;
+    ADD CONSTRAINT "ContentEntry_contentReleaseId_fkey" FOREIGN KEY ("contentReleaseId") REFERENCES public."ContentRelease"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY public."ContentEntry"
-    ADD CONSTRAINT "ContentEntry_contentTypeId_fkey" FOREIGN KEY ("contentTypeId") REFERENCES public."ContentType"(id) ON UPDATE SET NULL ON DELETE SET NULL;
+    ADD CONSTRAINT "ContentEntry_contentTypeId_fkey" FOREIGN KEY ("contentTypeId") REFERENCES public."ContentType"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY public."ContentEntry"
-    ADD CONSTRAINT "ContentEntry_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE;
+    ADD CONSTRAINT "ContentEntry_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 ALTER TABLE ONLY public."ContentTypeField"
     ADD CONSTRAINT "ContentTypeField_contentTypeId_fkey" FOREIGN KEY ("contentTypeId") REFERENCES public."ContentType"(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY public."ContentType"
-    ADD CONSTRAINT "ContentType_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE;
+    ADD CONSTRAINT "ContentType_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 ALTER TABLE ONLY public."Settings"
-    ADD CONSTRAINT "Settings_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE;
+    ADD CONSTRAINT "Settings_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."User"(id) ON UPDATE CASCADE ON DELETE SET NULL;
