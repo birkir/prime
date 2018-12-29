@@ -1,3 +1,4 @@
+import * as pg from 'pg';
 import { Sequelize } from 'sequelize-typescript';
 
 const { DATABASE_URL, HEROKU_APP_NAME } = process.env;
@@ -15,6 +16,10 @@ if (HEROKU_APP_NAME) {
   console.log('SSL = ', String(ssl));
 }
 
+if (ssl) {
+  pg.defaults.ssl = true;
+}
+
 const options = {
   dialect: 'postgres',
   modelPaths: [`${__dirname}/models`],
@@ -23,7 +28,7 @@ const options = {
   url: DATABASE_URL,
   ssl,
   dialectOptions: {
-    ssl,
+    ssl: ssl ? { required: true } : false,
   },
 };
 
