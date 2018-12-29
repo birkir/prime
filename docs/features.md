@@ -26,7 +26,7 @@ This is a comparison table of the top GraphQL headless CMS's
 | Custom Permissions | not yet | no | ✅ | ✅ |
 | Custom Roles | not yet | no | ✅ | ✅ |
 | Document Tree Hierarchy | not yet | no | no | no |
-| Webhooks | not yet | ✅ | ✅ | ✅ |
+| Webhooks | ✅ | ✅ | ✅ | ✅ |
 | Multi workspace | no | ✅ | ✅ | no |
 | Self-hosted | ✅ | no | no | ✅ |
 | Open Source | ✅ | no | no | ✅ |
