@@ -1,0 +1,16 @@
+mutation UpdateWebhook(
+  $id: ID!
+  $input: WebhookInput!
+) {
+  updateWebhook(
+    id: $id
+    input: $input
+  ) {
+    id
+    name
+    url
+    method
+    createdAt
+    updatedAt
+  }
+}

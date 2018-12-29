@@ -6,7 +6,7 @@ import { format, distanceInWordsToNow } from 'date-fns';
 import { ReleasesDrawer } from './ReleasesDrawer';
 import { observable } from 'mobx';
 import { client } from '../../utils/client';
-import { REMOVE_CONTENT_RELEASE, PUBLISH_CONTENT_RELEASE } from '../../stores/mutations';
+import { REMOVE_CONTENT_RELEASE } from '../../stores/mutations';
 import { Instance } from 'mobx-state-tree';
 import { ContentRelease } from '../../stores/models/ContentRelease';
 

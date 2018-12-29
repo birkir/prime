@@ -21,10 +21,10 @@ exports.up = function up(db, callback) {
 
 exports.down = function down(db) {
   return Promise.all([
-    db.dropTable('ContentEntry'),
-    db.dropTable('ContentRelease'),
-    db.dropTable('ContentType'),
     db.dropTable('ContentTypeField'),
+    db.dropTable('ContentEntry'),
+    db.dropTable('ContentType'),
+    db.dropTable('ContentRelease'),
     db.dropTable('Navigation'),
     db.dropTable('Session'),
     db.dropTable('Settings'),

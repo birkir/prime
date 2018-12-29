@@ -16,6 +16,7 @@ import { fields } from './routes/fields';
 import { internalGraphql } from './routes/internal';
 import { sequelize } from './sequelize';
 import { primeConfig } from './utils/primeConfig';
+import { acl } from './acl';
 
 let app = express();
 const port = process.env.PORT || 4000;
@@ -29,6 +30,11 @@ debug('initializing');
 
 (async () => {
   await sequelize.sync();
+
+  await acl.allow('admin', ['document', 'schema', 'settings', 'user', 'release'], '*');
+  await acl.allow('developer', ['document', 'schema', 'release', 'settings'], '*');
+  await acl.allow('publisher', ['document', 'release'], '*');
+  await acl.allow('editor', 'document', ['read', 'create', 'update', 'deleteOwnDraft']);
 
   const httpServer = http.createServer(app);
 

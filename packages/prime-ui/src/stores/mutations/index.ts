@@ -11,6 +11,9 @@ import REMOVE_CONTENT_ENTRY from './removeContentEntry.gql';
 import UPDATE_CONTENT_ENTRY from './updateContentEntry.gql';
 import PUBLISH_CONTENT_ENTRY from './publishContentEntry.gql';
 import UNPUBLISH_CONTENT_ENTRY from './unpublishContentEntry.gql';
+import CREATE_WEBHOOK from './createWebhook.gql';
+import UPDATE_WEBHOOK from './updateWebhook.gql';
+import REMOVE_WEBHOOK from './removeWebhook.gql';
 
 export {
   SAVE_SCHEMA,
@@ -26,4 +29,7 @@ export {
   UPDATE_CONTENT_ENTRY,
   PUBLISH_CONTENT_ENTRY,
   UNPUBLISH_CONTENT_ENTRY,
+  CREATE_WEBHOOK,
+  UPDATE_WEBHOOK,
+  REMOVE_WEBHOOK,
 };
