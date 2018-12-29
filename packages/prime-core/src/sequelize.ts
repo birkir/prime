@@ -7,6 +7,11 @@ if (!DATABASE_URL || DATABASE_URL === '') {
   throw new Error('DATABASE_URL not set');
 }
 
+if (HEROKU_APP_NAME) {
+  console.log('HEROKU_APP_NAME =', HEROKU_APP_NAME);
+  console.log('DATABASE_URL =', DATABASE_URL);
+}
+
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   modelPaths: [`${__dirname}/models`],
