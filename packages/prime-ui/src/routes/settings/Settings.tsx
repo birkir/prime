@@ -9,8 +9,9 @@ import { Security } from './Security';
 import { Previews } from './Previews';
 import { Locales } from './Locales';
 import { Releases } from './Releases';
-import './Settings.less';
 import { Webhooks } from './Webhooks';
+import { WebhookCalls } from './WebhookCalls';
+import './Settings.less';
 
 const nav = [{
   key: 'account',
@@ -71,6 +72,7 @@ export const Settings = (props: any) => {
           </div>
           <div className="prime__settings__right">
             <Switch>
+              <Route exact path={`${path}/webhooks/:webhookId`} component={WebhookCalls} />
               {nav.map(({ key, component }) => (
                 <Route path={`${path}/${key}`} component={component} key={key} />
               ))}

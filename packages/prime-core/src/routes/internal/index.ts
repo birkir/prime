@@ -51,7 +51,7 @@ export const internalGraphql = async (restart) => {
 
   const webhookCallType = new GraphQLObjectType({
     name: 'WebhookCall',
-    fields: () => attributeFields(WebhookCall)
+    fields: () => omit(attributeFields(WebhookCall), ['webhookId']),
   });
 
   const webhookInputType =  new GraphQLNonNull(
@@ -430,9 +430,9 @@ export const internalGraphql = async (restart) => {
       }),
     },
     allWebhookCalls: {
-      type: webhookCallType,
+      type: new GraphQLList(webhookCallType),
       args: {
-        id: { type: new GraphQLNonNull(GraphQLInt) }
+        id: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve: resolver(WebhookCall, {
         before(opts, args) {
@@ -442,6 +442,7 @@ export const internalGraphql = async (restart) => {
           opts.where = {
             webhookId: args.id,
           }
+          opts.order = [['executedAt', 'DESC']];
           return opts;
         }
       }),
@@ -481,7 +482,7 @@ export const internalGraphql = async (restart) => {
       }),
     },
     WebhookCall: {
-      type: webhookType,
+      type: webhookCallType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) }
       },

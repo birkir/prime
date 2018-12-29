@@ -12,6 +12,12 @@ export class WebhookCall extends Model<WebhookCall> {
   @Column(DataType.UUID)
   public webhookId: any;
 
+  @Column(DataType.BOOLEAN)
+  public success: any;
+
+  @Column(DataType.INTEGER)
+  public status: number;
+
   @Column(DataType.JSONB)
   public request: any;
 

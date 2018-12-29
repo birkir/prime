@@ -3,9 +3,14 @@ import { Table, Button, Icon, Popconfirm, Form, Input, Drawer, Select, Badge, me
 import { Observer } from 'mobx-react';
 import { Instance } from 'mobx-state-tree';
 import { Webhook } from '../../stores/models/Webhook';
+import { FormComponentProps } from 'antd/lib/form';
 import stores from '../../stores';
 
-export const Webhooks = Form.create()(({ form }) => {
+interface IProps extends FormComponentProps {
+  history: any;
+}
+
+export const Webhooks = Form.create()(({ form, history }: IProps) => {
   const [isVisible, setVisible] = React.useState(false);
   const [webhook, setWebhook] = React.useState(null as Instance<typeof Webhook> | null);
 
@@ -91,6 +96,18 @@ export const Webhooks = Form.create()(({ form }) => {
           key: 'actions',
           render: (text, record, index) => (
             <>
+              <Button
+                style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  history.push(`/settings/webhooks/${record.id}`);
+                }}
+              >
+                <Icon
+                  type="database"
+                  theme="filled"
+                />
+              </Button>
               <Button
                 style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
                 onClick={(e: any) => {

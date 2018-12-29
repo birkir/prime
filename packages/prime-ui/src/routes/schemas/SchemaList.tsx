@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Table, Card, Button, Popconfirm, Icon, Drawer, Divider, Layout } from 'antd';
-import { History } from 'history';
+import { Table, Card, Button, Popconfirm, Icon, Drawer, Layout } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Instance } from 'mobx-state-tree';

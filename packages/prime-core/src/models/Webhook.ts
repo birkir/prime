@@ -58,11 +58,21 @@ export class Webhook extends Model<Webhook> {
         url: webhook.url,
         body,
       };
-      const response = await fetch(request.url, {
-        headers: request.headers,
-        method: request.method,
-        body: JSON.stringify(request.body),
-      });
+      let response;
+      try {
+        response = await fetch(request.url, {
+          headers: request.headers,
+          method: request.method,
+          body: JSON.stringify(request.body),
+        });
+      } catch (err) {
+        response = {
+          headers: [],
+          status: -1,
+          statusText: err.message,
+          text: async () => '',
+        };
+      }
       const headers = {};
       response.headers.forEach((value, key) => {
         headers[key] = value;
@@ -70,6 +80,7 @@ export class Webhook extends Model<Webhook> {
       await WebhookCall.create({
         webhookId: webhook.id,
         success: successCodes.indexOf(response.status) >= 0,
+        status: response.status,
         executedAt: new Date(),
         request,
         response: {

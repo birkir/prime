@@ -32,6 +32,7 @@ exports.up = async (db) => {
     CREATE TABLE "WebhookCall" (
       id uuid NOT NULL,
       "webhookId" uuid NOT NULL,
+      status integer,
       success boolean,
       request jsonb,
       response jsonb,
@@ -44,6 +45,9 @@ exports.up = async (db) => {
 
     ALTER TABLE ONLY "Webhook"
       ADD CONSTRAINT "Webhook_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"(id) ON UPDATE SET NULL ON DELETE SET NULL;
+
+    ALTER TABLE ONLY "WebhookCall"
+      ADD CONSTRAINT "WebhookCall_pkey" PRIMARY KEY (id);
 
     ALTER TABLE ONLY "WebhookCall"
       ADD CONSTRAINT "WebhookCall_webhookId_fkey" FOREIGN KEY ("webhookId") REFERENCES "Webhook"(id) ON UPDATE CASCADE;
