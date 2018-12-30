@@ -41,6 +41,8 @@ export const externalGraphql = async () => {
 
   const app = express();
 
+  entryTransformer.resetTransformCache();
+
   const queries = {
     __slices: {},
   };

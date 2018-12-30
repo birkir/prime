@@ -46,7 +46,7 @@ export class EntryTransformer {
     }
 
     for (let i = 0; i < fields.length; i += 1) {
-      const field = fields[i];
+      const field = fields[i] || {};
 
       let value = get(data, io === Types.INPUT ? field.name : field.id);
 

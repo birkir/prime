@@ -612,7 +612,11 @@ export const internalGraphql = async (restart) => {
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('schema', 'update');
-        await setFields(args.contentTypeId, args.schema);
+        try {
+          await setFields(args.contentTypeId, args.schema);
+        } catch (err) {
+          // failed to set fields
+        }
         restart();
 
         return true;
@@ -873,7 +877,7 @@ export const internalGraphql = async (restart) => {
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('schema', 'delete');
-        const contentType = await ContentType.findById(args.id);
+        const contentType = await ContentType.findOne({ where: { id: args.id } });
         if (contentType) {
           await contentType.destroy();
           restart();

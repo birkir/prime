@@ -32,17 +32,20 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
 
   const onFormSubmit = async (e: any) => {
     e.preventDefault();
-    const data = form.getFieldsValue();
-    const result = {
-      ...field,
-      ...data,
-    }
+    form.validateFieldsAndScroll(async (error, values) => {
+      if (!error) {
+        const result = {
+          ...field,
+          ...values,
+        };
 
-    if (SchemaSettingsComponent && SchemaSettingsComponent.BEFORE_SUBMIT) {
-      SchemaSettingsComponent.BEFORE_SUBMIT(result.options);
-    }
+        if (SchemaSettingsComponent && SchemaSettingsComponent.BEFORE_SUBMIT) {
+          await SchemaSettingsComponent.BEFORE_SUBMIT(result.options);
+        }
 
-    await onSubmit(result);
+        await onSubmit(result);
+      }
+    });
     return false;
   }
 
@@ -65,6 +68,12 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
   }
 
   const ensureUniqueName = (rule: any, value: any, callback: (input?: string) => void) => {
+    if (value === 'id') {
+      return callback('Forbidden name: id');
+    }
+    if (value === '_meta') {
+      return callback('Forbidden name: _meta');
+    }
     const hasMatch = schema.fields.find((f: any) => f !== field && f.name === value);
     callback(hasMatch ? 'Field with that name already exists' : undefined);
   };

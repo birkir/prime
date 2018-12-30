@@ -1,7 +1,7 @@
 import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLID } from 'graphql';
 
 export const contentEntryMetaType = new GraphQLObjectType({
-  name: 'ContentEntryMeta',
+  name: 'DocumentMeta',
   fields: {
     language: { type: GraphQLString },
     languages: { type: new GraphQLList(GraphQLString) },

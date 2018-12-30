@@ -6,7 +6,6 @@ import { ContentTypes } from '../../../stores/contentTypes';
 import { toJS } from 'mobx';
 import { client } from '../../../utils/client';
 import gql from 'graphql-tag';
-import { props } from 'bluebird';
 
 interface IProps extends FormComponentProps {
   onCancel(): void;
@@ -16,7 +15,10 @@ interface IProps extends FormComponentProps {
   item?: any;
 }
 
-type IValidateStatus = 'success' | 'warning' | 'error' | 'validating' | undefined;
+const forbiddenNames = [
+  'PageInfo',
+  'DocumentMeta',
+];
 
 const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
 
@@ -46,43 +48,55 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
   const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
-    form.validateFieldsAndScroll(async (err, values) => {
+    form.validateFieldsAndScroll(async (error, values) => {
 
-      const isAvailable = (item.name === values.name) || await checkNameAvailability();
-      if (!isAvailable) {
-        form.setFields({
-          name: {
-            value: values.name,
-            errors: [new Error('This name is already taken')],
-          },
-        });
-        return;
-      }
-
-      const data: any = { ...values };
-      const type = data.type;
-      delete data.type;
-      data.isSlice = (type === 'slice');
-      data.isTemplate = (type === 'template');
-
-      try {
-        let result = null;
-        if (contentTypeId && item) {
-          await item.update(data);
-        } else {
-          result = await ContentTypes.create(data as any);
+      if (!error) {
+        const isAvailable = (item.name === values.name) || await checkNameAvailability();
+        if (!isAvailable) {
+          form.setFields({
+            name: {
+              value: values.name,
+              errors: [new Error('This name is already taken')],
+            },
+          });
+          return;
         }
 
-        form.resetFields();
+        if (forbiddenNames.indexOf(values.name) >= 0) {
+          form.setFields({
+            name: {
+              value: values.name,
+              errors: [new Error('Forbidden name')],
+            },
+          });
+          return;
+        }
 
-        return onSubmit(result);
-      } catch (err) {
-        notification.error({
-          message: 'Could not create Schema',
-          description: err.message.replace(/^Error: /, ''),
-          duration: 0,
-          placement: 'bottomRight',
-        });
+        const data: any = { ...values };
+        const type = data.type;
+        delete data.type;
+        data.isSlice = (type === 'slice');
+        data.isTemplate = (type === 'template');
+
+        try {
+          let result = null;
+          if (contentTypeId && item) {
+            await item.update(data);
+          } else {
+            result = await ContentTypes.create(data as any);
+          }
+
+          form.resetFields();
+
+          return onSubmit(result);
+        } catch (err) {
+          notification.error({
+            message: 'Could not create Schema',
+            description: err.message.replace(/^Error: /, ''),
+            duration: 0,
+            placement: 'bottomRight',
+          });
+        }
       }
     });
     return null;
@@ -120,7 +134,7 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
               required: true,
               message: 'Required field'
             }, {
-              pattern: /^[A-Z][A-Za-z]+(?:[A-Za-z]+)*$/,
+              pattern: /^[A-Z][A-Za-z0-9]+(?:[A-Za-z0-9]+)*$/,
               message: 'Must be CamelCase',
             }],
           })(
