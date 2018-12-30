@@ -218,6 +218,11 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
   }
 
+  onDuplicate = (e: any) => {
+    this.contentEntry = null;
+    return this.onSave(e);
+  }
+
   onFormRef = (ref: BaseDocumentForm) => {
     this.documentForm = ref;
   }
@@ -438,6 +443,9 @@ export class DocumentsDetail extends React.Component<IProps> {
                 >
                   <Button type="dashed" style={{ marginBottom: 8 }} block>Unpublish</Button>
                 </Popconfirm>
+              )}
+              {contentEntry && (
+                <Button onClick={this.onDuplicate} style={{ marginBottom: 8 }} block>Duplicate</Button>
               )}
               {contentEntry && (
                 <Popconfirm
