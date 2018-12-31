@@ -39,6 +39,9 @@ export const ContentEntry = types
         return self.entryId;
       }
       return self.data.title || self.data.name || Object.values(self.data).shift();
+    },
+    get hasBeenPublished() {
+      return self.versions.findIndex(v => v.isPublished) >= 0;
     }
   }))
   .actions(self => {
@@ -126,11 +129,13 @@ export const ContentEntry = types
       }
     });
 
-    const remove = flow(function*() {
+    const remove = flow(function*(force = false) {
       return yield client.mutate({
         mutation: REMOVE_CONTENT_ENTRY,
         variables: {
           id: self.entryId,
+          language: force ? undefined : self.language,
+          contentReleaseId: force ? undefined : self.contentReleaseId,
         }
       });
     });

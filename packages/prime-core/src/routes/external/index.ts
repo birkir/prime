@@ -245,7 +245,7 @@ export const externalGraphql = async () => {
   server.applyMiddleware({
     app,
     cors: {
-      origin: true
+      origin: true,
     }
   });
 

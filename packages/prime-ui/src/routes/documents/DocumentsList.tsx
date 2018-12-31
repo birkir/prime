@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip, Badge, Modal, message } from 'antd';
+import { Avatar, Table, Card, Layout, Button, Menu, Dropdown, Icon, Tooltip, Badge, Modal, message, Tag } from 'antd';
 import { get } from 'lodash';
 import { distanceInWordsToNow } from 'date-fns';
 import { client } from '../../utils/client';
@@ -197,6 +197,12 @@ export const DocumentsList = ({ match, history }: any) => {
               backgroundColor = '#4A90E2';
             }
 
+            if (options.locale && record.language !== options.locale) {
+              dot = false;
+              icon = 'global';
+              backgroundColor = '#D3D7D6';
+            }
+
             return (
               <Badge count={dot ? '!' : 0} style={{ backgroundColor: '#faad14' }}>
                 <div style={{ width: 32, height: 32, borderRadius: 4, backgroundColor, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 21, color: 'white' }}>
@@ -209,6 +215,12 @@ export const DocumentsList = ({ match, history }: any) => {
           title: 'Title',
           dataIndex: 'data.title',
           render(_text: string, record: any) {
+            if (options.locale && record.language !== options.locale) {
+              return <div style={{ display: 'flex' }}>
+                <i style={{ display: 'inline-flex', flex: 1 }}>{record.display}</i>
+                <Tag color="orange">Needs translation</Tag>
+              </div>
+            }
             return record.display;
           }
         }, {
@@ -259,14 +271,8 @@ export const DocumentsList = ({ match, history }: any) => {
           }
         }];
 
-        const search = new URLSearchParams(location.search);
-        if (contentReleaseId) {
-          search.set('release', contentReleaseId);
-        } else if (contentTypeId) {
-          search.set('schema', '1');
-        }
         const onMenuClick = (e: any) => {
-          history.push(`/documents/create/type:${e.key.toLocaleLowerCase()};locale:${locale.id}`);
+          history.push(`/documents/create/${opts({ type: e.key.toLocaleLowerCase() })}`);
         };
 
         const menu = (

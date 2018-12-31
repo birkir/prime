@@ -456,7 +456,7 @@ export class DocumentsDetail extends React.Component<IProps> {
                   Add to release
                 </Button>
               )}
-              {contentEntry && contentEntry.isPublished && (
+              {contentEntry && contentEntry.hasBeenPublished && (
                 <Popconfirm
                   title="Are you sure?"
                   icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
@@ -477,7 +477,7 @@ export class DocumentsDetail extends React.Component<IProps> {
                   onConfirm={async () => {
                     await contentEntry.remove();
                     this.promptEnabled = false;
-                    this.props.history.push('/documents');
+                    this.props.history.push(`/documents/by/${this.opts()}`);
                     message.success('Document was deleted');
                   }}
                 >

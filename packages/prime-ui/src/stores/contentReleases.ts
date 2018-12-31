@@ -11,7 +11,8 @@ export const ContentReleases = types.model('ContentReleases', {
 })
 .views(self => ({
   get list() {
-    const entries = Array.from(self.items.values());
+    const entries = Array.from(self.items.values())
+      .filter(entry => !entry.publishedAt);
     entries.sort((a, b) => String(a.name).localeCompare(String(b.name)));
     return entries;
   }

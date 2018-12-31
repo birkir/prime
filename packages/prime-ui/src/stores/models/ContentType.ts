@@ -6,6 +6,7 @@ import { client } from '../../utils/client';
 import { ContentTypes } from '../contentTypes';
 import { Schema } from './Schema';
 import { JSONObject } from '../../interfaces/JSONObject';
+import { Settings } from '../settings';
 
 const omitSchema = (collection: any, id: string) => {
   return cloneDeepWith(collection, (value: any) => {
@@ -62,6 +63,9 @@ export const ContentType = types
           .filter((group: any) => ([].concat(self.groups as any) as any).indexOf(group.title) >= 0)
       },
     });
+
+    Settings.reloadPlayground();
+
     return get(result, 'data.setContentTypeSchema');
   });
 
@@ -82,6 +86,8 @@ export const ContentType = types
       self.title = title;
       self.settings = settings;
     }
+
+    Settings.reloadPlayground();
   });
 
   const remove = flow(function*() {
@@ -95,6 +101,8 @@ export const ContentType = types
     if (data.removeContentType) {
       ContentTypes.removeById(self.id);
     }
+
+    Settings.reloadPlayground();
   });
 
   const addGroup = (title: any) => {

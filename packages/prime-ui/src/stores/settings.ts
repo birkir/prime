@@ -93,6 +93,31 @@ export const Settings = types.model('Settings', {
     }
   });
 
+  const reloadPlayground = () => {
+    const node = document.getElementById('playground');
+    if (node) {
+      const iframe = node as HTMLIFrameElement;
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow && iframe.contentWindow.document;
+        if (doc) {
+          const reloadButton = doc.querySelector('[title="Reload Schema"]')
+          if (reloadButton) {
+            (reloadButton as HTMLButtonElement).click();
+          }
+        }
+      } catch (err) {
+        const parentNode = iframe.parentNode as HTMLDivElement;
+        parentNode.setAttribute('style', 'opacity:0; pointer-events: none; position: fixed; top: 0');
+        parentNode.hidden = false;
+        iframe.src = iframe.src.replace(/\?.*/g, '') + '?' + Math.random();
+        setTimeout(() => {
+          parentNode.hidden = true;
+          parentNode.setAttribute('style', '');
+        }, 100);
+      }
+    }
+  }
+
   const setAccessType = (accessType: any) => {
     self.accessType = accessType;
   };
@@ -118,6 +143,7 @@ export const Settings = types.model('Settings', {
       },
     });
     yield read();
+    Settings.reloadPlayground();
   });
 
   const removePreview = (node: any) => {
@@ -139,6 +165,7 @@ export const Settings = types.model('Settings', {
   return {
     read,
     save,
+    reloadPlayground,
     setAccessType,
     setMasterLocale,
     addPreview,

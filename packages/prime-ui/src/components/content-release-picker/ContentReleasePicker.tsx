@@ -25,12 +25,16 @@ export const ContentReleasePicker = (props: any) => {
       }}
       className="modal-table-picker"
       footer={false}
+      // okText="Create"
     >
       <Observer
         render={() => (
           <Table
             showHeader={false}
             pagination={false}
+            locale={{
+              emptyText: 'No releases available'
+            }}
             columns={[
               {
                 key: 'title',

@@ -165,6 +165,7 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
             ${rawQuery.replace('$INDEX$', `row_number() OVER (ORDER BY ${sort[1]}) AS index`).replace(/;$/, '')}
           ) AS "table"
           WHERE "table"."entryId" = ${sequelize.escape(cursor)}
+          AND "table"."deletedAt" IS NULL
         `;
         const result = await sequelize.query(sql);
         if (result[0] && result[0][0]) {

@@ -1,7 +1,11 @@
 mutation removeContentEntry(
   $id:ID!
+  $contentReleaseId:ID
+  $language:String
 ) {
   removeContentEntry(
     id: $id
+    contentReleaseId: $contentReleaseId
+    language: $language
   )
 }
