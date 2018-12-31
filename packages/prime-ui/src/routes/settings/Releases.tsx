@@ -139,7 +139,7 @@ export class Releases extends React.Component<any> {
           onRow={(record) => ({
             onClick: () => {
               if (!record.publishedAt) {
-                this.props.history.push(`/documents/release/${record.id}`);
+                this.props.history.push(`/documents/by/release:${record.id}`);
               }
             },
           })}

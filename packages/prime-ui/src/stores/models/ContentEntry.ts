@@ -1,54 +1,38 @@
 import { types, Instance, flow } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
 import { ContentType } from './ContentType';
-import { ContentTypes } from '../contentTypes';
+import { ContentTypeRef } from '../contentTypes';
 import { client } from '../../utils/client';
 import { UPDATE_CONTENT_ENTRY, PUBLISH_CONTENT_ENTRY, REMOVE_CONTENT_ENTRY, UNPUBLISH_CONTENT_ENTRY } from '../mutations';
-
-const ContentTypeRef = types.reference(ContentType, {
-  get(identifier: string) {
-    return ContentTypes.items.get(identifier);
-  },
-  set(value: Instance<typeof ContentType>) {
-    return value.id;
-  },
-} as any);
-
-const Version = types
-  .model('Version', {
-    versionId: types.string,
-    isPublished: types.boolean,
-    createdAt: types.Date,
-    updatedAt: types.Date,
-  })
-  .preProcessSnapshot(snapshot => ({
-      ...snapshot,
-      isPublished: Boolean(snapshot.isPublished),
-      createdAt: new Date(snapshot.createdAt),
-      updatedAt: new Date(snapshot.updatedAt),
-  }));
+import { Version } from './Version';
 
 export const ContentEntry = types
   .model('ContentEntry', {
-    entryId: types.identifier,
+    id: types.identifier,
+    entryId: types.string,
     versionId: types.string,
     contentTypeId: types.string,
     contentReleaseId: types.maybeNull(types.string),
     language: types.string,
     isPublished: types.boolean,
-    contentType: types.maybe(ContentTypeRef),
+    contentType: types.maybeNull(ContentTypeRef),
     data: types.frozen<JSONObject>(),
     createdAt: types.Date,
     updatedAt: types.Date,
     versions: types.array(Version),
+    loadedAt: types.Date,
     hasChanged: false,
   })
-  .preProcessSnapshot(snapshot => ({
+  .preProcessSnapshot(snapshot => {
+     return {
       ...snapshot,
+      loadedAt: new Date(),
+      contentType: snapshot.contentTypeId ? snapshot.contentTypeId : null,
       isPublished: Boolean(snapshot.isPublished),
       createdAt: new Date(snapshot.createdAt),
       updatedAt: new Date(snapshot.updatedAt),
-  }))
+    };
+  })
   .views(self => ({
     get display() {
       if (!self.data) {

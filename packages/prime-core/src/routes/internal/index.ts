@@ -77,21 +77,11 @@ export const internalGraphql = async (restart) => {
     name: 'ContentType',
     fields: () => ({
       ...attributeFields(ContentType),
-      fields: {
-        type: new GraphQLList(contentTypeFieldType),
-        args: {
-          limit: { type: GraphQLInt },
-          order: { type: GraphQLString }
-        },
-        resolve: resolver(ContentTypeField, {
-          before(opts, args, context, info) {
-            opts.where = {
-              contentTypeId: info.source.id
-            };
-
-            return opts;
-          }
-        })
+      schema: {
+        type: new GraphQLList(ContentTypeFieldGroup),
+        async resolve(root, args, context, info) {
+          return getFields(root.id);
+        }
       },
       entriesCount: { type: GraphQLInt },
     })
@@ -457,9 +447,18 @@ export const internalGraphql = async (restart) => {
       async resolve(root, args, context, info) {
         const count = await ContentType.count({
           where: {
-            name: args.name,
-            isSlice: Boolean(args.isSlice),
-            isTemplate: Boolean(args.isTemplate),
+            [sequelize.Op.and]: [
+              {
+                isSlice: Boolean(args.isSlice),
+                isTemplate: Boolean(args.isTemplate),
+              },
+              sequelize.where(
+                sequelize.fn('lower', sequelize.col('name')),
+                {
+                  [sequelize.Op.like]: sequelize.fn('lower', args.name)
+                }
+              )
+            ]
           },
         });
 
@@ -523,6 +522,7 @@ export const internalGraphql = async (restart) => {
       args: {
         entryId: { type: GraphQLID },
         versionId: { type: GraphQLID },
+        contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
       },
       resolve: resolver(ContentEntry, {
@@ -535,6 +535,10 @@ export const internalGraphql = async (restart) => {
             opts.where.language = args.language;
           }
 
+          if (args.contentReleaseId) {
+            opts.where.contentReleaseId = args.contentReleaseId;
+          }
+
           opts.order = [
             ['createdAt', 'DESC']
           ];
@@ -542,19 +546,7 @@ export const internalGraphql = async (restart) => {
           return opts;
         },
         async after(result, args, context) {
-
-          if (!result && args.language) {
-            result = await ContentEntry.findOne({
-              where: {
-                entryId: args.entryId,
-              }
-            });
-            result.versionId = null;
-            result.isPublished = false;
-            result.language = args.language;
-            result.data = {};
-            result.versions = [];
-          } else {
+          if (result) {
             result.versions = await ContentEntry.findAll({
               attributes: [
                 'versionId',
@@ -984,6 +976,7 @@ export const internalGraphql = async (restart) => {
     createContentEntry: {
       type: contentEntryType,
       args: {
+        entryId: { type: GraphQLID },
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
         contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
@@ -1000,6 +993,7 @@ export const internalGraphql = async (restart) => {
         }
 
         const entry = await ContentEntry.create({
+          entryId: args.entryId || undefined,
           isPublished: false,
           contentTypeId: args.contentTypeId,
           contentReleaseId: args.contentReleaseId,

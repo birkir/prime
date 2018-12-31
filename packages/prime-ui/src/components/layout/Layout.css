@@ -14,6 +14,10 @@
   transition: none;
 }
 
+.modal-table-picker .ant-modal-footer {
+  border-top-width: 0;
+}
+
 .with-table-pagination {
   border-bottom-width: 0;
 }

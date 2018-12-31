@@ -32,4 +32,12 @@ export class PrimeFieldBoolean extends PrimeField {
       type: GraphQLBoolean
     };
   }
+
+  public processInput(value) {
+    return Boolean(value);
+  }
+
+  public processOutput(value) {
+    return Boolean(value);
+  }
 }

@@ -5,13 +5,10 @@ import { ColumnProps } from 'antd/lib/table';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Instance } from 'mobx-state-tree';
 import { get } from 'lodash';
-
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { ContentType } from '../../stores/models/ContentType';
 import { ContentTypes } from '../../stores/contentTypes';
 import { EditContentType } from './components/EditContentType';
-
-const { Content } = Layout;
 
 const tabs = [{
   key: '',
@@ -64,7 +61,7 @@ export class SchemaList extends React.Component<any> {
       key: 'documents',
       render: (text, record) => (
         <Link
-          to={`/documents/schema/${record.id}`}
+          to={`/documents/by/type:${record.name.toLocaleLowerCase()}`}
           onClick={(e: any) => e.stopPropagation()}
         >
           {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
@@ -176,7 +173,7 @@ export class SchemaList extends React.Component<any> {
           <Route render={this.onRouteDefault} />
         </Switch>
 
-        <Content style={{ padding: 32 }}>
+        <Layout.Content style={{ padding: 32 }}>
 
           <Card
             tabList={tabs}
@@ -211,7 +208,7 @@ export class SchemaList extends React.Component<any> {
               })}
             />
           </Card>
-        </Content>
+        </Layout.Content>
 
         <Drawer
           title={`${this.state.settingsId ? 'Edit' : 'Create'} Content Type`}

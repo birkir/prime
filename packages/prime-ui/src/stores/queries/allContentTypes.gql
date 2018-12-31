@@ -8,5 +8,26 @@ query allContentTypes {
     isSlice
     isTemplate
     entriesCount
+    schema {
+      title
+      fields {
+        id
+        name
+        title
+        description
+        type
+        options
+        isDisplay
+        contentTypeId
+        fields {
+          id
+          name
+          title
+          description
+          type
+          options
+        }
+      }
+    }
   }
 }

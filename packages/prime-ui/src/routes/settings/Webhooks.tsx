@@ -82,7 +82,7 @@ export const Webhooks = Form.create()(({ form, history }: IProps) => {
           title: 'Successful calls',
           render(text, record) {
             const empty = record.count === 0;
-            const ratio = record.count / record.success;
+            const ratio = record.success / record.count;
             const status = (() => {
               if (empty) return 'default';
               if (ratio === 1) return 'success';

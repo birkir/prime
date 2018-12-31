@@ -79,6 +79,7 @@ export class SchemaDetail extends React.Component<IProps> {
     await ContentTypes.loadAll();
     this.contentType = await ContentTypes.loadById(this.props.match.params.id);
     if (this.contentType) {
+      this.selectedGroup = this.contentType.groups[0] || DEFAULT_GROUP_TITLE;
       await this.contentType.loadSchema();
       const { data } = await client.query({ query: ALL_FIELDS });
       this.availableFields = (data as any).allFields;

@@ -22,24 +22,29 @@ export const ContentEntries = types.model('ContentEntries', {
     return data.allContentEntries.edges.map(({ node }: any) => ContentEntry.create(node));
   });
 
-  const loadById = flow(function* loadById(id: string, language: string) {
+  const loadById = flow(function* loadById(entryId: string, locale: string, release?: string) {
     self.loading = true;
-    // @todo persist between language switches
+    const id = [entryId, locale, release].join(':');
+
     let item = self.items.get(id);
-    if (item) {
-      destroy(item);
+    if (item && item.loadedAt > new Date(Date.now() - 5000)) {
+      return item;
     }
+
     const { data } = yield client.query({
       query: CONTENT_ENTRY_BY_ID,
       variables: {
-        entryId: id,
-        language,
+        entryId,
+        contentReleaseId: release,
+        language: locale,
       },
     });
     self.loading = false;
     self.loaded = true;
-    item = ContentEntry.create(data.ContentEntry);
-    self.items.put(item);
+    if (data.ContentEntry) {
+      item = ContentEntry.create({ id, ...data.ContentEntry });
+      self.items.put(item);
+    }
     return item;
   });
 
@@ -47,7 +52,8 @@ export const ContentEntries = types.model('ContentEntries', {
     contentTypeId: string,
     proposedData: any,
     language: string,
-    contentReleaseId: string | undefined | null
+    contentReleaseId: string | undefined | null,
+    entryId?: string
   ) {
     const { data } = yield client.mutate({
       mutation: CREATE_CONTENT_ENTRY,
@@ -56,13 +62,17 @@ export const ContentEntries = types.model('ContentEntries', {
         contentTypeId,
         contentReleaseId,
         data: proposedData,
+        entryId,
       },
     });
     if (data) {
+      const entry = data.createContentEntry;
+      const id = [entry.entryId, entry.language, entry.contentReleaseId].join(':');
       const item = ContentEntry.create({
-        ...data.createContentEntry,
+        ...entry,
+        id,
         versions: [{
-          ...data.createContentEntry,
+          ...entry,
         }]
       });
       self.items.put(item);

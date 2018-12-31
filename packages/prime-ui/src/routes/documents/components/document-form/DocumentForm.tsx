@@ -89,22 +89,4 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
   }
 }
 
-export const DocumentForm = Form.create({
-  mapPropsToFields(props: any) {
-    return props.schema.fields.reduce((acc: any, field: any) => {
-      const paths = [field.name];
-      if (field) {
-        if (hasParentOfType(field, SchemaField)) {
-          // Don't process child fields
-          return acc;
-        }
-
-        const key = paths.join('.');
-        const value = get(props, `entry.data.${key}`, '');
-
-        acc[key] = Form.createFormField({ value });
-      }
-      return acc;
-    }, {});
-  },
-})(BaseDocumentForm);
+export const DocumentForm = Form.create()(BaseDocumentForm);

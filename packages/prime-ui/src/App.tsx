@@ -11,6 +11,7 @@ import { Playground } from './routes/playground/Playground';
 import { Onboarding } from './routes/onboarding/Onboarding';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
+import { ContentTypes } from './stores/contentTypes';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
@@ -28,6 +29,9 @@ export class App extends React.Component {
 
   async componentDidMount() {
     await Auth.checkLogin();
+    if (Auth.isLoggedIn) {
+      await ContentTypes.loadAll();
+    }
     this.setState({ loading: false });
   }
 
@@ -68,10 +72,9 @@ export class App extends React.Component {
                         <Route path="/" exact render={() => <Redirect to="/documents" />} />
                         <Route path="/schemas" component={Schemas} />
                         <Route path="/documents" exact component={DocumentsList} />
-                        <Route path="/documents/doc/:entryId" component={DocumentsDetail} />
-                        <Route path="/documents/schema/:contentTypeId" component={DocumentsList} />
-                        <Route path="/documents/release/:contentReleaseId" component={DocumentsList} />
-                        <Route path="/documents/create/:contentTypeId" component={DocumentsDetail} />
+                        <Route path="/documents/doc/:entryId/:options?" exact component={DocumentsDetail} />
+                        <Route path="/documents/by/:options?" exact component={DocumentsList} />
+                        <Route path="/documents/create/:options" exact component={DocumentsDetail} />
                         <Route path="/settings" component={Settings} />
                       </Switch>
                       <div hidden={section !== 'playground'}>

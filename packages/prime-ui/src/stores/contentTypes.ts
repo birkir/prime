@@ -1,5 +1,4 @@
-import gql from 'graphql-tag';
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, Instance } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
 import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
@@ -20,6 +19,11 @@ export const ContentTypes = types.model('ContentTypes', {
 }))
 .actions(self => {
 
+  const getByName = (name: string) => {
+    const lowerCaseName = name.toLocaleLowerCase();
+    return self.list.find(contentType => contentType.name.toLocaleLowerCase() === lowerCaseName);
+  }
+
   const loadById = flow(function* loadById(id: string){
     let item = self.items.get(id);
     if (!item) {
@@ -36,19 +40,18 @@ export const ContentTypes = types.model('ContentTypes', {
     return item;
   });
 
-  const loadAll = flow(function*(clear = true){
+  const loadAll = flow(function*(){
     self.loading = true;
-
-    if (clear) {
-      self.items.clear();
-    }
 
     try {
       const { data } = yield client.query({
         query: ALL_CONTENT_TYPES
       });
       data.allContentTypes.forEach((contentType: any) => {
-        const item = ContentType.create(contentType);
+        const item = ContentType.create({
+          ...contentType,
+          schema: { groups: contentType.schema },
+        });
         self.items.put(item);
       });
       self.loaded = true;
@@ -79,6 +82,7 @@ export const ContentTypes = types.model('ContentTypes', {
   };
 
   return {
+    getByName,
     loadAll,
     loadById,
     create,
@@ -86,3 +90,12 @@ export const ContentTypes = types.model('ContentTypes', {
   };
 })
 .create();
+
+export const ContentTypeRef = types.reference(ContentType, {
+  get(identifier: string) {
+    return ContentTypes.items.get(identifier);
+  },
+  set(value: Instance<typeof ContentType>) {
+    return value.id;
+  },
+} as any);

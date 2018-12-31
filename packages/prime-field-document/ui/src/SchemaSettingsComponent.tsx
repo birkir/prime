@@ -38,7 +38,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProp
           })(
             <Switch />
           )}
-          <label htmlFor="options.multiple" style={{ marginLeft: 8 }}>Allow multiple documents</label>
+          <label htmlFor="options.multiple" style={{ marginLeft: 8 }}>Multiple</label>
         </Form.Item>
       </>
     );

@@ -1,7 +1,5 @@
 import { types, flow } from 'mobx-state-tree';
 import { User } from './models/User';
-import { client } from '../utils/client';
-import { ALL_FIELDS } from './queries';
 import { fields } from '../utils/fields';
 import { Settings } from './settings';
 

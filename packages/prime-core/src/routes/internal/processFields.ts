@@ -104,7 +104,9 @@ export const getFields = async (contentTypeId: string, inheritance = true) => {
     ...fieldsSource.filter(f => f.contentTypeId !== contentTypeId),
   ];
 
-  const groups = (contentType && contentType.groups || ['Main'])
+  const defaultGroup = contentType && contentType.isTemplate ? contentType.title : 'Main';
+
+  const groups = (contentType && contentType.groups || [defaultGroup])
     .map(title => ({ title, fields: [] }));
 
   const withOptions = (field: any) => {
@@ -121,7 +123,7 @@ export const getFields = async (contentTypeId: string, inheritance = true) => {
       }
 
       if (!field.group || field.group === '') {
-        field.group = 'Main';
+        field.group = defaultGroup;
       }
 
       let group: IGroup | undefined = groups.find((g: IGroup) => g && g.title === field.group);

@@ -31,10 +31,13 @@ export const ContentType = types
     entriesCount: types.maybeNull(types.number),
     schema: types.optional(Schema, { groups: [{ title: 'Main', fields: [] } ]}),
   })
-  .preProcessSnapshot(snapshot => ({
-    ...snapshot,
-    groups: Array.isArray(snapshot.groups) ? snapshot.groups : ['Main']
-  }))
+  .preProcessSnapshot(snapshot => {
+    const groupName = snapshot.isTemplate ? snapshot.title : 'Main';
+    return {
+      ...snapshot,
+      groups: Array.isArray(snapshot.groups) ? snapshot.groups : [groupName]
+    };
+  })
 .actions(self => {
 
   const loadSchema = flow(function* loadSchema(){

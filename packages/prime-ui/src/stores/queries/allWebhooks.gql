@@ -4,6 +4,8 @@ query allWebhooks {
     name
     url
     method
+    count
+    success
     options
     createdAt
     updatedAt
