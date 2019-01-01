@@ -6,6 +6,7 @@ interface IContentType {
   id: string;
   title: string;
   isSlice?: boolean;
+  isTemplate?: boolean;
 }
 
 export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProps> {
@@ -20,7 +21,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProp
               placeholder="Select document types"
               mode="multiple"
             >
-              {stores.ContentTypes.list.filter((n: IContentType) => !n.isSlice).map((contentType: IContentType) => (
+              {stores.ContentTypes.list.filter((n: IContentType) => !n.isSlice && !n.isTemplate).map((contentType: IContentType) => (
                 <Select.Option
                   value={contentType.id}
                   key={contentType.id}
