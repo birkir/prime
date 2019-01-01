@@ -30,6 +30,7 @@ This is a comparison table of the top GraphQL headless CMS's
 | Multi workspace | no | ✅ | ✅ | no |
 | Self-hosted | ✅ | no | no | ✅ |
 | Open Source | ✅ | no | no | ✅ |
+| Enterprise Support | no | ✅ | ✅ | ✅ |
 | Price model | free | paid | paid | free |
 
 
