@@ -1,11 +1,8 @@
 import React from 'react';
 import { Prompt } from 'react-router';
 import { get } from 'lodash';
-import { Form, Tabs, Button } from 'antd';
+import { Form, Tabs } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { hasParentOfType } from 'mobx-state-tree';
-
-import { SchemaField } from '../../../../stores/models/Schema';
 import { client } from '../../../../utils/client';
 import { fields } from '../../../../utils/fields';
 import stores from '../../../../stores';

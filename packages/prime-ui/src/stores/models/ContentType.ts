@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, applySnapshot } from 'mobx-state-tree';
 import { get, cloneDeepWith, isObject } from 'lodash';
 import { LOAD_SCHEMA } from '../queries';
 import { SAVE_SCHEMA, REMOVE_CONTENT_TYPE, UPDATE_CONTENT_TYPE } from '../mutations';
@@ -34,9 +34,11 @@ export const ContentType = types
   })
   .preProcessSnapshot(snapshot => {
     const groupName = snapshot.isTemplate ? snapshot.title : 'Main';
+    const schema: any = snapshot.schema && Array.isArray(snapshot.schema) ? { groups: snapshot.schema } : snapshot.schema;
     return {
       ...snapshot,
-      groups: Array.isArray(snapshot.groups) ? snapshot.groups : [groupName]
+      schema,
+      groups: Array.isArray(snapshot.groups) ? snapshot.groups : [groupName],
     };
   })
 .actions(self => {
@@ -73,6 +75,12 @@ export const ContentType = types
     return get(result, 'data.setContentTypeSchema');
   });
 
+  const replace = (data: any) => {
+    if (data) {
+      applySnapshot(self, data);
+    }
+  };
+
   const update = flow(function*(input: any) {
     delete input.isSlice;
     delete input.isTemplate;
@@ -85,10 +93,7 @@ export const ContentType = types
       }
     });
     if (data.updateContentType) {
-      const { name, title, settings } = data.updateContentType;
-      self.name = name;
-      self.title = title;
-      self.settings = settings;
+      replace(data.updateContentType);
     }
 
     Settings.reloadPlayground();
@@ -125,6 +130,7 @@ export const ContentType = types
   }
 
   return {
+    replace,
     remove,
     update,
     addGroup,

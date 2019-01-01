@@ -3,6 +3,7 @@ import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
 import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
 import { CREATE_CONTENT_TYPE } from './mutations';
+import { when } from 'mobx';
 
 export const ContentTypes = types.model('ContentTypes', {
   items: types.map(types.late(() => ContentType)),
@@ -25,15 +26,20 @@ export const ContentTypes = types.model('ContentTypes', {
   }
 
   const loadById = flow(function* loadById(id: string){
-    let item = self.items.get(id);
-    if (!item) {
-      const { data } = yield client.query({
-        query: CONTENT_TYPE_BY_ID,
-        variables: { id },
-        fetchPolicy: 'network-only',
-      });
-      if (data.ContentType) {
-        item = ContentType.create(data.ContentType);
+    let item;
+    const { data } = yield client.query({
+      query: CONTENT_TYPE_BY_ID,
+      variables: { id },
+      fetchPolicy: 'network-only',
+    });
+    if (data.ContentType) {
+      item = ContentType.create(data.ContentType);
+      if (self.items.has(id)) {
+        item = self.items.get(id);
+        if (item) {
+          item.replace(data.ContentType);
+        }
+      } else {
         self.items.put(item);
       }
     }
@@ -41,6 +47,12 @@ export const ContentTypes = types.model('ContentTypes', {
   });
 
   const loadAll = flow(function*(){
+    if (self.loading) {
+      yield new Promise(resolve => {
+        when(() => self.loading === true, resolve);
+      });
+      return;
+    }
     self.loading = true;
 
     try {
@@ -48,11 +60,13 @@ export const ContentTypes = types.model('ContentTypes', {
         query: ALL_CONTENT_TYPES
       });
       data.allContentTypes.forEach((contentType: any) => {
-        const item = ContentType.create({
-          ...contentType,
-          schema: { groups: contentType.schema },
-        });
-        self.items.put(item);
+        const item = ContentType.create(contentType);
+        const prevItem = self.items.get(item.id);
+        if (prevItem) {
+          prevItem.replace(contentType);
+        } else {
+          self.items.put(item);
+        }
       });
       self.loaded = true;
     } catch (err) {

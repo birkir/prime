@@ -1,9 +1,9 @@
 import React from 'react';
 import { Prompt } from 'react-router';
-import { observable } from 'mobx';
+import { observable, toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import { Instance, getParent, onPatch } from 'mobx-state-tree';
-import { Layout, Card, Drawer, Button, Tabs, message, Icon } from 'antd';
+import { Instance, getParent, onPatch, clone } from 'mobx-state-tree';
+import { Layout, Card, Drawer, Button, Tabs, message, Icon, Spin } from 'antd';
 import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
 import { get } from 'lodash';
 
@@ -66,6 +66,12 @@ export class SchemaDetail extends React.Component<IProps> {
   @observable
   selectedGroup: any = DEFAULT_GROUP_TITLE;
 
+  @observable
+  loading = false;
+
+  @observable
+  saving = false;
+
   componentDidMount() {
     this.load();
     document.addEventListener('keydown', this.onKeyDown, false);
@@ -76,29 +82,31 @@ export class SchemaDetail extends React.Component<IProps> {
   }
 
   async load() {
-    await ContentTypes.loadAll();
-    this.contentType = await ContentTypes.loadById(this.props.match.params.id);
+    this.loading = true;
+    this.contentType = clone(await ContentTypes.loadById(this.props.match.params.id));
     if (this.contentType) {
       this.selectedGroup = this.contentType.groups[0] || DEFAULT_GROUP_TITLE;
-      await this.contentType.loadSchema();
       const { data } = await client.query({ query: ALL_FIELDS });
       this.availableFields = (data as any).allFields;
       this.detectChanges();
     }
+    this.loading = false;
   }
 
   saveSchema = async () => {
     this.disposeOnPatch();
+    this.saving = true;
     const success = await this.contentType!.saveSchema();
     if (success) {
       message.success('Schema updated');
     }
     this.contentType!.schema.setHasChanged(false);
     this.detectChanges();
+    this.saving = false;
   }
 
   detectChanges() {
-    this.disposeOnPatch = onPatch(this.contentType!.schema, () => {
+    this.disposeOnPatch = onPatch(this.contentType!.schema, (res) => {
       this.contentType!.schema.setHasChanged(true);
     });
   }
@@ -378,65 +386,83 @@ export class SchemaDetail extends React.Component<IProps> {
 
   render() {
     const { contentType, availableFields } = this;
-
     const { flush } = this.state;
-
-    if (flush || !contentType) {
-      return null;
-    }
-    const { schema, groups } = contentType;
     const title = get(contentType, 'title');
 
     return (
-      <DragDropContext
-        onDragEnd={this.onDragEnd}
-        onDragStart={this.onDragStart}
-      >
-        <Prompt
-          when={schema.hasChanged}
-          message="You have unsaved changes. Are you sure you want to leave?"
-        />
-        <Layout style={{ minHeight: '100%' }}>
-          <Toolbar>
-            <div style={{ flex: 1, display: 'flex' }}>
-              <Link to="/schemas" className="ant-btn-back">
-                <Icon type="left" />
-              </Link>
-              <h3 style={{ margin: 0 }}>{title}</h3>
-            </div>
-            <Button type="dashed" disabled style={{ marginRight: 8 }} title="WIP">Import</Button>
-            <Button type="primary" onClick={this.onSave}>Save</Button>
-          </Toolbar>
-          <Layout>
-            <Content>
-              <Tabs
-                className="tabs-schema"
-                defaultActiveKey={this.selectedGroup}
-                onEdit={this.onTabsEdit}
-                onChange={this.onTabsChange}
-                type="editable-card"
-                ref={this.tabs}
-              >
-                {groups.map(this.renderGroup)}
-              </Tabs>
-            </Content>
-            <Sider
-              theme="light"
-              width={300}
-              trigger={null}
-              collapsed={false}
-              style={{ padding: 16, maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
+      <Layout style={{ minHeight: '100%' }}>
+        <Toolbar>
+          <div style={{ flex: 1, display: 'flex' }}>
+            <Link to="/schemas" className="ant-btn-back">
+              <Icon type="left" />
+            </Link>
+            <h3 style={{ margin: 0 }}>
+              {this.loading ? null : title}
+              <Spin spinning={this.loading} delay={500} />
+            </h3>
+          </div>
+          <Button
+            type="dashed"
+            disabled
+            style={{ marginRight: 8 }}
+            title="WIP"
+            icon="cloud-download"
+          >
+            Import
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onSave}
+            icon="save"
+            loading={this.saving}
+          >
+            Save
+          </Button>
+        </Toolbar>
+        <Layout>
+          {contentType && !flush && (
+            <DragDropContext
+              onDragEnd={this.onDragEnd}
+              onDragStart={this.onDragStart}
             >
-              <Droppable droppableId="AvailableFields" isDropDisabled>
-                {(droppableProvided) => (
-                  <div ref={droppableProvided.innerRef}>
-                    {availableFields.map(this.renderAvailableField)}
-                    {droppableProvided.placeholder}
-                  </div>
+              <Content>
+                <Prompt
+                  when={contentType.schema.hasChanged}
+                  message="You have unsaved changes. Are you sure you want to leave?"
+                />
+                {contentType.groups && contentType.groups.map && (
+                  <Tabs
+                    className="tabs-schema"
+                    defaultActiveKey={this.selectedGroup}
+                    onEdit={this.onTabsEdit}
+                    onChange={this.onTabsChange}
+                    type="editable-card"
+                    ref={this.tabs}
+                  >
+                    {contentType.groups.map(this.renderGroup)}
+                  </Tabs>
                 )}
-              </Droppable>
-            </Sider>
-          </Layout>
+              </Content>
+              <Sider
+                theme="light"
+                width={300}
+                trigger={null}
+                collapsed={false}
+                style={{ padding: 16, maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
+              >
+                <Droppable droppableId="AvailableFields" isDropDisabled>
+                  {(droppableProvided) => (
+                    <div ref={droppableProvided.innerRef}>
+                      {availableFields.map(this.renderAvailableField)}
+                      {droppableProvided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </Sider>
+            </DragDropContext>
+          )}
+        </Layout>
+        {contentType && (
           <Drawer
             title={`${this.isNewField ? 'New' : 'Edit'} field`}
             width={360}
@@ -449,13 +475,13 @@ export class SchemaDetail extends React.Component<IProps> {
               ref={this.editField}
               availableFields={availableFields}
               field={this.selectedField}
-              schema={schema}
+              schema={contentType.schema}
               onCancel={this.onEditFieldCancel}
               onSubmit={this.onEditFieldSubmit}
             />)}
           </Drawer>
-        </Layout>
-      </DragDropContext>
+        )}
+      </Layout>
     )
   }
 }

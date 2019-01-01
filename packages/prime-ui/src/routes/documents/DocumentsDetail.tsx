@@ -190,6 +190,9 @@ export class DocumentsDetail extends React.Component<IProps> {
               reject(err);
             }
           }
+          if (this.documentForm) {
+            this.documentForm.props.form.resetFields();
+          }
           this.loading.save = false;
         }
       });
