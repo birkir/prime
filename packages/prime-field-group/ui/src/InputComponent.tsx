@@ -6,9 +6,7 @@ import * as React from 'react';
 
 const { uuid } = (window as any);
 
-type IProps = IPrimeFieldProps;
-
-const getItems = ({ initialValue }: IProps) => {
+const getItems = ({ initialValue }: IPrimeFieldProps) => {
   if (Array.isArray(initialValue)) {
     return initialValue.map((_, index) => [uuid.v4(), index]);
   }
@@ -16,18 +14,18 @@ const getItems = ({ initialValue }: IProps) => {
   return [];
 };
 
-const getIndex = (props: IProps) => {
+const getIndex = (props: IPrimeFieldProps) => {
   return Math.max(-1, ...getItems(props).map(n => n[1])) + 1;
 };
 
-export class InputComponent extends React.PureComponent<IProps, any> {
+export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
 
   public state = {
     items: getItems(this.props),
     index: getIndex(this.props)
   };
 
-  public componentWillReceiveProps(nextProps: IProps) {
+  public componentWillReceiveProps(nextProps: IPrimeFieldProps) {
     if (!this.props.entry && nextProps.entry) {
       this.setState({
         items: getItems(nextProps),

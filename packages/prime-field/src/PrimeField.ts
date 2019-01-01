@@ -18,13 +18,34 @@ interface IField {
   apiName: string;
 }
 
+interface IEntry {
+  id?: string;
+  entryId: string;
+  versionId: string;
+  contentTypeId: string;
+  contentReleaseId?: string;
+  language: string;
+  isPublished: boolean;
+  contentType: IContentType;
+  data: object;
+  createdAt: Date;
+  updatedAt: Date;
+  versions: any[]; // tslint:disable-line no-any
+}
+
 interface IContentType {
   id: string;
   name: string;
   title: string;
+  description: string;
+  groups: string[];
+  settings: object;
   isSlice: boolean;
+  isTemplate: boolean;
   contentEntry: any; // tslint:disable-line no-any
+  entriesCount?: number;
   fields: any[]; // tslint:disable-line no-any
+  schema: any[]; // tslint:disable-line no-any
 }
 
 export interface IPrimeFieldProps {
@@ -39,10 +60,8 @@ export interface IPrimeFieldProps {
     ContentTypes: any; // tslint:disable-line no-any
     Users: any; // tslint:disable-line no-any
   };
-  entry: {
-    entryId: string;
-    data: object;
-  };
+  children?: any; // tslint:disable-line no-any
+  entry?: IEntry;
   path: string;
   renderField(args: IPrimeFieldProps): React.ReactNode;
 }
