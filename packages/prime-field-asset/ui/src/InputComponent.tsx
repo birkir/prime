@@ -63,6 +63,14 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     this.getImageSize();
   }
 
+  public componentWillReceiveProps(nextProps: IPrimeFieldProps) {
+    if (!this.props.entry && nextProps.entry) {
+      this.setState({
+        file: getInitialFile(nextProps.initialValue)
+      });
+    }
+  }
+
   public onBeforeUpload = async () => {
     const { username, password } = this.url;
 

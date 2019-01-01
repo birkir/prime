@@ -5,7 +5,7 @@ import moment from 'moment'; // tslint:disable-line no-implicit-dependencies
 import * as React from 'react';
 
 interface IState {
-  date: any; // tslint:disable-line no-any
+  value: any; // tslint:disable-line no-any
 }
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState> {
@@ -19,13 +19,15 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
   }
 
   public render() {
-    const { field, form, path, initialValue } = this.props;
+    const { entry, field, form, path, initialValue } = this.props;
     const isTime = get(field.options, 'time', false);
+    const value = isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue);
 
     return (
       <Form.Item label={field.title}>
         <DatePicker
-          defaultValue={isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue)}
+          key={entry && entry.entryId || 'datepicker'}
+          defaultValue={value}
           format={isTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
           size="large"
           onChange={this.onChange}

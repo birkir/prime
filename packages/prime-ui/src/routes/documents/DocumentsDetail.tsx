@@ -411,7 +411,6 @@ export class DocumentsDetail extends React.Component<IProps> {
             )}
             {contentType && contentType.schema && (
               <DocumentForm
-                key={contentEntry && contentEntry!.versionId || 'new'}
                 wrappedComponentRef={this.onFormRef}
                 promptEnabled={this.promptEnabled}
                 onSave={this.onSave}

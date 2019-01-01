@@ -1,40 +1,47 @@
 // tslint:disable insecure-random no-any
-import { Button, Card, Divider, Form, Icon } from 'antd';
+import { IPrimeFieldProps } from '@primecms/field';
+import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
 import * as React from 'react';
 
-const getRandomId = () => Array.from({ length: 5 })
-  .map(() => Math.floor(Math.random() * 10000) + 9999)
-  .join('-');
+const { uuid } = (window as any);
 
-interface IProps {
-  field: any;
-  form: any;
-  renderField: any;
-  path: any;
-}
+type IProps = IPrimeFieldProps;
+
+const getItems = ({ initialValue }: IProps) => {
+  if (Array.isArray(initialValue)) {
+    return initialValue.map((_, index) => [uuid.v4(), index]);
+  }
+
+  return [];
+};
+
+const getIndex = (props: IProps) => {
+  return Math.max(-1, ...getItems(props).map(n => n[1])) + 1;
+};
 
 export class InputComponent extends React.PureComponent<IProps, any> {
 
-  public repeated: boolean;
-  public values: any;
-  public keysKey: any;
-  public initialValue: string[];
+  public state = {
+    items: getItems(this.props),
+    index: getIndex(this.props)
+  };
 
-  constructor(props: any) {
-    super(props);
-    const { path, entry, initialValue } = props;
-    const values = initialValue;
-    // get(entry, `data.${path}`, []);
-
-    this.repeated = get(props.field, 'options.repeated', false) === true;
-    this.values = values;
-    this.keysKey =  `${path}.keys`;
-
-    if (Array.isArray(values)) {
-      this.initialValue = values.map(getRandomId);
-    } else {
-      this.initialValue = this.repeated ? [] : [{} as any];
+  public componentWillReceiveProps(nextProps: IProps) {
+    if (!this.props.entry && nextProps.entry) {
+      this.setState({
+        items: getItems(nextProps),
+        index: getIndex(nextProps)
+      });
+    } else if (this.props.entry && nextProps.entry) {
+      if (this.props.entry.versionId !== nextProps.entry.versionId) {
+        this.setState({
+          items: this.state.items.map((item, index) => {
+            return [item[0], index];
+          }),
+          index: this.state.items.length + 1
+        });
+      }
     }
   }
 
@@ -44,28 +51,24 @@ export class InputComponent extends React.PureComponent<IProps, any> {
   }
 
   public remove = (k: any) => {
-    const { form } = this.props;
-    const keys = form.getFieldValue(this.keysKey);
-    form.setFieldsValue({
-      [this.keysKey]: keys.map((key: any) => key === k ? null : key)
-    });
+    const items = this.state.items.slice(0);
+    items.splice(items.findIndex((n) => n[0] === k), 1);
+    this.setState({ items });
   }
 
   public add = () => {
-    const { form } = this.props;
-    const keys = form.getFieldValue(this.keysKey);
-    const nextKeys = keys.concat(getRandomId());
-    form.setFieldsValue({
-      [this.keysKey]: nextKeys
+    const { items, index } = this.state;
+    this.setState({
+      items: [...items, [uuid.v4(), index]],
+      index: index + 1
     });
   }
 
-  public renderField = (field: any, key: string) => {
-    const { getFieldValue } = this.props.form;
-    const keys = getFieldValue(this.keysKey);
-    const index = this.repeated ? `${keys.indexOf(key)}.` : '';
-    const path = `${this.props.path}.${index}${field.name}`;
-    const initialValue = get(this.values, `${index}${field.name}`);
+  public renderField = (field: any, key: string, index: number) => {
+    const repeated = get(this.props.field, 'options.repeated', false);
+    const prefix = repeated ? `${index}.` : '';
+    const path = `${this.props.path}.${prefix}${field.name}`;
+    const initialValue = get(this.props.initialValue, `${prefix}${field.name}`);
 
     return this.props.renderField({
       ...this.props,
@@ -75,28 +78,22 @@ export class InputComponent extends React.PureComponent<IProps, any> {
     });
   }
 
-  public renderGroupItem = (key: any, index: number) => {
+  public renderGroupItem = ([key, index]: any) => {
     const { field } = this.props;
+    const { fields = [] } = field;
+    const repeated = get(field, 'options.repeated', false);
 
-    if (!key) { return null; }
+    if (!key) {
+      return null;
+    }
 
     return (
       <Card
         key={key}
         className="prime-group-item"
       >
-        {this.repeated && (
+        {repeated && (
           <div className="prime-slice-item-actions">
-            {/* <Icon
-              className="prime-slice-item-button disabled"
-              type="up"
-              data-index={index}
-            />
-            <Icon
-              className="prime-slice-item-button disabled"
-              type="down"
-              data-index={index}
-            /> */}
             <Icon
               className="prime-slice-item-button"
               type="minus"
@@ -105,36 +102,31 @@ export class InputComponent extends React.PureComponent<IProps, any> {
             />
           </div>
         )}
-        {field.fields.map((f: any) => this.renderField(f, key))}
+        {fields.map((f: any) => this.renderField(f, key, index))}
       </Card>
     );
   }
 
   public render() {
-    const { field, form } = this.props;
-    const { getFieldValue, getFieldDecorator } = form;
-
-    getFieldDecorator(this.keysKey, { initialValue: this.initialValue });
-
-    const keys = getFieldValue(this.keysKey);
+    const { items } = this.state;
+    const { field } = this.props;
+    const repeated = get(field, 'options.repeated', false);
 
     return (
-      <>
-        <Form.Item label={field.title} className="prime-group">
-          {keys.map(this.renderGroupItem)}
-          {this.repeated && (
-            <div style={{ textAlign: 'center' }}>
-              <Button
-                size="large"
-                shape="circle"
-                onClick={this.add}
-                icon="plus"
-                className="prime-slice-add"
-              />
-            </div>
-          )}
-        </Form.Item>
-      </>
+      <Form.Item label={field.title} className="prime-group">
+        {items.map(this.renderGroupItem)}
+        {repeated && (
+          <div style={{ textAlign: 'center' }}>
+            <Button
+              size="large"
+              shape="circle"
+              onClick={this.add}
+              icon="plus"
+              className="prime-slice-add"
+            />
+          </div>
+        )}
+      </Form.Item>
     );
   }
 }

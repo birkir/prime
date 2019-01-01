@@ -66,6 +66,10 @@ export const ContentType = types
 
     Settings.reloadPlayground();
 
+    if (self.isSlice || self.isTemplate) {
+      ContentTypes.loadAll();
+    }
+
     return get(result, 'data.setContentTypeSchema');
   });
 

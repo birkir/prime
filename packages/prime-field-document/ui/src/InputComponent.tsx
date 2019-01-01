@@ -17,7 +17,6 @@ interface IOption {
 
 interface IState {
   options: IOption[];
-  defaultValue: undefined | string | string[];
   loading: boolean;
 }
 
@@ -25,7 +24,6 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public state: IState = {
     options: [],
-    defaultValue: undefined,
     loading: false
   };
 
@@ -37,7 +35,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public async load() {
-    const { field, stores, initialValue } = this.props;
+    const { field, stores } = this.props;
 
     this.setState({ loading: true });
 
@@ -55,7 +53,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       })
     );
 
-    const state: IState = {
+    this.setState({
       options: contentTypes.map(({ contentType, items }: any) => ({ // tslint:disable-line no-any
         key: contentType.id,
         value: contentType.id,
@@ -69,23 +67,23 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           isLeaf: true
         }))
       })),
-      defaultValue: undefined,
       loading: false
-    };
+    });
+  }
 
+  get defaultValue() {
+    const { field, initialValue } = this.props;
     const { multiple = false } = field.options;
 
     if (multiple) {
       if (typeof initialValue === 'string') {
-        state.defaultValue = [initialValue];
+        return [initialValue];
       } else if (Array.isArray(initialValue)) {
-        state.defaultValue = [].concat((initialValue || []));
+        return [].concat((initialValue || []));
       }
     } else if (initialValue) {
-      state.defaultValue = Array.isArray(initialValue) ? initialValue[0] : initialValue;
+      return Array.isArray(initialValue) ? initialValue[0] : initialValue;
     }
-
-    this.setState(state);
   }
 
   public onChange = (value: string | string[]) => {
@@ -95,16 +93,17 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public render() {
-    const { loading, defaultValue, options } = this.state;
-    const { field, path, form, initialValue } = this.props;
+    const { loading, options } = this.state;
+    const { field, entry, path, form, initialValue } = this.props;
     const { getFieldDecorator } = form;
 
     return (
       <Form.Item label={field.title}>
         {loading === false ? (
           <TreeSelect
+            key={entry && entry.entryId || 'picker'}
             style={{ width: 300 }}
-            defaultValue={defaultValue}
+            defaultValue={this.defaultValue}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             showSearch={true}
             size="large"

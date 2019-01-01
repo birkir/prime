@@ -24,7 +24,10 @@ export const ContentEntry = types
     hasChanged: false,
   })
   .preProcessSnapshot(snapshot => {
-     return {
+    if (!snapshot.id) {
+      snapshot.id = [snapshot.entryId, snapshot.language, snapshot.contentReleaseId].join(':');
+    }
+    return {
       ...snapshot,
       loadedAt: new Date(),
       contentType: snapshot.contentTypeId ? snapshot.contentTypeId : null,

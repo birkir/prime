@@ -10,6 +10,7 @@ interface IField {
   description: string;
   type: string;
   group: string;
+  fields?: IField[];
   position: number;
   contentTypeId: string;
   contentTypeFieldId: string;

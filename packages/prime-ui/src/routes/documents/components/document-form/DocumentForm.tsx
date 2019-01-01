@@ -43,6 +43,10 @@ function renderInputField({ field, path, initialValue, form, entry, client, stor
 
 export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
 
+  state = {
+    activeTab: get(this.props, 'schema.groups.0.title', 'Main'),
+  };
+
   renderField = (field: any, index: number) => {
     const { form } = this.props;
     return renderInputField({
@@ -79,6 +83,10 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
           <Tabs
             type="card"
             animated={false}
+            activeKey={this.state.activeTab}
+            onChange={(activeTab: string) => {
+              this.setState({ activeTab });
+            }}
           >
             {groups.map(this.renderGroup)}
           </Tabs>
