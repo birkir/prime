@@ -65,7 +65,7 @@ This field will keep a numerical value with an optional floating point property
 Package: [`@primecms/field-number`](https://github.com/birkir/prime/tree/master/packages/prime-field-number)
 
 Options:
- - **Floating Point** _boolean_ - Weither to allow floating point numbers
+ - **Floating Point** _boolean_ - Whether to allow floating point numbers
 
 Input/Output: `GraphQLFloat` or `GraphQLInt`
 
