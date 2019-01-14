@@ -1,7 +1,7 @@
 import { PrimeField } from '@primecms/field';
 import { ValidationError } from 'apollo-server-core';
 import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { primeFieldStringWhere } from './primeFieldStringWhere';
+import { primeFieldStringWhere } from './PrimeFieldStringWhere';
 
 interface IPrimeFieldStringOptions {
   type: 'singleline' | 'multiline' | 'markdown';
