@@ -86,7 +86,7 @@ export const ReleasesDrawer = Form.create()(({ form, isOpen, onClose, item }: IP
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               allowClear
-              disabledDate={(date) => date.isBefore()}
+              disabledDate={(date) => date == null || date.isBefore()}
             />
           )}
         </Form.Item>
