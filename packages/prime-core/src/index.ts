@@ -39,7 +39,8 @@ debug('initializing');
   const httpServer = http.createServer(app);
 
   if (!process.env.SESSION_SECRET && process.env.NODE_ENV !== 'development') {
-    throw new Error('Unset environment variable in non-development mode: "SESSION_SECRET"');
+    console.warn('Unset environment variable in non-development mode: "SESSION_SECRET"');
+    console.warn('This can be very dangerous');
   }
 
   const start = async () => {
