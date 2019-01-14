@@ -10,6 +10,8 @@ npm install -S @primecms/core @primecms/ui
 npx primecms start
 ```
 
+> Please remember to set the environment variable "SESSION_SECRET".
+
 ## Installing requirements
 
 These are the requirements for prime:
