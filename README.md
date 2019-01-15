@@ -32,13 +32,13 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
 <table>
   <tr>
     <td>
-      <img src="https://i.imgur.com/yI7unrf.png" width="200" alt="List of documents">
+      <img src="https://i.imgur.com/kIJJAwN.png" width="200" alt="List of documents">
     </td>
     <td>
-      <img src="https://i.imgur.com/7YpBPvX.png" width="200" alt="Edit document">
+      <img src="https://i.imgur.com/9FLiisc.png" width="200" alt="Edit document">
     </td>
     <td>
-      <img src="https://i.imgur.com/e65QyzC.png" width="200" alt="Edit schema">
+      <img src="https://i.imgur.com/gZZLGC5.png" width="200" alt="Edit schema">
     </td>
   </tr>
   <tr>
@@ -48,6 +48,24 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
   </tr>
 </table>
 
+<table>
+  <tr>
+    <td>
+      <img src="https://i.imgur.com/Dim0fPN.png" width="200" alt="Multiple locales">
+    </td>
+    <td>
+      <img src="https://i.imgur.com/jHYiPa5.png" width="200" alt="Set Preview URLs">
+    </td>
+    <td>
+      <img src="https://i.imgur.com/T7q8a2M.png" width="200" alt="Create Releases">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><i>Multiple locales</i></td>
+    <td align="center"><i>Set Preview URLs</i></td>
+    <td align="center"><i>Create Releases</i></td>
+  </tr>
+</table>
 <table>
   <tr>
     <td>
@@ -66,6 +84,8 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
     </td>
   </tr>
 </table>
+
+[More screenshots available here](https://imgur.com/gallery/NVDH81P)
 
 ## Getting Started
 
