@@ -1,7 +1,7 @@
 {
   "name": "@primecms/ui",
   "version": "0.2.20",
-  "description": "User Interface for Prime CMS Core",
+  "description": "User Interface for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
   "license": "MIT",
