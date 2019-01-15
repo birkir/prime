@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-boolean",
-  "version": "0.2.17",
+  "version": "0.2.19",
   "description": "Boolean Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime#readme",
