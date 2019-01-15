@@ -24,6 +24,8 @@ import { acl } from '../../acl';
 import { ContentRelease } from '../../models/ContentRelease';
 import { Webhook } from '../../models/Webhook';
 import { WebhookCall } from '../../models/WebhookCall';
+import { updateNpmPackages } from '../../utils/updateNpmPackages';
+import { latestPrimeVersion } from '../../utils/latestPrimeVersion';
 
 const entryTransformer = new EntryTransformer();
 
@@ -591,6 +593,26 @@ export const internalGraphql = async (restart) => {
       },
       resolve: resolver(ContentRelease)
     },
+    primeVersion: {
+      type: new GraphQLObjectType({
+        name: 'PrimeVersion',
+        fields: {
+          current: { type: GraphQLString },
+          latest: { type: GraphQLString },
+        }
+      }),
+      async resolve() {
+        let version = 'unknown';
+        try { version = require('@primecms/core/package.json').version; } catch (err) {}
+        try { version = require('@primecms/ui/package.json').version; } catch (err) {}
+        try { version = require('../../../package.json').version; } catch (err) {}
+
+        return {
+          current: version,
+          latest: await latestPrimeVersion()
+        };
+      }
+    }
   };
 
   const mutationFields = {
@@ -1231,6 +1253,19 @@ export const internalGraphql = async (restart) => {
         const success = await Webhook.destroy({ where: { id: args.id } });
         return Boolean(success);
       },
+    },
+    primeUpdate: {
+      type: GraphQLBoolean,
+      args: {
+        version: { type: GraphQLString },
+      },
+      async resolve(root, args, context, info) {
+        await context.ensureAllowed('settings', 'update');
+        return updateNpmPackages([
+          `@primecms/core@${args.version}`,
+          `@primecms/ui@${args.version}`,
+        ]);
+      }
     }
   };
 
