@@ -20,10 +20,26 @@ export const ContentTypes = types.model('ContentTypes', {
 }))
 .actions(self => {
 
-  const getByName = (name: string) => {
-    const lowerCaseName = name.toLocaleLowerCase();
-    return self.list.find(contentType => contentType.name.toLocaleLowerCase() === lowerCaseName);
-  }
+  const loadByName = flow(function* loadById(name: string){
+    let item;
+    const { data } = yield client.query({
+      query: CONTENT_TYPE_BY_ID,
+      variables: { name },
+      fetchPolicy: 'network-only',
+    });
+    if (data.ContentType) {
+      item = ContentType.create(data.ContentType);
+      if (self.items.has(item.id)) {
+        item = self.items.get(item.id);
+        if (item) {
+          item.replace(data.ContentType);
+        }
+      } else {
+        self.items.put(item);
+      }
+    }
+    return item;
+  });
 
   const loadById = flow(function* loadById(id: string){
     let item;
@@ -96,9 +112,9 @@ export const ContentTypes = types.model('ContentTypes', {
   };
 
   return {
-    getByName,
     loadAll,
     loadById,
+    loadByName,
     create,
     removeById,
   };

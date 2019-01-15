@@ -104,7 +104,10 @@ export const DocumentsList = ({ match, history }: any) => {
 
   const locale = Settings.locales.find(l => l.id === options.locale) || Settings.masterLocale;
 
-  React.useEffect(() => { ContentReleases.loadAll() }, [match.location]);
+  React.useEffect(() => {
+    ContentReleases.loadAll();
+    ContentTypes.loadAll();
+  }, [match.location]);
 
   const onLocaleClick = (e: any) => {
     history.push(`/documents/by/${opts({ locale: e.key })}`);

@@ -506,14 +506,19 @@ export const internalGraphql = async (restart) => {
     ContentType: {
       type: contentTypeType,
       args: {
-        id: { type: GraphQLID }
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
       },
       resolve: resolver(ContentType, {
         before(opts, args, context) {
-          opts.where = {
-            id: args.id
-          };
-
+          opts.where = opts.where || {};
+          if (args.id) {
+            opts.where.id = args.id;
+          } else if (args.name) {
+            opts.where = {
+              [sequelize.Op.and]: [sequelize.where(sequelize.fn('lower', sequelize.col('name')), args.name.toLowerCase())]
+            };
+          }
           return opts;
         }
       })

@@ -93,7 +93,8 @@ export class DocumentsDetail extends React.Component<IProps> {
     const { options, locale } = this;
 
     if (options.type) {
-      this.contentType = ContentTypes.getByName(options.type);
+      this.contentType = await ContentTypes.loadByName(options.type);
+      ContentTypes.loadAll();
 
       if (this.contentType) {
         this.forceUpdate();

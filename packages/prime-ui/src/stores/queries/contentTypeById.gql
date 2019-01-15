@@ -1,5 +1,11 @@
-query contentTypeById($id: ID) {
-  ContentType(id: $id) {
+query contentTypeById(
+  $id: ID
+  $name: String
+) {
+  ContentType(
+    id: $id
+    name: $name
+  ) {
     id
     name
     title
