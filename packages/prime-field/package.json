@@ -4,37 +4,53 @@
   "version": "0.2.17",
   "description": "Base interface for Prime CMS Fields",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
-  "homepage": "https://github.com/birkir/prime#readme",
+  "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field",
   "license": "MIT",
   "main": "lib/index.js",
-  "directories": {
-    "lib": "lib"
+  "typings": "lib/index",
+  "publishConfig": {
+    "access": "public"
   },
-  "files": [
-    "lib"
-  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "tsc --watch",
+    "precompile": "yarn clean",
+    "compile": "tsc",
+    "prepublishOnly": "yarn compile",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "/__tests__/.*\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/birkir/prime.git"
   },
-  "scripts": {
-    "prepublishOnly": "npm run build",
-    "lint": "tslint -p .",
-    "build": "rm -rf ./lib && tsc -p .",
-    "test": "echo \"Error: run tests from root\" && exit 1"
-  },
   "bugs": {
     "url": "https://github.com/birkir/prime/issues"
   },
+  "keywords": [
+    "prime",
+    "primecms",
+    "field",
+    "base"
+  ],
   "peerDependencies": {
     "antd": "^3.0.0",
     "apollo-boost": "^0.1.20",
     "graphql": "^14.0.0",
     "lodash": "^4.17.11",
     "react": "^16.7.0"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "gitHead": "330de5101b01a3604d708b7d5991943fb57db9ef"
 }
