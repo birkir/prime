@@ -10,7 +10,6 @@ interface IOptions {
 }
 
 export class PrimeFieldSelect extends PrimeField {
-
   public id: string = 'select';
   public title: string = 'Select';
   public description: string = 'Select field';
@@ -19,7 +18,7 @@ export class PrimeFieldSelect extends PrimeField {
     items: [],
     required: false,
     enum: false,
-    multiple: false
+    multiple: false,
   };
 
   private types = new Map();
@@ -31,30 +30,30 @@ export class PrimeFieldSelect extends PrimeField {
       return this.types.get(key);
     }
 
-    const values = items.reduce(
-      (acc, item) => {
-        if (item && item.key && item.key !== '' && item.value) {
-          if (item.key.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) {
-            acc[item.key] = { value: item.value };
-          }
+    const values = items.reduce((acc, item) => {
+      if (item && item.key && item.key !== '' && item.value) {
+        if (item.key.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) {
+          acc[item.key] = { value: item.value };
         }
+      }
 
-        return acc;
-      },
-      {}
-    );
+      return acc;
+    }, {});
 
     if (Object.keys(values).length === 0) {
       return null;
     }
 
-    this.types.set(key, new GraphQLEnumType({
-      name: `${contentType.name}_${field.apiName}`,
-      values
-    }));
+    this.types.set(
+      key,
+      new GraphQLEnumType({
+        name: `${contentType.name}_${field.apiName}`,
+        values,
+      })
+    );
 
     return this.types.get(key);
-  }
+  };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
     const { items, enum: enumeration, multiple } = this.getOptions(args.field);
@@ -67,18 +66,15 @@ export class PrimeFieldSelect extends PrimeField {
     return {
       type: multiple ? new GraphQLList(outputType) : outputType,
       resolve: (root, rArgs, context, info) => {
-        const values = items.reduce(
-          (acc, item) => {
-            if (item && item.key && item.key !== '' && item.value) {
-              if (item.key.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) {
-                acc[item.key] = item.value;
-              }
+        const values = items.reduce((acc, item) => {
+          if (item && item.key && item.key !== '' && item.value) {
+            if (item.key.match(/^[_a-zA-Z][_a-zA-Z0-9]*$/)) {
+              acc[item.key] = item.value;
             }
+          }
 
-            return acc;
-          },
-          {}
-        );
+          return acc;
+        }, {});
 
         const value = get(values, root[info.fieldName], null);
 
@@ -87,7 +83,7 @@ export class PrimeFieldSelect extends PrimeField {
         }
 
         return value;
-      }
+      },
     };
   }
 
@@ -101,7 +97,7 @@ export class PrimeFieldSelect extends PrimeField {
     }
 
     return {
-      type: multiple ? new GraphQLList(inputType) : inputType
+      type: multiple ? new GraphQLList(inputType) : inputType,
     };
   }
 
@@ -118,9 +114,9 @@ export class PrimeFieldSelect extends PrimeField {
         type: new GraphQLInputObjectType({
           name: `PrimeFieldSelectWhere${args.contentType.name}_${args.field.apiName}`,
           fields: {
-            eq: { type: enumType }
-          }
-        })
+            eq: { type: enumType },
+          },
+        }),
       };
     }
 

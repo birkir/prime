@@ -24,6 +24,7 @@ lerna run dev --stream
 Dependencies must be hoisted, as GraphQL types are created with Symbol and must be unique.
 
 Fix:
+
 ```
 lerna bootstrap --hoist
 ```

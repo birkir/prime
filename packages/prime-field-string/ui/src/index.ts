@@ -5,5 +5,5 @@ import { SchemaSettingsComponent } from './SchemaSettingsComponent';
 // tslint:disable-next-line no-default-export export-name
 export default registerField('string', {
   InputComponent,
-  SchemaSettingsComponent
+  SchemaSettingsComponent,
 });

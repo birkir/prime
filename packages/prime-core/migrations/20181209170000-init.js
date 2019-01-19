@@ -10,7 +10,7 @@ exports.setup = function setup(options) {
 
 exports.up = function up(db, callback) {
   var filePath = path.join(__dirname + '/20181209170000-init-up.sql');
-  fs.readFile(filePath, { encoding: 'utf-8' }, function(err,data){
+  fs.readFile(filePath, { encoding: 'utf-8' }, function(err, data) {
     if (err) return console.log(err);
     db.runSql(data, function(err) {
       if (err) return console.log(err);

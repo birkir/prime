@@ -2,3 +2,5 @@ coverage
 lib
 package.json
 typedoc.json
+packages/
+build/

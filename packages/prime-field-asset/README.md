@@ -6,7 +6,7 @@ Backed with Cloudinary.
 
 ### Required environment variable
 
- - `PRIME_CLOUDINARY_URL`
+- `PRIME_CLOUDINARY_URL`
 
 Example:
 

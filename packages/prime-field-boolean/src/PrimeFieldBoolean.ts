@@ -6,30 +6,29 @@ interface IPrimeFieldStringOptions {
 }
 
 export class PrimeFieldBoolean extends PrimeField {
-
   public id: string = 'boolean';
   public title: string = 'Boolean';
   public description: string = 'Boolean field';
 
   public defaultOptions: IPrimeFieldStringOptions = {
-    label: ''
+    label: '',
   };
 
   public getGraphQLOutput() {
     return {
-      type: GraphQLBoolean
+      type: GraphQLBoolean,
     };
   }
 
   public getGraphQLInput() {
     return {
-      type: GraphQLBoolean
+      type: GraphQLBoolean,
     };
   }
 
   public getGraphQLWhere() {
     return {
-      type: GraphQLBoolean
+      type: GraphQLBoolean,
     };
   }
 

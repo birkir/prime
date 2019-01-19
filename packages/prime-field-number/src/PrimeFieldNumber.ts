@@ -14,14 +14,13 @@ interface IOptions {
 }
 
 export class PrimeFieldNumber extends PrimeField {
-
   public id: string = 'number';
   public title: string = 'Number';
   public description: string = 'Number field';
 
   public defaultOptions: IOptions = {
     float: true,
-    rules: {}
+    rules: {},
   };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
@@ -29,7 +28,7 @@ export class PrimeFieldNumber extends PrimeField {
 
     return {
       type: float ? GraphQLFloat : GraphQLInt,
-      description: args.field.description
+      description: args.field.description,
     };
   }
 
@@ -39,7 +38,7 @@ export class PrimeFieldNumber extends PrimeField {
 
     return {
       type: rules.required ? new GraphQLNonNull(type) : type,
-      description: args.field.description
+      description: args.field.description,
     };
   }
 
@@ -56,9 +55,9 @@ export class PrimeFieldNumber extends PrimeField {
           gt: { type },
           lt: { type },
           gte: { type },
-          lte: { type }
-        }
-      })
+          lte: { type },
+        },
+      }),
     };
   }
 

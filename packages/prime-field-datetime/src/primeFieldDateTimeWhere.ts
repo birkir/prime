@@ -10,8 +10,8 @@ export const primeFieldDateTimeWhere = {
       gt: { type: GraphQLDateTime },
       lt: { type: GraphQLDateTime },
       gte: { type: GraphQLDateTime },
-      lte: { type: GraphQLDateTime }
-    }
+      lte: { type: GraphQLDateTime },
+    },
   }),
   date: new GraphQLInputObjectType({
     name: 'PrimeFieldDateTimeWhereDate',
@@ -21,7 +21,7 @@ export const primeFieldDateTimeWhere = {
       gt: { type: GraphQLDate },
       lt: { type: GraphQLDate },
       gte: { type: GraphQLDate },
-      lte: { type: GraphQLDate }
-    }
-  })
+      lte: { type: GraphQLDate },
+    },
+  }),
 };

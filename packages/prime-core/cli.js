@@ -4,7 +4,6 @@ const arg = require('arg');
 const fs = require('fs');
 const exec = require('child_process').exec;
 
-
 const spec = {
   '--force': Boolean,
   '--version': Boolean,
@@ -30,7 +29,7 @@ const init = () => {
   console.log('please wait while installing...');
   const npm = exec(`cd ${dir}; npm init -y >/dev/null; npm install -S @primecms/core @primecms/ui`);
   npm.stdout.pipe(process.stdout);
-  console.log('')
+  console.log('');
   console.log('installation finished');
   console.log(`cd ./${projectName}`);
   console.log('npx primecms start');

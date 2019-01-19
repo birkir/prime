@@ -9,18 +9,8 @@
     "pretty": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es6",
-      "dom",
-      "es2015",
-      "es2017",
-      "esnext"
-    ],
+    "lib": ["es6", "dom", "es2015", "es2017", "esnext"]
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["./src"],
+  "exclude": ["node_modules"]
 }

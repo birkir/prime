@@ -12,19 +12,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "lib": [
-      "dom",
-      "es6",
-      "es2015",
-      "es2017",
-      "esnext"
-    ]
+    "lib": ["dom", "es6", "es2015", "es2017", "esnext"]
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["./src"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

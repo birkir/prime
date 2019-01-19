@@ -8,7 +8,6 @@ interface IPrimeFieldDocumentOptions {
 }
 
 export class PrimeFieldDocument extends PrimeField {
-
   public id: string = 'document';
   public title: string = 'Document';
   public description: string = 'Link and resolve documents';
@@ -16,7 +15,7 @@ export class PrimeFieldDocument extends PrimeField {
   public defaultOptions: IPrimeFieldDocumentOptions = {
     contentTypeIds: null,
     contentTypeId: null,
-    multiple: false
+    multiple: false,
   };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
@@ -84,7 +83,7 @@ export class PrimeFieldDocument extends PrimeField {
         }
 
         return entry.type;
-      }
+      },
     });
 
     if (options.multiple) {
@@ -94,12 +93,14 @@ export class PrimeFieldDocument extends PrimeField {
           const value = root[field.name];
           const ids = Array.isArray(value) ? value : [value];
 
-          return Promise.all(ids.map(async (id) => {
-            const entry = await getEntryType(id);
+          return Promise.all(
+            ids.map(async id => {
+              const entry = await getEntryType(id);
 
-            return entry && entry.resolve(root, { id }, context, info);
-          }));
-        }
+              return entry && entry.resolve(root, { id }, context, info);
+            })
+          );
+        },
       };
     }
 
@@ -111,7 +112,7 @@ export class PrimeFieldDocument extends PrimeField {
         const entry = await getEntryType(id);
 
         return entry && entry.resolve(root, { id }, context, info);
-      }
+      },
     };
   }
 
@@ -120,7 +121,7 @@ export class PrimeFieldDocument extends PrimeField {
     const options = this.getOptions(field);
 
     return {
-      type: options.multiple ? new GraphQLList(GraphQLID) : GraphQLID
+      type: options.multiple ? new GraphQLList(GraphQLID) : GraphQLID,
     };
   }
 
