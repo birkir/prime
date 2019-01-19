@@ -19,7 +19,7 @@ export const updateNpmPackages = async (packages: string[]) => {
         if (err) {
           reject(err);
         }
-        resolve(Boolean());
+        resolve(true);
       });
     })
   });
