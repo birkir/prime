@@ -1,45 +1,43 @@
 import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
+import { entryTransformer } from './index';
 import { ensurePermitted } from './utils/ensurePermitted';
 import { resolveFieldType } from './utils/resolveFieldType';
-import { entryTransformer } from './index';
 
 export const update = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
-  const typeArgs: any = { // tslint:disable-line no-any
+  const typeArgs: any = {
+    // tslint:disable-line no-any
     id: { type: new GraphQLNonNull(GraphQLID) },
     language: { type: GraphQLString },
-    publish: { type: GraphQLBoolean }
+    publish: { type: GraphQLBoolean },
   };
 
-  const inputFields = contentType.fields.reduce(
-    (acc, field: ContentTypeField) => {
-      const fieldType = resolveFieldType(field);
-      if (fieldType) {
-        acc[field.name] = fieldType.getGraphQLInput({
-          field,
-          queries,
-          contentType,
-          contentTypes,
-          resolveFieldType,
-          isUpdate: true
-        });
-      }
-      if (!acc[field.name]) {
-        delete acc[field.name];
-      }
+  const inputFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
+    const fieldType = resolveFieldType(field);
+    if (fieldType) {
+      acc[field.name] = fieldType.getGraphQLInput({
+        field,
+        queries,
+        contentType,
+        contentTypes,
+        resolveFieldType,
+        isUpdate: true,
+      });
+    }
+    if (!acc[field.name]) {
+      delete acc[field.name];
+    }
 
-      return acc;
-    },
-    {}
-  );
+    return acc;
+  }, {});
 
   if (Object.keys(inputFields).length > 0) {
     typeArgs.input = {
       type: new GraphQLInputObjectType({
         name: `${contentType.name}UpdateInput`,
-        fields: inputFields
-      })
+        fields: inputFields,
+      }),
     };
   }
 
@@ -55,17 +53,16 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
         where: {
           contentTypeId: contentType.id,
           entryId: id,
-          language: language
+          language,
           // @todo add isPublished = context.published
           // @todo add contentReleaseId = context.releaseId
         },
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
       });
 
       const data = await entryTransformer.transformInput(input, contentType.id);
 
       if (entry) {
-
         if (input) {
           entry = await entry.draft(data, language);
         }
@@ -80,6 +77,6 @@ export const update = ({ GraphQLContentType, contentType, contentTypes, queries 
       }
 
       return null;
-    }
+    },
   };
 };

@@ -10,20 +10,20 @@ import * as http from 'http';
 import * as passport from 'passport';
 import * as path from 'path';
 
+import { acl } from './acl';
 import { auth } from './routes/auth';
 import { externalGraphql } from './routes/external';
 import { fields } from './routes/fields';
 import { internalGraphql } from './routes/internal';
 import { sequelize } from './sequelize';
 import { primeConfig } from './utils/primeConfig';
-import { acl } from './acl';
 
 let app = express();
 const port = process.env.PORT || 4000;
 const debug = require('debug')('prime:http');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const store = new sequelizeStore({
-  db: sequelize
+  db: sequelize,
 });
 
 debug('initializing');
@@ -48,10 +48,12 @@ debug('initializing');
     debug('closing connections');
 
     app = express();
-    app.use(cors({
-      credentials: true,
-      origin: true
-    }));
+    app.use(
+      cors({
+        credentials: true,
+        origin: true,
+      })
+    );
     app.use(bodyParser.json());
     app.use(
       session({
@@ -59,7 +61,7 @@ debug('initializing');
         secret: process.env.SESSION_SECRET || 'keyboard cat dart',
         store,
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
       })
     );
     app.use(passport.initialize());
@@ -70,9 +72,11 @@ debug('initializing');
     app.use('/internal', await internalGraphql(start));
 
     if (primeConfig.uiDir) {
-      app.use(express.static(primeConfig.uiDir, {
-        index: false
-      }));
+      app.use(
+        express.static(primeConfig.uiDir, {
+          index: false,
+        })
+      );
       app.get('*', (req, res) => {
         fs.readFile(path.join(primeConfig.uiDir, 'index.html'), (err, data) => {
           if (err) {
@@ -103,5 +107,4 @@ debug('initializing');
     console.log(`[UI] http://localhost:${port}`);
     console.log(`[API] http://localhost:${port}/graphql`);
   });
-
 })();

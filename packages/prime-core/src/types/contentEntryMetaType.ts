@@ -1,4 +1,4 @@
-import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLID } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 export const contentEntryMetaType = new GraphQLObjectType({
   name: 'DocumentMeta',
@@ -7,6 +7,6 @@ export const contentEntryMetaType = new GraphQLObjectType({
     languages: { type: new GraphQLList(GraphQLString) },
     published: { type: GraphQLBoolean },
     timestamp: { type: GraphQLString },
-    versionId: { type: GraphQLID }
-  }
+    versionId: { type: GraphQLID },
+  },
 });

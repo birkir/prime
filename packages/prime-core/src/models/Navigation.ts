@@ -2,11 +2,10 @@ import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript
 
 @Table
 export class Navigation extends Model<Navigation> {
-
   @PrimaryKey
   @Column({
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV4
+    defaultValue: DataType.UUIDV4,
   })
   public id;
 

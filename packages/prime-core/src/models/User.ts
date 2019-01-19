@@ -1,13 +1,26 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeCreate, Column, DataType, IsEmail, Model, PrimaryKey, Table, Unique, Default } from 'sequelize-typescript';
+import {
+  BeforeCreate,
+  Column,
+  DataType,
+  Default,
+  IsEmail,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
 
 @Table({ timestamps: true })
 export class User extends Model<User> {
-
+  @BeforeCreate
+  public static HASH_PASSWORD(instance: User) {
+    instance.password = bcrypt.hashSync(instance.password, 10);
+  }
   @PrimaryKey
   @Column({
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV4
+    defaultValue: DataType.UUIDV4,
   })
   public id;
 
@@ -41,13 +54,8 @@ export class User extends Model<User> {
   public updatePassword(password) {
     return this.update({
       password: bcrypt.hashSync(password, 10),
-      lastPasswordChange: new Date()
+      lastPasswordChange: new Date(),
     });
-  }
-
-  @BeforeCreate
-  public static HASH_PASSWORD(instance: User) {
-    instance.password = bcrypt.hashSync(instance.password, 10);
   }
 
   public isPasswordMatch(password) {

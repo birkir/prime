@@ -2,7 +2,7 @@ import { Op } from 'sequelize';
 
 const logicalOperators = {
   OR: Op.or,
-  AND: Op.and
+  AND: Op.and,
 };
 
 const compareOperators = {
@@ -11,25 +11,22 @@ const compareOperators = {
   gt: Op.gt,
   gte: Op.gte,
   lt: Op.lt,
-  lte: Op.lte
+  lte: Op.lte,
 };
 
-function formatCompareOperators(obj): Object {
-  return Object.entries(obj).reduce(
-    (acc, [key, val]: [string, object]) => {
-      if (compareOperators[key]) {
-        acc[compareOperators[key]] = val;
-      } else {
-        acc[key] = val;
-      }
+function formatCompareOperators(obj): any {
+  return Object.entries(obj).reduce((acc, [key, val]: [string, object]) => {
+    if (compareOperators[key]) {
+      acc[compareOperators[key]] = val;
+    } else {
+      acc[key] = val;
+    }
 
-      return acc;
-    },
-    {}
-  );
+    return acc;
+  }, {});
 }
 
-export function processWhereQuery(obj, fields): Object {
+export function processWhereQuery(obj, fields): any {
   return Object.entries(obj).reduce(
     (acc, [key, val]: [string, object]) => {
       if (logicalOperators[key]) {
@@ -44,8 +41,8 @@ export function processWhereQuery(obj, fields): Object {
           ...(acc.data || {}),
           [key]: {
             ...((acc.data && acc.data[key]) || {}),
-            ...formatCompareOperators(val)
-          }
+            ...formatCompareOperators(val),
+          },
         };
       }
 

@@ -1,8 +1,7 @@
-import { Column, DataType, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
+import { Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table({ timestamps: true })
 export class ContentRelease extends Model<ContentRelease> {
-
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

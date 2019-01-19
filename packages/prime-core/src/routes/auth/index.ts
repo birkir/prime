@@ -2,8 +2,8 @@ import * as express from 'express';
 import { omit } from 'lodash';
 import * as passport from 'passport';
 import * as LocalStrategy from 'passport-local';
-import { User } from '../../models/User';
 import { acl } from '../../acl';
+import { User } from '../../models/User';
 
 interface IRequest extends express.Request {
   user?: {
@@ -20,11 +20,11 @@ export const auth = express();
 
 const strategy = new LocalStrategy(
   { usernameField: 'email' },
-  (username: string, password: string, done: Function) => {
+  (username: string, password: string, done: (a, b, c?) => void) => {
     User.findOne({
       where: {
-        email: username
-      }
+        email: username,
+      },
     }).then(user => {
       if (user && user.isPasswordMatch(password)) {
         return done(null, user);
@@ -35,13 +35,12 @@ const strategy = new LocalStrategy(
   }
 );
 
-passport.serializeUser((user: User, done: Function) => {
+passport.serializeUser((user: User, done: (a: any, b: any) => void) => {
   return done(null, { id: user.id });
 });
 
-passport.deserializeUser(({ id }: { id: string }, done: Function) => {
-  return User
-    .findOne({ where: { id } })
+passport.deserializeUser(({ id }: { id: string }, done: (a: any, b: any) => void) => {
+  return User.findOne({ where: { id } })
     .then(user => done(null, user))
     .catch(err => done(null, err.message));
 });
@@ -57,10 +56,10 @@ auth.get('/user', async (req: IRequest, res) => {
   const cookies = new Map(cookie.split(';').map(n => n.trim().split('=')) as any);
 
   res.json({
-    user: success ? omit(user && user.dataValues || {}, ['password']) : null,
+    user: success ? omit((user && user.dataValues) || {}, ['password']) : null,
     setup,
     versionId: cookies.get('prime.versionId'),
-    success
+    success,
   });
 });
 
@@ -68,34 +67,41 @@ const login = async (req: IRequest, res) => {
   const user = req.user;
   const success = Boolean(user);
   res.json({
-    user: success ? omit(user && user.dataValues || {}, ['password']) : null,
-    success
+    user: success ? omit((user && user.dataValues) || {}, ['password']) : null,
+    success,
   });
-}
+};
 
 auth.post('/login', passport.authenticate('local'), login);
 
-auth.post('/register', async (req: IRequest, res, next) => {
-  const setup = (await User.count()) === 0;
+auth.post(
+  '/register',
+  async (req: IRequest, res, next) => {
+    const setup = (await User.count()) === 0;
 
-  if (setup) {
-    const user = await User.create({
-      firstname: req.body.firstname || '',
-      lastname: req.body.lastname || '',
-      email: req.body.email,
-      password: req.body.password
-    });
-    if (user) {
-      await acl.addUserRoles(user.id, ['admin']);
+    if (setup) {
+      const user = await User.create({
+        firstname: req.body.firstname || '',
+        lastname: req.body.lastname || '',
+        email: req.body.email,
+        password: req.body.password,
+      });
+      if (user) {
+        await acl.addUserRoles(user.id, ['admin']);
+      }
     }
-  }
 
-  next();
-}, passport.authenticate('local'), login);
+    next();
+  },
+  passport.authenticate('local'),
+  login
+);
 
 auth.get('/preview', (req: IRequest, res) => {
   const { user } = req;
-  if (!user) return res.json({ success: false });
+  if (!user) {
+    return res.json({ success: false });
+  }
 
   const [url] = Object.keys(req.query) || [null];
 

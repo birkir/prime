@@ -1,4 +1,11 @@
-import { GraphQLInputObjectType, GraphQLEnumType, GraphQLList, GraphQLString, GraphQLID, GraphQLBoolean } from "graphql";
+import {
+  GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLID,
+  GraphQLInputObjectType,
+  GraphQLList,
+  GraphQLString,
+} from 'graphql';
 
 interface ISettingsPreview {
   name: string;
@@ -34,7 +41,7 @@ const SettingsPreviewInput = new GraphQLInputObjectType({
     name: { type: GraphQLString },
     hostname: { type: GraphQLString },
     pathname: { type: GraphQLString },
-  }
+  },
 });
 
 const SettingsLocaleInput = new GraphQLInputObjectType({
@@ -44,7 +51,7 @@ const SettingsLocaleInput = new GraphQLInputObjectType({
     name: { type: GraphQLString },
     flag: { type: GraphQLString },
     master: { type: GraphQLBoolean },
-  }
+  },
 });
 
 export const GraphQLSettingsInput = new GraphQLInputObjectType({

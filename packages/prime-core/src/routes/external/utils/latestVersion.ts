@@ -6,8 +6,14 @@ const model = '"ContentEntry"';
 const field = '"versionId"';
 const idField = '"entryId"';
 
- // tslint:disable-next-line no-any
-export const latestVersion = ({ language, published, contentReleaseId, preview = false, masterLocale = null }: any): any => {
+// tslint:disable-next-line no-any
+export const latestVersion = ({
+  language,
+  published,
+  contentReleaseId,
+  preview = false,
+  masterLocale = null,
+}: any): any => {
   let order = `${versionModel}."createdAt" DESC`;
   let withRelease = `AND ${versionModel}."contentReleaseId" IS NULL`;
   if (contentReleaseId) {
@@ -22,7 +28,9 @@ export const latestVersion = ({ language, published, contentReleaseId, preview =
 
   let withLanguage = `${versionModel}."language" = ${sequelize.escape(language)}`;
   if (masterLocale) {
-    withLanguage = `(${versionModel}."language" = ${sequelize.escape(language)} OR ${versionModel}."language" = ${sequelize.escape(masterLocale)})`;
+    withLanguage = `(${versionModel}."language" = ${sequelize.escape(
+      language
+    )} OR ${versionModel}."language" = ${sequelize.escape(masterLocale)})`;
     order = `CASE WHEN ${versionModel}."language" = ${sequelize.escape(language)} THEN 1 ELSE 2 END ASC, ${order}`;
   }
 

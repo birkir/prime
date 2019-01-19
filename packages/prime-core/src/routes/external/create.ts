@@ -1,45 +1,44 @@
 import { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import { ContentEntry } from '../../models/ContentEntry';
 import { ContentTypeField } from '../../models/ContentTypeField';
+import { entryTransformer } from './index';
 import { ensurePermitted } from './utils/ensurePermitted';
 import { resolveFieldType } from './utils/resolveFieldType';
-import { entryTransformer } from './index';
 
 export const create = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
-
-  const typeArgs: any = { // tslint:disable-line no-any
-    language: { type: GraphQLString }
+  const typeArgs: any = {
+    // tslint:disable-line no-any
+    language: { type: GraphQLString },
   };
 
-  const inputFields = contentType.fields.reduce(
-    (acc, field: ContentTypeField) => {
-      const fieldType = resolveFieldType(field);
-      if (fieldType) {
-        acc[field.name] = fieldType.getGraphQLInput({
-          field,
-          queries,
-          contentType,
-          contentTypes,
-          resolveFieldType
-        });
-      }
-      if (!acc[field.name]) {
-        delete acc[field.name];
-      }
+  const inputFields = contentType.fields.reduce((acc, field: ContentTypeField) => {
+    const fieldType = resolveFieldType(field);
+    if (fieldType) {
+      acc[field.name] = fieldType.getGraphQLInput({
+        field,
+        queries,
+        contentType,
+        contentTypes,
+        resolveFieldType,
+      });
+    }
+    if (!acc[field.name]) {
+      delete acc[field.name];
+    }
 
-      return acc;
-    },
-    {}
-  );
+    return acc;
+  }, {});
 
   if (Object.keys(inputFields).length > 0) {
     typeArgs.input = {
-      type: new GraphQLNonNull(new GraphQLInputObjectType({
-        name: `${contentType.name}CreateInput`,
-        fields: {
-          ...inputFields
-        }
-      }))
+      type: new GraphQLNonNull(
+        new GraphQLInputObjectType({
+          name: `${contentType.name}CreateInput`,
+          fields: {
+            ...inputFields,
+          },
+        })
+      ),
     };
   }
 
@@ -56,7 +55,7 @@ export const create = ({ GraphQLContentType, contentType, contentTypes, queries 
         contentTypeId: contentType.id,
         isPublished: true,
         language,
-        data
+        data,
       });
 
       if (entry && queries[contentType.name]) {
@@ -64,6 +63,6 @@ export const create = ({ GraphQLContentType, contentType, contentTypes, queries 
       }
 
       return null;
-    }
+    },
   };
 };
