@@ -1,5 +1,5 @@
 {
-  "extends": "tslint-microsoft-contrib",
+  "extends": "tslint:recommended",
   "rules": {
     "no-reserved-keywords": false,
     "missing-jsdoc": false,
@@ -11,11 +11,6 @@
     "strict-boolean-expressions": false
   },
   "linterOptions": {
-    "exclude": [
-      "node_modules",
-      "lib",
-      "./packages/prime-core/**/*",
-      "./packages/prime-ui/**/*"
-    ]
+    "exclude": ["node_modules", "lib", "./packages/prime-core/**/*", "./packages/prime-ui/**/*"]
   }
 }

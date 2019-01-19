@@ -1,17 +1,58 @@
 {
-  "name": "root",
-  "private": false,
+  "private": true,
   "scripts": {
+    "setup": "lerna bootstrap; yarn run link",
+    "link": "lerna exec -- yarn link",
+    "unlink": "lerna exec -- yarn unlink",
     "lint": "tslint -p .",
     "clean": "sh ./scripts/tidyFieldNodeModules.sh",
     "dev": "lerna run dev --stream",
     "build": "lerna run build"
   },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120
+  },
+  "renovate": {
+    "extends": [
+      "config:base",
+      "schedule:weekly"
+    ],
+    "automerge": true,
+    "major": {
+      "automerge": false
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/birkir/prime"
+  },
+  "license": "MIT",
   "devDependencies": {
-    "@types/node": "10.12.3",
-    "lerna": "3.4.3",
-    "tslint": "5.11.0",
-    "tslint-microsoft-contrib": "5.2.1",
-    "typescript": "3.1.6"
+    "@types/node": "10.12.18",
+    "codecov": "3.1.0",
+    "husky": "1.3.1",
+    "lerna": "3.10.6",
+    "lint-staged": "8.1.0",
+    "prettier": "1.15.3",
+    "tslint": "5.12.1",
+    "typescript": "3.2.4"
   }
 }
