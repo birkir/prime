@@ -1,0 +1,13 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:9
+      - image: circleci/postgres:10.6
+    steps:
+      - checkout
+      - run: yarn install --frozen-lockfile
+      - run: yarn run lerna bootstrap
+      - run: yarn test
+      - run: yarn codecov

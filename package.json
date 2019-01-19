@@ -2,13 +2,21 @@
   "private": true,
   "scripts": {
     "setup": "lerna bootstrap; yarn run link",
+    "start": "lerna exec -- yarn start",
     "link": "lerna exec -- yarn link",
     "unlink": "lerna exec -- yarn unlink",
-    "lint": "tslint -p .",
-    "docs:api": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages",
-    "clean": "sh ./scripts/tidyFieldNodeModules.sh",
-    "dev": "lerna run dev --stream",
-    "build": "lerna run build"
+    "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",
+    "compile": "lerna run compile",
+    "lint": "tslint packages/*/{src,__tests__}/**/*.ts",
+    "publish": "lerna publish",
+    "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
+    "testonly": "lerna run testonly",
+    "prettier": "prettier --write '**/*.{json,md,js,ts}'",
+    "test:prettier": "prettier --list-different '**/*.{json,md,js,ts}'",
+    "coverage": "lerna run coverage",
+    "codecov": "codecov",
+    "reset": "yarn clean; yarn install; yarn setup; yarn compile",
+    "docs": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages"
   },
   "workspaces": {
     "packages": [

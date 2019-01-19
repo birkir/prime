@@ -12704,9 +12704,9 @@ rc-tooltip@^3.7.0, rc-tooltip@~3.7.3:
     rc-trigger "^2.2.2"
 
 rc-tree-select@~2.5.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/rc-tree-select/-/rc-tree-select-2.5.1.tgz#7efdec7f8df551c40f22660166916a18552049e5"
-  integrity sha512-Oz0YyrDK8Gjz1n7ra/7qqH2HzcdMlPmFdVploQXCuMnp3m42kOhetwW0PlO6+NxTvapMws/MVwS8UUXIy0KajQ==
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/rc-tree-select/-/rc-tree-select-2.5.2.tgz#94dbbb55238293aebff3a4e784dbd21c5e47c208"
+  integrity sha512-JdwCSF/xqTZ1XrBqdbpogKa7dyzwijY72JKyo8EYYu6XQS0aKeqdm8xOGyjmQLFUJ32XNJCyBI0WFLdvaG90LQ==
   dependencies:
     babel-runtime "^6.23.0"
     classnames "^2.2.1"
