@@ -11,7 +11,7 @@ const fields = [
   '@primecms/field-number',
   '@primecms/field-select',
   '@primecms/field-slice',
-  '@primecms/field-string'
+  '@primecms/field-string',
 ].map(pkg => {
   if (process.env.NODE_ENV === 'development') {
     return pkg + '/src';
@@ -30,16 +30,25 @@ if (!process.env.CORE_URL && process.env.HEROKU_APP_NAME) {
 
 // tslint:disable-next-line no-require-imports no-var-requires
 export const primeConfig = require('rc')('prime', {
-  coreUrl: get(process.env, 'CORE_URL',  `http://localhost:${process.env.PORT || 4000}`),
+  coreUrl: get(process.env, 'CORE_URL', `http://localhost:${process.env.PORT || 4000}`),
   fields,
 });
 
 const uiDir: string = (() => {
-  try { return fs.realpathSync(path.join(__dirname, '..', '..', '..', 'ui', 'build')); } catch (e) { // noop
+  try {
+    return fs.realpathSync(path.join(__dirname, '..', '..', '..', 'ui', 'build'));
+  } catch (e) {
+    // noop
   }
-  try { return fs.realpathSync(path.join(__dirname, '..', '..', '..', 'prime-ui', 'build')); } catch (e) { // noop
+  try {
+    return fs.realpathSync(path.join(__dirname, '..', '..', '..', 'prime-ui', 'build'));
+  } catch (e) {
+    // noop
   }
-  try { return fs.realpathSync(path.join(__dirname, '..', 'node_modules', '@primecms', 'ui', 'build')); } catch (e) { // noop
+  try {
+    return fs.realpathSync(path.join(__dirname, '..', 'node_modules', '@primecms', 'ui', 'build'));
+  } catch (e) {
+    // noop
   }
 
   return '';

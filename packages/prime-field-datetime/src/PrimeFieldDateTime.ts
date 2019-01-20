@@ -8,13 +8,12 @@ interface IPrimeFieldDateTimeOptions {
 }
 
 export class PrimeFieldDateTime extends PrimeField {
-
   public id: string = 'datetime';
   public title: string = 'DateTime';
   public description: string = 'Date and time field';
 
   public defaultOptions: IPrimeFieldDateTimeOptions = {
-    time: true
+    time: true,
   };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
@@ -32,7 +31,7 @@ export class PrimeFieldDateTime extends PrimeField {
         }
 
         return null;
-      }
+      },
     };
   }
 
@@ -40,7 +39,7 @@ export class PrimeFieldDateTime extends PrimeField {
     const { time } = this.getOptions(args.field);
 
     return {
-      type: time ? GraphQLDateTime : GraphQLDate
+      type: time ? GraphQLDateTime : GraphQLDate,
     };
   }
 
@@ -49,7 +48,7 @@ export class PrimeFieldDateTime extends PrimeField {
     const type = time ? 'dateTime' : 'date';
 
     return {
-      type: primeFieldDateTimeWhere[type]
+      type: primeFieldDateTimeWhere[type],
     };
   }
 }

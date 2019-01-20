@@ -6,7 +6,6 @@ import { includeLanguages } from './utils/includeLanguages';
 import { transformEntry } from './utils/transformEntry';
 
 export const find = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
-
   const isSingle = get(contentType, 'settings.single', false);
   const idType = isSingle ? GraphQLID : new GraphQLNonNull(GraphQLID);
 
@@ -14,10 +13,9 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
     type: GraphQLContentType,
     args: {
       id: { type: idType },
-      language: { type: GraphQLString }
+      language: { type: GraphQLString },
     },
     async resolve(root, args, context, info) {
-
       await ensurePermitted(context, contentType, 'read');
 
       const language = args.language || 'en';
@@ -38,14 +36,10 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
 
       const entry = await ContentEntry.findOne({
         attributes: {
-          include: [
-            [includeLanguages({ published }), 'languages']
-          ]
+          include: [[includeLanguages({ published }), 'languages']],
         },
         where,
-        order: [
-          ['updatedAt', 'DESC']
-        ]
+        order: [['updatedAt', 'DESC']],
       });
 
       if (!entry) {
@@ -55,6 +49,6 @@ export const find = ({ GraphQLContentType, contentType, contentTypes, queries })
       context.sequelizeDataLoader.prime(entry);
 
       return await transformEntry(entry);
-    }
+    },
   };
 };

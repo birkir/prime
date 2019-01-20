@@ -3,7 +3,6 @@ import { GraphQLString } from 'graphql';
 import { get } from 'lodash';
 
 export class PrimeFieldAsset extends PrimeField {
-
   public id: string = 'asset';
   public title: string = 'Asset';
   public description: string = 'Images, videos and other assets';
@@ -15,7 +14,7 @@ export class PrimeFieldAsset extends PrimeField {
 
     return {
       args: {
-        crop: { type: GraphQLString }
+        crop: { type: GraphQLString },
       },
       type: GraphQLString,
       resolve(root, args, context, info) {
@@ -33,7 +32,7 @@ export class PrimeFieldAsset extends PrimeField {
               ['h', Math.round(crop.height)],
               ['x', Math.round(crop.x)],
               ['y', Math.round(crop.y)],
-              ['c', 'crop']
+              ['c', 'crop'],
             ].map(([key, val]) => `${key}_${val}`);
 
             image = image.replace(
@@ -50,13 +49,13 @@ export class PrimeFieldAsset extends PrimeField {
         }
 
         return image;
-      }
+      },
     };
   }
 
   public getGraphQLInput() {
     return {
-      type: GraphQLString
+      type: GraphQLString,
     };
   }
 

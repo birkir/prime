@@ -1,9 +1,8 @@
-import { Column, DataType, Model, PrimaryKey, Table, Default, BelongsTo } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, Default, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Webhook } from './Webhook';
 
 @Table
 export class WebhookCall extends Model<WebhookCall> {
-
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -30,7 +29,7 @@ export class WebhookCall extends Model<WebhookCall> {
   @BelongsTo(() => Webhook, {
     foreignKey: 'webhookId',
     onDelete: 'SET NULL',
-    onUpdate: 'SET NULL'
+    onUpdate: 'SET NULL',
   })
   public webhook: Webhook;
 }

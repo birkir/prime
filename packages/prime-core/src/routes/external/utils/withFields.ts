@@ -1,7 +1,10 @@
 import { sequelize } from '../../../sequelize';
 
 export const withField = (fieldName, value) => {
-  const col = fieldName.split('.').map(n => `"${n}"`).join('.');
+  const col = fieldName
+    .split('.')
+    .map(n => `"${n}"`)
+    .join('.');
 
   if (value == null || value === undefined) {
     return '';

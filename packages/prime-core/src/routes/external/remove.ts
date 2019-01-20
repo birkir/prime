@@ -6,7 +6,7 @@ export const remove = ({ GraphQLContentType, contentType, contentTypes, queries 
   return {
     type: GraphQLBoolean,
     args: {
-      id: { type: new GraphQLNonNull(GraphQLID) }
+      id: { type: new GraphQLNonNull(GraphQLID) },
     },
     async resolve(root, args, context, info) {
       await ensurePermitted(context, contentType, 'delete');
@@ -14,8 +14,8 @@ export const remove = ({ GraphQLContentType, contentType, contentTypes, queries 
       const entry = await ContentEntry.findOne({
         where: {
           contentTypeId: contentType.id,
-          id: args.id
-        }
+          id: args.id,
+        },
       });
 
       if (entry) {
@@ -25,6 +25,6 @@ export const remove = ({ GraphQLContentType, contentType, contentTypes, queries 
       }
 
       return false;
-    }
+    },
   };
 };

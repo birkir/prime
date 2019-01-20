@@ -14,14 +14,13 @@ interface IOptions {
 }
 
 export class PrimeFieldNumber extends PrimeField {
-
   public id: string = 'number';
   public title: string = 'Number';
   public description: string = 'Number field';
 
   public defaultOptions: IOptions = {
     float: true,
-    rules: {}
+    rules: {},
   };
 
   public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
@@ -29,7 +28,7 @@ export class PrimeFieldNumber extends PrimeField {
 
     return {
       type: float ? GraphQLFloat : GraphQLInt,
-      description: args.field.description
+      description: args.field.description,
     };
   }
 
@@ -39,7 +38,7 @@ export class PrimeFieldNumber extends PrimeField {
 
     return {
       type: rules.required ? new GraphQLNonNull(type) : type,
-      description: args.field.description
+      description: args.field.description,
     };
   }
 
@@ -56,14 +55,15 @@ export class PrimeFieldNumber extends PrimeField {
           gt: { type },
           lt: { type },
           gte: { type },
-          lte: { type }
-        }
-      })
+          lte: { type },
+        },
+      }),
     };
   }
 
   public processInput(value, field) {
     const { rules } = this.getOptions(field);
+    const num = Number(value);
 
     if (rules.required) {
       if (value === '' || value === undefined || value === null) {
@@ -73,14 +73,14 @@ export class PrimeFieldNumber extends PrimeField {
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
-      if (value.length < min) {
+      if (num < min) {
         throw new ValidationError(`Field '${field.name}' must be greater or equal to ${min}`);
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
-      if (value.length > max) {
+      if (num > max) {
         throw new ValidationError(`Field '${field.name}' must be less or equal to ${max}`);
       }
     }

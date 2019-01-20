@@ -1,6 +1,6 @@
 import { entryTransformer } from '../index';
 
-export const transformEntry = async (entry) => {
+export const transformEntry = async entry => {
   if (!entry) {
     return null;
   }
@@ -16,6 +16,6 @@ export const transformEntry = async (entry) => {
       timestamp: entry.updatedAt.toISOString(),
       versionId: entry.versionId,
     },
-    ...entry.data
+    ...entry.data,
   };
 };

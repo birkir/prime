@@ -1,45 +1,50 @@
-import { ApolloServer, AuthenticationError, UserInputError, ForbiddenError } from 'apollo-server-express';
+import { ApolloServer, AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-express';
 import * as express from 'express';
-import { GraphQLBoolean, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLList,
-  GraphQLNonNull, GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLEnumType } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLID,
+  GraphQLInputObjectType,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+} from 'graphql';
 import { attributeFields, DateType, relay, resolver } from 'graphql-sequelize';
 import * as GraphQLJSON from 'graphql-type-json';
-import { get, uniq, omit, pickBy } from 'lodash';
+import { get, omit, pickBy, uniq } from 'lodash';
+import { acl } from '../../acl';
 import { fields } from '../../fields';
 import { ContentEntry } from '../../models/ContentEntry';
+import { ContentRelease } from '../../models/ContentRelease';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
-import { pageInfoType } from '../../types/pageInfoType';
-import { latestVersion } from '../external/utils/latestVersion';
-import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType,
-  getFields, setFields } from './processFields';
-import { User } from '../../models/User';
-import { EntryTransformer } from '../../utils/entryTransformer';
-import { Sentry } from '../../utils/Sentry';
 import { Settings } from '../../models/Settings';
-import { sequelize } from '../../sequelize';
-import { GraphQLSettingsInput } from '../../types/settings';
-import { algolia } from '../../utils/algolia';
-import { acl } from '../../acl';
-import { ContentRelease } from '../../models/ContentRelease';
+import { User } from '../../models/User';
 import { Webhook } from '../../models/Webhook';
 import { WebhookCall } from '../../models/WebhookCall';
-import { updateNpmPackages } from '../../utils/updateNpmPackages';
+import { sequelize } from '../../sequelize';
+import { pageInfoType } from '../../types/pageInfoType';
+import { GraphQLSettingsInput } from '../../types/settings';
+import { algolia } from '../../utils/algolia';
+import { EntryTransformer } from '../../utils/entryTransformer';
 import { latestPrimeVersion } from '../../utils/latestPrimeVersion';
+import { Sentry } from '../../utils/Sentry';
+import { updateNpmPackages } from '../../utils/updateNpmPackages';
+import { latestVersion } from '../external/utils/latestVersion';
+import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType, getFields, setFields } from './processFields';
 
 const entryTransformer = new EntryTransformer();
 
 // tslint:disable max-func-body-length export-name await-promise
-export const internalGraphql = async (restart) => {
-
+export const internalGraphql = async restart => {
   const app = express();
 
   const contentTypeFieldType = new GraphQLObjectType({
     name: 'ContentTypeField',
-    fields: omit(
-      attributeFields(ContentTypeField),
-      ['contentTypeId']
-    )
+    fields: omit(attributeFields(ContentTypeField), ['contentTypeId']),
   });
 
   const webhookType = new GraphQLObjectType({
@@ -48,7 +53,7 @@ export const internalGraphql = async (restart) => {
       ...attributeFields(Webhook),
       success: { type: GraphQLInt },
       count: { type: GraphQLInt },
-    })
+    }),
   });
 
   const webhookCallType = new GraphQLObjectType({
@@ -56,14 +61,14 @@ export const internalGraphql = async (restart) => {
     fields: () => omit(attributeFields(WebhookCall), ['webhookId']),
   });
 
-  const webhookInputType =  new GraphQLNonNull(
+  const webhookInputType = new GraphQLNonNull(
     new GraphQLInputObjectType({
       name: 'WebhookInput',
       fields: {
         name: { type: new GraphQLNonNull(GraphQLString) },
         url: { type: new GraphQLNonNull(GraphQLString) },
         method: { type: new GraphQLNonNull(GraphQLString) },
-      }
+      },
     })
   );
 
@@ -83,10 +88,10 @@ export const internalGraphql = async (restart) => {
         type: new GraphQLList(ContentTypeFieldGroup),
         async resolve(root, args, context, info) {
           return getFields(root.id);
-        }
+        },
       },
       entriesCount: { type: GraphQLInt },
-    })
+    }),
   });
 
   const contentReleaseType = new GraphQLObjectType({
@@ -106,24 +111,24 @@ export const internalGraphql = async (restart) => {
         resolve: resolver(ContentType, {
           before(opts, args, context, info) {
             opts.where = {
-              id: info.source.contentTypeId
+              id: info.source.contentTypeId,
             };
 
             return opts;
-          }
-        })
+          },
+        }),
       },
       user: {
         type: userType,
         resolve: resolver(User, {
           before(opts, args, context, info) {
             opts.where = {
-              id: info.source.userId
+              id: info.source.userId,
             };
 
             return opts;
-          }
-        })
+          },
+        }),
       },
       display: { type: GraphQLString },
       publishedVersionId: { type: GraphQLID },
@@ -135,20 +140,20 @@ export const internalGraphql = async (restart) => {
               versionId: { type: GraphQLID },
               isPublished: { type: GraphQLBoolean },
               createdAt: { type: DateType.default },
-              updatedAt: { type: DateType.default }
-            }
+              updatedAt: { type: DateType.default },
+            },
           })
-        )
-      }
-    })
+        ),
+      },
+    }),
   });
 
   const contentEntryConnectionEdgeType = new GraphQLObjectType({
     name: 'ContentEntryConnectionEdge',
     fields: {
       node: { type: contentEntryType },
-      cursor: { type: GraphQLString }
-    }
+      cursor: { type: GraphQLString },
+    },
   });
 
   const contentEntryConnectionType = new GraphQLObjectType({
@@ -157,9 +162,9 @@ export const internalGraphql = async (restart) => {
       pageInfo: { type: pageInfoType },
       totalCount: { type: GraphQLInt },
       edges: {
-        type: new GraphQLList(contentEntryConnectionEdgeType)
-      }
-    }
+        type: new GraphQLList(contentEntryConnectionEdgeType),
+      },
+    },
   });
 
   const allContentEntries = {
@@ -180,7 +185,7 @@ export const internalGraphql = async (restart) => {
             contentTypeId: { value: 'contentTypeId' },
             updatedAt: { value: 'updatedAt' },
             createdAt: { value: 'createdAt' },
-          }
+          },
         }),
       },
       order: {
@@ -189,9 +194,9 @@ export const internalGraphql = async (restart) => {
           values: {
             ASC: { value: 'ASC' },
             DESC: { value: 'DESC' },
-          }
+          },
         }),
-      }
+      },
     },
     resolve: relay.createConnectionResolver({
       target: ContentEntry,
@@ -205,10 +210,17 @@ export const internalGraphql = async (restart) => {
         findOptions.attributes = {
           include: [
             [
-              sequelize.literal(`(SELECT "versionId" "vId" from "ContentEntry" "b" WHERE "b"."entryId" = "ContentEntry"."entryId" AND "b"."isPublished" = true AND "b"."language" = ${sequelize.escape(language)} AND "b"."deletedAt" IS NULL ORDER BY "updatedAt" DESC LIMIT 1)`),
-              'publishedVersionId'
-            ]
-          ]
+              sequelize.literal(
+                `(
+                  SELECT "versionId" "vId" from "ContentEntry" "b"
+                  WHERE "b"."entryId" = "ContentEntry"."entryId"
+                  AND "b"."isPublished" = true AND "b"."language" = ${sequelize.escape(language)}
+                  AND "b"."deletedAt" IS NULL ORDER BY "updatedAt" DESC LIMIT 1
+                )`
+              ),
+              'publishedVersionId',
+            ],
+          ],
         };
 
         findOptions.having = {
@@ -228,7 +240,7 @@ export const internalGraphql = async (restart) => {
 
         findOptions.order = [
           sequelize.literal(`CASE WHEN "language" = ${sequelize.escape(args.language)} THEN 1 ELSE 2 END`),
-          [sort, order]
+          [sort, order],
         ];
         findOptions.offset = args.skip;
         findOptions.group = ['versionId'];
@@ -259,12 +271,12 @@ export const internalGraphql = async (restart) => {
         const contentTypeDisplay = new Map();
         const contentTypeIds = uniq(values.edges.map(edge => edge.node.contentTypeId));
         await Promise.all(
-          contentTypeIds.map(async (contentTypeId) => {
+          contentTypeIds.map(async contentTypeId => {
             const displayField = await ContentTypeField.findOne({
               where: {
                 contentTypeId,
                 isDisplay: true,
-              }
+              },
             });
             if (displayField) {
               contentTypeDisplay.set(contentTypeId, displayField.name);
@@ -274,25 +286,27 @@ export const internalGraphql = async (restart) => {
 
         entryTransformer.resetTransformCache();
 
-        await Promise.all(values.edges.map(async (edge) => {
-          const { node } = edge;
+        await Promise.all(
+          values.edges.map(async edge => {
+            const { node } = edge;
 
-          node.data = await entryTransformer.transformOutput(node.data, node.contentTypeId);
+            node.data = await entryTransformer.transformOutput(node.data, node.contentTypeId);
 
-          if (contentTypeDisplay.has(node.contentTypeId)) {
-            const displayFieldValue = get(node.data, contentTypeDisplay.get(node.contentTypeId), '');
-            node.display = displayFieldValue;
-          } else {
-            const dataKeys = Object.keys(node.data);
-            node.display = get(node.data, 'title', get(node.data, 'name', get(node.data, dataKeys[0], node.entryId)));
-          }
+            if (contentTypeDisplay.has(node.contentTypeId)) {
+              const displayFieldValue = get(node.data, contentTypeDisplay.get(node.contentTypeId), '');
+              node.display = displayFieldValue;
+            } else {
+              const dataKeys = Object.keys(node.data);
+              node.display = get(node.data, 'title', get(node.data, 'name', get(node.data, dataKeys[0], node.entryId)));
+            }
 
-          node.publishedVersionId = node.dataValues.publishedVersionId;
-        }));
+            node.publishedVersionId = node.dataValues.publishedVersionId;
+          })
+        );
 
         return values;
-      }
-    }).resolveConnection
+      },
+    }).resolveConnection,
   };
 
   const fieldObjectType = new GraphQLObjectType({
@@ -302,15 +316,15 @@ export const internalGraphql = async (restart) => {
       title: { type: GraphQLString },
       description: { type: GraphQLString },
       defaultOptions: { type: GraphQLJSON },
-      ui: { type: GraphQLString }
-    }
+      ui: { type: GraphQLString },
+    },
   });
 
   const allFields = {
     type: new GraphQLList(fieldObjectType),
     resolve() {
       return fields;
-    }
+    },
   };
 
   const queryFields = {
@@ -329,14 +343,14 @@ export const internalGraphql = async (restart) => {
       type: new GraphQLList(ContentTypeFieldGroup),
       args: {
         entryId: { type: GraphQLID },
-        contentTypeId: { type: GraphQLID }
+        contentTypeId: { type: GraphQLID },
       },
       async resolve(root, args, context, info) {
         if (args.entryId && !args.contentTypeId) {
           const entry = await ContentEntry.findOne({
             where: {
-              entryId: args.entryId
-            }
+              entryId: args.entryId,
+            },
           });
           if (!entry || !entry.contentTypeId) {
             return null;
@@ -345,30 +359,32 @@ export const internalGraphql = async (restart) => {
         }
 
         return getFields(args.contentTypeId);
-      }
+      },
     },
     allContentTypes: {
       type: new GraphQLList(contentTypeType),
       args: {
         limit: { type: GraphQLInt },
-        order: { type: GraphQLString }
+        order: { type: GraphQLString },
       },
       resolve: resolver(ContentType, {
         async after(result, args, context, info) {
-          await Promise.all(result.map(async res => {
-            if (!res.isSlice) {
-              res.entriesCount = await ContentEntry.count({
-                distinct: true,
-                col: 'entryId',
-                where: {
-                  contentTypeId: res.id
-                },
-              });
-            }
-          }));
+          await Promise.all(
+            result.map(async res => {
+              if (!res.isSlice) {
+                res.entriesCount = await ContentEntry.count({
+                  distinct: true,
+                  col: 'entryId',
+                  where: {
+                    contentTypeId: res.id,
+                  },
+                });
+              }
+            })
+          );
           return result;
-        }
-      })
+        },
+      }),
     },
     allFields,
     allContentReleases: {
@@ -378,10 +394,17 @@ export const internalGraphql = async (restart) => {
           options.attributes = {
             include: [
               [
-                sequelize.literal(`(SELECT COUNT(DISTINCT "entryId") FROM "ContentEntry" "c" WHERE "c"."contentReleaseId" = "ContentRelease"."id" AND "c"."deletedAt" IS NULL)`),
-                'documents'
+                sequelize.literal(
+                  `(
+                    SELECT COUNT(DISTINCT "entryId")
+                    FROM "ContentEntry" "c"
+                    WHERE "c"."contentReleaseId" = "ContentRelease"."id"
+                    AND "c"."deletedAt" IS NULL
+                  )`
+                ),
+                'documents',
               ],
-            ]
+            ],
           };
           return options;
         },
@@ -389,7 +412,7 @@ export const internalGraphql = async (restart) => {
           return values.map(({ dataValues }) => ({
             ...dataValues,
           }));
-        }
+        },
       }),
     },
     allContentEntries,
@@ -397,11 +420,13 @@ export const internalGraphql = async (restart) => {
       type: new GraphQLList(userType),
       resolve: resolver(User, {
         async after(users) {
-          return await Promise.all(users.map(async user => {
-            user.roles = await acl.userRoles(user.id);
-            return user;
-          }));
-        }
+          return await Promise.all(
+            users.map(async user => {
+              user.roles = await acl.userRoles(user.id);
+              return user;
+            })
+          );
+        },
       }),
     },
     allWebhooks: {
@@ -411,14 +436,16 @@ export const internalGraphql = async (restart) => {
           options.attributes = {
             include: [
               [
-                sequelize.literal(`(SELECT COUNT(*) FROM "WebhookCall" "c" WHERE "c"."webhookId" = "Webhook"."id" AND success = TRUE)`),
-                'success'
+                sequelize.literal(
+                  `(SELECT COUNT(*) FROM "WebhookCall" "c" WHERE "c"."webhookId" = "Webhook"."id" AND success = TRUE)`
+                ),
+                'success',
               ],
               [
                 sequelize.literal(`(SELECT COUNT(*) FROM "WebhookCall" "c" WHERE "c"."webhookId" = "Webhook"."id")`),
-                'count'
+                'count',
               ],
-            ]
+            ],
           };
           return options;
         },
@@ -426,13 +453,13 @@ export const internalGraphql = async (restart) => {
           return values.map(({ dataValues }) => ({
             ...dataValues,
           }));
-        }
+        },
       }),
     },
     allWebhookCalls: {
       type: new GraphQLList(webhookCallType),
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: resolver(WebhookCall, {
         before(opts, args) {
@@ -441,10 +468,10 @@ export const internalGraphql = async (restart) => {
           };
           opts.where = {
             webhookId: args.id,
-          }
+          };
           opts.order = [['executedAt', 'DESC']];
           return opts;
-        }
+        },
       }),
     },
     isContentTypeAvailable: {
@@ -462,47 +489,44 @@ export const internalGraphql = async (restart) => {
                 isSlice: Boolean(args.isSlice),
                 isTemplate: Boolean(args.isTemplate),
               },
-              sequelize.where(
-                sequelize.fn('lower', sequelize.col('name')),
-                {
-                  [sequelize.Op.like]: sequelize.fn('lower', args.name)
-                }
-              )
-            ]
+              sequelize.where(sequelize.fn('lower', sequelize.col('name')), {
+                [sequelize.Op.like]: sequelize.fn('lower', args.name),
+              }),
+            ],
           },
         });
 
         return count === 0;
-      }
+      },
     },
     Webhook: {
       type: webhookType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: resolver(Webhook, {
         before(opts, args, context) {
           opts.where = {
-            id: args.id
+            id: args.id,
           };
 
           return opts;
-        }
+        },
       }),
     },
     WebhookCall: {
       type: webhookCallType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
       resolve: resolver(WebhookCall, {
         before(opts, args, context) {
           opts.where = {
-            id: args.id
+            id: args.id,
           };
 
           return opts;
-        }
+        },
       }),
     },
     ContentType: {
@@ -518,19 +542,21 @@ export const internalGraphql = async (restart) => {
             opts.where.id = args.id;
           } else if (args.name) {
             opts.where = {
-              [sequelize.Op.and]: [sequelize.where(sequelize.fn('lower', sequelize.col('name')), args.name.toLowerCase())]
+              [sequelize.Op.and]: [
+                sequelize.where(sequelize.fn('lower', sequelize.col('name')), args.name.toLowerCase()),
+              ],
             };
           }
           return opts;
-        }
-      })
+        },
+      }),
     },
     ContentTypeField: {
       type: contentTypeFieldType,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
-      resolve: resolver(ContentTypeField)
+      resolve: resolver(ContentTypeField),
     },
     ContentEntry: {
       type: contentEntryType,
@@ -543,7 +569,7 @@ export const internalGraphql = async (restart) => {
       resolve: resolver(ContentEntry, {
         before(opts, args, context) {
           opts.where = {
-            entryId: args.entryId
+            entryId: args.entryId,
           };
 
           if (args.language) {
@@ -554,28 +580,19 @@ export const internalGraphql = async (restart) => {
             opts.where.contentReleaseId = args.contentReleaseId;
           }
 
-          opts.order = [
-            ['createdAt', 'DESC']
-          ];
+          opts.order = [['createdAt', 'DESC']];
 
           return opts;
         },
         async after(result, args, context) {
           if (result) {
             result.versions = await ContentEntry.findAll({
-              attributes: [
-                'versionId',
-                'isPublished',
-                'createdAt',
-                'updatedAt'
-              ],
+              attributes: ['versionId', 'isPublished', 'createdAt', 'updatedAt'],
               where: {
                 entryId: args.entryId,
-                language: result.language
+                language: result.language,
               },
-              order: [
-                ['createdAt', 'DESC']
-              ]
+              order: [['createdAt', 'DESC']],
             });
 
             entryTransformer.resetTransformCache();
@@ -583,15 +600,15 @@ export const internalGraphql = async (restart) => {
           }
 
           return result;
-        }
-      })
+        },
+      }),
     },
     ContentRelease: {
       type: contentReleaseType,
       args: {
         id: { type: new GraphQLNonNull(GraphQLID) },
       },
-      resolve: resolver(ContentRelease)
+      resolve: resolver(ContentRelease),
     },
     primeVersion: {
       type: new GraphQLObjectType({
@@ -599,20 +616,32 @@ export const internalGraphql = async (restart) => {
         fields: {
           current: { type: GraphQLString },
           latest: { type: GraphQLString },
-        }
+        },
       }),
       async resolve() {
         let version = 'unknown';
-        try { version = require('@primecms/core/package.json').version; } catch (err) {}
-        try { version = require('@primecms/ui/package.json').version; } catch (err) {}
-        try { version = require('../../../package.json').version; } catch (err) {}
+        try {
+          version = require('@primecms/core/package.json').version;
+        } catch (err) {
+          // noop
+        }
+        try {
+          version = require('@primecms/ui/package.json').version;
+        } catch (err) {
+          // noop
+        }
+        try {
+          version = require('../../../package.json').version;
+        } catch (err) {
+          // noop
+        }
 
         return {
           current: version,
-          latest: await latestPrimeVersion()
+          latest: await latestPrimeVersion(),
         };
-      }
-    }
+      },
+    },
   };
 
   const mutationFields = {
@@ -647,7 +676,7 @@ export const internalGraphql = async (restart) => {
         restart();
 
         return true;
-      }
+      },
     },
     syncAlgolia: {
       type: GraphQLBoolean,
@@ -661,27 +690,40 @@ export const internalGraphql = async (restart) => {
         const entries = await ContentEntry.findAll({
           attributes: [
             'entryId',
-            [sequelize.literal('(SELECT "versionId" FROM "ContentEntry" "ce" WHERE "ce"."entryId" = "ContentEntry"."entryId" AND "isPublished" = TRUE AND "deletedAt" IS NULL ORDER BY "updatedAt" LIMIT 1)'), 'versionId']
+            [
+              sequelize.literal(
+                `(
+                  SELECT "versionId"
+                  FROM "ContentEntry" "ce"
+                  WHERE "ce"."entryId" = "ContentEntry"."entryId"
+                  AND "isPublished" = TRUE
+                  AND "deletedAt" IS NULL
+                  ORDER BY "updatedAt" LIMIT 1
+                )`
+              ),
+              'versionId',
+            ],
           ],
           where: { isPublished: true },
-          group: ['entryId', 'language']
+          group: ['entryId', 'language'],
         });
 
         entryTransformer.resetTransformCache();
 
-        await Promise.all(entries.map(async ({ versionId }) => {
-          const entry = await ContentEntry.findOne({ where: { versionId } });
-          if (entry) {
-            const doc = await entryTransformer.transformOutput(entry.data, entry.contentTypeId);
-            algolia.index.saveObject({
-              objectID: `${entry.entryId}-${entry.language}`,
-              _entryId: entry.entryId,
-              _language: entry.language,
-              ...doc,
-            });
-          }
-        }));
-
+        await Promise.all(
+          entries.map(async ({ versionId }) => {
+            const entry = await ContentEntry.findOne({ where: { versionId } });
+            if (entry) {
+              const doc = await entryTransformer.transformOutput(entry.data, entry.contentTypeId);
+              algolia.index.saveObject({
+                objectID: `${entry.entryId}-${entry.language}`,
+                _entryId: entry.entryId,
+                _language: entry.language,
+                ...doc,
+              });
+            }
+          })
+        );
       },
     },
     createUser: {
@@ -696,8 +738,8 @@ export const internalGraphql = async (restart) => {
               email: { type: new GraphQLNonNull(GraphQLString) },
               password: { type: new GraphQLNonNull(GraphQLString) },
               roles: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))) },
-            }
-          })
+            },
+          }),
         },
       },
       async resolve(root, args, context, info) {
@@ -729,8 +771,8 @@ export const internalGraphql = async (restart) => {
               email: { type: new GraphQLNonNull(GraphQLString) },
               password: { type: new GraphQLNonNull(GraphQLString) },
               roles: { type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))) },
-            }
-          })
+            },
+          }),
         },
       },
       async resolve(root, args, context, info) {
@@ -739,11 +781,10 @@ export const internalGraphql = async (restart) => {
         const user = await User.findOne({
           where: {
             id: args.id,
-          }
+          },
         });
 
         if (user) {
-
           await user.update({
             firstname: args.input.firstname,
             lastname: args.input.lastname,
@@ -763,7 +804,7 @@ export const internalGraphql = async (restart) => {
     removeUser: {
       type: GraphQLBoolean,
       args: {
-        id: { type: new GraphQLNonNull(GraphQLID) }
+        id: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('user', 'delete');
@@ -772,7 +813,7 @@ export const internalGraphql = async (restart) => {
           throw new UserInputError('You can not remove yourself');
         }
         // @todo acl
-        const success = await User.destroy({ where: { id: args.id }});
+        const success = await User.destroy({ where: { id: args.id } });
         // @todo nuke roles and so on
         return Boolean(success);
       },
@@ -820,13 +861,13 @@ export const internalGraphql = async (restart) => {
         if (!context.user.isPasswordMatch(args.oldpassword)) {
           throw new UserInputError('Incorrect password');
         }
-        const exists = await User.count({ where: { email: args.email }});
+        const exists = await User.count({ where: { email: args.email } });
         if (exists > 0) {
           throw new UserInputError('Email already in use');
         }
         const success = await context.user.update({
           email: args.email,
-        })
+        });
         return Boolean(success);
       },
     },
@@ -842,9 +883,9 @@ export const internalGraphql = async (restart) => {
               isSlice: { type: GraphQLBoolean },
               isTemplate: { type: GraphQLBoolean },
               settings: { type: GraphQLJSON },
-            }
-          })
-        }
+            },
+          }),
+        },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('schema', 'create');
@@ -860,7 +901,7 @@ export const internalGraphql = async (restart) => {
         restart();
 
         return entry;
-      }
+      },
     },
     updateContentType: {
       type: queryFields.ContentType.type,
@@ -873,9 +914,9 @@ export const internalGraphql = async (restart) => {
               name: { type: new GraphQLNonNull(GraphQLString) },
               title: { type: new GraphQLNonNull(GraphQLString) },
               settings: { type: GraphQLJSON },
-            }
-          })
-        }
+            },
+          }),
+        },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('schema', 'update');
@@ -890,17 +931,17 @@ export const internalGraphql = async (restart) => {
             title,
             name,
             settings,
-          })
+          });
           restart();
         }
 
         return contentType;
-      }
+      },
     },
     removeContentType: {
       type: GraphQLBoolean,
       args: {
-        id: { type: GraphQLID }
+        id: { type: GraphQLID },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('schema', 'delete');
@@ -913,7 +954,7 @@ export const internalGraphql = async (restart) => {
         }
 
         return false;
-      }
+      },
     },
     createContentRelease: {
       type: contentReleaseType,
@@ -931,7 +972,7 @@ export const internalGraphql = async (restart) => {
         });
 
         return contentRelease;
-      }
+      },
     },
     updateContentRelease: {
       type: contentReleaseType,
@@ -953,7 +994,7 @@ export const internalGraphql = async (restart) => {
         }
 
         return contentRelease;
-      }
+      },
     },
     publishContentRelease: {
       type: GraphQLBoolean,
@@ -965,19 +1006,31 @@ export const internalGraphql = async (restart) => {
         const ids = await ContentEntry.findAll({
           attributes: [
             'entryId',
-            [sequelize.literal(`(SELECT "versionId" FROM "ContentEntry" "c" WHERE "ContentEntry"."entryId" = "c"."entryId" AND "c"."language" = "ContentEntry"."language" AND "ContentEntry"."deletedAt" IS NULL ORDER BY "updatedAt" DESC LIMIT 1)`), 'versionId'],
+            [
+              sequelize.literal(
+                `(
+                  SELECT "versionId"
+                  FROM "ContentEntry" "c"
+                  WHERE "ContentEntry"."entryId" = "c"."entryId"
+                  AND "c"."language" = "ContentEntry"."language"
+                  AND "ContentEntry"."deletedAt" IS NULL
+                  ORDER BY "updatedAt" DESC LIMIT 1
+                )`
+              ),
+              'versionId',
+            ],
           ],
           where: {
             contentReleaseId: args.id,
           },
-          group: ['entryId', 'language']
+          group: ['entryId', 'language'],
         });
 
         const versionId = ids.map(d => d.versionId);
         const entries = await ContentEntry.findAll({ where: { versionId } });
         await Promise.all(entries.map(entry => entry.publish(context.user.id)));
-        await ContentEntry.update({ contentReleaseId: null }, { where: { contentReleaseId: args.id } })
-        const contentRelease = await ContentRelease.findOne({ where: { id: args.id }});
+        await ContentEntry.update({ contentReleaseId: null }, { where: { contentReleaseId: args.id } });
+        const contentRelease = await ContentRelease.findOne({ where: { id: args.id } });
         if (contentRelease) {
           contentRelease.update({
             publishedAt: new Date(),
@@ -1001,7 +1054,7 @@ export const internalGraphql = async (restart) => {
         await ContentEntry.destroy({
           where: {
             contentReleaseId: args.id,
-          }
+          },
         });
         return true;
       },
@@ -1013,10 +1066,9 @@ export const internalGraphql = async (restart) => {
         contentTypeId: { type: new GraphQLNonNull(GraphQLID) },
         contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
-        data: { type: GraphQLJSON }
+        data: { type: GraphQLJSON },
       },
       async resolve(root, args, context, info) {
-
         await context.ensureAllowed('document', 'create');
 
         entryTransformer.resetTransformCache();
@@ -1032,13 +1084,13 @@ export const internalGraphql = async (restart) => {
           contentReleaseId: args.contentReleaseId,
           language: args.language || 'en',
           data: args.data,
-          userId: context.user.id
+          userId: context.user.id,
         });
 
         entry.data = await entryTransformer.transformOutput(entry.data, args.contentTypeId);
 
         return entry;
-      }
+      },
     },
     updateContentEntry: {
       type: contentEntryType,
@@ -1046,26 +1098,30 @@ export const internalGraphql = async (restart) => {
         versionId: { type: new GraphQLNonNull(GraphQLID) },
         contentReleaseId: { type: GraphQLID },
         language: { type: GraphQLString },
-        data: { type: GraphQLJSON }
+        data: { type: GraphQLJSON },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('document', 'update');
 
         const entry = await ContentEntry.findOne({
           where: {
-            versionId: args.versionId
+            versionId: args.versionId,
           },
         });
 
         if (entry) {
-
           entryTransformer.resetTransformCache();
 
           if (args.data) {
             args.data = await entryTransformer.transformInput(args.data, entry.contentTypeId);
           }
 
-          const updatedEntry = await entry.draft(args.data, args.language || 'en', args.contentReleaseId, context.user.id);
+          const updatedEntry = await entry.draft(
+            args.data,
+            args.language || 'en',
+            args.contentReleaseId,
+            context.user.id
+          );
 
           updatedEntry.data = await entryTransformer.transformOutput(updatedEntry.data, entry.contentTypeId);
 
@@ -1073,33 +1129,39 @@ export const internalGraphql = async (restart) => {
         }
 
         return null;
-      }
+      },
     },
     publishContentEntry: {
       type: contentEntryType,
       args: {
-        versionId: { type: new GraphQLNonNull(GraphQLID) }
+        versionId: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('document', 'publish');
         const entry = await ContentEntry.findOne({
           where: {
-            versionId: args.versionId
-          }
+            versionId: args.versionId,
+          },
         });
 
         entryTransformer.resetTransformCache();
 
         if (entry) {
-          await ContentEntry.update({ contentReleaseId: null }, {
-            where: {
-              entryId: entry.entryId,
-              contentReleaseId: entry.contentReleaseId,
-            },
-          });
+          await ContentEntry.update(
+            { contentReleaseId: null },
+            {
+              where: {
+                entryId: entry.entryId,
+                contentReleaseId: entry.contentReleaseId,
+              },
+            }
+          );
 
           const publishedEntry = await entry.publish(context.user.id);
-          publishedEntry.data = await entryTransformer.transformOutput(publishedEntry.data, publishedEntry.contentTypeId);
+          publishedEntry.data = await entryTransformer.transformOutput(
+            publishedEntry.data,
+            publishedEntry.contentTypeId
+          );
 
           if (algolia.index) {
             algolia.index.saveObject({
@@ -1116,51 +1178,47 @@ export const internalGraphql = async (restart) => {
         }
 
         return false;
-      }
+      },
     },
     unpublishContentEntry: {
       type: contentEntryType,
       args: {
-        versionId: { type: new GraphQLNonNull(GraphQLID) }
+        versionId: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('document', 'unpublish');
 
         const entry = await ContentEntry.findOne({
           where: {
-            versionId: args.versionId
-          }
+            versionId: args.versionId,
+          },
         });
 
         entryTransformer.resetTransformCache();
 
         if (entry) {
-          await ContentEntry.update({
-            isPublished: false
-          }, {
-            where: {
-              entryId: entry.entryId,
-              language: entry.language,
+          await ContentEntry.update(
+            {
+              isPublished: false,
+            },
+            {
+              where: {
+                entryId: entry.entryId,
+                language: entry.language,
+              },
             }
-          });
+          );
           const res = {
             ...entry.dataValues,
             isPublished: false,
             data: await entryTransformer.transformOutput(entry.data, entry.contentTypeId),
             versions: await ContentEntry.findAll({
-              attributes: [
-                'versionId',
-                'isPublished',
-                'createdAt',
-                'updatedAt'
-              ],
+              attributes: ['versionId', 'isPublished', 'createdAt', 'updatedAt'],
               where: {
                 entryId: args.entryId,
-                language: entry.language
+                language: entry.language,
               },
-              order: [
-                ['createdAt', 'DESC']
-              ]
+              order: [['createdAt', 'DESC']],
             }),
           };
 
@@ -1168,7 +1226,7 @@ export const internalGraphql = async (restart) => {
 
           return res;
         }
-      }
+      },
     },
     removeContentEntry: {
       type: GraphQLBoolean,
@@ -1191,7 +1249,7 @@ export const internalGraphql = async (restart) => {
         if (args.language) {
           where.language = args.language;
           if (algolia.index) {
-            await algolia.index.deleteObject(`${args.id}-${args.language}`,);
+            await algolia.index.deleteObject(`${args.id}-${args.language}`);
           }
         } else if (algolia.index) {
           await algolia.index.deleteBy({ filters: `_entryId:${args.id}` });
@@ -1209,7 +1267,7 @@ export const internalGraphql = async (restart) => {
       args: {
         input: {
           type: webhookInputType,
-        }
+        },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('settings', 'update');
@@ -1220,7 +1278,7 @@ export const internalGraphql = async (restart) => {
           userId: context.user.id,
         });
         return webhook;
-      }
+      },
     },
     updateWebhook: {
       type: queryFields.Webhook.type,
@@ -1228,11 +1286,11 @@ export const internalGraphql = async (restart) => {
         id: { type: new GraphQLNonNull(GraphQLID) },
         input: {
           type: webhookInputType,
-        }
+        },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('settings', 'update');
-        const webhook = await Webhook.findOne({ where: { id: args.id }});
+        const webhook = await Webhook.findOne({ where: { id: args.id } });
         if (webhook) {
           await webhook.update({
             name: args.input.name,
@@ -1241,7 +1299,7 @@ export const internalGraphql = async (restart) => {
           });
         }
         return webhook;
-      }
+      },
     },
     removeWebhook: {
       type: GraphQLBoolean,
@@ -1261,23 +1319,20 @@ export const internalGraphql = async (restart) => {
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('settings', 'update');
-        return updateNpmPackages([
-          `@primecms/core@${args.version}`,
-          `@primecms/ui@${args.version}`,
-        ]);
-      }
-    }
+        return updateNpmPackages([`@primecms/core@${args.version}`, `@primecms/ui@${args.version}`]);
+      },
+    },
   };
 
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'Query',
-      fields: queryFields
+      fields: queryFields,
     }),
     mutation: new GraphQLObjectType({
       name: 'Mutation',
-      fields: mutationFields
-    })
+      fields: mutationFields,
+    }),
   });
 
   const server = new ApolloServer({
@@ -1313,14 +1368,14 @@ export const internalGraphql = async (restart) => {
       }
 
       return error;
-    }
+    },
   });
 
   server.applyMiddleware({
     app,
     cors: {
-      origin: true
-    }
+      origin: true,
+    },
   });
 
   return app;

@@ -1,17 +1,82 @@
 {
-  "name": "root",
-  "private": false,
+  "private": true,
   "scripts": {
-    "lint": "tslint -p .",
-    "clean": "sh ./scripts/tidyFieldNodeModules.sh",
-    "dev": "lerna run dev --stream",
-    "build": "lerna run build"
+    "setup": "lerna bootstrap; yarn run link",
+    "start": "lerna exec -- yarn dev --stream",
+    "link": "lerna exec -- yarn link",
+    "unlink": "lerna exec -- yarn unlink",
+    "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",
+    "compile": "lerna run compile",
+    "lint": "tslint -e \"./packages/prime-ui/**/*.{ts,tsx}\" ./packages/*/{src,__tests__}/**/*.{ts,tsx}",
+    "publish": "lerna publish",
+    "publish:canary": "lerna publish --canary",
+    "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
+    "testonly": "lerna run testonly",
+    "prettier": "prettier --write '**/*.{json,md,js,ts}'",
+    "test:prettier": "prettier --list-different '**/*.{json,md,js,ts}'",
+    "coverage": "lerna run coverage",
+    "codecov": "codecov",
+    "reset": "yarn clean; yarn install; yarn setup; yarn compile",
+    "docs": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages"
   },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120
+  },
+  "renovate": {
+    "extends": [
+      "config:base",
+      "schedule:weekly"
+    ],
+    "automerge": true,
+    "major": {
+      "automerge": false
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/birkir/prime"
+  },
+  "license": "MIT",
   "devDependencies": {
-    "@types/node": "10.12.3",
-    "lerna": "3.4.3",
-    "tslint": "5.11.0",
-    "tslint-microsoft-contrib": "5.2.1",
-    "typescript": "3.1.6"
+    "@commitlint/cli": "7.3.2",
+    "@commitlint/config-conventional": "7.3.1",
+    "@types/node": "10.12.18",
+    "codecov": "3.1.0",
+    "husky": "1.3.1",
+    "jest": "23.6.0",
+    "lerna": "3.10.6",
+    "lint-staged": "8.1.0",
+    "prettier": "1.15.3",
+    "rimraf": "2.6.3",
+    "ts-jest": "23.10.5",
+    "tslint": "5.12.1",
+    "tslint-config-prettier": "1.17.0",
+    "typedoc": "0.8.0",
+    "typedoc-plugin-monorepo": "0.1.0",
+    "typescript": "3.2.4"
   }
 }

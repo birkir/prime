@@ -18,20 +18,19 @@ interface IPrimeFieldStringOptions {
 }
 
 export class PrimeFieldString extends PrimeField {
-
   public id: string = 'string';
   public title: string = 'String';
   public description: string = 'Text field with no formatting';
 
   public defaultOptions: IPrimeFieldStringOptions = {
     type: 'singleline',
-    rules: {}
+    rules: {},
   };
 
   public getGraphQLOutput({ field }) {
     return {
       type: GraphQLString,
-      description: field.description
+      description: field.description,
     };
   }
 
@@ -40,13 +39,13 @@ export class PrimeFieldString extends PrimeField {
 
     return {
       type: rules.required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
-      description: field.description
+      description: field.description,
     };
   }
 
   public getGraphQLWhere() {
     return {
-      type: primeFieldStringWhere
+      type: primeFieldStringWhere,
     };
   }
 

@@ -3,20 +3,20 @@ import { createContext } from 'dataloader-sequelize';
 import * as express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { get, omit } from 'lodash';
+import { ContentEntry } from '../../models/ContentEntry';
 import { ContentType } from '../../models/ContentType';
 import { ContentTypeField } from '../../models/ContentTypeField';
+import { Settings } from '../../models/Settings';
 import { sequelize } from '../../sequelize';
 import { contentEntryMetaType } from '../../types/contentEntryMetaType';
+import { EntryTransformer } from '../../utils/entryTransformer';
+import { Sentry } from '../../utils/Sentry';
 import { create } from './create';
 import { find } from './find';
 import { findAll } from './findAll';
 import { remove } from './remove';
 import { update } from './update';
 import { resolveFieldType } from './utils/resolveFieldType';
-import { EntryTransformer } from '../../utils/entryTransformer';
-import { Sentry } from '../../utils/Sentry';
-import { Settings } from '../../models/Settings';
-import { ContentEntry } from '../../models/ContentEntry';
 
 // import { User } from '../../models/User';
 // import { acl } from '../../acl';
@@ -29,7 +29,7 @@ interface IContext {
   contentReleaseId: null | string;
   versionId: null | string;
   entryId: null | string;
-};
+}
 
 export const entryTransformer = new EntryTransformer();
 
@@ -38,7 +38,6 @@ export const debug = require('debug')('prime:graphql');
 
 // tslint:disable-next-line max-func-body-length
 export const externalGraphql = async () => {
-
   const app = express();
 
   entryTransformer.resetTransformCache();
@@ -59,14 +58,14 @@ export const externalGraphql = async () => {
   debug(contentTypes.length, 'content types');
 
   await Promise.all(
-    contentTypes.map(async (contentType) => {
+    contentTypes.map(async contentType => {
       const contentTypeIds = get(contentType, 'settings.contentTypeIds', []);
       contentTypeIds.push(contentType.id);
 
       const fields = await ContentTypeField.findAll({
         where: {
-          contentTypeId: contentTypeIds
-        }
+          contentTypeId: contentTypeIds,
+        },
       });
 
       contentType.fields = [
@@ -82,9 +81,9 @@ export const externalGraphql = async () => {
   contentTypes.sort((a: any, b: any) => b.isSlice - a.isSlice);
 
   await Promise.all(
-    contentTypes.map(async (contentType) => {
-      const outputFields = () => contentType.fields.reduce(
-        (acc, field: ContentTypeField) => {
+    contentTypes.map(async contentType => {
+      const outputFields = () =>
+        contentType.fields.reduce((acc, field: ContentTypeField) => {
           const fieldType = resolveFieldType(field);
           if (fieldType) {
             acc[field.name] = fieldType.getGraphQLOutput({
@@ -93,7 +92,7 @@ export const externalGraphql = async () => {
               models,
               contentType,
               contentTypes,
-              resolveFieldType
+              resolveFieldType,
             });
           }
           if (!acc[field.name]) {
@@ -101,9 +100,7 @@ export const externalGraphql = async () => {
           }
 
           return acc;
-        },
-        {}
-      );
+        }, {});
 
       // tslint:disable-next-line variable-name
       const GraphQLContentType = new GraphQLObjectType({
@@ -111,8 +108,8 @@ export const externalGraphql = async () => {
         fields: () => ({
           id: { type: GraphQLID },
           ...outputFields(),
-          _meta: { type: contentEntryMetaType }
-        })
+          _meta: { type: contentEntryMetaType },
+        }),
       });
 
       if (contentType.isSlice) {
@@ -123,7 +120,7 @@ export const externalGraphql = async () => {
             fields: outputFields,
           }),
           inputType: null, // @todo we maybe want to store this type for further reuse
-        }
+        };
         return null;
       }
 
@@ -133,13 +130,10 @@ export const externalGraphql = async () => {
         return null;
       }
 
-      debug(
-        'created content type:',
-        `${contentType.name}(${contentType.fields.map(field => field.name).join(', ')})`
-      );
+      debug('created content type:', `${contentType.name}(${contentType.fields.map(field => field.name).join(', ')})`);
 
-      queries[contentType.name]             = find({ GraphQLContentType, contentType, contentTypes, queries });
-      queries[`all${contentType.name}`]  = findAll({ GraphQLContentType, contentType, contentTypes, queries });
+      queries[contentType.name] = find({ GraphQLContentType, contentType, contentTypes, queries });
+      queries[`all${contentType.name}`] = findAll({ GraphQLContentType, contentType, contentTypes, queries });
 
       if (get(contentType, 'settings.mutations', true) === true) {
         inputs[`create${contentType.name}`] = create({ GraphQLContentType, contentType, contentTypes, queries });
@@ -149,7 +143,7 @@ export const externalGraphql = async () => {
     })
   );
 
-  const queriesAndMutations: any = {}; // tslint:disable-line no-any
+  const queriesAndMutations: any = {};
   const realQueries = omit(queries, '__slices') as any;
 
   if (Object.keys(realQueries).length === 0) {
@@ -157,18 +151,18 @@ export const externalGraphql = async () => {
       type: GraphQLBoolean,
       resolve() {
         return true;
-      }
+      },
     };
   } else if (Object.keys(inputs).length > 0) {
     queriesAndMutations.mutation = new GraphQLObjectType({
       name: 'Mutation',
-      fields: inputs
+      fields: inputs,
     });
   }
 
   queriesAndMutations.query = new GraphQLObjectType({
     name: 'Query',
-    fields: realQueries
+    fields: realQueries,
   });
 
   const schema = new GraphQLSchema(queriesAndMutations);
@@ -189,7 +183,7 @@ export const externalGraphql = async () => {
         const context: IContext = {
           settings,
           sequelizeDataLoader: createContext(sequelize),
-          public: (settings.accessType === 'public'),
+          public: settings.accessType === 'public',
           published: true,
           contentReleaseId: null,
           versionId: null,
@@ -202,7 +196,7 @@ export const externalGraphql = async () => {
           const versionId = cookies.get('prime.versionId') as string;
           debug('context.versionId %o', versionId);
           if (versionId.length === 36) {
-            const entry = await ContentEntry.findOne({ where: { versionId }});
+            const entry = await ContentEntry.findOne({ where: { versionId } });
             if (entry) {
               context.entryId = entry.id;
               if (entry.contentReleaseId) {
@@ -222,14 +216,18 @@ export const externalGraphql = async () => {
           }
         }
 
-        if (req.user && String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) && !req.headers['x-prime-published']) {
+        if (
+          req.user &&
+          String(req.headers.referer).match(/\/graphql(\/?\?.*)?$/) &&
+          !req.headers['x-prime-published']
+        ) {
           context.published = null;
           debug('context.published %o %s', context.published, '(overwrite)');
         }
 
         return context;
       } catch (err) {
-        console.error(err);
+        console.error(err); // tslint:disable-line no-console
         return {};
       }
     },
@@ -239,14 +237,14 @@ export const externalGraphql = async () => {
       }
 
       return error;
-    }
+    },
   });
 
   server.applyMiddleware({
     app,
     cors: {
       origin: true,
-    }
+    },
   });
 
   return app;

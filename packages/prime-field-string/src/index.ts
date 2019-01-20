@@ -1,4 +1,1 @@
-import { PrimeFieldString } from './PrimeFieldString';
-
-// tslint:disable-next-line no-default-export export-name
-export default PrimeFieldString;
+export { PrimeFieldString as default } from './PrimeFieldString';

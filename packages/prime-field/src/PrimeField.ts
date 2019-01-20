@@ -1,4 +1,4 @@
-import { FormComponentProps } from 'antd/lib/form'; // tslint:disable-line no-submodule-imports
+import { FormComponentProps } from 'antd/lib/form';
 import { ApolloClient } from 'apollo-boost';
 import { GraphQLFieldConfig, GraphQLInputObjectType, GraphQLInputType } from 'graphql';
 import { defaultsDeep } from 'lodash';
@@ -14,7 +14,7 @@ interface IField {
   position: number;
   contentTypeId: string;
   contentTypeFieldId: string;
-  options: any; // tslint:disable-line no-any
+  options: any;
   apiName: string;
 }
 
@@ -30,7 +30,7 @@ interface IEntry {
   data: object;
   createdAt: Date;
   updatedAt: Date;
-  versions: any[]; // tslint:disable-line no-any
+  versions: any[];
 }
 
 interface IContentType {
@@ -42,10 +42,10 @@ interface IContentType {
   settings: object;
   isSlice: boolean;
   isTemplate: boolean;
-  contentEntry: any; // tslint:disable-line no-any
+  contentEntry: any;
   entriesCount?: number;
-  fields: any[]; // tslint:disable-line no-any
-  schema: any[]; // tslint:disable-line no-any
+  fields: any[];
+  schema: any[];
 }
 
 export interface IPrimeFieldProps {
@@ -54,13 +54,13 @@ export interface IPrimeFieldProps {
   form: FormComponentProps['form'];
   client: typeof ApolloClient;
   stores: {
-    Auth: any; // tslint:disable-line no-any
-    Settings: any; // tslint:disable-line no-any
-    ContentEntries: any; // tslint:disable-line no-any
-    ContentTypes: any; // tslint:disable-line no-any
-    Users: any; // tslint:disable-line no-any
+    Auth: any;
+    Settings: any;
+    ContentEntries: any;
+    ContentTypes: any;
+    Users: any;
   };
-  children?: any; // tslint:disable-line no-any
+  children?: any;
   entry?: IEntry;
   path: string;
   renderField(args: IPrimeFieldProps): React.ReactNode;
@@ -69,24 +69,24 @@ export interface IPrimeFieldProps {
 export interface IPrimeFieldGraphQLArguments {
   field: IField;
   queries: {
-    [key: string]: any; // tslint:disable-line no-any
+    [key: string]: any;
   };
   models: {
-    ContentEntry: any; // tslint:disable-line no-any
+    ContentEntry: any;
   };
   contentType: IContentType;
   contentTypes: IContentType[];
-  resolveFieldType: Function;
+  resolveFieldType: () => any;
   isUpdate: boolean;
 }
 
-type IPrimeFieldGraphQLOutput = null | GraphQLFieldConfig<any, any>; // tslint:disable-line no-any
+type IPrimeFieldGraphQLOutput = null | GraphQLFieldConfig<any, any>;
 
 type IPrimeFieldGraphQLInput = null | {
   type: GraphQLInputType | GraphQLInputObjectType;
 };
 
-interface IRegisterField {
+export interface IRegisterField {
   InputComponent?: React.ReactNode;
   SchemaSettingsComponent?: React.ReactNode;
   SchemaDisplayComponent?: React.ReactNode;
@@ -96,7 +96,6 @@ interface IRegisterField {
  * Abstract Field class for Prime CMS
  */
 export abstract class PrimeField {
-
   /**
    * Field identifier (alphanumeric string)
    * Has to be unique
@@ -141,7 +140,7 @@ export abstract class PrimeField {
    * Process input data
    * @param input Object for input
    */
-  public processInput(input, field: IField) {
+  public processInput(input: any, field: IField) {
     return input;
   }
 
@@ -149,7 +148,7 @@ export abstract class PrimeField {
    * Process output data
    * @param output Object for output
    */
-  public processOutput(output, field: IField) {
+  public processOutput(output: any, field: IField) {
     return output;
   }
 
@@ -159,10 +158,10 @@ export abstract class PrimeField {
 }
 
 export function registerField(name: string, field: IRegisterField): IRegisterField {
-  if (typeof window !== 'undefined') { // tslint:disable-line no-typeof-undefined
-    const win: any = window; // tslint:disable-line no-any
-    if (win.prime && win.prime.registerField) { // tslint:disable-line no-unsafe-any
-      win.prime.registerField(name, field); // tslint:disable-line no-unsafe-any
+  if (typeof window !== 'undefined') {
+    const win: any = window;
+    if (win.prime && win.prime.registerField) {
+      win.prime.registerField(name, field);
     }
   }
 
