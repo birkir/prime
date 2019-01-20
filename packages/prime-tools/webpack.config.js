@@ -9,6 +9,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
+          configFile: path.join(__dirname, '..', 'prime-ui', 'tsconfig.json'),
           compilerOptions: {
             noEmit: false,
             jsx: 'react',
