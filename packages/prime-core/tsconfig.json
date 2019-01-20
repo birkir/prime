@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./lib",
     "moduleResolution": "node",
+    "jsx": "preserve",
     "noUnusedLocals": true,
     "pretty": true,
     "strictNullChecks": true,
@@ -11,6 +12,7 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "lib": ["dom", "es6", "es2015", "es2017", "esnext"]
   },

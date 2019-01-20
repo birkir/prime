@@ -2,10 +2,8 @@
   "extends": "../prime-core/tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "declaration": true,
-    "moduleResolution": "node",
-    "jsx": "preserve"
+    "declaration": true
   },
   "include": ["./src"],
-  "exclude": ["node_modules", "./src/ui"]
+  "exclude": ["node_modules"]
 }

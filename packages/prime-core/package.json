@@ -9,27 +9,28 @@
   "bin": {
     "primecms": "./cli.js"
   },
-  "directories": {
-    "lib": "lib",
-    "migrations": "migrations"
-  },
   "files": [
     "migrations",
     "lib",
     "cli.js"
   ],
+  "jest": {
+    "preset": "ts-jest"
+  },
   "scripts": {
+    "clean": "rimraf lib",
     "start": "node lib/index.js",
-    "prepublishOnly": "npm run build",
-    "build": "rm -rf ./lib && tsc -p .",
+    "prepublishOnly": "yarn compile",
+    "compile": "rm -rf ./lib && tsc -p .",
     "dev": "DEBUG=prime* ts-node src",
     "dev:debug": "DEBUG=* ts-node src",
     "db:init": "DEBUG=prime* ts-node src/db/init.ts",
     "db:seed": "DEBUG=prime* ts-node src/db/seed.ts",
     "db:up": "db-migrate --migrations-dir ./migrations up",
     "db:down": "db-migrate --migrations-dir ./migrations down",
-    "rebuild-deps": "lerna run build --ignore @primecms/core --ignore @primecms/ui",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@primecms/field": "^0.2.17",

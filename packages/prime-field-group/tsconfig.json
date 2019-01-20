@@ -2,15 +2,8 @@
   "extends": "../prime-core/tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "declaration": false,
-    "jsx": "react",
-    "pretty": true,
-    "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": ["es6", "dom", "es2015", "es2017", "esnext"]
+    "declaration": true
   },
   "include": ["./src"],
-  "exclude": ["node_modules", "./src/ui"]
+  "exclude": ["node_modules"]
 }
