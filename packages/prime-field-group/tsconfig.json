@@ -12,5 +12,5 @@
     "lib": ["es6", "dom", "es2015", "es2017", "esnext"]
   },
   "include": ["./src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "./src/ui"]
 }
