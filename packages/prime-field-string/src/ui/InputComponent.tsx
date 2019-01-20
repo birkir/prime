@@ -1,10 +1,10 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
-import { ValidationRule } from 'antd/lib/form'; // tslint:disable-line
-import BraftEditor from 'braft-editor'; // tslint:disable-line
-import { debounce } from 'lodash'; // tslint:disable-line
-import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js'; // tslint:disable-line
-import * as React from 'react';
+import { ValidationRule } from 'antd/lib/form';
+import BraftEditor from 'braft-editor';
+import { debounce } from 'lodash';
+import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
+import React from 'react';
 
 const defaultControls = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
 
