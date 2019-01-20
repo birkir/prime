@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input, Select, Switch, Tooltip } from 'antd';
-import { get } from 'lodash'; // tslint:disable-line
+import { get } from 'lodash';
 import * as React from 'react';
 
 type IProps = IPrimeFieldProps & {
@@ -9,43 +9,52 @@ type IProps = IPrimeFieldProps & {
   };
 };
 
-const markdownFeatures = [{
-  id: 'headings',
-  icon: 'font-size',
-  title: 'Headings'
-}, {
-  id: 'bold',
-  title: 'Bold'
-}, {
-  id: 'italic',
-  title: 'Italic'
-}, {
-  id: 'code',
-  title: 'Code block'
-}, {
-  id: 'blockquote',
-  icon: 'quote',
-  title: 'Block quote'
-}, {
-  id: 'list-ul',
-  icon: 'list',
-  title: 'Bullet list'
-}, {
-  id: 'list-ol',
-  icon: 'list-numbered',
-  title: 'Ordered list'
-}, {
-  id: 'link',
-  title: 'Hyperlink'
-}, {
-  id: 'emoji',
-  title: 'Emoji'
-}];
+const markdownFeatures = [
+  {
+    id: 'headings',
+    icon: 'font-size',
+    title: 'Headings',
+  },
+  {
+    id: 'bold',
+    title: 'Bold',
+  },
+  {
+    id: 'italic',
+    title: 'Italic',
+  },
+  {
+    id: 'code',
+    title: 'Code block',
+  },
+  {
+    id: 'blockquote',
+    icon: 'quote',
+    title: 'Block quote',
+  },
+  {
+    id: 'list-ul',
+    icon: 'list',
+    title: 'Bullet list',
+  },
+  {
+    id: 'list-ol',
+    icon: 'list-numbered',
+    title: 'Ordered list',
+  },
+  {
+    id: 'link',
+    title: 'Hyperlink',
+  },
+  {
+    id: 'emoji',
+    title: 'Emoji',
+  },
+];
 
 const defaultFeatures = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
 
 export class SchemaSettingsComponent extends React.PureComponent<IProps> {
-
   public onClickMarkdownFeature = (e: React.MouseEvent<HTMLElement>) => {
     const { form } = this.props;
     const id = e.currentTarget.dataset.id;
@@ -58,10 +67,10 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         values.push(id);
       }
       form.setFieldsValue({
-        'options.md': values
+        'options.md': values,
       });
     }
-  }
+  };
 
   // tslint:disable-next-line max-func-body-length
   public render() {
@@ -76,7 +85,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
       <>
         <Form.Item label="Type" style={{ marginBottom: 8 }}>
           {form.getFieldDecorator('options.type', {
-            initialValue: get(options, 'type', 'singleline')
+            initialValue: get(options, 'type', 'singleline'),
           })(
             <Select>
               <Select.Option key="singleline">Singleline</Select.Option>
@@ -89,7 +98,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         {isSingleline && (
           <Form.Item label="Appearance" style={{ marginBottom: 8 }}>
             {form.getFieldDecorator('options.appearance', {
-              initialValue: get(options, 'appearance', 'default')
+              initialValue: get(options, 'appearance', 'default'),
             })(
               <Select>
                 <Select.Option key="default">Default</Select.Option>
@@ -107,16 +116,16 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         {isMultiline && (
           <Form.Item label="Max lines" style={{ marginBottom: 8 }}>
             {form.getFieldDecorator('options.maxLines', {
-              initialValue: get(options, 'rules.maxLines', '')
-            })(
-              <Input type="number" />
-            )}
+              initialValue: get(options, 'rules.maxLines', ''),
+            })(<Input type="number" />)}
           </Form.Item>
         )}
 
         {isMarkdown && (
           <Form.Item label="Rich Text features" style={{ marginBottom: 8 }} className="bf-container">
-            {markdownFeatures.map(({ id, icon, title }: any) => ( // tslint:disable-line
+            {markdownFeatures.map((
+              { id, icon, title }: any // tslint:disable-line
+            ) => (
               <Tooltip title={title}>
                 <Button
                   key={id}
@@ -131,10 +140,8 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
             ))}
 
             {form.getFieldDecorator('options.md', {
-              initialValue: get(options, 'md', defaultFeatures)
-            })(
-              <input type="hidden" />
-            )}
+              initialValue: get(options, 'md', defaultFeatures),
+            })(<input type="hidden" />)}
           </Form.Item>
         )}
 
@@ -142,52 +149,50 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         <Form.Item style={{ margin: 0 }}>
           {form.getFieldDecorator('options.rules.required', {
             valuePropName: 'checked',
-            initialValue: get(options, 'rules.required', false)
-          })(
-            <Switch />
-          )}
-          <label htmlFor="options.rules.required" style={{ marginLeft: 8 }}>Required</label>
+            initialValue: get(options, 'rules.required', false),
+          })(<Switch />)}
+          <label htmlFor="options.rules.required" style={{ marginLeft: 8 }}>
+            Required
+          </label>
         </Form.Item>
 
-          {isSingleline && (<>
+        {isSingleline && (
+          <>
             <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.urlsafe', {
                 valuePropName: 'checked',
-                initialValue: get(options, 'rules.urlsafe', false)
-              })(
-                <Switch />
-              )}
-              <label htmlFor="options.rules.urlsafe" style={{ marginLeft: 8 }}>URL Safe</label>
+                initialValue: get(options, 'rules.urlsafe', false),
+              })(<Switch />)}
+              <label htmlFor="options.rules.urlsafe" style={{ marginLeft: 8 }}>
+                URL Safe
+              </label>
             </Form.Item>
             <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.min', {
                 valuePropName: 'checked',
-                initialValue: get(options, 'rules.min', false)
-              })(
-                <Switch />
-              )}
-              <label htmlFor="options.rules.min" style={{ marginLeft: 8 }}>Min chars: </label>
+                initialValue: get(options, 'rules.min', false),
+              })(<Switch />)}
+              <label htmlFor="options.rules.min" style={{ marginLeft: 8 }}>
+                Min chars:{' '}
+              </label>
               {form.getFieldDecorator('options.rules.minValue', {
-                initialValue: get(options, 'rules.minValue')
-              })(
-                <Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />
-              )}
+                initialValue: get(options, 'rules.minValue'),
+              })(<Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />)}
             </Form.Item>
             <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.max', {
                 valuePropName: 'checked',
-                initialValue: get(options, 'rules.max', false)
-              })(
-                <Switch />
-              )}
-              <label htmlFor="options.rules.max" style={{ marginLeft: 8 }}>Max chars: </label>
+                initialValue: get(options, 'rules.max', false),
+              })(<Switch />)}
+              <label htmlFor="options.rules.max" style={{ marginLeft: 8 }}>
+                Max chars:{' '}
+              </label>
               {form.getFieldDecorator('options.rules.maxValue', {
-                initialValue: get(options, 'rules.maxValue')
-              })(
-                <Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />
-              )}
+                initialValue: get(options, 'rules.maxValue'),
+              })(<Input size="small" type="number" style={{ marginLeft: 8, width: 64 }} />)}
             </Form.Item>
-          </>)}
+          </>
+        )}
       </>
     );
   }

@@ -9,86 +9,85 @@ import * as React from 'react';
 const defaultControls = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
 
 const allControls = [
-  'headings', 'separator',
-  'bold', 'italic', 'code', 'blockquote', 'separator',
-  'list-ul', 'list-ol', 'separator',
-  'link', 'emoji'
+  'headings',
+  'separator',
+  'bold',
+  'italic',
+  'code',
+  'blockquote',
+  'separator',
+  'list-ul',
+  'list-ol',
+  'separator',
+  'link',
+  'emoji',
 ];
 
 const markdownConfig = {
   preserveNewlines: true,
-  remarkablePreset: 'full'
+  remarkablePreset: 'full',
 };
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
-
   public state = {
-    value: BraftEditor.createEditorState(markdownToDraft(this.props.initialValue, markdownConfig))
+    value: BraftEditor.createEditorState(markdownToDraft(this.props.initialValue, markdownConfig)),
   };
 
-  public setMarkdownValue = debounce(
-    () => {
-      try {
-        const { form, path } = this.props;
-        form.setFieldsValue({
-          [path]: draftToMarkdown(JSON.parse(this.state.value.toRAW()), markdownConfig).replace(/\n\n/g, '\n \n')
-        });
-      } catch (err) {
-        console.error('Error converting rich text to markdown'); // tslint:disable-line no-console
-      }
-    },
-    330
-  );
+  public setMarkdownValue = debounce(() => {
+    try {
+      const { form, path } = this.props;
+      form.setFieldsValue({
+        [path]: draftToMarkdown(JSON.parse(this.state.value.toRAW()), markdownConfig).replace(/\n\n/g, '\n \n'),
+      });
+    } catch (err) {
+      console.error('Error converting rich text to markdown'); // tslint:disable-line no-console
+    }
+  }, 330);
 
-  public onChange = (value: any) => { // tslint:disable-line no-any
+  public onChange = (value: any) => {
+    // tslint:disable-line no-any
     this.setState({ value }, this.setMarkdownValue);
-  }
+  };
 
   public onUrlSafeKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { form, path } = this.props;
     const value = form.getFieldValue(path);
     form.setFieldsValue({
-      [path]: (value.match(/[A-Za-z0-9_-]/g) || []).join('')
+      [path]: (value.match(/[A-Za-z0-9_-]/g) || []).join(''),
     });
-  }
+  };
 
   public renderMarkdown = (rules: ValidationRule[]) => {
     const { form, field, path, initialValue = '' } = this.props;
     const { getFieldDecorator } = form;
     const features = field.options.md || defaultControls;
 
-    const controls = allControls.filter(item => {
-      if (item === 'separator') {
+    const controls = allControls
+      .filter(item => {
+        if (item === 'separator') {
+          return true;
+        }
+
+        return features.indexOf(item) >= 0;
+      })
+      .filter((item, index, arr) => {
+        if (item === 'separator' && (index === 0 || arr[index - 1] === item || index - 1 === arr.length)) {
+          return false;
+        }
+
         return true;
-      }
-
-      return features.indexOf(item) >= 0;
-    })
-    .filter((item, index, arr) => {
-      if (item === 'separator' && (index === 0 || arr[index - 1] === item || (index - 1) === arr.length)) {
-        return false;
-      }
-
-      return true;
-    });
+      });
 
     // Add undo/redo
     controls.push('separator', 'undo', 'redo');
 
     return (
       <Form.Item label={field.title}>
-        <BraftEditor
-          controls={controls}
-          value={this.state.value}
-          onChange={this.onChange}
-          language="en"
-        />
-        {getFieldDecorator(path, { initialValue, rules })(
-          <input type="hidden" />
-        )}
+        <BraftEditor controls={controls} value={this.state.value} onChange={this.onChange} language="en" />
+        {getFieldDecorator(path, { initialValue, rules })(<input type="hidden" />)}
       </Form.Item>
     );
-  }
+  };
 
   public renderMultiline = (rules: ValidationRule[]) => {
     const { form, field, path, initialValue = '' } = this.props;
@@ -98,13 +97,11 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     return (
       <Form.Item label={field.title}>
         {getFieldDecorator(path, { initialValue, rules })(
-          <Input.TextArea
-            autosize={{ minRows: 1, maxRows: maxRows > 0 ? maxRows : undefined }}
-          />
+          <Input.TextArea autosize={{ minRows: 1, maxRows: maxRows > 0 ? maxRows : undefined }} />
         )}
       </Form.Item>
     );
-  }
+  };
 
   // tslint:disable-next-line cyclomatic-complexity
   public render() {
@@ -117,7 +114,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     if (rules.required) {
       fieldRules.push({
         required: true,
-        message: `${field.title} is required`
+        message: `${field.title} is required`,
       });
     }
 
@@ -132,7 +129,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     if (rules.urlsafe) {
       fieldRules.push({
         pattern: /^[A-Za-z][A-Za-z0-9_-]*$/,
-        message: `${field.title} must be url safe text`
+        message: `${field.title} must be url safe text`,
       });
     }
 
@@ -140,7 +137,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       const min = Number(rules.minValue);
       fieldRules.push({
         min,
-        message: `${field.title} must have more than ${min} character${min === 1 ? '' : 's'}`
+        message: `${field.title} must have more than ${min} character${min === 1 ? '' : 's'}`,
       });
     }
 
@@ -148,12 +145,13 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       const max = Number(rules.maxValue);
       fieldRules.push({
         max,
-        message: `${field.title} must have less than ${max} character${max === 1 ? '' : 's'}`
+        message: `${field.title} must have less than ${max} character${max === 1 ? '' : 's'}`,
       });
     }
 
     const error = form.getFieldError(path);
-    const help = field.description && field.description !== '' ? `${field.description}${error ? ` - ${error}` : ''}` : undefined;
+    const help =
+      field.description && field.description !== '' ? `${field.description}${error ? ` - ${error}` : ''}` : undefined;
     const styles: any = {}; // tslint:disable-line no-any
 
     if (field.options.appearance) {
@@ -174,7 +172,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           styles.fontSize = 20;
           break;
         case 'pre':
-          styles.fontFamily = '"Source Code Pro", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace';
+          styles.fontFamily =
+            '"Source Code Pro", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace';
           break;
         default:
       }
@@ -184,14 +183,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       <Form.Item label={field.title} help={help}>
         {getFieldDecorator(path, {
           initialValue,
-          rules: fieldRules
-        })(
-          <Input
-            size="large"
-            style={styles}
-            onKeyUp={rules.urlsafe ? this.onUrlSafeKeyUp : undefined}
-          />
-        )}
+          rules: fieldRules,
+        })(<Input size="large" style={styles} onKeyUp={rules.urlsafe ? this.onUrlSafeKeyUp : undefined} />)}
       </Form.Item>
     );
   }
