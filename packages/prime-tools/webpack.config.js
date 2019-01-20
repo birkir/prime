@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/ui',
+  entry: path.join(process.cwd(), 'src', 'ui'),
   module: {
     rules: [
       {

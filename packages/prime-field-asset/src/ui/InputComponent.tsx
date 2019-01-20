@@ -81,12 +81,12 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     const toSign = Object.entries(params)
       .filter(([key, value]) => value && String(value).length > 0)
-      .map(([key, value]: [string, any]) => `${key}=${[].concat(value || []).join(',')}`) // tslint:disable-line no-any
+      .map(([key, value]: [string, any]) => `${key}=${[].concat(value || []).join(',')}`)
       .sort()
       .join('&');
 
     const msgBuffer = new TextEncoder().encode(toSign + password);
-    const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer); // tslint:disable-line await-promise
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => `00${b.toString(16)}`.slice(-2)).join('');
 

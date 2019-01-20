@@ -7,7 +7,6 @@ import { resolveFieldType } from './utils/resolveFieldType';
 
 export const update = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   const typeArgs: any = {
-    // tslint:disable-line no-any
     id: { type: new GraphQLNonNull(GraphQLID) },
     language: { type: GraphQLString },
     publish: { type: GraphQLBoolean },

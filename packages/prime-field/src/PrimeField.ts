@@ -14,7 +14,7 @@ interface IField {
   position: number;
   contentTypeId: string;
   contentTypeFieldId: string;
-  options: any; // tslint:disable-line no-any
+  options: any;
   apiName: string;
 }
 

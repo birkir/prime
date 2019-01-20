@@ -15,9 +15,8 @@ type IProps = IPrimeFieldProps & {
 export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   public state = {
     dataSource: get(this.props, 'options.items', [])
-      .filter((item: any) => !!item && item.key !== '') // tslint:disable-line no-any
+      .filter((item: any) => !!item && item.key !== '')
       .map((item: any, index: number) => ({
-        // tslint:disable-line no-any
         id: index,
         ...item,
       })),
@@ -27,9 +26,8 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
     if (this.props.field.id !== nextProps.field.id) {
       this.setState({
         dataSource: get(nextProps, 'options.items', [])
-          .filter((item: any) => !!item && item.key !== '') // tslint:disable-line no-any
+          .filter((item: any) => !!item && item.key !== '')
           .map((item: any, index: number) => ({
-            // tslint:disable-line no-any
             id: index,
             ...item,
           })),
@@ -39,7 +37,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
 
   public onAddClick = () => {
     const { dataSource } = this.state;
-    const id = Math.max(...[...dataSource.map((n: any) => n.id), 0]) + 1; // tslint:disable-line no-any
+    const id = Math.max(...[...dataSource.map((n: any) => n.id), 0]) + 1;
     this.setState({
       dataSource: [...dataSource, { id, key: '', value: '' }],
     });
@@ -48,7 +46,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   public onRemoveClick = (e: React.MouseEvent<HTMLElement>) => {
     const id = Number(e.currentTarget.dataset.id);
     const { dataSource } = this.state;
-    const index = dataSource.findIndex((n: any) => n.id === id); // tslint:disable-line no-any
+    const index = dataSource.findIndex((n: any) => n.id === id);
     dataSource.splice(index, 1);
     this.setState({
       dataSource,
@@ -57,10 +55,8 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   };
 
   public ensureUnique = (id: number) => (rule: any, value: any, callback: (input?: string) => void) => {
-    // tslint:disable-line no-any
-    const values = this.props.form.getFieldsValue() as any; // tslint:disable-line no-any
+    const values = this.props.form.getFieldsValue() as any;
     const found = values.options.items.find((item: any, index: number) => {
-      // tslint:disable-line no-any
       return item && item.key === value && index !== id;
     });
 
@@ -112,7 +108,6 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
                 title: 'Key',
                 dataIndex: 'key',
                 render: (text: string, record: any) => {
-                  // tslint:disable-line no-any
                   return (
                     <Form.Item>
                       {form.getFieldDecorator(`options.items.${record.id}.key`, {
@@ -139,7 +134,6 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
                 title: 'Value',
                 dataIndex: 'value',
                 render(text: string, record: any) {
-                  // tslint:disable-line no-any
                   return (
                     <Form.Item>
                       {form.getFieldDecorator(`options.items.${record.id}.value`, {
@@ -158,7 +152,6 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
               {
                 title: '',
                 render: (text: string, record: any) => {
-                  // tslint:disable-line no-any
                   return (
                     <a role="button" data-id={record.id} onClick={this.onRemoveClick}>
                       X

@@ -1,26 +1,23 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Button, Card, Dropdown, Icon, Menu, Tag } from 'antd';
+import { Button, Card, Dropdown, Icon, Menu } from 'antd';
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 
 type ISlice = null | {
   __inputtype: string;
   id: string;
   title: string;
-  schema: any; // tslint:disable-line no-any
+  schema: any;
 };
 
 interface IState {
-  contentTypes: any[]; // tslint:disable-line no-any
+  contentTypes: any[];
   slices: ISlice[];
 }
 
-// tslint:disable-next-line no-any
 function noChildren(field: any, index: number, allFields: any) {
-  // tslint:disable-next-line no-any
   return !allFields.find((allFieldsField: any) => {
     if (allFieldsField.id !== field.id && allFieldsField.fields) {
-      // tslint:disable-next-line no-any
       return allFieldsField.fields.find((innerField: any) => innerField.id === field.id);
     }
 
@@ -34,7 +31,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     slices: [],
   };
 
-  public values: any = []; // tslint:disable-line no-any
+  public values: any = [];
 
   public componentDidMount() {
     this.load().catch((err: Error) => {
@@ -43,7 +40,6 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   }
 
   public componentWillReceiveProps(nextProps: any) {
-    // tslint:disable-line no-any
     if (JSON.stringify(this.props.initialValue) !== JSON.stringify(nextProps.initialValue)) {
       this.setState({
         slices: [].concat(nextProps.initialValue || []).map((n: { __inputname: string }, index: number) => ({
@@ -57,7 +53,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public async load() {
     const { field, stores } = this.props;
     const ids = get(field.options, 'contentTypeIds', []);
-    const initialValue = (this.props.initialValue as any) || []; // tslint:disable-line no-any
+    const initialValue = (this.props.initialValue as any) || [];
 
     this.setState({
       contentTypes: stores.ContentTypes.list.filter((n: { id: string }) => ids.indexOf(n.id) >= 0),
@@ -105,7 +101,6 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   };
 
   public renderField = (field: any, index: number) => {
-    // tslint:disable-line no-any
     const initialValue = this.props.initialValue || [];
 
     return this.props.renderField({
@@ -113,7 +108,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       field,
       initialValue: get(initialValue, `${index}.${field.name}`, ''),
       path: `${this.props.path}.${index}.${field.name}`,
-    } as any); // tslint:disable-line no-any
+    } as any);
   };
 
   public render() {
@@ -136,7 +131,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           if (!slice || !slice.id) {
             return null;
           }
-          const { index } = slice as any; // tslint:disable-line no-any
+          const { index } = slice as any;
 
           return (
             <Card key={`${slice.id}_${index}`} className="prime-slice-item">
@@ -166,9 +161,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
               {form.getFieldDecorator(`${path}.${index}.__inputname`, {
                 initialValue: slice.id,
               })(<input type="hidden" />)}
-              {slice.schema.fields.filter(noChildren).map(
-                (f: any) => this.renderField(f, index) // tslint:disable-line no-any
-              )}
+              {slice.schema.fields.filter(noChildren).map((f: any) => this.renderField(f, index))}
             </Card>
           );
         })}

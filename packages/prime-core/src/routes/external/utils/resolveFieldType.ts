@@ -1,6 +1,5 @@
 import { fields } from '../../../fields';
-
-// tslint:disable-next-line no-any
+no - any;
 export const resolveFieldType = (field, subfield = false): any => {
   if (subfield === false && field.contentTypeFieldId) {
     return null;

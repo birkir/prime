@@ -78,7 +78,6 @@ export const findAll = ({ GraphQLContentType, contentType, contentTypes, queries
   });
 
   const typeArgs: any = {
-    // tslint:disable-line no-any
     language: { type: GraphQLString },
     first: { type: GraphQLInt },
     skip: { type: GraphQLInt },

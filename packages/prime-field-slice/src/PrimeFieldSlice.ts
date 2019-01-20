@@ -105,7 +105,6 @@ export class PrimeFieldSlice extends PrimeField {
       }
 
       const fieldsTypes = (sliceType.fields || []).reduce((acc, nfield: any) => {
-        // tslint:disable-line no-any
         const fieldType = resolveFieldType(nfield, true);
         if (fieldType) {
           acc[nfield.name] = fieldType.getGraphQLInput({

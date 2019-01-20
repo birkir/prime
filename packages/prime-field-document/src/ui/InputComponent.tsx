@@ -53,7 +53,6 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
     this.setState({
       options: contentTypes.map(({ contentType, items }: any) => ({
-        // tslint:disable-line no-any
         key: contentType.id,
         value: contentType.id,
         title: contentType.title,

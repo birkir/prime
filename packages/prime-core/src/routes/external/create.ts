@@ -7,7 +7,6 @@ import { resolveFieldType } from './utils/resolveFieldType';
 
 export const create = ({ GraphQLContentType, contentType, contentTypes, queries }) => {
   const typeArgs: any = {
-    // tslint:disable-line no-any
     language: { type: GraphQLString },
   };
 

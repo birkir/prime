@@ -22,7 +22,7 @@ interface IField {
   group: string;
   fields?: IField[];
   position?: number;
-  options?: any; // tslint:disable-line no-any
+  options?: any;
   isDisplay?: boolean;
   contentTypeId: string;
 }
@@ -32,7 +32,6 @@ interface IGroup {
   fields?: IField[];
 }
 
-// tslint:disable variable-name
 export const ContentTypeType = new GraphQLObjectType({
   name: 'ContentTypeFieldType',
   fields: () => ({
@@ -139,7 +138,7 @@ export const getFields = async (contentTypeId: string, inheritance = true) => {
     if (group.fields) {
       group.fields.push(
         withOptions({
-          ...(field.dataValues as any), // tslint:disable-line prefer-type-cast no-any
+          ...(field.dataValues as any),
           position: field.dataValues.position || index,
         })
       );
@@ -159,7 +158,7 @@ export const getFields = async (contentTypeId: string, inheritance = true) => {
             target.fields = target.fields || [];
             target.fields.push(
               withOptions({
-                ...(field.dataValues as any), // tslint:disable-line prefer-type-cast no-any
+                ...(field.dataValues as any),
                 position: field.dataValues.position || target.fields.length,
               })
             );
@@ -187,7 +186,6 @@ export const setFields = async (contentTypeId, groups: IGroup[]) => {
     }
 
     const obj: any = {
-      // tslint:disable-line no-any
       contentTypeId,
       position,
       type: field.type,

@@ -32,9 +32,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           >
             {items
               .filter((n: any) => !!n)
-              .map((
-                { key, value }: any // tslint:disable-line no-any
-              ) => (
+              .map(({ key, value }: any) => (
                 <Select.Option key={key}>{value}</Select.Option>
               ))}
           </Select>

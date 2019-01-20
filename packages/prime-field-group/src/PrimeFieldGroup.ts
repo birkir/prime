@@ -19,7 +19,6 @@ export class PrimeFieldGroup extends PrimeField {
     if (contentType) {
       const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
       const fieldsTypes = subFields.reduce((acc, nfield: any) => {
-        // tslint:disable-line no-any
         const fieldType = resolveFieldType(nfield, true);
         if (fieldType) {
           nfield.prefix = `${field.apiName}_`;
@@ -72,7 +71,6 @@ export class PrimeFieldGroup extends PrimeField {
     }
     const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
     const fieldsTypes = subFields.reduce((acc, nfield: any) => {
-      // tslint:disable-line no-any
       const fieldType = resolveFieldType(nfield, true);
       if (fieldType) {
         acc[nfield.name] = fieldType.getGraphQLInput({

@@ -143,7 +143,7 @@ export const externalGraphql = async () => {
     })
   );
 
-  const queriesAndMutations: any = {}; // tslint:disable-line no-any
+  const queriesAndMutations: any = {};
   const realQueries = omit(queries, '__slices') as any;
 
   if (Object.keys(realQueries).length === 0) {

@@ -5,5 +5,5 @@
     "declaration": true
   },
   "include": ["./src"],
-  "exclude": ["node_modules", "ui"]
+  "exclude": ["node_modules", "./src/ui"]
 }

@@ -45,7 +45,6 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
   }, 330);
 
   public onChange = (value: any) => {
-    // tslint:disable-line no-any
     this.setState({ value }, this.setMarkdownValue);
   };
 
@@ -152,7 +151,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     const error = form.getFieldError(path);
     const help =
       field.description && field.description !== '' ? `${field.description}${error ? ` - ${error}` : ''}` : undefined;
-    const styles: any = {}; // tslint:disable-line no-any
+    const styles: any = {};
 
     if (field.options.appearance) {
       switch (field.options.appearance) {

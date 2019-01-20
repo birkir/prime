@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import { Checkbox, Form, Select, Switch } from 'antd';
-import * as React from 'react';
+import { Form, Select, Switch } from 'antd';
+import React from 'react';
 
 interface IContentType {
   id: string;

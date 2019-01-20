@@ -6,7 +6,6 @@ const model = '"ContentEntry"';
 const field = '"versionId"';
 const idField = '"entryId"';
 
-// tslint:disable-next-line no-any
 export const latestVersion = ({
   language,
   published,

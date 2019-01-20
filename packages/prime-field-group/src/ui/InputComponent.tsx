@@ -1,4 +1,3 @@
-// tslint:disable insecure-random no-any
 import { IPrimeFieldProps } from '@primecms/field';
 import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
