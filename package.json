@@ -8,7 +8,7 @@
     "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",
     "compile": "lerna run compile",
     "lint": "tslint -e \"./packages/prime-ui/**/*.{ts,tsx}\" ./packages/*/{src,__tests__}/**/*.{ts,tsx}",
-    "publish": "lerna publish",
+    "publish": "lerna publish prerelease",
     "publish:canary": "lerna publish --canary",
     "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
     "testonly": "lerna run testonly",
