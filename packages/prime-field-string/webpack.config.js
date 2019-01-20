@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src',
+  entry: './src/ui',
   module: {
     rules: [
       {
@@ -25,9 +25,10 @@ module.exports = {
     react: 'React',
     antd: 'Antd',
     lodash: 'lodash',
+    'braft-editor': 'BraftEditor',
   },
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, '..', 'lib', 'ui'),
+    path: path.resolve(__dirname, 'lib', 'ui'),
   },
 };

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src',
+  entry: './src/ui',
   module: {
     rules: [
       {
@@ -29,6 +29,6 @@ module.exports = {
   },
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, '..', 'lib', 'ui'),
+    path: path.resolve(__dirname, 'lib', 'ui'),
   },
 };

@@ -26,56 +26,51 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         <Form.Item style={{ margin: 0 }}>
           {form.getFieldDecorator('options.float', {
             valuePropName: 'checked',
-            initialValue: get(options, 'rules.float', false)
-          })(
-            <Switch />
-          )}
-          <label htmlFor="options.float" style={{ marginLeft: 8 }}>Floating point</label>
+            initialValue: get(options, 'rules.float', false),
+          })(<Switch />)}
+          <label htmlFor="options.float" style={{ marginLeft: 8 }}>
+            Floating point
+          </label>
         </Form.Item>
         <Form.Item style={{ margin: 0 }}>
           {form.getFieldDecorator('options.rules.required', {
             valuePropName: 'checked',
-            initialValue: get(options, 'rules.required', false)
-          })(
-            <Switch />
-          )}
-          <label htmlFor="options.rules.required" style={{ marginLeft: 8 }}>Required</label>
+            initialValue: get(options, 'rules.required', false),
+          })(<Switch />)}
+          <label htmlFor="options.rules.required" style={{ marginLeft: 8 }}>
+            Required
+          </label>
         </Form.Item>
         <div>
           <Form.Item style={{ margin: 0, display: 'inline-flex' }}>
             {form.getFieldDecorator('options.rules.min', {
               valuePropName: 'checked',
-              initialValue: get(options, 'rules.min', false)
-            })(
-              <Switch />
-            )}
-            <label htmlFor="options.rules.min" style={{ marginLeft: 8 }}>Min: </label>
+              initialValue: get(options, 'rules.min', false),
+            })(<Switch />)}
+            <label htmlFor="options.rules.min" style={{ marginLeft: 8 }}>
+              Min:{' '}
+            </label>
           </Form.Item>
           <Form.Item style={{ margin: 0, marginLeft: 8, display: 'inline-flex' }}>
             {form.getFieldDecorator('options.rules.minValue', {
-              initialValue: get(options, 'rules.minValue')
-            })(
-              <Input size="small" type="number" style={{ width: 64 }} />
-            )}
+              initialValue: get(options, 'rules.minValue'),
+            })(<Input size="small" type="number" style={{ width: 64 }} />)}
           </Form.Item>
         </div>
         <div>
           <Form.Item style={{ margin: 0, display: 'inline-flex' }}>
             {form.getFieldDecorator('options.rules.max', {
               valuePropName: 'checked',
-              initialValue: get(options, 'rules.max', false)
-            })(
-              <Switch />
-            )}
-            <label htmlFor="options.rules.max" style={{ marginLeft: 8 }}>Max: </label>
-
+              initialValue: get(options, 'rules.max', false),
+            })(<Switch />)}
+            <label htmlFor="options.rules.max" style={{ marginLeft: 8 }}>
+              Max:{' '}
+            </label>
           </Form.Item>
           <Form.Item style={{ margin: 0, marginLeft: 8, display: 'inline-flex' }}>
             {form.getFieldDecorator('options.rules.maxValue', {
-              initialValue: get(options, 'rules.maxValue')
-            })(
-              <Input size="small" type="number" style={{ width: 64 }} />
-            )}
+              initialValue: get(options, 'rules.maxValue'),
+            })(<Input size="small" type="number" style={{ width: 64 }} />)}
           </Form.Item>
         </div>
       </>

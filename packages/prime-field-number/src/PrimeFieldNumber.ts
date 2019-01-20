@@ -63,6 +63,7 @@ export class PrimeFieldNumber extends PrimeField {
 
   public processInput(value, field) {
     const { rules } = this.getOptions(field);
+    const num = Number(value);
 
     if (rules.required) {
       if (value === '' || value === undefined || value === null) {
@@ -72,14 +73,14 @@ export class PrimeFieldNumber extends PrimeField {
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
-      if (value.length < min) {
+      if (num < min) {
         throw new ValidationError(`Field '${field.name}' must be greater or equal to ${min}`);
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
-      if (value.length > max) {
+      if (num > max) {
         throw new ValidationError(`Field '${field.name}' must be less or equal to ${max}`);
       }
     }

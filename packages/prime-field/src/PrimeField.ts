@@ -86,7 +86,7 @@ type IPrimeFieldGraphQLInput = null | {
   type: GraphQLInputType | GraphQLInputObjectType;
 };
 
-interface IRegisterField {
+export interface IRegisterField {
   InputComponent?: React.ReactNode;
   SchemaSettingsComponent?: React.ReactNode;
   SchemaDisplayComponent?: React.ReactNode;
