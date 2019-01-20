@@ -1828,7 +1828,7 @@
     "@types/node" "*"
     "@types/redis" "*"
 
-"@types/algoliasearch@^3.30.1":
+"@types/algoliasearch@3.30.1":
   version "3.30.1"
   resolved "https://registry.yarnpkg.com/@types/algoliasearch/-/algoliasearch-3.30.1.tgz#0cb9b918ba7f94c1e60527ba74273ca276d17137"
   integrity sha512-UKzBzTH2UDXiLSb/Zyf9jqf2y8rScJXeLBz1Jie8VUZv6xhg1lPaqgkEsTtc8Qi7HYLjlnw768v0CEsCxsmLOw==
@@ -1892,7 +1892,7 @@
     "@types/bluebird" "*"
     "@types/node" "*"
 
-"@types/draft-js@^0.10.26":
+"@types/draft-js@0.10.27":
   version "0.10.27"
   resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.27.tgz#d186cce8e94c3380c799a35fb00c3ce72b09b8b2"
   integrity sha512-U7atht2GaYKtdBuRbwIavlr+APZknGy7Wyrs5fkDcx2kwNKyY8eZ6SdIbgxY6mvaezhZFQjpXLLmz0fDadd3Rw==
@@ -2054,7 +2054,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@^16.0.11":
+"@types/react-dom@16.0.11":
   version "16.0.11"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.11.tgz#bd10ccb0d9260343f4b9a49d4f7a8330a5c1f081"
   integrity sha512-x6zUx9/42B5Kl2Vl9HlopV8JF64wLpX3c+Pst9kc1HgzrsH+mkehe/zmHMQTplIrR48H2gpU7ZqurQolYu8XBA==
@@ -2514,7 +2514,7 @@ ant-design-palettes@^1.1.3:
   dependencies:
     tinycolor2 "^1.4.1"
 
-antd@^3.11.2:
+antd@3.12.3:
   version "3.12.3"
   resolved "https://registry.yarnpkg.com/antd/-/antd-3.12.3.tgz#ffb409c5317e17583bf8493a4726d77ac839c7d2"
   integrity sha512-fKLqE5rqiAqKwi3nT8lopYZFj/Kbc3UCEkX4EsZOh8ZZHVNGirvZofRxLt4smpHmpj6NLbhR6va/kXLFe35RiQ==
