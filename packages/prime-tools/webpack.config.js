@@ -23,8 +23,10 @@ module.exports = {
   },
   externals: {
     react: 'React',
+    'react-dom': 'ReactDOM',
     antd: 'Antd',
     lodash: 'lodash',
+    moment: 'moment',
     'braft-editor': 'BraftEditor',
   },
   output: {

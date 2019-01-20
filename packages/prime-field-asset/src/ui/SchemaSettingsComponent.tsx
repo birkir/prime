@@ -22,16 +22,9 @@ type IProps = IPrimeFieldProps & {
 };
 
 export class SchemaSettingsComponent extends React.Component<IProps, IState> {
-
-  public state: IState = {
-    cropSizes: []
-  };
-
-  private initialCropSizes = [];
-
   public static BEFORE_SUBMIT(options: IOptions) {
     if (options.crops) {
-      options.crops = options.crops.filter((n) => {
+      options.crops = options.crops.filter(n => {
         if (n.name === '' || n.width === '' || n.height === '') {
           return false;
         }
@@ -41,13 +34,21 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
     }
   }
 
+  public state: IState = {
+    cropSizes: [],
+  };
+
+  private initialCropSizes = [];
+
   public componentDidMount() {
     const opts = this.props.field.options || {};
-    this.initialCropSizes = get(opts, 'crops', [{
-      name: '',
-      width: '',
-      height: ''
-    }]);
+    this.initialCropSizes = get(opts, 'crops', [
+      {
+        name: '',
+        width: '',
+        height: '',
+      },
+    ]);
     this.setState({ cropSizes: this.initialCropSizes.map(() => true) });
   }
 
@@ -56,10 +57,9 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
     const cropSizes = this.state.cropSizes.slice(0);
     cropSizes[index] = false;
     this.setState({ cropSizes });
-  }
+  };
 
   public renderCropSize = (cropSize: unknown, index: number) => {
-
     if (!cropSize) {
       return null;
     }
@@ -67,22 +67,13 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <div
-        key={`cropSize${index}`}
-        style={{ flexDirection: 'row', display: 'flex', width: '100%', marginBottom: 8 }}
-      >
+      <div key={`cropSize${index}`} style={{ flexDirection: 'row', display: 'flex', width: '100%', marginBottom: 8 }}>
         {getFieldDecorator(`options.crops.${index}.name`, {
-          initialValue: get(this.initialCropSizes, `${index}.name`, '')
-        })(
-          <Input
-            type="text"
-            placeholder="Name"
-            style={{ flex: 1, marginRight: 8 }}
-          />
-        )}
+          initialValue: get(this.initialCropSizes, `${index}.name`, ''),
+        })(<Input type="text" placeholder="Name" style={{ flex: 1, marginRight: 8 }} />)}
         <Input.Group compact style={{ width: 'auto', marginRight: 8 }}>
           {getFieldDecorator(`options.crops.${index}.width`, {
-            initialValue: get(this.initialCropSizes, `${index}.width`, '')
+            initialValue: get(this.initialCropSizes, `${index}.width`, ''),
           })(
             <Input
               type="number"
@@ -93,13 +84,18 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
           )}
           <Input
             style={{
-              width: 16, textAlign: 'center', padding: 0, borderLeft: 0, pointerEvents: 'none', backgroundColor: '#fff'
+              width: 16,
+              textAlign: 'center',
+              padding: 0,
+              borderLeft: 0,
+              pointerEvents: 'none',
+              backgroundColor: '#fff',
             }}
             placeholder="x"
             disabled
           />
           {getFieldDecorator(`options.crops.${index}.height`, {
-            initialValue: get(this.initialCropSizes, `${index}.height`, '')
+            initialValue: get(this.initialCropSizes, `${index}.height`, ''),
           })(
             <Input
               type="number"
@@ -109,15 +105,10 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
             />
           )}
         </Input.Group>
-        <Button
-          shape="circle"
-          icon="delete"
-          data-index={index}
-          onClick={this.onRemoveCropSize}
-        />
+        <Button shape="circle" icon="delete" data-index={index} onClick={this.onRemoveCropSize} />
       </div>
     );
-  }
+  };
 
   public onAddCropSize = () => {
     const newCropSizes = this.state.cropSizes.slice(0);
@@ -125,13 +116,11 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
     newCropSizes.push(true);
 
     this.setState({
-      cropSizes: newCropSizes
+      cropSizes: newCropSizes,
     });
-  }
+  };
 
   public render() {
-    const { form, options = {} } = this.props;
-
     return (
       <>
         <Form.Item label="Crops" style={{ margin: 0 }} />

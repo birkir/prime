@@ -18,11 +18,11 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         <Form.Item>
           {form.getFieldDecorator('options.repeated', {
             valuePropName: 'checked',
-            initialValue: options.repeated
-          })(
-            <Switch />
-          )}
-          <label htmlFor="options.repeated" style={{ marginLeft: 8 }}>Repeatable</label>
+            initialValue: options.repeated,
+          })(<Switch />)}
+          <label htmlFor="options.repeated" style={{ marginLeft: 8 }}>
+            Repeatable
+          </label>
         </Form.Item>
       </>
     );

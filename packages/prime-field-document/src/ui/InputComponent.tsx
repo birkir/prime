@@ -21,17 +21,15 @@ interface IState {
 }
 
 export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
-
   public state: IState = {
     options: [],
-    loading: false
+    loading: false,
   };
 
   public componentDidMount() {
-    this.load()
-      .catch((err: Error) => {
-        console.error(err); // tslint:disable-line no-console
-      });
+    this.load().catch((err: Error) => {
+      console.error(err); // tslint:disable-line no-console
+    });
   }
 
   public async load() {
@@ -54,7 +52,8 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     );
 
     this.setState({
-      options: contentTypes.map(({ contentType, items }: any) => ({ // tslint:disable-line no-any
+      options: contentTypes.map(({ contentType, items }: any) => ({
+        // tslint:disable-line no-any
         key: contentType.id,
         value: contentType.id,
         title: contentType.title,
@@ -64,10 +63,10 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           key: item.entryId,
           value: item.entryId,
           title: item.display,
-          isLeaf: true
-        }))
+          isLeaf: true,
+        })),
       })),
-      loading: false
+      loading: false,
     });
   }
 
@@ -79,7 +78,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       if (typeof initialValue === 'string') {
         return [initialValue];
       } else if (Array.isArray(initialValue)) {
-        return [].concat((initialValue || []));
+        return [].concat(initialValue || []);
       }
     } else if (initialValue) {
       return Array.isArray(initialValue) ? initialValue[0] : initialValue;
@@ -88,9 +87,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public onChange = (value: string | string[]) => {
     this.props.form.setFieldsValue({
-      [this.props.path]: value
+      [this.props.path]: value,
     });
-  }
+  };
 
   public render() {
     const { loading, options } = this.state;
@@ -101,7 +100,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       <Form.Item label={field.title}>
         {loading === false ? (
           <TreeSelect
-            key={entry && entry.entryId || 'picker'}
+            key={(entry && entry.entryId) || 'picker'}
             style={{ width: 300 }}
             defaultValue={this.defaultValue}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -115,7 +114,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           />
         ) : null}
         {getFieldDecorator(path, {
-          initialValue
+          initialValue,
         })(<input type="hidden" />)}
       </Form.Item>
     );

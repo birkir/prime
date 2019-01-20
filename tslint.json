@@ -12,6 +12,6 @@
     "strict-boolean-expressions": false
   },
   "linterOptions": {
-    "exclude": ["node_modules", "lib", "./packages/prime-ui/**/*"]
+    "exclude": ["node_modules", "packages/*/lib/*"]
   }
 }

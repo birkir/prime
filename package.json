@@ -7,7 +7,7 @@
     "unlink": "lerna exec -- yarn unlink",
     "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",
     "compile": "lerna run compile",
-    "lint": "tslint packages/*/{src,__tests__,ui}/**/*.ts",
+    "lint": "tslint -e \"./packages/prime-ui/**/*.{ts,tsx}\" ./packages/*/{src,__tests__}/**/*.{ts,tsx}",
     "publish": "lerna publish",
     "publish:canary": "lerna publish --canary",
     "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",

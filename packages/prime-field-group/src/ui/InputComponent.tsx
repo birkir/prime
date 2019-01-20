@@ -4,7 +4,7 @@ import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
 import * as React from 'react';
 
-const { uuid } = (window as any);
+const { uuid } = window as any;
 
 const getItems = ({ initialValue }: IPrimeFieldProps) => {
   if (Array.isArray(initialValue)) {
@@ -19,17 +19,16 @@ const getIndex = (props: IPrimeFieldProps) => {
 };
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
-
   public state = {
     items: getItems(this.props),
-    index: getIndex(this.props)
+    index: getIndex(this.props),
   };
 
   public componentWillReceiveProps(nextProps: IPrimeFieldProps) {
     if (!this.props.entry && nextProps.entry) {
       this.setState({
         items: getItems(nextProps),
-        index: getIndex(nextProps)
+        index: getIndex(nextProps),
       });
     } else if (this.props.entry && nextProps.entry) {
       if (this.props.entry.versionId !== nextProps.entry.versionId) {
@@ -37,7 +36,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
           items: this.state.items.map((item, index) => {
             return [item[0], index];
           }),
-          index: this.state.items.length + 1
+          index: this.state.items.length + 1,
         });
       }
     }
@@ -46,21 +45,21 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
   public onRemoveClick = (e: React.MouseEvent<HTMLElement>) => {
     const key = String(e.currentTarget.dataset.key);
     this.remove(key);
-  }
+  };
 
   public remove = (k: any) => {
     const items = this.state.items.slice(0);
-    items.splice(items.findIndex((n) => n[0] === k), 1);
+    items.splice(items.findIndex(n => n[0] === k), 1);
     this.setState({ items });
-  }
+  };
 
   public add = () => {
     const { items, index } = this.state;
     this.setState({
       items: [...items, [uuid.v4(), index]],
-      index: index + 1
+      index: index + 1,
     });
-  }
+  };
 
   public renderField = (field: any, key: string, index: number) => {
     const repeated = get(this.props.field, 'options.repeated', false);
@@ -72,9 +71,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
       ...this.props,
       field,
       path,
-      initialValue
+      initialValue,
     });
-  }
+  };
 
   public renderGroupItem = ([key, index]: any) => {
     const { field } = this.props;
@@ -86,24 +85,16 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
     }
 
     return (
-      <Card
-        key={key}
-        className="prime-group-item"
-      >
+      <Card key={key} className="prime-group-item">
         {repeated && (
           <div className="prime-slice-item-actions">
-            <Icon
-              className="prime-slice-item-button"
-              type="minus"
-              data-key={key}
-              onClick={this.onRemoveClick}
-            />
+            <Icon className="prime-slice-item-button" type="minus" data-key={key} onClick={this.onRemoveClick} />
           </div>
         )}
         {fields.map((f: any) => this.renderField(f, key, index))}
       </Card>
     );
-  }
+  };
 
   public render() {
     const { items } = this.state;
@@ -115,13 +106,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
         {items.map(this.renderGroupItem)}
         {repeated && (
           <div style={{ textAlign: 'center' }}>
-            <Button
-              size="large"
-              shape="circle"
-              onClick={this.add}
-              icon="plus"
-              className="prime-slice-add"
-            />
+            <Button size="large" shape="circle" onClick={this.add} icon="plus" className="prime-slice-add" />
           </div>
         )}
       </Form.Item>

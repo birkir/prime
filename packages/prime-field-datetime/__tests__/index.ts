@@ -1,6 +1,6 @@
 import PrimeFieldDateTime from '../src';
 
-describe('PrimeFieldString', () => {
+describe('PrimeFieldDateTime', () => {
   let test: PrimeFieldDateTime;
 
   beforeAll(() => {

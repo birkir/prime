@@ -29,28 +29,27 @@ function noChildren(field: any, index: number, allFields: any) {
 }
 
 export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
-
   public state: IState = {
     contentTypes: [],
-    slices: []
+    slices: [],
   };
 
   public values: any = []; // tslint:disable-line no-any
 
   public componentDidMount() {
-    this.load()
-      .catch((err: Error) => {
-        console.error(err); // tslint:disable-line no-console
-      });
+    this.load().catch((err: Error) => {
+      console.error(err); // tslint:disable-line no-console
+    });
   }
 
-  public componentWillReceiveProps(nextProps: any) { // tslint:disable-line no-any
+  public componentWillReceiveProps(nextProps: any) {
+    // tslint:disable-line no-any
     if (JSON.stringify(this.props.initialValue) !== JSON.stringify(nextProps.initialValue)) {
       this.setState({
         slices: [].concat(nextProps.initialValue || []).map((n: { __inputname: string }, index: number) => ({
           ...this.props.stores.ContentTypes.items.get(n.__inputname),
-          index
-        }))
+          index,
+        })),
       });
     }
   }
@@ -64,8 +63,8 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       contentTypes: stores.ContentTypes.list.filter((n: { id: string }) => ids.indexOf(n.id) >= 0),
       slices: initialValue.map((n: { __inputname: string }, index: number) => ({
         ...stores.ContentTypes.items.get(n.__inputname),
-        index
-      }))
+        index,
+      })),
     });
   }
 
@@ -74,7 +73,7 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
     const slices = this.state.slices.slice(0);
     slices[index] = null;
     this.setState({ slices });
-  }
+  };
 
   public onMoveUpClick = (e: React.MouseEvent<HTMLElement>) => {
     const index = Number(e.currentTarget.dataset.index);
@@ -85,42 +84,43 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
       slices[index] = tmp;
     }
     this.setState({ slices });
-  }
+  };
 
   public onMoveDownClick = (e: React.MouseEvent<HTMLElement>) => {
     const index = Number(e.currentTarget.dataset.index);
     const slices = this.state.slices.slice(0);
-    if ((slices.length - 1) > index) {
+    if (slices.length - 1 > index) {
       const tmp = slices[index + 1];
       slices[index + 1] = slices[index];
       slices[index] = tmp;
     }
     this.setState({ slices });
-  }
+  };
 
   public onMenuClick = async (e: { key: string }) => {
     const item = this.props.stores.ContentTypes.items.get(e.key);
     const slices = this.state.slices.slice(0);
     slices.push({ ...item, index: slices.length });
     this.setState({ slices });
-  }
+  };
 
-  public renderField = (field: any, index: number) => { // tslint:disable-line no-any
+  public renderField = (field: any, index: number) => {
+    // tslint:disable-line no-any
     const initialValue = this.props.initialValue || [];
 
     return this.props.renderField({
       ...this.props,
       field,
       initialValue: get(initialValue, `${index}.${field.name}`, ''),
-      path: `${this.props.path}.${index}.${field.name}`
+      path: `${this.props.path}.${index}.${field.name}`,
     } as any); // tslint:disable-line no-any
-  }
+  };
 
   public render() {
     const { field, form, path } = this.props;
     const menu = (
       <Menu onClick={this.onMenuClick}>
-        {this.state.contentTypes.map((item) => (
+        {this.state.contentTypes.map(item => (
           <Menu.Item key={item.id}>{item.title}</Menu.Item>
         ))}
       </Menu>
@@ -133,14 +133,13 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
           <label title={field.title}>{field.title}</label>
         </div>
         {this.state.slices.map((slice, idx) => {
-          if (!slice || !slice.id) { return null; }
+          if (!slice || !slice.id) {
+            return null;
+          }
           const { index } = slice as any; // tslint:disable-line no-any
 
           return (
-            <Card
-              key={`${slice.id}_${index}`}
-              className="prime-slice-item"
-            >
+            <Card key={`${slice.id}_${index}`} className="prime-slice-item">
               <div className="prime-slice-item-actions">
                 <Icon
                   className={`prime-slice-item-button ${idx === 0 ? 'disabled' : ''}`}
@@ -162,15 +161,11 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
                 />
               </div>
               {form.getFieldDecorator(`${path}.${index}.__index`, {
-                initialValue: idx
-              })(
-                <input type="hidden" />
-              )}
+                initialValue: idx,
+              })(<input type="hidden" />)}
               {form.getFieldDecorator(`${path}.${index}.__inputname`, {
-                initialValue: slice.id
-              })(
-                <input type="hidden" />
-              )}
+                initialValue: slice.id,
+              })(<input type="hidden" />)}
               {slice.schema.fields.filter(noChildren).map(
                 (f: any) => this.renderField(f, index) // tslint:disable-line no-any
               )}

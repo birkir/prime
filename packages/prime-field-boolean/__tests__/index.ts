@@ -1,6 +1,6 @@
 import PrimeFieldBoolean from '../src';
 
-describe('PrimeFieldString', () => {
+describe('PrimeFieldBoolean', () => {
   let test: PrimeFieldBoolean;
 
   beforeAll(() => {

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./lib",
     "declaration": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "jsx": "preserve"
   },
   "include": ["./src"],
   "exclude": ["node_modules", "ui"]

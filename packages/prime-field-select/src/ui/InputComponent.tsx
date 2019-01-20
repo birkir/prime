@@ -4,11 +4,10 @@ import { get } from 'lodash';
 import * as React from 'react';
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
-
   public componentDidMount() {
     if (this.props.form.getFieldValue(this.props.path) === '') {
       this.props.form.setFieldsValue({
-        [this.props.path]: undefined
+        [this.props.path]: undefined,
       });
     }
   }
@@ -24,16 +23,20 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       <Form.Item label={field.title}>
         {getFieldDecorator(path, {
           initialValue,
-          rules: required ? [{ required: true }] : undefined
+          rules: required ? [{ required: true }] : undefined,
         })(
           <Select
             placeholder={field.description && field.description !== '' ? field.description : 'Select item'}
             allowClear={!required}
             mode={multiple ? 'multiple' : undefined}
           >
-            {items.filter((n: any) => !!n).map(({ key, value }: any) => (// tslint:disable-line no-any
-              <Select.Option key={key}>{value}</Select.Option>
-            ))}
+            {items
+              .filter((n: any) => !!n)
+              .map((
+                { key, value }: any // tslint:disable-line no-any
+              ) => (
+                <Select.Option key={key}>{value}</Select.Option>
+              ))}
           </Select>
         )}
       </Form.Item>
