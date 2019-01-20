@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-document",
-  "version": "0.3.0-alpha.18+45f7de7",
+  "version": "0.2.22-alpha.21+cf881a4",
   "description": "Document Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-document",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-document"
   },
   "dependencies": {
-    "@primecms/field": "^0.3.0-alpha.18+45f7de7"
+    "@primecms/field": "^0.2.22-alpha.21+cf881a4"
   },
   "devDependencies": {
     "@types/graphql": "14.0.3",
@@ -45,5 +45,5 @@
     "graphql": "^14.0.0",
     "react": "^16.7.0"
   },
-  "gitHead": "45f7de7dd1ce63f0be6b8e08cad602ace519d8dd"
+  "gitHead": "cf881a4fa267b782e875f1fa40e03e1cbbcd9580"
 }
