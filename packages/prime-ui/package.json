@@ -1,6 +1,6 @@
 {
   "name": "@primecms/ui",
-  "version": "0.2.22-alpha.21+cf881a4",
+  "version": "0.3.0-alpha.0",
   "description": "Prime CMS User Interface",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-ui",
@@ -17,19 +17,19 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "@primecms/field-asset": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-boolean": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-datetime": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-number": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-select": "^0.2.22-alpha.21+cf881a4",
+    "@primecms/field-asset": "^0.3.0-alpha.0",
+    "@primecms/field-boolean": "^0.3.0-alpha.0",
+    "@primecms/field-datetime": "^0.3.0-alpha.0",
+    "@primecms/field-number": "^0.3.0-alpha.0",
+    "@primecms/field-select": "^0.3.0-alpha.0",
     "moment": "^2.22.2"
   },
   "devDependencies": {
-    "@primecms/field": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-document": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-group": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-slice": "^0.2.22-alpha.21+cf881a4",
-    "@primecms/field-string": "^0.2.22-alpha.21+cf881a4",
+    "@primecms/field": "^0.3.0-alpha.0",
+    "@primecms/field-document": "^0.3.0-alpha.0",
+    "@primecms/field-group": "^0.3.0-alpha.0",
+    "@primecms/field-slice": "^0.3.0-alpha.0",
+    "@primecms/field-string": "^0.3.0-alpha.0",
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.9",
     "@types/lodash": "4.14.118",

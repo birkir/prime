@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-string",
-  "version": "0.2.22-alpha.21+cf881a4",
+  "version": "0.3.0-alpha.0",
   "description": "String Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-string",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-string"
   },
   "dependencies": {
-    "@primecms/field": "^0.2.22-alpha.21+cf881a4",
+    "@primecms/field": "^0.3.0-alpha.0",
     "braft-editor": "2.1.34",
     "draft-js": "^0.10.5",
     "markdown-draft-js": "1.3.0"
