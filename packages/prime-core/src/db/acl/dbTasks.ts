@@ -4,7 +4,7 @@ interface IAclOptions {
   prefix: string;
   schema?: object;
   defaultSchema?: object;
-};
+}
 
 const buckets = ['Meta', 'Parents', 'Permissions', 'Resources', 'Roles', 'Users'];
 
@@ -26,6 +26,6 @@ export const setup = (db: Sequelize, options: IAclOptions) => {
   });
 
   return db;
-}
+};
 
 export const clean = (db: Sequelize, options: IAclOptions) => null;

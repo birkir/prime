@@ -1,6 +1,6 @@
-import { get, defaultsDeep } from 'lodash';
-import { ContentTypeField } from '../models/ContentTypeField';
+import { defaultsDeep, get } from 'lodash';
 import { ContentType } from '../models/ContentType';
+import { ContentTypeField } from '../models/ContentTypeField';
 
 const Types = {
   ROOT: 0,
@@ -11,10 +11,9 @@ const Types = {
 };
 
 export class EntryTransformer {
+  public cache = new Map();
 
-  cache = new Map();
-
-  getFields = async (id) => {
+  public getFields = async id => {
     if (this.cache.has(id)) {
       return this.cache.get(id);
     }
@@ -28,26 +27,29 @@ export class EntryTransformer {
 
     const fields = await ContentTypeField.findAll({
       where: {
-        contentTypeId: contentTypeIds
-      }
+        contentTypeId: contentTypeIds,
+      },
     });
 
     this.cache.set(id, fields);
 
     return fields;
-  }
+  };
 
-  transform = async (fields, data, contentTypeId, io = Types.INPUT, type = Types.ROOT) => {
+  public transform = async (fields, data, contentTypeId, io = Types.INPUT, type = Types.ROOT) => {
     const output = {};
 
     if (type === Types.SLICE) {
-      if (!data.__inputname) return {};
+      if (!data.__inputname) {
+        return {};
+      }
       (output as any).__inputname = data.__inputname;
     }
 
-    for (let i = 0; i < fields.length; i += 1) {
-      const field = fields[i] || {};
-
+    for (const field of fields) {
+      if (!field) {
+        continue;
+      }
       let value = get(data, io === Types.INPUT ? field.name : field.id);
 
       if (typeof value === 'undefined') {
@@ -73,8 +75,9 @@ export class EntryTransformer {
       if (field.type === 'group') {
         const subFields = fields.filter(f => f.contentTypeFieldId === field.id);
         if (options.repeated && Array.isArray(value)) {
-          value = (await Promise.all(value.map(item => this.transform(subFields, item, contentTypeId, io, Types.GROUP))))
-            .filter(item => Object.keys(item).length > 0);
+          value = (await Promise.all(
+            value.map(item => this.transform(subFields, item, contentTypeId, io, Types.GROUP))
+          )).filter(item => Object.keys(item).length > 0);
         } else {
           value = await this.transform(subFields, value, contentTypeId, io, Types.GROUP);
           if (Object.keys(value).length === 0) {
@@ -86,17 +89,18 @@ export class EntryTransformer {
       // Process slices
       if (field.type === 'slice') {
         if (options.multiple && Array.isArray(value)) {
-          value = (await Promise.all(value.map(async item => {
-            const fields = await this.getFields(item.__inputname);
-            if (fields) {
-              return await this.transform(fields, item, contentTypeId, io, Types.SLICE);
-            }
-            return {};
-          })))
-            .filter(item => Object.keys(item).length > 0);
+          value = (await Promise.all(
+            value.map(async item => {
+              const sfields = await this.getFields(item.__inputname);
+              if (sfields) {
+                return await this.transform(sfields, item, contentTypeId, io, Types.SLICE);
+              }
+              return {};
+            })
+          )).filter(item => Object.keys(item).length > 0);
         } else {
-          const fields = await this.getFields(value.__inputname);
-          value = await this.transform(fields, value, contentTypeId, io, Types.SLICE);
+          const sfields = await this.getFields(value.__inputname);
+          value = await this.transform(sfields, value, contentTypeId, io, Types.SLICE);
           if (Object.keys(value).length === 0) {
             continue;
           }
@@ -111,17 +115,17 @@ export class EntryTransformer {
     }
 
     return output;
-  }
+  };
 
-  resetTransformCache = () => this.cache.clear();
+  public resetTransformCache = () => this.cache.clear();
 
-  transformInput = async (data, contentTypeId) => {
+  public transformInput = async (data, contentTypeId) => {
     const fields = await this.getFields(contentTypeId);
     return this.transform(fields, data, contentTypeId, Types.INPUT);
-  }
+  };
 
-  transformOutput = async (data, contentTypeId) => {
+  public transformOutput = async (data, contentTypeId) => {
     const fields = await this.getFields(contentTypeId);
     return this.transform(fields, data, contentTypeId, Types.OUTPUT);
-  }
+  };
 }

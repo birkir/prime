@@ -30,10 +30,10 @@ export const ContentRelease = types
         mutation: PUBLISH_CONTENT_RELEASE,
         variables: {
           id: self.id,
-        }
+        },
       });
       if (res.data && res.data.publishContentRelease) {
         self.publishedAt = new Date();
       }
     }),
-  }))
+  }));

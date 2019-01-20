@@ -1,6 +1,7 @@
 {
-  "extends": "tslint-microsoft-contrib",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
+    "object-literal-sort-keys": false,
     "no-reserved-keywords": false,
     "missing-jsdoc": false,
     "no-relative-imports": false,
@@ -11,11 +12,6 @@
     "strict-boolean-expressions": false
   },
   "linterOptions": {
-    "exclude": [
-      "node_modules",
-      "lib",
-      "./packages/prime-core/**/*",
-      "./packages/prime-ui/**/*"
-    ]
+    "exclude": ["node_modules", "packages/*/lib/*"]
   }
 }

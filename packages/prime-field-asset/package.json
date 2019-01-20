@@ -1,35 +1,39 @@
 {
   "name": "@primecms/field-asset",
-  "version": "0.2.20",
+  "version": "0.2.22-alpha.21+cf881a4",
   "description": "Asset Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
-  "homepage": "https://github.com/birkir/prime#readme",
+  "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-asset",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "lib/index",
+  "typings": "lib/index",
   "prime": "lib/ui",
-  "scripts": {
-    "prepublishOnly": "npm run build",
-    "lint": "tslint -p . && npm run lint:ui",
-    "lint:ui": "tslint -p ./ui",
-    "build:ui": "cd ./ui; webpack-cli; cd -",
-    "build": "rm -rf ./lib && tsc -p . && npm run build:ui",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "directories": {
-    "lib": "lib"
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "tsc --watch",
+    "precompile": "yarn clean",
+    "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
+    "prepublishOnly": "yarn compile",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birkir/prime.git"
-  },
-  "bugs": {
-    "url": "https://github.com/birkir/prime/issues"
+    "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-asset"
   },
   "dependencies": {
-    "@primecms/field": "^0.2.17",
+    "@primecms/field": "^0.2.22-alpha.21+cf881a4",
     "react-easy-crop": "^1.6.0"
   },
   "devDependencies": {
@@ -43,8 +47,5 @@
     "lodash": "^4.17.11",
     "react": "^16.7.0"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "gitHead": "48b955cdfea765225c860db8782c2f359b9ce7d7"
+  "gitHead": "cf881a4fa267b782e875f1fa40e03e1cbbcd9580"
 }

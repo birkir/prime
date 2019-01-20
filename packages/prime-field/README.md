@@ -29,7 +29,11 @@ The output of the library should be in this format:
 export default {
   InputComponent: YourReactComponent,
   SettingsComponent: AnotherReactComponent,
-  Todo_menuItems() { return []; },
-  Todo_routes() { return []; }
-}
+  Todo_menuItems() {
+    return [];
+  },
+  Todo_routes() {
+    return [];
+  },
+};
 ```

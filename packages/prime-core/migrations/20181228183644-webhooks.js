@@ -5,16 +5,16 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async (db) => {
+exports.up = async db => {
   await db.runSql(`
     CREATE TABLE "Webhook" (
       id uuid NOT NULL,
@@ -55,12 +55,12 @@ exports.up = async (db) => {
   return null;
 };
 
-exports.down = async (db) => {
+exports.down = async db => {
   await db.dropTable('WebhookCall');
   await db.dropTable('Webhook');
   return null;
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

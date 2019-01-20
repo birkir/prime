@@ -1,12 +1,12 @@
 // tslint:disable no-require-imports no-var-requires no-console
 require('dotenv').config();
 
-import * as path from 'path';
 import * as DBMigrate from 'db-migrate';
+import * as path from 'path';
 import { sequelize } from '../sequelize';
 
 const dbmigrate = DBMigrate.getInstance(true, {
-  cwd: path.join(__dirname + '/../..')
+  cwd: path.join(__dirname + '/../..'),
 });
 
 if (process.env.NODE_ENV !== 'production') {
@@ -14,7 +14,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 (async () => {
-
   process.stdout.write('Migrating database... ');
   const migrations = await dbmigrate.up();
   console.log('done (' + (migrations ? migrations.length : '0') + ' migrations)');
@@ -23,6 +22,5 @@ if (process.env.NODE_ENV !== 'production') {
   await sequelize.sync();
   console.log('done');
 
-  process.exit(0)
+  process.exit(0);
 })();
-

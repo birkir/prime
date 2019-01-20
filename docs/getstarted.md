@@ -16,32 +16,35 @@ npx primecms start
 
 These are the requirements for prime:
 
- - PostgreSQL 9.4+
- - Node (Active LTS)
+- PostgreSQL 9.4+
+- Node (Active LTS)
 
 <details><summary>Mac OS X</summary>
 <p>
 
 Install brew
+
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
 Install postgresql and node
+
 ```bash
 brew install node postgresql
 brew services start postgresql
 ```
+
 </p>
 </details>
 
 <details><summary>Windows</summary>
 <p>
 
- - [Download NodeJS](https://nodejs.org/en/)
- - [Download PostgreSQL](https://www.postgresql.org/download/windows/)
-</p>
-</details>
+- [Download NodeJS](https://nodejs.org/en/)
+- [Download PostgreSQL](https://www.postgresql.org/download/windows/)
+  </p>
+  </details>
 
 <details><summary>Linux (Ubuntu/debian)</summary>
 <p>
@@ -50,8 +53,9 @@ brew services start postgresql
 sudo apt-get install -y postgresql nodejs
 sudo update-rc.d postgresql enable
 ```
+
 </p>
-</details>  
+</details>
 
 ## Starting prime
 
@@ -71,6 +75,7 @@ createdb prime
 ```
 
 Edit your `.env`:
+
 ```js
 DATABASE_URL=postgresql://username@localhost:5432/prime
 ```

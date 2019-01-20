@@ -1,5 +1,18 @@
 import hashids from 'hashids';
-import { BeforeCreate, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table, Default, CreatedAt, UpdatedAt, DeletedAt } from 'sequelize-typescript';
+import {
+  BeforeCreate,
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  Default,
+  DeletedAt,
+  ForeignKey,
+  Model,
+  PrimaryKey,
+  Table,
+  UpdatedAt,
+} from 'sequelize-typescript';
 import { ContentRelease } from './ContentRelease';
 import { ContentType } from './ContentType';
 import { User } from './User';
@@ -8,7 +21,25 @@ const hashid = new hashids('SaltingTheHash', 10);
 
 @Table
 export class ContentEntry extends Model<ContentEntry> {
+  // --- Static methods
 
+  @BeforeCreate
+  public static async SET_ENTRY_ID(instance: ContentEntry) {
+    if (!instance.entryId) {
+      instance.entryId = await ContentEntry.GET_RANDOM_ID();
+    }
+  }
+
+  public static async GET_RANDOM_ID() {
+    const entryId = hashid.encode(+new Date());
+    const count = await ContentEntry.count({
+      where: {
+        entryId,
+      },
+    });
+
+    return count === 0 ? entryId : ContentEntry.GET_RANDOM_ID();
+  }
   @Column(DataType.STRING)
   public entryId: string;
 
@@ -50,26 +81,24 @@ export class ContentEntry extends Model<ContentEntry> {
   @Column
   public deletedAt: Date;
 
-
   // --- Accessors
 
   @BelongsTo(() => ContentType, {
     foreignKey: 'contentTypeId',
     onDelete: 'SET NULL',
-    onUpdate: 'SET NULL'
+    onUpdate: 'SET NULL',
   })
   public contentType: ContentType;
 
   @BelongsTo(() => ContentRelease, {
     foreignKey: 'contentReleaseId',
     onDelete: 'SET NULL',
-    onUpdate: 'SET NULL'
+    onUpdate: 'SET NULL',
   })
   public contentRelease: ContentRelease;
 
   @BelongsTo(() => User, 'userId')
   public user: User;
-
 
   // --- Model methods
 
@@ -85,17 +114,18 @@ export class ContentEntry extends Model<ContentEntry> {
     };
 
     // Calculate flag if we want to keep a revision history
-    const isNewDraft = this.isPublished
-      || language !== this.language
-      || contentReleaseId !== this.contentReleaseId
-      || userId !== this.userId;
-      // || this.updatedAt > new Date(+new Date() - 3600 * 1000)
+    const isNewDraft =
+      this.isPublished ||
+      language !== this.language ||
+      contentReleaseId !== this.contentReleaseId ||
+      userId !== this.userId;
+    // || this.updatedAt > new Date(+new Date() - 3600 * 1000)
 
     if (!isNewDraft) {
       return this.update({
         language,
         data,
-        userId
+        userId,
       });
     }
 
@@ -114,25 +144,5 @@ export class ContentEntry extends Model<ContentEntry> {
     };
 
     return ContentEntry.create(res);
-  }
-
-  // --- Static methods
-
-  @BeforeCreate
-  public static async SET_ENTRY_ID(instance: ContentEntry) {
-    if (!instance.entryId) {
-      instance.entryId = await ContentEntry.GET_RANDOM_ID();
-    }
-  }
-
-  public static async GET_RANDOM_ID() {
-    const entryId = hashid.encode(+new Date());
-    const count = await ContentEntry.count({
-      where: {
-        entryId
-      }
-    });
-
-    return count === 0 ? entryId : ContentEntry.GET_RANDOM_ID();
   }
 }

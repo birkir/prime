@@ -1,15 +1,14 @@
 import { JSON } from 'sequelize';
-import { BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table, Default } from 'sequelize-typescript';
-import { ContentType } from './ContentType';
+import { BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { fields } from '../fields';
+import { ContentType } from './ContentType';
 
 @Table
 export class ContentTypeField extends Model<ContentTypeField> {
-
   @PrimaryKey
   @Column({
     type: DataType.UUID,
-    defaultValue: DataType.UUIDV4
+    defaultValue: DataType.UUIDV4,
   })
   public id: string;
 
@@ -47,7 +46,7 @@ export class ContentTypeField extends Model<ContentTypeField> {
 
   @BelongsTo(() => ContentType, {
     onDelete: 'SET NULL',
-    onUpdate: 'SET NULL'
+    onUpdate: 'SET NULL',
   })
   public contentType: ContentType;
 
