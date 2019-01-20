@@ -9,14 +9,14 @@ interface IState {
 }
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState> {
-
-  public onChange = (date: any) => { // tslint:disable-line no-any
+  public onChange = (date: any) => {
+    // tslint:disable-line no-any
     const { field, form, path } = this.props;
     const isTime = get(field.options, 'time', false);
     form.setFieldsValue({
-      [path]: date.format(isTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD')
+      [path]: date.format(isTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'),
     });
-  }
+  };
 
   public render() {
     const { entry, field, form, path, initialValue } = this.props;
@@ -26,7 +26,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
     return (
       <Form.Item label={field.title}>
         <DatePicker
-          key={entry && entry.entryId || 'datepicker'}
+          key={(entry && entry.entryId) || 'datepicker'}
           defaultValue={value}
           format={isTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
           size="large"
@@ -34,9 +34,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
           style={{ minWidth: 280 }}
           showTime={isTime}
         />
-        {form.getFieldDecorator(path, { initialValue })(
-          <input type="hidden" />
-        )}
+        {form.getFieldDecorator(path, { initialValue })(<input type="hidden" />)}
       </Form.Item>
     );
   }

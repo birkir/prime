@@ -18,11 +18,11 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         <Form.Item>
           {form.getFieldDecorator('options.time', {
             valuePropName: 'checked',
-            initialValue: options.time
-          })(
-            <Switch />
-          )}
-          <label htmlFor="options.time" style={{ marginLeft: 8 }}>Show time picker</label>
+            initialValue: options.time,
+          })(<Switch />)}
+          <label htmlFor="options.time" style={{ marginLeft: 8 }}>
+            Show time picker
+          </label>
         </Form.Item>
       </>
     );
