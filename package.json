@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "setup": "lerna bootstrap; yarn run link",
-    "start": "lerna exec -- yarn start",
+    "start": "lerna exec -- yarn dev --stream",
     "link": "lerna exec -- yarn link",
     "unlink": "lerna exec -- yarn unlink",
     "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",

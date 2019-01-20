@@ -1,5 +1,16 @@
 # Changelog
 
+### 0.3.0-alpha
+
+- yarn workspaces
+- prettier
+- tslint:recommended + prettier-tslint
+- typedoc generations
+- jest and coverage for all packages
+- husky and lint-staged
+- circleci for PR builds
+- renovate
+
 ### 0.2.9-alpha
 
 - Added default permissions to migration script
