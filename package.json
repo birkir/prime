@@ -10,7 +10,7 @@
     "lint": "tslint -e \"./packages/prime-ui/**/*.{ts,tsx}\" ./packages/*/{src,__tests__}/**/*.{ts,tsx}",
     "publish": "lerna publish",
     "publish:canary": "lerna publish --canary",
-    "test": "yarn coverage && yarn test:prettier",
+    "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
     "testonly": "lerna run testonly",
     "prettier": "prettier --write '**/*.{json,md,js,ts}'",
     "test:prettier": "prettier --list-different '**/*.{json,md,js,ts}'",
