@@ -3,7 +3,12 @@ import { JSONObject } from '../../interfaces/JSONObject';
 import { ContentType } from './ContentType';
 import { ContentTypeRef } from '../contentTypes';
 import { client } from '../../utils/client';
-import { UPDATE_CONTENT_ENTRY, PUBLISH_CONTENT_ENTRY, REMOVE_CONTENT_ENTRY, UNPUBLISH_CONTENT_ENTRY } from '../mutations';
+import {
+  UPDATE_CONTENT_ENTRY,
+  PUBLISH_CONTENT_ENTRY,
+  REMOVE_CONTENT_ENTRY,
+  UNPUBLISH_CONTENT_ENTRY,
+} from '../mutations';
 import { Version } from './Version';
 
 export const ContentEntry = types
@@ -45,20 +50,20 @@ export const ContentEntry = types
     },
     get hasBeenPublished() {
       return self.versions.findIndex(v => v.isPublished) >= 0;
-    }
+    },
   }))
   .actions(self => {
     const setHasChanged = (hasChanged: boolean) => {
       self.hasChanged = hasChanged;
-    }
+    };
 
     const setContentType = (contentType: Instance<typeof ContentType>) => {
       self.contentType = contentType;
-    }
+    };
 
     const setIsPublished = (isPublished: boolean) => {
       self.isPublished = isPublished;
-    }
+    };
 
     const updateSelf = (data: any) => {
       if (self.versionId !== data.versionId) {
@@ -139,7 +144,7 @@ export const ContentEntry = types
           id: self.entryId,
           language: force ? undefined : self.language,
           contentReleaseId: force ? undefined : self.contentReleaseId,
-        }
+        },
       });
     });
 

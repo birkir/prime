@@ -3,13 +3,7 @@ import { WebhookCall } from './WebhookCall';
 import { client } from '../../utils/client';
 import { UPDATE_WEBHOOK } from '../mutations';
 
-const WebhookMethod = types.enumeration('WebhookMethod', [
-  'POST',
-  'GET',
-  'PUT',
-  'PATCH',
-  'DELETE'
-]);
+const WebhookMethod = types.enumeration('WebhookMethod', ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']);
 
 export const Webhook = types
   .model('Webhook', {
@@ -44,6 +38,6 @@ export const Webhook = types
     });
 
     return {
-      update
+      update,
     };
   });

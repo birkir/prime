@@ -2,15 +2,19 @@
   "name": "@primecms/field",
   "private": false,
   "version": "0.2.17",
-  "description": "Base interface for Prime CMS Fields",
+  "description": "Field Base for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "lib/index",
   "typings": "lib/index",
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "src",
+    "lib"
+  ],
   "scripts": {
     "clean": "rimraf lib",
     "start": "tsc --watch",
@@ -22,22 +26,11 @@
     "coverage": "jest --coverage"
   },
   "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testRegex": "/__tests__/.*\\.ts$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ]
+    "preset": "ts-jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birkir/prime.git"
-  },
-  "bugs": {
-    "url": "https://github.com/birkir/prime/issues"
+    "url": "https://github.com/birkir/prime/tree/master/packages/prime-field"
   },
   "keywords": [
     "prime",

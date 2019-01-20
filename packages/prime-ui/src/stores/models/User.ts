@@ -16,11 +16,11 @@ export const User = types
   .views(self => ({
     get gravatarUrl() {
       const hash = (window as any).md5(self.email);
-      return `https://www.gravatar.com/avatar/${hash}`
+      return `https://www.gravatar.com/avatar/${hash}`;
     },
   }))
   .actions(self => ({
-    updateProfile({ firstname, lastname, displayName, avatarUrl  }: any) {
+    updateProfile({ firstname, lastname, displayName, avatarUrl }: any) {
       self.firstname = firstname;
       self.lastname = lastname;
       self.displayName = displayName;
@@ -31,9 +31,9 @@ export const User = types
     },
     updateEmail(email: string) {
       self.email = email;
-    }
+    },
   }))
-  .preProcessSnapshot((snapshot) => ({
+  .preProcessSnapshot(snapshot => ({
     ...snapshot,
     ...(snapshot && {
       lastPasswordChange: new Date(snapshot.lastPasswordChange),

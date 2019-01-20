@@ -8,13 +8,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
-    "lib": [
-      "es6",
-      "dom",
-      "es2015",
-      "es2017",
-      "esnext"
-    ],
+    "lib": ["es6", "dom", "es2015", "es2017", "esnext"],
     "allowJs": true,
     "skipLibCheck": false,
     "esModuleInterop": true,
@@ -24,11 +18,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
 }

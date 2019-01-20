@@ -10,7 +10,6 @@ export const Auth = types
     isLoggedIn: false,
   })
   .actions(self => {
-
     const ensureFields = async () => {
       if (!self.isLoggedIn) return;
       await Settings.read();
@@ -68,7 +67,17 @@ export const Auth = types
       yield ensureFields();
     });
 
-    const register = flow(function*({ firstname = '', lastname = '', email, password }: { firstname?: string, lastname?: string, email: string, password: string }) {
+    const register = flow(function*({
+      firstname = '',
+      lastname = '',
+      email,
+      password,
+    }: {
+      firstname?: string;
+      lastname?: string;
+      email: string;
+      password: string;
+    }) {
       const res: any = yield fetch(`${Settings.coreUrl}/auth/register`, {
         method: 'POST',
         credentials: 'include',

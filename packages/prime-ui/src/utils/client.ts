@@ -14,6 +14,6 @@ client.defaultOptions = {
     errorPolicy: 'all',
   },
   mutate: {
-    errorPolicy: 'all'
+    errorPolicy: 'all',
   },
 };
