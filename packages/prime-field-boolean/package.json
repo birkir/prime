@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-boolean",
-  "version": "0.2.20",
+  "version": "0.3.0-alpha.18+45f7de7",
   "description": "Boolean Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-boolean",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-boolean"
   },
   "dependencies": {
-    "@primecms/field": "^0.2.17"
+    "@primecms/field": "^0.3.0-alpha.18+45f7de7"
   },
   "devDependencies": {
     "@types/graphql": "14.0.3",
@@ -46,5 +46,5 @@
     "lodash": "^4.17.11",
     "react": "^16.7.0"
   },
-  "gitHead": "48b955cdfea765225c860db8782c2f359b9ce7d7"
+  "gitHead": "45f7de7dd1ce63f0be6b8e08cad602ace519d8dd"
 }
