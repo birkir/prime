@@ -24,7 +24,6 @@ import { ContentTypeField } from '../../models/ContentTypeField';
 import { Settings } from '../../models/Settings';
 import { User } from '../../models/User';
 import { Webhook } from '../../models/Webhook';
-import { WebhookCall } from '../../models/WebhookCall';
 import { sequelize } from '../../sequelize';
 import { pageInfoType } from '../../types/pageInfoType';
 import { GraphQLSettingsInput } from '../../types/settings';
@@ -34,11 +33,17 @@ import { latestPrimeVersion } from '../../utils/latestPrimeVersion';
 import { Sentry } from '../../utils/Sentry';
 import { updateNpmPackages } from '../../utils/updateNpmPackages';
 import { latestVersion } from '../external/utils/latestVersion';
+import { createWebhook } from './mutations/createWebhook';
+import { removeWebhook } from './mutations/removeWebhook';
+import { updateWebhook } from './mutations/updateWebhook';
 import { ContentTypeFieldGroup, ContentTypeFieldGroupInputType, getFields, setFields } from './processFields';
+import { allWebhookCalls } from './queries/allWebhookCalls';
+import { allWebhooks } from './queries/allWebhooks';
+import { oneWebhook } from './queries/oneWebhook';
+import { oneWebhookCall } from './queries/oneWebhookCall';
 
 const entryTransformer = new EntryTransformer();
 
-// tslint:disable max-func-body-length export-name await-promise
 export const internalGraphql = async restart => {
   const app = express();
 
@@ -46,31 +51,6 @@ export const internalGraphql = async restart => {
     name: 'ContentTypeField',
     fields: omit(attributeFields(ContentTypeField), ['contentTypeId']),
   });
-
-  const webhookType = new GraphQLObjectType({
-    name: 'Webhook',
-    fields: () => ({
-      ...attributeFields(Webhook),
-      success: { type: GraphQLInt },
-      count: { type: GraphQLInt },
-    }),
-  });
-
-  const webhookCallType = new GraphQLObjectType({
-    name: 'WebhookCall',
-    fields: () => omit(attributeFields(WebhookCall), ['webhookId']),
-  });
-
-  const webhookInputType = new GraphQLNonNull(
-    new GraphQLInputObjectType({
-      name: 'WebhookInput',
-      fields: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        url: { type: new GraphQLNonNull(GraphQLString) },
-        method: { type: new GraphQLNonNull(GraphQLString) },
-      },
-    })
-  );
 
   const userType = new GraphQLObjectType({
     name: 'User',
@@ -429,51 +409,8 @@ export const internalGraphql = async restart => {
         },
       }),
     },
-    allWebhooks: {
-      type: new GraphQLList(webhookType),
-      resolve: resolver(Webhook, {
-        async before(options) {
-          options.attributes = {
-            include: [
-              [
-                sequelize.literal(
-                  `(SELECT COUNT(*) FROM "WebhookCall" "c" WHERE "c"."webhookId" = "Webhook"."id" AND success = TRUE)`
-                ),
-                'success',
-              ],
-              [
-                sequelize.literal(`(SELECT COUNT(*) FROM "WebhookCall" "c" WHERE "c"."webhookId" = "Webhook"."id")`),
-                'count',
-              ],
-            ],
-          };
-          return options;
-        },
-        after(values) {
-          return values.map(({ dataValues }) => ({
-            ...dataValues,
-          }));
-        },
-      }),
-    },
-    allWebhookCalls: {
-      type: new GraphQLList(webhookCallType),
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-      },
-      resolve: resolver(WebhookCall, {
-        before(opts, args) {
-          opts.attributes = {
-            exclude: ['request', 'response'],
-          };
-          opts.where = {
-            webhookId: args.id,
-          };
-          opts.order = [['executedAt', 'DESC']];
-          return opts;
-        },
-      }),
-    },
+    allWebhooks,
+    allWebhookCalls,
     isContentTypeAvailable: {
       type: GraphQLBoolean,
       args: {
@@ -499,36 +436,8 @@ export const internalGraphql = async restart => {
         return count === 0;
       },
     },
-    Webhook: {
-      type: webhookType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-      },
-      resolve: resolver(Webhook, {
-        before(opts, args, context) {
-          opts.where = {
-            id: args.id,
-          };
-
-          return opts;
-        },
-      }),
-    },
-    WebhookCall: {
-      type: webhookCallType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-      },
-      resolve: resolver(WebhookCall, {
-        before(opts, args, context) {
-          opts.where = {
-            id: args.id,
-          };
-
-          return opts;
-        },
-      }),
-    },
+    Webhook: oneWebhook,
+    WebhookCall: oneWebhookCall,
     ContentType: {
       type: contentTypeType,
       args: {
@@ -1262,56 +1171,9 @@ export const internalGraphql = async restart => {
         return Boolean(success);
       },
     },
-    createWebhook: {
-      type: queryFields.Webhook.type,
-      args: {
-        input: {
-          type: webhookInputType,
-        },
-      },
-      async resolve(root, args, context, info) {
-        await context.ensureAllowed('settings', 'update');
-        const webhook = await Webhook.create({
-          name: args.input.name,
-          url: args.input.url,
-          method: args.input.method,
-          userId: context.user.id,
-        });
-        return webhook;
-      },
-    },
-    updateWebhook: {
-      type: queryFields.Webhook.type,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        input: {
-          type: webhookInputType,
-        },
-      },
-      async resolve(root, args, context, info) {
-        await context.ensureAllowed('settings', 'update');
-        const webhook = await Webhook.findOne({ where: { id: args.id } });
-        if (webhook) {
-          await webhook.update({
-            name: args.input.name,
-            url: args.input.url,
-            method: args.input.method,
-          });
-        }
-        return webhook;
-      },
-    },
-    removeWebhook: {
-      type: GraphQLBoolean,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-      },
-      async resolve(root, args, context, info) {
-        await context.ensureAllowed('settings', 'update');
-        const success = await Webhook.destroy({ where: { id: args.id } });
-        return Boolean(success);
-      },
-    },
+    createWebhook,
+    updateWebhook,
+    removeWebhook,
     primeUpdate: {
       type: GraphQLBoolean,
       args: {
