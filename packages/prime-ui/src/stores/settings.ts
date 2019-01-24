@@ -59,6 +59,8 @@ export const Settings = types
   .model('Settings', {
     isProd,
     coreUrl,
+    latestVersion: types.maybeNull(types.string),
+    version: types.maybeNull(types.string),
     env: types.frozen(),
     fields: types.frozen(),
     accessType: types.enumeration('AccessType', ['public', 'private']),
@@ -94,6 +96,23 @@ export const Settings = types
       }
       if (data.allFields) {
         self.fields = data.allFields;
+      }
+    });
+
+    const readVersion = flow(function*() {
+      const { data } = yield client.query({
+        query: gql`
+          query {
+            primeVersion {
+              current
+              latest
+            }
+          }
+        `,
+      });
+      if (data) {
+        self.version = data.primeVersion.current;
+        self.latestVersion = data.primeVersion.latest;
       }
     });
 
@@ -150,6 +169,19 @@ export const Settings = types
       Settings.reloadPlayground();
     });
 
+    const updateSystem = flow(function*(version: string) {
+      const res = yield client.mutate({
+        mutation: gql`
+          mutation PrimeUpdate($version: String) {
+            primeUpdate(version: $version)
+          }
+        `,
+        variables: {
+          version,
+        },
+      });
+    });
+
     const removePreview = (node: any) => {
       destroy(node);
     };
@@ -168,7 +200,9 @@ export const Settings = types
 
     return {
       read,
+      readVersion,
       save,
+      updateSystem,
       reloadPlayground,
       setAccessType,
       setMasterLocale,

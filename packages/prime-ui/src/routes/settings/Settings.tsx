@@ -9,6 +9,7 @@ import { Previews } from './Previews';
 import { Releases } from './Releases';
 import { Security } from './Security';
 import './Settings.less';
+import { System } from './System';
 import { Users } from './Users';
 import { WebhookCalls } from './WebhookCalls';
 import { Webhooks } from './Webhooks';
@@ -48,6 +49,11 @@ const nav = [
     key: 'locales',
     title: 'Locales',
     component: Locales,
+  },
+  {
+    key: 'system',
+    title: 'System',
+    component: System,
   },
 ];
 

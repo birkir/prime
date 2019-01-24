@@ -22,7 +22,8 @@
     "@primecms/field-datetime": "^0.3.0-alpha.0",
     "@primecms/field-number": "^0.3.0-alpha.0",
     "@primecms/field-select": "^0.3.0-alpha.0",
-    "moment": "^2.22.2"
+    "moment": "^2.22.2",
+    "semver": "5.6.0"
   },
   "devDependencies": {
     "@primecms/field": "^0.3.0-alpha.0",
@@ -37,6 +38,7 @@
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.0.11",
     "@types/react-router-dom": "4.3.1",
+    "@types/semver": "5.5.0",
     "antd": "3.12.3",
     "apollo-boost": "0.1.20",
     "babel-plugin-import": "1.11.0",

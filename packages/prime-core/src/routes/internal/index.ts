@@ -1177,7 +1177,7 @@ export const internalGraphql = async restart => {
     primeUpdate: {
       type: GraphQLBoolean,
       args: {
-        version: { type: GraphQLString },
+        version: { type: new GraphQLNonNull(GraphQLString) },
       },
       async resolve(root, args, context, info) {
         await context.ensureAllowed('settings', 'update');
