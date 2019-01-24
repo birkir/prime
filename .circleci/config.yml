@@ -8,12 +8,12 @@ jobs:
         environment:
           POSTGRES_USER: prime
           POSTGRES_DB: prime-test
+    environment:
+      DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
+      SESSION_SECRET: 'very-secret'
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
       - run: yarn run lerna bootstrap
       - run: yarn test
-        environment:
-          DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
-          SESSION_SECRET: 'very-secret'
       - run: yarn codecov
