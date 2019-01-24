@@ -1,7 +1,7 @@
-import { types, flow } from 'mobx-state-tree';
-import { WebhookCall } from './WebhookCall';
+import { flow, types } from 'mobx-state-tree';
 import { client } from '../../utils/client';
 import { UPDATE_WEBHOOK } from '../mutations';
+import { WebhookCall } from './WebhookCall';
 
 const WebhookMethod = types.enumeration('WebhookMethod', ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']);
 

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Form, Button, Input, Select, Row, Col, Divider } from 'antd';
-import { toJS } from 'mobx';
+import { Button, Col, Divider, Form, Input, Row, Select } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { camelCase, get, defaultsDeep } from 'lodash';
-import { fields } from '../../../utils/fields';
+import { camelCase, defaultsDeep, get } from 'lodash';
+import { toJS } from 'mobx';
+import React, { useState } from 'react';
 import stores from '../../../stores';
+import { fields } from '../../../utils/fields';
 
 interface IProps extends FormComponentProps {
   field: any;
@@ -47,14 +47,16 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
       }
     });
     return false;
-  }
+  };
 
   const onNameKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     setAutoName(e.currentTarget.value === '');
   };
 
   const onTitleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!autoName) return;
+    if (!autoName) {
+      return;
+    }
     const name = camelCase(form.getFieldValue('title'));
     let proposedName = name;
     let i = 1;
@@ -65,7 +67,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
     form.setFieldsValue({
       name: proposedName,
     });
-  }
+  };
 
   const ensureUniqueName = (rule: any, value: any, callback: (input?: string) => void) => {
     if (value === 'id') {
@@ -80,71 +82,52 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
 
   return (
     <>
-      <Form
-        layout="vertical"
-        hideRequiredMark
-        onSubmit={onFormSubmit}
-      >
+      <Form layout="vertical" hideRequiredMark onSubmit={onFormSubmit}>
         <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('title', {
-            rules: [{ required: true }]
-          })(
-            <Input
-              addonBefore="Title*"
-              onKeyUp={onTitleKeyUp}
-              placeholder="Please enter title"
-              autoFocus
-            />
-          )}
+            rules: [{ required: true }],
+          })(<Input addonBefore="Title*" onKeyUp={onTitleKeyUp} placeholder="Please enter title" autoFocus />)}
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('name', {
-            rules: [{
-              required: true,
-            }, {
-              pattern: /^[A-Za-z][A-Za-z0-9_]+$/,
-              message: 'Must be alphanumeric and start with non-number',
-            }, {
-              validator: ensureUniqueName
-            }]
-          })(
-            <Input
-              addonBefore="API*"
-              onKeyUp={onNameKeyUp}
-              placeholder="Please enter api name"
-            />
-          )}
+            rules: [
+              {
+                required: true,
+              },
+              {
+                pattern: /^[A-Za-z][A-Za-z0-9_]+$/,
+                message: 'Must be alphanumeric and start with non-number',
+              },
+              {
+                validator: ensureUniqueName,
+              },
+            ],
+          })(<Input addonBefore="API*" onKeyUp={onNameKeyUp} placeholder="Please enter api name" />)}
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('description', {
-            rules: [{ max: 80 }]
-          })(
-            <Input
-              addonBefore="Description"
-              placeholder="(optional)"
-            />
-          )}
+            rules: [{ max: 80 }],
+          })(<Input addonBefore="Description" placeholder="(optional)" />)}
         </Form.Item>
 
         <Divider dashed />
 
-        <SchemaSettingsComponent
-          field={field}
-          form={form}
-          options={options}
-          stores={stores}
-        />
+        <SchemaSettingsComponent field={field} form={form} options={options} stores={stores} />
 
         <div className="prime__drawer__bottom">
-          <Button style={{ marginRight: 8 }} onClick={onCancel}>Cancel</Button>
-          <Button onClick={onFormSubmit} type="primary" htmlType="submit">Save</Button>
+          <Button style={{ marginRight: 8 }} onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={onFormSubmit} type="primary" htmlType="submit">
+            Save
+          </Button>
         </div>
       </Form>
     </>
   );
-}
+};
 
 export const EditField = Form.create({
   mapPropsToFields(props: any) {
@@ -158,10 +141,7 @@ export const EditField = Form.create({
 
     const fromAvailableField = props.availableFields.find((f: any) => f.id === field.type);
 
-    const options = defaultsDeep(
-      get(field, 'options', {}),
-      get(fromAvailableField, 'defaultOptions', {})
-    );
+    const options = defaultsDeep(get(field, 'options', {}), get(fromAvailableField, 'defaultOptions', {}));
 
     Object.entries(options).forEach(([key, value]) => {
       res[`options.${key}`] = Form.createFormField({ value });

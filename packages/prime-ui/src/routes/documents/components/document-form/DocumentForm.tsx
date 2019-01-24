@@ -1,11 +1,11 @@
-import React from 'react';
-import { Prompt } from 'react-router';
-import { get } from 'lodash';
 import { Form, Tabs } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
+import { get } from 'lodash';
+import React from 'react';
+import { Prompt } from 'react-router';
+import stores from '../../../../stores';
 import { client } from '../../../../utils/client';
 import { fields } from '../../../../utils/fields';
-import stores from '../../../../stores';
 
 export interface IDocumentFormProps extends FormComponentProps {
   entry?: any;
@@ -14,37 +14,40 @@ export interface IDocumentFormProps extends FormComponentProps {
   onSave(e: React.MouseEvent<any> | React.FormEvent<any>): void;
 }
 
-function renderInputField({ field, path, initialValue, form, entry, client, stores }: any) {
+function renderInputField({ field, path, initialValue, form, entry }: any) {
   const fieldsField = get(fields, field.type);
 
   if (fieldsField && fieldsField.InputComponent) {
-    return <fieldsField.InputComponent
-      key={field.id}
-      field={field}
-      form={form}
-      client={client}
-      stores={stores}
-      path={path}
-      entry={entry}
-      renderField={renderInputField}
-      initialValue={initialValue}
-    />;
+    return (
+      <fieldsField.InputComponent
+        key={field.id}
+        field={field}
+        form={form}
+        client={client}
+        stores={stores}
+        path={path}
+        entry={entry}
+        renderField={renderInputField}
+        initialValue={initialValue}
+      />
+    );
   }
 
   return (
     <div key={field.id}>
-      <i>could not locate ui component for this field: {field.name} ({field.type})</i>
+      <i>
+        could not locate ui component for this field: {field.name} ({field.type})
+      </i>
     </div>
   );
 }
 
 export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
-
-  state = {
+  public state = {
     activeTab: get(this.props, 'schema.groups.0.title', 'Main'),
   };
 
-  renderField = (field: any, index: number) => {
+  public renderField = (field: any, index: number) => {
     const { form } = this.props;
     return renderInputField({
       field,
@@ -56,19 +59,15 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
       entry: this.props.entry,
       initialValue: get(this.props, `entry.data.${field.name}`),
     });
-  }
+  };
 
-  renderGroup = (group: any, index: number, groups: any[]) => (
-    <Tabs.TabPane
-      key={group.title}
-      tab={group.title}
-      forceRender
-    >
+  public renderGroup = (group: any, index: number, groups: any[]) => (
+    <Tabs.TabPane key={group.title} tab={group.title} forceRender>
       {group.fields.map(this.renderField)}
     </Tabs.TabPane>
   );
 
-  render() {
+  public render() {
     const { groups } = this.props.schema;
     return (
       <div className="prime-document">

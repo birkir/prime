@@ -1,7 +1,7 @@
-import * as express from 'express';
+import express from 'express';
 import { omit } from 'lodash';
-import * as passport from 'passport';
-import * as LocalStrategy from 'passport-local';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
 import { acl } from '../../acl';
 import { User } from '../../models/User';
 

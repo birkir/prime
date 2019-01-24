@@ -1,7 +1,7 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input } from 'antd';
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 
 interface IState {
   cropSizes: boolean[];

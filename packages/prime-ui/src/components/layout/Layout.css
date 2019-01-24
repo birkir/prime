@@ -1,6 +1,6 @@
 .logo {
   height: 32px;
-  background: rgba(255,255,255,.2);
+  background: rgba(255, 255, 255, 0.2);
   margin: 16px;
 }
 
@@ -56,7 +56,6 @@
 .ant-btn-back:hover {
   background-color: #f8f8f8;
 }
-
 
 .ant-layout-header.prime__sidebar__header {
   display: flex;
@@ -178,7 +177,6 @@
   background-color: rgba(49, 142, 159, 0.5);
 }
 
-
 .prime__settings__table .ant-row,
 .prime__settings__table .ant-form-item,
 .prime__settings__table .ant-form-item-with-help {
@@ -204,7 +202,7 @@
   bottom: 100%;
   left: 50%;
   border: solid transparent;
-  content: " ";
+  content: ' ';
   height: 0;
   width: 0;
   position: absolute;

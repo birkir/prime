@@ -13,4 +13,4 @@ export const TitleBar = ({ children, title }: IProps) => (
     </div>
     {children}
   </div>
-)
+);

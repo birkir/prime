@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-express';
 import { createContext } from 'dataloader-sequelize';
-import * as express from 'express';
+import express from 'express';
 import { GraphQLBoolean, GraphQLID, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { get, omit } from 'lodash';
 import { ContentEntry } from '../../models/ContentEntry';
@@ -247,5 +247,5 @@ export const externalGraphql = async () => {
     },
   });
 
-  return app;
+  return { app, server };
 };

@@ -1,6 +1,6 @@
 // tslint:disable non-literal-require no-console
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import { primeConfig } from './utils/primeConfig';
 
 // Resolve fields

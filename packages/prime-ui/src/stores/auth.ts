@@ -1,6 +1,6 @@
-import { types, flow } from 'mobx-state-tree';
-import { User } from './models/User';
+import { flow, types } from 'mobx-state-tree';
 import { fields } from '../utils/fields';
+import { User } from './models/User';
 import { Settings } from './settings';
 
 export const Auth = types
@@ -11,7 +11,9 @@ export const Auth = types
   })
   .actions(self => {
     const ensureFields = async () => {
-      if (!self.isLoggedIn) return;
+      if (!self.isLoggedIn) {
+        return;
+      }
       await Settings.read();
       Settings.fields.forEach((field: any) => {
         if (field.ui && !fields[field.id]) {
@@ -31,7 +33,7 @@ export const Auth = types
           'content-type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      }).then(res => res.json());
+      }).then(r => r.json());
 
       self.isLoggedIn = Boolean(res.user);
       self.user = res.user;
@@ -55,7 +57,7 @@ export const Auth = types
         headers: {
           'content-type': 'application/json',
         },
-      }).then(res => res.json());
+      }).then(r => r.json());
 
       if (res.setup) {
         self.isSetup = res.setup;
@@ -85,7 +87,7 @@ export const Auth = types
           'content-type': 'application/json',
         },
         body: JSON.stringify({ firstname, lastname, email, password }),
-      }).then(res => res.json());
+      }).then(r => r.json());
 
       self.isSetup = false;
       self.isLoggedIn = Boolean(res.user);

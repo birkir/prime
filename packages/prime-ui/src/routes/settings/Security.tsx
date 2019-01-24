@@ -1,15 +1,14 @@
+import { Button, Form, message, Select } from 'antd';
 import React from 'react';
-import { Form, Select, Button, message } from 'antd';
 import { Settings } from '../../stores/settings';
 
 export const Security = Form.create()(({ form }) => {
-
   const onSubmit = (e: any) => {
     e.preventDefault();
     Settings.setAccessType(form.getFieldValue('accessType'));
     Settings.save();
     message.success('Settings have been saved');
-  }
+  };
 
   return (
     <>
@@ -25,5 +24,5 @@ export const Security = Form.create()(({ form }) => {
         <Button htmlType="submit">Save</Button>
       </Form>
     </>
-  )
+  );
 });

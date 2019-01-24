@@ -5,6 +5,9 @@ jobs:
     docker:
       - image: circleci/node:9
       - image: circleci/postgres:10.6
+        environment:
+          POSTGRES_USER: prime
+          POSTGRES_DB: prime-tests
     steps:
       - checkout
       - run: yarn install --frozen-lockfile

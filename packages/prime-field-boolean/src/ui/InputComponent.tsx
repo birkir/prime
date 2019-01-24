@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, Switch } from 'antd';
-import * as React from 'react';
+import React from 'react';
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
   public render() {

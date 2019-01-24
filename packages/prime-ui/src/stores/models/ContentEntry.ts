@@ -1,14 +1,14 @@
-import { types, Instance, flow } from 'mobx-state-tree';
+import { flow, Instance, types } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
-import { ContentType } from './ContentType';
-import { ContentTypeRef } from '../contentTypes';
 import { client } from '../../utils/client';
+import { ContentTypeRef } from '../contentTypes';
 import {
-  UPDATE_CONTENT_ENTRY,
   PUBLISH_CONTENT_ENTRY,
   REMOVE_CONTENT_ENTRY,
   UNPUBLISH_CONTENT_ENTRY,
+  UPDATE_CONTENT_ENTRY,
 } from '../mutations';
+import { ContentType } from './ContentType';
 import { Version } from './Version';
 
 export const ContentEntry = types

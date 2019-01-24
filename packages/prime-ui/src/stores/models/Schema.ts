@@ -1,4 +1,4 @@
-import { types, destroy, Instance, getParent, detach, hasParentOfType } from 'mobx-state-tree';
+import { destroy, detach, getParent, hasParentOfType, Instance, types } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
 
 export type ISchemaField = Instance<typeof SchemaField>;
@@ -83,7 +83,7 @@ export const Schema = types
       destroy(node);
     },
     move(nodeId: string, position: number) {
-      const node = self.fields.find(node => node.id === nodeId);
+      const node = self.fields.find(n => n.id === nodeId);
       if (node) {
         const tree = getParent(node) as ISchemaField[];
         detach(node);
@@ -94,14 +94,14 @@ export const Schema = types
       const id = `new-${Array.from({ length: 5 })
         .map(() => 100000 + Math.floor(Math.random() * 99999))
         .join('-')}`;
-      const node = self.fields.find(node => node.id === nodeId);
-      const group = self.groups.find(node => node.title === groupName);
+      const node = self.fields.find(n => n.id === nodeId);
+      const group = self.groups.find(n => n.title === groupName);
       const tree = nodeId ? node && node.fields : group && group.fields;
       const contentType = getParent(self) as any;
 
       if (tree) {
         const newField = SchemaField.create({
-          id: id,
+          id,
           name: obj.name,
           title: obj.title,
           description: obj.description,

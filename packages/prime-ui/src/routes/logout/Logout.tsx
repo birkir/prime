@@ -3,13 +3,11 @@ import { Redirect } from 'react-router';
 import { Auth } from '../../stores/auth';
 
 export class Logout extends React.Component {
-  componentDidMount() {
+  public componentDidMount() {
     Auth.logout();
   }
 
-  render() {
-    return (
-      <Redirect to="/login" />
-    );
+  public render() {
+    return <Redirect to="/login" />;
   }
 }

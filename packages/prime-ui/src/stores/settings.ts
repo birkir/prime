@@ -1,14 +1,14 @@
-import { types, flow, destroy } from 'mobx-state-tree';
 import gql from 'graphql-tag';
-import { client } from '../utils/client';
 import { get } from 'lodash';
 import { toJS } from 'mobx';
+import { destroy, flow, types } from 'mobx-state-tree';
+import { client } from '../utils/client';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 let config = get(window, 'prime.config', '');
 let coreUrl = isProd ? '/' : 'http://localhost:4000';
-let fields: any = [];
+const fields: any = [];
 let env: any = {};
 
 try {
@@ -16,7 +16,9 @@ try {
   coreUrl = config.coreUrl || coreUrl;
   env = config.env || env;
 } catch (err) {
-  if (isProd) console.error('Could not parse prime config', err);
+  if (isProd) {
+    console.error('Could not parse prime config', err); // tslint:disable-line no-console
+  }
 }
 
 const Preview = types

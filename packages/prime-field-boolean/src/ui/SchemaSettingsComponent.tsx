@@ -1,5 +1,5 @@
 import { IPrimeFieldProps } from '@primecms/field';
-import * as React from 'react';
+import React from 'react';
 
 type IProps = IPrimeFieldProps;
 

@@ -1,9 +1,9 @@
 import { Auth } from './auth';
-import { ContentReleases } from './contentReleases';
 import { ContentEntries } from './contentEntries';
+import { ContentReleases } from './contentReleases';
 import { ContentTypes } from './contentTypes';
-import { Users } from './users';
 import { Settings } from './settings';
+import { Users } from './users';
 import { Webhooks } from './webhooks';
 
 const stores = {

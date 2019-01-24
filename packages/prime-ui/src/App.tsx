@@ -1,16 +1,16 @@
-import React from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import React from 'react';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
-import { DocumentsList } from './routes/documents/DocumentsList';
 import { DocumentsDetail } from './routes/documents/DocumentsDetail';
+import { DocumentsList } from './routes/documents/DocumentsList';
 import { Login } from './routes/login/Login';
-import { Auth } from './stores/auth';
 import { Logout } from './routes/logout/Logout';
-import { Playground } from './routes/playground/Playground';
 import { Onboarding } from './routes/onboarding/Onboarding';
+import { Playground } from './routes/playground/Playground';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
+import { Auth } from './stores/auth';
 import { ContentTypes } from './stores/contentTypes';
 
 const Private = observer(({ children }) => {
@@ -18,16 +18,15 @@ const Private = observer(({ children }) => {
     return children;
   }
   if (Auth.isSetup) {
-    return <Redirect to="/setup" />
+    return <Redirect to="/setup" />;
   }
   return <Redirect to="/login" />;
 });
 
 export class App extends React.Component {
+  public state = { loading: true };
 
-  state = { loading: true };
-
-  async componentDidMount() {
+  public async componentDidMount() {
     await Auth.checkLogin();
     if (Auth.isLoggedIn) {
       await ContentTypes.loadAll();
@@ -35,7 +34,7 @@ export class App extends React.Component {
     this.setState({ loading: false });
   }
 
-  render() {
+  public render() {
     if (this.state.loading) {
       return null;
     }
