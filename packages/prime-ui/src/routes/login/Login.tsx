@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { Form, Icon, Input, Button, message } from 'antd';
+import { Button, Form, Icon, Input, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
+import React from 'react';
 import { Auth } from '../../stores/auth';
 
 class LoginBase extends React.Component<FormComponentProps> {
-
-  onSubmit = async (e: React.FormEvent<HTMLElement>) => {
+  public onSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const values: any = this.props.form.getFieldsValue();
     try {
@@ -19,18 +18,13 @@ class LoginBase extends React.Component<FormComponentProps> {
       message.error('Invalid email or password');
     }
     return false;
-  }
+  };
 
-  render() {
+  public render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Form
-          onSubmit={this.onSubmit}
-          style={{ width: 300 }}
-          action="/login"
-          autoComplete="prime-login"
-        >
+        <Form onSubmit={this.onSubmit} style={{ width: 300 }} action="/login" autoComplete="prime-login">
           <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>prime</div>
           <Form.Item>
             {getFieldDecorator('email')(

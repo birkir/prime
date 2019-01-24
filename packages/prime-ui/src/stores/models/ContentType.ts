@@ -1,12 +1,12 @@
-import { types, flow, applySnapshot } from 'mobx-state-tree';
-import { get, cloneDeepWith, isObject } from 'lodash';
-import { LOAD_SCHEMA } from '../queries';
-import { SAVE_SCHEMA, REMOVE_CONTENT_TYPE, UPDATE_CONTENT_TYPE } from '../mutations';
+import { cloneDeepWith, get, isObject } from 'lodash';
+import { applySnapshot, flow, types } from 'mobx-state-tree';
+import { JSONObject } from '../../interfaces/JSONObject';
 import { client } from '../../utils/client';
 import { ContentTypes } from '../contentTypes';
-import { Schema } from './Schema';
-import { JSONObject } from '../../interfaces/JSONObject';
+import { REMOVE_CONTENT_TYPE, SAVE_SCHEMA, UPDATE_CONTENT_TYPE } from '../mutations';
+import { LOAD_SCHEMA } from '../queries';
 import { Settings } from '../settings';
+import { Schema } from './Schema';
 
 const omitSchema = (collection: any, id: string) => {
   return cloneDeepWith(collection, (value: any) => {
@@ -43,7 +43,7 @@ export const ContentType = types
     };
   })
   .actions(self => {
-    const loadSchema = flow(function* loadSchema() {
+    const loadSchema = flow(function*() {
       const { data } = yield client.query({
         query: LOAD_SCHEMA,
         variables: { contentTypeId: self.id },

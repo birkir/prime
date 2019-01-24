@@ -5,6 +5,12 @@ jobs:
     docker:
       - image: circleci/node:9
       - image: circleci/postgres:10.6
+        environment:
+          POSTGRES_USER: prime
+          POSTGRES_DB: prime-test
+    environment:
+      DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
+      SESSION_SECRET: 'very-secret'
     steps:
       - checkout
       - run: yarn install --frozen-lockfile

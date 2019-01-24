@@ -1,4 +1,4 @@
-import { types, flow } from 'mobx-state-tree';
+import { flow, types } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { User } from './models/User';
 import { ALL_USERS } from './queries';

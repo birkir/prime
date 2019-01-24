@@ -1,38 +1,30 @@
-import * as React from 'react';
-import { Form, Button, Input, notification, Checkbox, Select, Switch, Divider, message } from 'antd';
+import { Button, Checkbox, Divider, Form, Input, message, notification, Select, Switch } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
-import { get, startCase, debounce } from 'lodash';
-import { ContentTypes } from '../../../stores/contentTypes';
-import { toJS } from 'mobx';
-import { client } from '../../../utils/client';
 import gql from 'graphql-tag';
+import { debounce, get, startCase } from 'lodash';
+import { toJS } from 'mobx';
+import React from 'react';
+import { ContentTypes } from '../../../stores/contentTypes';
+import { client } from '../../../utils/client';
 
 interface IProps extends FormComponentProps {
-  onCancel(): void;
-  onSubmit(data: any): void;
   contentTypeId: string | null;
   contentTypes: any;
   item?: any;
+  onCancel(): void;
+  onSubmit(data: any): void;
 }
 
-const forbiddenNames = [
-  'PageInfo',
-  'DocumentMeta',
-];
+const forbiddenNames = ['PageInfo', 'DocumentMeta'];
 
 const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
-
   const { getFieldDecorator } = form;
 
   const checkNameAvailability = async () => {
     const { data } = await client.query({
       query: gql`
-        query isContentTypeAvailable($name:String, $isSlice:Boolean, $isTemplate:Boolean) {
-          isContentTypeAvailable(
-            name: $name
-            isSlice: $isSlice
-            isTemplate: $isTemplate
-          )
+        query isContentTypeAvailable($name: String, $isSlice: Boolean, $isTemplate: Boolean) {
+          isContentTypeAvailable(name: $name, isSlice: $isSlice, isTemplate: $isTemplate)
         }
       `,
       variables: {
@@ -49,9 +41,8 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
     e.preventDefault();
 
     form.validateFieldsAndScroll(async (error, values) => {
-
       if (!error) {
-        const isAvailable = (item.name === values.name) || await checkNameAvailability();
+        const isAvailable = item.name === values.name || (await checkNameAvailability());
         if (!isAvailable) {
           form.setFields({
             name: {
@@ -75,8 +66,8 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
         const data: any = { ...values };
         const type = data.type;
         delete data.type;
-        data.isSlice = (type === 'slice');
-        data.isTemplate = (type === 'template');
+        data.isSlice = type === 'slice';
+        data.isTemplate = type === 'template';
 
         try {
           let result = null;
@@ -100,54 +91,47 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
       }
     });
     return null;
-  }
+  };
 
   const updateApiField = () => {
     form.setFieldsValue({
       name: startCase(form.getFieldValue('title')).replace(/ /g, ''),
     });
-  }
+  };
 
   return (
     <>
       <Form layout="vertical" hideRequiredMark onSubmit={onFormSubmit}>
         <Form.Item label="Title">
           {getFieldDecorator('title', {
-            rules: [{
-              required: true,
-              message: 'Required field'
-            }],
+            rules: [
+              {
+                required: true,
+                message: 'Required field',
+              },
+            ],
           })(
-            <Input
-              autoFocus
-              autoComplete="off"
-              size="large"
-              onKeyUp={updateApiField}
-              placeholder="e.g. Custom page"
-            />
+            <Input autoFocus autoComplete="off" size="large" onKeyUp={updateApiField} placeholder="e.g. Custom page" />
           )}
         </Form.Item>
 
         <Form.Item label="API Name">
           {getFieldDecorator('name', {
-            rules: [{
-              required: true,
-              message: 'Required field'
-            }, {
-              pattern: /^[A-Z][A-Za-z0-9]+(?:[A-Za-z0-9]+)*$/,
-              message: 'Must be CamelCase',
-            }],
-          })(
-            <Input
-              placeholder="e.g. CustomPage"
-              autoComplete="off"
-              size="large"
-            />
-          )}
+            rules: [
+              {
+                required: true,
+                message: 'Required field',
+              },
+              {
+                pattern: /^[A-Z][A-Za-z0-9]+(?:[A-Za-z0-9]+)*$/,
+                message: 'Must be CamelCase',
+              },
+            ],
+          })(<Input placeholder="e.g. CustomPage" autoComplete="off" size="large" />)}
         </Form.Item>
 
-        {contentTypeId ? getFieldDecorator('type')(
-          <input type="hidden" />
+        {contentTypeId ? (
+          getFieldDecorator('type')(<input type="hidden" />)
         ) : (
           <Form.Item label="Type">
             {getFieldDecorator('type')(
@@ -165,15 +149,13 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
             <Divider dashed />
             <Form.Item label="Templates">
               {getFieldDecorator('settings.contentTypeIds')(
-                <Select
-                  mode="multiple"
-                  size="large"
-                  style={{ width: '100%' }}
-                  placeholder="No templates"
-                >
-                  {[].concat(contentTypes).filter((item: any) => item.isTemplate).map((item: any) => (
-                    <Select.Option key={item.id}>{item.title}</Select.Option>
-                  ))}
+                <Select mode="multiple" size="large" style={{ width: '100%' }} placeholder="No templates">
+                  {[]
+                    .concat(contentTypes)
+                    .filter((n: any) => n.isTemplate)
+                    .map((n: any) => (
+                      <Select.Option key={item.id}>{n.title}</Select.Option>
+                    ))}
                 </Select>
               )}
             </Form.Item>
@@ -193,19 +175,27 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
         )}
 
         <div className="prime__drawer__bottom">
-          <Button style={{ marginRight: 8 }} onClick={onCancel}>Cancel</Button>
-          <Button onClick={onFormSubmit} type="primary" htmlType="submit">Submit</Button>
+          <Button style={{ marginRight: 8 }} onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={onFormSubmit} type="primary" htmlType="submit">
+            Submit
+          </Button>
         </div>
       </Form>
     </>
   );
-}
+};
 
 export const EditContentType = Form.create({
   mapPropsToFields(props: any) {
     const type = (() => {
-      if (props.item && props.item.isSlice) return 'slice';
-      if (props.item && props.item.isTemplate) return 'template';
+      if (props.item && props.item.isSlice) {
+        return 'slice';
+      }
+      if (props.item && props.item.isTemplate) {
+        return 'template';
+      }
       return 'contentType';
     })();
 
@@ -223,5 +213,5 @@ export const EditContentType = Form.create({
     }
 
     return res;
-  }
+  },
 })(EditContentTypeBase);

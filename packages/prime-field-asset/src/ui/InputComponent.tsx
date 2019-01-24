@@ -4,7 +4,7 @@ import { ClickParam } from 'antd/lib/menu'; // tslint:disable-line no-submodule-
 import { UploadChangeParam } from 'antd/lib/upload'; // tslint:disable-line no-submodule-imports
 import { UploadFile } from 'antd/lib/upload/interface'; // tslint:disable-line no-submodule-imports
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 import Cropper from 'react-easy-crop'; // tslint:disable-line
 
 const CROP_SIZE = 800;

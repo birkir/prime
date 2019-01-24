@@ -1,8 +1,8 @@
-import { types, flow, destroy } from 'mobx-state-tree';
+import { destroy, flow, types } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { Webhook } from './models/Webhook';
-import { ALL_WEBHOOKS } from './queries';
 import { CREATE_WEBHOOK, REMOVE_WEBHOOK } from './mutations';
+import { ALL_WEBHOOKS } from './queries';
 
 export const Webhooks = types
   .model('Webhooks', {

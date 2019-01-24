@@ -1,5 +1,4 @@
-import { client } from './client';
-
+/* tslint:disable no-console no-var-requires */
 export const fields: any = {};
 
 export const registerField = (id: string, field: any) => {
@@ -16,15 +15,15 @@ export const registerField = (id: string, field: any) => {
 // You can add your package in development here, but it won't be
 // accepted into prime unless the module will be part of the cms core.
 if (process.env.NODE_ENV === 'development') {
-  registerField('asset', require('@primecms/field-asset/ui/src').default);
-  registerField('boolean', require('@primecms/field-boolean/ui/src').default);
-  registerField('datetime', require('@primecms/field-datetime/ui/src').default);
-  registerField('document', require('@primecms/field-document/ui/src').default);
-  registerField('group', require('@primecms/field-group/ui/src').default);
-  registerField('number', require('@primecms/field-number/ui/src').default);
-  registerField('select', require('@primecms/field-select/ui/src').default);
-  registerField('slice', require('@primecms/field-slice/ui/src').default);
-  registerField('string', require('@primecms/field-string/ui/src').default);
+  registerField('asset', require('@primecms/field-asset/src/ui').default);
+  registerField('boolean', require('@primecms/field-boolean/src/ui').default);
+  registerField('datetime', require('@primecms/field-datetime/src/ui').default);
+  registerField('document', require('@primecms/field-document/src/ui').default);
+  registerField('group', require('@primecms/field-group/src/ui').default);
+  registerField('number', require('@primecms/field-number/src/ui').default);
+  registerField('select', require('@primecms/field-select/src/ui').default);
+  registerField('slice', require('@primecms/field-slice/src/ui').default);
+  registerField('string', require('@primecms/field-string/src/ui').default);
 
   console.log('using development fields');
 }

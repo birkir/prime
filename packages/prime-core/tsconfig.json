@@ -5,6 +5,7 @@
     "jsx": "preserve",
     "noUnusedLocals": true,
     "pretty": true,
+    "esModuleInterop": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6",

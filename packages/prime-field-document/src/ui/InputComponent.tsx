@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, TreeSelect } from 'antd';
-import * as React from 'react';
+import React from 'react';
 
 interface IContentType {
   entryId: string;

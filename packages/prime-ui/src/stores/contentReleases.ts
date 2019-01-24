@@ -1,4 +1,4 @@
-import { types, flow, destroy } from 'mobx-state-tree';
+import { destroy, flow, types } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentRelease } from './models/ContentRelease';
 import { ALL_CONTENT_RELEASES } from './queries';

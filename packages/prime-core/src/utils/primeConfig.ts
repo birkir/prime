@@ -1,6 +1,6 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import { get } from 'lodash';
-import * as path from 'path';
+import path from 'path';
 
 const fields = [
   '@primecms/field-asset',

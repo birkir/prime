@@ -61,7 +61,7 @@ module.exports = function override(config, env) {
       .map(packageName => {
         const absPackageName = packageName.replace(/\/(src|lib)\/?$/, '');
         try {
-          return fs.realpathSync(path.resolve(path.join('node_modules', absPackageName)));
+          return fs.realpathSync(path.resolve(path.join('../../node_modules', absPackageName)));
         } catch (err) {
           return null;
         }

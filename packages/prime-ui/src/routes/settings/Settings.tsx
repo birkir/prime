@@ -1,52 +1,60 @@
+import { Card, Layout, Menu } from 'antd';
 import React from 'react';
-import { Layout, Card, Menu } from 'antd';
-import { Route, Switch, NavLink } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import { NavLink, Route, Switch } from 'react-router-dom';
 import { Toolbar } from '../../components/toolbar/Toolbar';
 import { Account } from './Account';
-import { Users } from './Users';
-import { Security } from './Security';
-import { Previews } from './Previews';
 import { Locales } from './Locales';
+import { Previews } from './Previews';
 import { Releases } from './Releases';
-import { Webhooks } from './Webhooks';
-import { WebhookCalls } from './WebhookCalls';
+import { Security } from './Security';
 import './Settings.less';
+import { Users } from './Users';
+import { WebhookCalls } from './WebhookCalls';
+import { Webhooks } from './Webhooks';
 
-const nav = [{
-  key: 'account',
-  title: 'Account',
-  component: Account,
-}, {
-  key: 'users',
-  title: 'Users',
-  component: Users,
-}, {
-  key: 'security',
-  title: 'Security',
-  component: Security,
-}, {
-  key: 'webhooks',
-  title: 'Webhooks',
-  component: Webhooks,
-}, {
-  key: 'releases',
-  title: 'Releases',
-  component: Releases,
-}, {
-  key: 'previews',
-  title: 'Previews',
-  component: Previews,
-}, {
-  key: 'locales',
-  title: 'Locales',
-  component: Locales,
-}]
+const nav = [
+  {
+    key: 'account',
+    title: 'Account',
+    component: Account,
+  },
+  {
+    key: 'users',
+    title: 'Users',
+    component: Users,
+  },
+  {
+    key: 'security',
+    title: 'Security',
+    component: Security,
+  },
+  {
+    key: 'webhooks',
+    title: 'Webhooks',
+    component: Webhooks,
+  },
+  {
+    key: 'releases',
+    title: 'Releases',
+    component: Releases,
+  },
+  {
+    key: 'previews',
+    title: 'Previews',
+    component: Previews,
+  },
+  {
+    key: 'locales',
+    title: 'Locales',
+    component: Locales,
+  },
+];
 
 export const Settings = (props: any) => {
   const { path } = props.match;
   const { pathname } = props.location;
-  const [key] = pathname.replace(new RegExp(`^${path}/?`), '').split('/') || ['account'];
+  const [selectedKey] = pathname.replace(new RegExp(`^${path}/?`), '').split('/') || ['account'];
 
   return (
     <Layout className="prime__settings">
@@ -58,14 +66,12 @@ export const Settings = (props: any) => {
       <Layout.Content className="prime__settings__content">
         <Card bordered={false} className="prime__settings__card">
           <div className="prime__settings__left">
-            <Menu
-              mode="inline"
-              selectedKeys={[key]}
-              className="prime__settings__menu"
-            >
+            <Menu mode="inline" selectedKeys={[selectedKey]} className="prime__settings__menu">
               {nav.map(({ key, title }) => (
                 <Menu.Item key={key}>
-                  <NavLink to={`${path}/${key}`} className="nav-text">{title}</NavLink>
+                  <NavLink to={`${path}/${key}`} className="nav-text">
+                    {title}
+                  </NavLink>
                 </Menu.Item>
               ))}
             </Menu>
@@ -83,4 +89,4 @@ export const Settings = (props: any) => {
       </Layout.Content>
     </Layout>
   );
-}
+};

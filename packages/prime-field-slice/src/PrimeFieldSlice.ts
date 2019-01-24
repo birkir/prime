@@ -7,8 +7,8 @@ import {
   GraphQLString,
   GraphQLUnionType,
 } from 'graphql';
-import * as GraphQLJSON from 'graphql-type-json';
-import * as GraphQLUnionInputType from 'graphql-union-input-type';
+import GraphQLJSON from 'graphql-type-json';
+import GraphQLUnionInputType from 'graphql-union-input-type';
 
 const unknownSliceType: GraphQLObjectType = new GraphQLObjectType({
   name: 'UnknownSlice',

@@ -7,6 +7,8 @@ lerna-debug.log
 yarn-error.log
 
 .env
+.env.*
+!.env.example
 .idea
 .vscode
 

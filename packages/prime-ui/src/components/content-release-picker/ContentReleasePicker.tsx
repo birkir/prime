@@ -1,14 +1,15 @@
-import * as React from 'react';
 import { Modal, Table } from 'antd';
 import { format } from 'date-fns';
 import { Observer } from 'mobx-react';
+import React from 'react';
 import { ContentReleases } from '../../stores/contentReleases';
 
 export const ContentReleasePicker = (props: any) => {
-
   React.useEffect(
     () => {
-      if (props.visible) ContentReleases.loadAll();
+      if (props.visible) {
+        ContentReleases.loadAll();
+      }
     },
     [props.visible]
   );
@@ -21,7 +22,7 @@ export const ContentReleasePicker = (props: any) => {
       bodyStyle={{
         padding: 0,
         overflow: 'hidden',
-        borderRadius: '0 0 4px 4px'
+        borderRadius: '0 0 4px 4px',
       }}
       className="modal-table-picker"
       footer={false}
@@ -33,7 +34,7 @@ export const ContentReleasePicker = (props: any) => {
             showHeader={false}
             pagination={false}
             locale={{
-              emptyText: 'No releases available'
+              emptyText: 'No releases available',
             }}
             columns={[
               {
@@ -46,7 +47,7 @@ export const ContentReleasePicker = (props: any) => {
                       <div>{record.description}</div>
                     </>
                   );
-                }
+                },
               },
               {
                 key: 'scheduledAt',
@@ -57,8 +58,8 @@ export const ContentReleasePicker = (props: any) => {
                   }
 
                   return format(record.scheduledAt, 'YYYY-MM-DD HH:mm');
-                }
-              }
+                },
+              },
             ]}
             rowKey="id"
             rowClassName={() => 'prime-row-click'}
@@ -71,7 +72,7 @@ export const ContentReleasePicker = (props: any) => {
                 if (typeof props.onCancel === 'function') {
                   props.onCancel();
                 }
-              }
+              },
             })}
           />
         )}

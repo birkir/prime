@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { fields as allFields } from '../fields';
 
 interface IField {

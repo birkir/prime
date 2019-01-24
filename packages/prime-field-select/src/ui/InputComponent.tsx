@@ -1,7 +1,7 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, Select } from 'antd';
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
   public componentDidMount() {

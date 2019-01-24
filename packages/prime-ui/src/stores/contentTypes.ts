@@ -1,9 +1,9 @@
-import { types, flow, Instance } from 'mobx-state-tree';
+import { when } from 'mobx';
+import { flow, Instance, types } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
-import { CONTENT_TYPE_BY_ID, ALL_CONTENT_TYPES } from './queries';
 import { CREATE_CONTENT_TYPE } from './mutations';
-import { when } from 'mobx';
+import { ALL_CONTENT_TYPES, CONTENT_TYPE_BY_ID } from './queries';
 
 export const ContentTypes = types
   .model('ContentTypes', {
@@ -20,7 +20,7 @@ export const ContentTypes = types
     },
   }))
   .actions(self => {
-    const loadByName = flow(function* loadById(name: string) {
+    const loadByName = flow(function*(name: string) {
       let item;
       const { data } = yield client.query({
         query: CONTENT_TYPE_BY_ID,
@@ -41,7 +41,7 @@ export const ContentTypes = types
       return item;
     });
 
-    const loadById = flow(function* loadById(id: string) {
+    const loadById = flow(function*(id: string) {
       let item;
       const { data } = yield client.query({
         query: CONTENT_TYPE_BY_ID,

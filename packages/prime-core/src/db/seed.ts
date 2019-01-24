@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 // tslint:disable no-require-imports no-var-requires no-console await-promise
-import * as faker from 'faker';
+import faker from 'faker';
 
 import { acl } from '../acl';
 import { ContentEntry } from '../models/ContentEntry';

@@ -1,7 +1,7 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 
 const { uuid } = window as any;
 

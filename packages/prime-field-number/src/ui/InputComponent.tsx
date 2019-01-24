@@ -1,6 +1,6 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
-import * as React from 'react';
+import React from 'react';
 import { ValidationRule } from 'antd/lib/form'; // tslint:disable-line
 
 export class InputComponent extends React.PureComponent<IPrimeFieldProps> {

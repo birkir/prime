@@ -1,5 +1,5 @@
 import { ApolloServer, AuthenticationError, ForbiddenError, UserInputError } from 'apollo-server-express';
-import * as express from 'express';
+import express from 'express';
 import {
   GraphQLBoolean,
   GraphQLEnumType,
@@ -13,7 +13,7 @@ import {
   GraphQLString,
 } from 'graphql';
 import { attributeFields, DateType, relay, resolver } from 'graphql-sequelize';
-import * as GraphQLJSON from 'graphql-type-json';
+import GraphQLJSON from 'graphql-type-json';
 import { get, omit, pickBy, uniq } from 'lodash';
 import { acl } from '../../acl';
 import { fields } from '../../fields';
@@ -1202,7 +1202,8 @@ export const internalGraphql = async restart => {
     playground: false,
     schema,
     context: async ({ req }) => {
-      const { user } = req;
+      const { user } = req || { user: null as any };
+
       if (!user) {
         throw new AuthenticationError('Not authenticated');
       }
@@ -1240,5 +1241,5 @@ export const internalGraphql = async restart => {
     },
   });
 
-  return app;
+  return { app, server };
 };

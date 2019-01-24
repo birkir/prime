@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import * as whichpm from 'which-pm';
+import whichpm from 'which-pm';
 
 export const updateNpmPackages = async (packages: string[]) => {
   const pm = await whichpm(process.cwd());

@@ -2,7 +2,7 @@ import { IPrimeFieldProps } from '@primecms/field';
 import { DatePicker, Form } from 'antd';
 import { get, isEmpty } from 'lodash';
 import moment from 'moment';
-import * as React from 'react';
+import React from 'react';
 
 interface IState {
   value: any;

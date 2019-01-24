@@ -1,6 +1,6 @@
+import { Icon, Layout as AntLayout, Menu } from 'antd';
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Icon } from 'antd';
-import { NavLink, Link, withRouter } from 'react-router-dom';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 import './Layout.css';
 
 const { SubMenu } = Menu;
@@ -12,17 +12,12 @@ export const Layout = withRouter(({ children, history, location }: any) => {
   const selected = location.pathname.split('/')[1];
 
   return (
-    <AntLayout style={{ minHeight: '100vh'}}>
-      <Sider
-        width={280}
-        theme="dark"
-        trigger={null}
-        collapsed={isOpen}
-        collapsible
-        className="prime__sidebar"
-      >
+    <AntLayout style={{ minHeight: '100vh' }}>
+      <Sider width={280} theme="dark" trigger={null} collapsed={isOpen} collapsible className="prime__sidebar">
         <Header className="prime__sidebar__header">
-          <Link to="/" className="prime__sidebar__logo">prime</Link>
+          <Link to="/" className="prime__sidebar__logo">
+            prime
+          </Link>
         </Header>
         <Menu
           theme="dark"
@@ -68,9 +63,7 @@ export const Layout = withRouter(({ children, history, location }: any) => {
         </div>
       </Sider>
       <AntLayout>
-        <Content style={{ flex: 1 }}>
-          {children}
-        </Content>
+        <Content style={{ flex: 1 }}>{children}</Content>
       </AntLayout>
     </AntLayout>
   );

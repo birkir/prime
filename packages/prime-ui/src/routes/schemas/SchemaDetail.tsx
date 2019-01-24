@@ -1,28 +1,28 @@
-import React from 'react';
-import { Prompt } from 'react-router';
+import { Button, Card, Drawer, Icon, Layout, message, Spin, Tabs } from 'antd';
+import { get } from 'lodash';
 import { observable, toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import { Instance, getParent, onPatch, clone } from 'mobx-state-tree';
-import { Layout, Card, Drawer, Button, Tabs, message, Icon, Spin } from 'antd';
-import { DragDropContext, Droppable, Draggable, DragStart, DropResult } from 'react-beautiful-dnd';
-import { get } from 'lodash';
+import { clone, getParent, Instance, onPatch } from 'mobx-state-tree';
+import React from 'react';
+import { DragDropContext, Draggable, DragStart, Droppable, DropResult } from 'react-beautiful-dnd';
+import { Prompt } from 'react-router';
 
-import { DEFAULT_GROUP_TITLE } from '../../stores/models/Schema';
-import { ContentType } from '../../stores/models/ContentType';
-import { ContentTypes } from '../../stores/contentTypes';
-import { ALL_FIELDS } from '../../stores/queries';
-import { EditField } from './components/EditField';
-import { Toolbar } from '../../components/toolbar/Toolbar';
-import { FieldRow } from './components/field-row/FieldRow';
-import { client } from '../../utils/client';
 import { Link } from 'react-router-dom';
+import { Toolbar } from '../../components/toolbar/Toolbar';
+import { ContentTypes } from '../../stores/contentTypes';
+import { ContentType } from '../../stores/models/ContentType';
+import { DEFAULT_GROUP_TITLE } from '../../stores/models/Schema';
+import { ALL_FIELDS } from '../../stores/queries';
+import { client } from '../../utils/client';
+import { EditField } from './components/EditField';
+import { FieldRow } from './components/field-row/FieldRow';
 
 const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
 
 const highlightColor = '#FEFCDD';
 
-type IAvailableField = {
+interface IAvailableField {
   id: string;
   title: string;
   description: string;
@@ -30,58 +30,57 @@ type IAvailableField = {
 
 interface IProps {
   match: {
-    params: { id: string; }
-  }
+    params: { id: string };
+  };
 }
 
 interface IState {
   flush: boolean;
-  disabledDroppables: string[],
+  disabledDroppables: string[];
 }
 
 @observer
 export class SchemaDetail extends React.Component<IProps> {
-
-  disposeOnPatch: any;
-  tabs: any = React.createRef();
-  editField: any = React.createRef();
-  contentType?: Instance<typeof ContentType>;
-  state: IState = {
+  public disposeOnPatch: any;
+  public tabs: any = React.createRef();
+  public editField: any = React.createRef();
+  public contentType?: Instance<typeof ContentType>;
+  public state: IState = {
     flush: false,
     disabledDroppables: [],
   };
 
   @observable
-  isDrawerOpen = false;
+  public isDrawerOpen = false;
 
   @observable
-  isNewField = false;
+  public isNewField = false;
 
   @observable
-  availableFields: IAvailableField[] = [];
+  public availableFields: IAvailableField[] = [];
 
   @observable
-  selectedField: any = null;
+  public selectedField: any = null;
 
   @observable
-  selectedGroup: any = DEFAULT_GROUP_TITLE;
+  public selectedGroup: any = DEFAULT_GROUP_TITLE;
 
   @observable
-  loading = false;
+  public loading = false;
 
   @observable
-  saving = false;
+  public saving = false;
 
-  componentDidMount() {
+  public componentDidMount() {
     this.load();
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  async load() {
+  public async load() {
     this.loading = true;
     this.contentType = clone(await ContentTypes.loadById(this.props.match.params.id));
     if (this.contentType) {
@@ -93,7 +92,7 @@ export class SchemaDetail extends React.Component<IProps> {
     this.loading = false;
   }
 
-  saveSchema = async () => {
+  public saveSchema = async () => {
     this.disposeOnPatch();
     this.saving = true;
     const success = await this.contentType!.saveSchema();
@@ -103,36 +102,36 @@ export class SchemaDetail extends React.Component<IProps> {
     this.contentType!.schema.setHasChanged(false);
     this.detectChanges();
     this.saving = false;
-  }
+  };
 
-  detectChanges() {
-    this.disposeOnPatch = onPatch(this.contentType!.schema, (res) => {
+  public detectChanges() {
+    this.disposeOnPatch = onPatch(this.contentType!.schema, res => {
       this.contentType!.schema.setHasChanged(true);
     });
   }
 
-  flushSchema() {
+  public flushSchema() {
     this.setState({ flush: true }, () => this.setState({ flush: false }));
   }
 
-  onKeyDown = (e: any) => {
-    if (e.which == 83 && (e.ctrlKey || e.metaKey)) {
+  public onKeyDown = (e: any) => {
+    if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.saveSchema();
       return false;
     }
     return true;
-  }
+  };
 
-  onOpenDrawer = () => {
+  public onOpenDrawer = () => {
     this.isDrawerOpen = true;
-  }
+  };
 
-  onCloseDrawer = () => {
+  public onCloseDrawer = () => {
     this.isDrawerOpen = false;
-  }
+  };
 
-  onDragStart = (e: DragStart) => {
+  public onDragStart = (e: DragStart) => {
     const { fields } = this.contentType!.schema;
 
     // const { fields } = this.state;
@@ -153,7 +152,9 @@ export class SchemaDetail extends React.Component<IProps> {
       }
     } else {
       const movingField = fields.find(({ id }) => id === fieldId);
-      if (!movingField) return null;
+      if (!movingField) {
+        return null;
+      }
 
       const parentTree = getParent(movingField);
       const parentNode = getParent(parentTree);
@@ -175,10 +176,12 @@ export class SchemaDetail extends React.Component<IProps> {
     this.setState({
       disabledDroppables,
     });
-  }
+  };
 
-  onDragEnd = (e: DropResult) => {
-    if (!this.contentType) return;
+  public onDragEnd = (e: DropResult) => {
+    if (!this.contentType) {
+      return;
+    }
 
     const { destination, draggableId } = e;
 
@@ -192,7 +195,8 @@ export class SchemaDetail extends React.Component<IProps> {
 
     if (draggableKey === 'AvailableField') {
       // Handle dropping of a new field
-      const addedField = this.contentType.schema.add({
+      const addedField = this.contentType.schema.add(
+        {
           name: '',
           title: '',
           description: '',
@@ -201,7 +205,7 @@ export class SchemaDetail extends React.Component<IProps> {
         },
         destination.index,
         this.selectedGroup,
-        (key === 'Field') ? dropId : undefined,
+        key === 'Field' ? dropId : undefined
       );
 
       this.isNewField = true;
@@ -222,41 +226,42 @@ export class SchemaDetail extends React.Component<IProps> {
       // Handle moving of a current field
       this.contentType.schema.move(fieldId, destination.index);
     }
-  }
+  };
 
-  onFieldDelete = (field: any) => {
+  public onFieldDelete = (field: any) => {
     this.contentType!.schema.remove(field);
     this.flushSchema();
-  }
+  };
 
-  onFieldClick = (field: any) => {
+  public onFieldClick = (field: any) => {
     this.isNewField = false;
     this.selectedField = field;
     this.onOpenDrawer();
-  }
+  };
 
-  onFieldDisplay = (field: any) => {
+  public onFieldDisplay = (field: any) => {
     this.contentType!.schema.setDisplay(field);
     this.flushSchema();
-  }
+  };
 
-  onSave = () => {
+  public onSave = () => {
     this.saveSchema();
-  }
+  };
 
-  onEditFieldCancel = () => {
+  public onEditFieldCancel = () => {
     const { selectedField, isNewField } = this;
     if (selectedField && isNewField) {
       this.contentType!.schema.remove(selectedField);
     }
     this.onCloseDrawer();
-  }
+  };
 
-  onEditFieldSubmit = async (field: any) => {
+  public onEditFieldSubmit = async (field: any) => {
     const isValid = await new Promise(resolve =>
       this.editField.current.validateFields((hasErrors: any) => {
         resolve(!hasErrors);
-      }));
+      })
+    );
 
     if (isValid) {
       this.selectedField.update({
@@ -271,13 +276,13 @@ export class SchemaDetail extends React.Component<IProps> {
     } else {
       message.error('Fix errors before saving');
     }
-  }
+  };
 
-  onTabsChange = (selectedGroup: string) => {
+  public onTabsChange = (selectedGroup: string) => {
     this.selectedGroup = selectedGroup;
-  }
+  };
 
-  onTabsEdit = (targetKey: any, action: string) => {
+  public onTabsEdit = (targetKey: any, action: string) => {
     if (action === 'add') {
       this.onGroupAdd();
     } else if (action === 'remove') {
@@ -285,16 +290,16 @@ export class SchemaDetail extends React.Component<IProps> {
         this.contentType!.removeGroup(targetKey);
       }
     }
-  }
+  };
 
-  onGroupAdd = () => {
+  public onGroupAdd = () => {
     const title = prompt('Enter group name', '');
     if (title) {
       this.contentType!.addGroup(title);
     }
-  }
+  };
 
-  renderGroupField = (field: any) => (
+  public renderGroupField = (field: any) => (
     <Droppable
       key={field.id}
       droppableId={`Field.${field.id}`}
@@ -303,7 +308,12 @@ export class SchemaDetail extends React.Component<IProps> {
       {(droppableProvided, droppableSnapshot) => (
         <div
           ref={droppableProvided.innerRef}
-          style={{ minHeight: 80, transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)', padding: 16 }}
+          style={{
+            minHeight: 80,
+            transition: 'background-color 0.3s ease-in-out',
+            backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)',
+            padding: 16,
+          }}
           {...droppableProvided.droppableProps}
         >
           {field.fields.map(this.renderField)}
@@ -313,7 +323,7 @@ export class SchemaDetail extends React.Component<IProps> {
     </Droppable>
   );
 
-  renderField = (field: any, index: number) => (
+  public renderField = (field: any, index: number) => (
     <FieldRow
       key={field.id}
       field={field}
@@ -326,12 +336,8 @@ export class SchemaDetail extends React.Component<IProps> {
     </FieldRow>
   );
 
-  renderAvailableField = (field: any, index: number) => (
-    <Draggable
-      key={`AvailableField.${field.id}`}
-      draggableId={`AvailableField.${field.id}`}
-      index={index}
-    >
+  public renderAvailableField = (field: any, index: number) => (
+    <Draggable key={`AvailableField.${field.id}`} draggableId={`AvailableField.${field.id}`} index={index}>
       {(draggableProvided, draggableSnapshot) => (
         <div
           ref={draggableProvided.innerRef}
@@ -343,11 +349,13 @@ export class SchemaDetail extends React.Component<IProps> {
             style={{ borderStyle: 'dashed' }}
             bodyStyle={{
               padding: '8px 16px',
-              fontSize: 14
+              fontSize: 14,
             }}
             hoverable
           >
-            <div><strong>{field.title}</strong></div>
+            <div>
+              <strong>{field.title}</strong>
+            </div>
             <div style={{ color: '#999' }}>{field.description}</div>
           </Card>
         </div>
@@ -355,15 +363,11 @@ export class SchemaDetail extends React.Component<IProps> {
     </Draggable>
   );
 
-  renderGroup = (groupName: any) => {
+  public renderGroup = (groupName: any) => {
     const group = this.contentType!.schema.groups.find(g => g.title.toLowerCase() === groupName.toLowerCase());
 
     return (
-      <TabPane
-        key={groupName}
-        tab={groupName}
-        style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}
-      >
+      <TabPane key={groupName} tab={groupName} style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
         <Droppable
           key={groupName}
           droppableId={`Group.${groupName}`}
@@ -372,7 +376,12 @@ export class SchemaDetail extends React.Component<IProps> {
           {(droppableProvided, droppableSnapshot) => (
             <div
               ref={droppableProvided.innerRef}
-              style={{ minHeight: '100%', transition: 'background-color 0.3s ease-in-out', backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '', padding: 32 }}
+              style={{
+                minHeight: '100%',
+                transition: 'background-color 0.3s ease-in-out',
+                backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : '',
+                padding: 32,
+              }}
             >
               {group && group.fields.filter((n: any) => n.contentTypeId === this.contentType!.id).map(this.renderField)}
               {droppableProvided.placeholder}
@@ -382,9 +391,9 @@ export class SchemaDetail extends React.Component<IProps> {
         </Droppable>
       </TabPane>
     );
-  }
+  };
 
-  render() {
+  public render() {
     const { contentType, availableFields } = this;
     const { flush } = this.state;
     const title = get(contentType, 'title');
@@ -401,30 +410,16 @@ export class SchemaDetail extends React.Component<IProps> {
               <Spin spinning={this.loading} delay={500} />
             </h3>
           </div>
-          <Button
-            type="dashed"
-            disabled
-            style={{ marginRight: 8 }}
-            title="WIP"
-            icon="cloud-download"
-          >
+          <Button type="dashed" disabled style={{ marginRight: 8 }} title="WIP" icon="cloud-download">
             Import
           </Button>
-          <Button
-            type="primary"
-            onClick={this.onSave}
-            icon="save"
-            loading={this.saving}
-          >
+          <Button type="primary" onClick={this.onSave} icon="save" loading={this.saving}>
             Save
           </Button>
         </Toolbar>
         <Layout>
           {contentType && !flush && (
-            <DragDropContext
-              onDragEnd={this.onDragEnd}
-              onDragStart={this.onDragStart}
-            >
+            <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
               <Content>
                 <Prompt
                   when={contentType.schema.hasChanged}
@@ -451,7 +446,7 @@ export class SchemaDetail extends React.Component<IProps> {
                 style={{ padding: 16, maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}
               >
                 <Droppable droppableId="AvailableFields" isDropDisabled>
-                  {(droppableProvided) => (
+                  {droppableProvided => (
                     <div ref={droppableProvided.innerRef}>
                       {availableFields.map(this.renderAvailableField)}
                       {droppableProvided.placeholder}
@@ -471,17 +466,19 @@ export class SchemaDetail extends React.Component<IProps> {
             onClose={this.onEditFieldCancel}
             visible={this.isDrawerOpen}
           >
-            {this.selectedField && (<EditField
-              ref={this.editField}
-              availableFields={availableFields}
-              field={this.selectedField}
-              schema={contentType.schema}
-              onCancel={this.onEditFieldCancel}
-              onSubmit={this.onEditFieldSubmit}
-            />)}
+            {this.selectedField && (
+              <EditField
+                ref={this.editField}
+                availableFields={availableFields}
+                field={this.selectedField}
+                schema={contentType.schema}
+                onCancel={this.onEditFieldCancel}
+                onSubmit={this.onEditFieldSubmit}
+              />
+            )}
           </Drawer>
         )}
       </Layout>
-    )
+    );
   }
 }

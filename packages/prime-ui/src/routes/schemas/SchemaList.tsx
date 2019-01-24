@@ -1,135 +1,135 @@
-import * as React from 'react';
-import { observer } from 'mobx-react';
-import { Table, Card, Button, Popconfirm, Icon, Drawer, Layout } from 'antd';
+import { Button, Card, Drawer, Icon, Layout, Popconfirm, Table } from 'antd';
 import { ColumnProps } from 'antd/lib/table';
-import { Link, Route, Switch } from 'react-router-dom';
-import { Instance } from 'mobx-state-tree';
 import { get } from 'lodash';
+import { observer } from 'mobx-react';
+import { Instance } from 'mobx-state-tree';
+import React from 'react';
+import { Link, Route, Switch } from 'react-router-dom';
 import { Toolbar } from '../../components/toolbar/Toolbar';
-import { ContentType } from '../../stores/models/ContentType';
 import { ContentTypes } from '../../stores/contentTypes';
+import { ContentType } from '../../stores/models/ContentType';
 import { EditContentType } from './components/EditContentType';
 
-const tabs = [{
-  key: '',
-  tab: 'Content Types',
-}, {
-  key: 'slices',
-  tab: 'Slices',
-}, {
-  key: 'templates',
-  tab: 'Templates'
-}];
+const tabs = [
+  {
+    key: '',
+    tab: 'Content Types',
+  },
+  {
+    key: 'slices',
+    tab: 'Slices',
+  },
+  {
+    key: 'templates',
+    tab: 'Templates',
+  },
+];
 
 interface IContentType extends Instance<typeof ContentType> {}
 
 @observer
 export class SchemaList extends React.Component<any> {
+  public formRef: any = React.createRef();
 
-  formRef: any = React.createRef();
-
-  state = {
+  public state = {
     visible: false,
     settingsId: null,
     tab: get(this.props, 'match.params.tab', ''),
-  }
+  };
 
-  componentDidMount() {
+  public componentDidMount() {
     ContentTypes.loadAll();
   }
 
-  get columns(): ColumnProps<IContentType>[] {
-    return [{
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
-    }, {
-      title: 'API Name',
-      dataIndex: 'name',
-      key: 'name',
-      render(_text: string, record: any) {
-        return (<i>{record.name}</i>);
-      }
-    }, {
-      title: 'Type',
-      key: 'type',
-      render: (text: string, record: any) => {
-        return record.settings.single ? 'Single' : 'Repeatable';
+  get columns(): Array<ColumnProps<IContentType>> {
+    return [
+      {
+        title: 'Title',
+        dataIndex: 'title',
+        key: 'title',
       },
-    }, {
-      title: 'Documents',
-      key: 'documents',
-      render: (text, record) => (
-        <Link
-          to={`/documents/by/type:${record.name.toLocaleLowerCase()}`}
-          onClick={(e: any) => e.stopPropagation()}
-        >
-          {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
-        </Link>
-      )
-    }, {
-      title: '',
-      key: 'action',
-      align: 'right',
-      render: (text, record) => (
-        <span onClick={e => e.stopPropagation()}>
-          <Button
-            style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
-            onClick={(e: any) => {
-              this.props.history.push(`/schemas/settings/${record.id}`)
-            }}
-          >
-            <Icon
-              type="setting"
-              theme="filled"
-            />
-          </Button>
-          <Popconfirm
-            title="Are you sure?"
-            icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-            onConfirm={() => record.remove()}
-          >
-            <Button style={{ paddingLeft: 8, paddingRight: 8 }}>
-              <Icon
-                type="delete"
-                theme="filled"
-              />
+      {
+        title: 'API Name',
+        dataIndex: 'name',
+        key: 'name',
+        render(text: string, record: any) {
+          return <i>{record.name}</i>;
+        },
+      },
+      {
+        title: 'Type',
+        key: 'type',
+        render: (text: string, record: any) => {
+          return record.settings.single ? 'Single' : 'Repeatable';
+        },
+      },
+      {
+        title: 'Documents',
+        key: 'documents',
+        render: (text, record) => (
+          <Link to={`/documents/by/type:${record.name.toLocaleLowerCase()}`} onClick={(e: any) => e.stopPropagation()}>
+            {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
+          </Link>
+        ),
+      },
+      {
+        title: '',
+        key: 'action',
+        align: 'right',
+        render: (text, record) => (
+          <span onClick={e => e.stopPropagation()}>
+            <Button
+              style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
+              onClick={(e: any) => {
+                this.props.history.push(`/schemas/settings/${record.id}`);
+              }}
+            >
+              <Icon type="setting" theme="filled" />
             </Button>
-          </Popconfirm>
-        </span>
-      )
-    }]
+            <Popconfirm
+              title="Are you sure?"
+              icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
+              onConfirm={() => record.remove()}
+            >
+              <Button style={{ paddingLeft: 8, paddingRight: 8 }}>
+                <Icon type="delete" theme="filled" />
+              </Button>
+            </Popconfirm>
+          </span>
+        ),
+      },
+    ];
   }
 
   get data(): IContentType[] {
     return ContentTypes.list;
   }
 
-  onCreateNewClick = (e: React.MouseEvent<HTMLElement>) => {
+  public onCreateNewClick = (e: React.MouseEvent<HTMLElement>) => {
     this.props.history.replace('/schemas/create');
-  }
+  };
 
-  onCloseDrawer = () => {
+  public onCloseDrawer = () => {
     if (this.formRef.current) {
       this.formRef.current.resetFields();
     }
     this.props.history.replace('/schemas/' + this.state.tab);
-  }
+  };
 
-  onTabChange = (tab: string) => {
+  public onTabChange = (tab: string) => {
     this.setState({ tab });
     this.props.history.replace('/schemas/' + tab);
-  }
+  };
 
-  onRouteCreate = () => {
+  public onRouteCreate = () => {
     if (this.state.visible === false) {
       this.setState({ visible: true, settingsId: null });
     }
 
     return null;
-  }
+  };
 
-  onRouteTabChange = (props: any) => {
+  public onRouteTabChange = (props: any) => {
     const parts = props.match.path.split('/');
     const tab = parts[parts.length - 1];
     if (tab !== this.state.tab) {
@@ -137,32 +137,34 @@ export class SchemaList extends React.Component<any> {
     }
 
     return this.onRouteDefault();
-  }
+  };
 
-  onRouteSettings = ({ match }: any) => {
+  public onRouteSettings = ({ match }: any) => {
     const settingsId = match.params.id;
     if (this.state.settingsId !== settingsId) {
       this.setState({ settingsId });
     }
     return this.onRouteCreate();
-  }
+  };
 
-  onRouteDefault = () => {
+  public onRouteDefault = () => {
     if (this.state.visible === true) {
       this.setState({ visible: false });
     }
 
     return null;
-  }
+  };
 
-  render() {
+  public render() {
     return (
       <Layout>
         <Toolbar>
           <div style={{ flex: 1 }}>
             <h2 style={{ margin: 0 }}>Schemas</h2>
           </div>
-          <Button type="primary" onClick={this.onCreateNewClick}>Create new</Button>
+          <Button type="primary" onClick={this.onCreateNewClick}>
+            Create new
+          </Button>
         </Toolbar>
 
         <Switch>
@@ -174,7 +176,6 @@ export class SchemaList extends React.Component<any> {
         </Switch>
 
         <Layout.Content style={{ padding: 32 }}>
-
           <Card
             tabList={tabs}
             bodyStyle={{ padding: 0 }}
@@ -203,7 +204,7 @@ export class SchemaList extends React.Component<any> {
               })}
               pagination={false}
               rowKey="id"
-              onRow={(record) => ({
+              onRow={record => ({
                 onClick: () => this.props.history.push(`/schemas/edit/${record.id}`),
               })}
             />
@@ -222,13 +223,17 @@ export class SchemaList extends React.Component<any> {
           <EditContentType
             ref={this.formRef}
             contentTypeId={this.state.settingsId}
-            item={this.state.settingsId ? this.data.find(n => n.id === this.state.settingsId) : {
-              isSlice: this.state.tab === 'slices',
-              isTemplate: this.state.tab === 'templates',
-            }}
+            item={
+              this.state.settingsId
+                ? this.data.find(n => n.id === this.state.settingsId)
+                : {
+                    isSlice: this.state.tab === 'slices',
+                    isTemplate: this.state.tab === 'templates',
+                  }
+            }
             contentTypes={this.data}
             onCancel={this.onCloseDrawer}
-            onSubmit={(contentType) => {
+            onSubmit={contentType => {
               this.onCloseDrawer();
               if (contentType) {
                 this.props.history.push(`/schemas/edit/${contentType.id}`);

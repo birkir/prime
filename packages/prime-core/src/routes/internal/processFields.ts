@@ -7,7 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import * as GraphQLJSON from 'graphql-type-json';
+import GraphQLJSON from 'graphql-type-json';
 import { defaultsDeep, get } from 'lodash';
 import { fields as allFields } from '../../fields';
 import { ContentType } from '../../models/ContentType';

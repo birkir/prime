@@ -1,7 +1,7 @@
 import { IPrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input, Select, Switch, Tooltip } from 'antd';
 import { get } from 'lodash';
-import * as React from 'react';
+import React from 'react';
 
 type IProps = IPrimeFieldProps & {
   options: {
