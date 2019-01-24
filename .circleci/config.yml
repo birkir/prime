@@ -8,6 +8,7 @@ jobs:
         environment:
           POSTGRES_USER: prime
           POSTGRES_DB: prime-tests
+          DATABASE_URL: 'postgres://prime@localhost:5432/prime-tests'
     steps:
       - checkout
       - run: yarn install --frozen-lockfile

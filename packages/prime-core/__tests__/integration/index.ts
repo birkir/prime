@@ -1,13 +1,9 @@
-// Set environment before initialize sequelize
-process.env.DATABASE_URL = 'postgresql://birkir@localhost:5432/prime-tests';
-
-/* tslint:disable */
-import { createTestClient } from 'apollo-server-testing';
+require('dotenv').config({ path: `${process.cwd()}/.env.test` }); // tslint:disable-line no-var-requires
 import { ForbiddenError } from 'apollo-server-core';
-import { sequelize } from '../../src/sequelize';
+import { createTestClient } from 'apollo-server-testing';
+import { acl, setupAcl } from '../../src/acl';
 import { User } from '../../src/models/User';
-import { setupAcl, acl } from '../../src/acl';
-/* tslint:enable */
+import { sequelize } from '../../src/sequelize';
 
 describe('@primecms/core', () => {
   describe('internal', () => {
