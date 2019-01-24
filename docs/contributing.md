@@ -37,6 +37,12 @@ Alternatively, prepend your PR title with `[discuss]` to have a conversation aro
 
 4.  GitHub now allows auto-squashing of commits in a PR, so no need to rebase your commits before final submission. All commit messages must follow conventional commit (angular).
 
+### Tests locally
+
+All tests should run locally by default.
+
+Integration tests for @primecms/core need env at `./packages/prime-core/.env.test`.
+
 ### Submission
 
 1.  From [Getting Started](#getting-started), your work should ideally be in its own feature branch.
