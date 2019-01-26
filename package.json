@@ -8,6 +8,7 @@
     "clean": "lerna run clean; rimraf {node_modules,packages/**/node_modules,yarn.lock}",
     "compile": "lerna run compile",
     "lint": "tslint ./packages/*/{src,__tests__}/*.{ts,tsx}",
+    "lint:ci": "tslint ./packages/*/{src,__tests__}/*.{ts,tsx} --formatters-dir node_modules/tslint-junit-formatter/formatters --format junit > ./reports/junit/tslint.xml",
     "publish": "lerna publish prerelease",
     "publish:canary": "lerna publish --canary",
     "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
