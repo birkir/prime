@@ -11,13 +11,18 @@ jobs:
     environment:
       DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
       SESSION_SECRET: 'very-secret'
-      JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
+      - run: yarn add tslint-junit-formatter jest-junit -DEW
       - run: yarn run lerna bootstrap
-      - run: yarn test
+      - run: mkdir -p ./reports/junit
+      - run: yarn lint --formatters-dir node_modules/tslint-junit-formatter/formatters --format junit > ./reports/junit/tslint.xml
+      - run: yarn compile
+      - run: yarn coverage:ci
+      - run: yarn test:prettier
       - run: yarn codecov
+      - run: cd packages; for x in */junit.xml; do cp $x "../reports/junit/${x%/junit.xml}.xml"; done; cd ..
       - store_test_results:
           path: reports/junit
       - store_artifacts:

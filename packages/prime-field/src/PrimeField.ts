@@ -92,6 +92,8 @@ export interface IRegisterField {
   SchemaDisplayComponent?: React.ReactNode;
 }
 
+const _Hello = 'world';
+
 /**
  * Abstract Field class for Prime CMS
  */

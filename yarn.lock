@@ -15079,6 +15079,11 @@ tslint-config-prettier@1.17.0:
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.17.0.tgz#946ed6117f98f3659a65848279156d87628c33dc"
   integrity sha512-NKWNkThwqE4Snn4Cm6SZB7lV5RMDDFsBwz6fWUkTxOKGjMx8ycOHnjIbhn7dZd5XmssW3CwqUjlANR6EhP9YQw==
 
+tslint-junit-formatter@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/tslint-junit-formatter/-/tslint-junit-formatter-5.1.0.tgz#afd2071466227aad41c044191bbd1c6f9ba7541e"
+  integrity sha1-r9IHFGYieq1BwEQZG70cb5unVB4=
+
 tslint@5.12.1:
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/tslint/-/tslint-5.12.1.tgz#8cec9d454cf8a1de9b0a26d7bdbad6de362e52c1"

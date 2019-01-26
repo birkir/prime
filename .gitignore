@@ -1,6 +1,7 @@
 lib/
 node_modules/
 coverage/
+reports/
 
 npm-debug.log
 lerna-debug.log
