@@ -11,9 +11,14 @@ jobs:
     environment:
       DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
       SESSION_SECRET: 'very-secret'
+      JEST_JUNIT_OUTPUT: 'reports/junit/js-test-results.xml'
     steps:
       - checkout
       - run: yarn install --frozen-lockfile
       - run: yarn run lerna bootstrap
       - run: yarn test
       - run: yarn codecov
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit

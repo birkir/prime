@@ -14,7 +14,7 @@
     "testonly": "lerna run testonly",
     "prettier": "prettier --write '**/*.{json,md,js,jsx,ts,tsx}'",
     "test:prettier": "prettier --list-different '**/*.{json,md,js,jsx,ts,tsx}'",
-    "coverage": "lerna run coverage",
+    "coverage": "lerna run coverage -- --ci --testResultsProcessor=jest-junit",
     "codecov": "codecov",
     "reset": "yarn clean; yarn install; yarn setup; yarn compile",
     "docs": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages"
@@ -68,6 +68,7 @@
     "codecov": "3.1.0",
     "husky": "1.3.1",
     "jest": "23.6.0",
+    "jest-junit": "6.1.0",
     "lerna": "3.10.6",
     "lint-staged": "8.1.0",
     "prettier": "1.15.3",

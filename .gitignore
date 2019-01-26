@@ -15,3 +15,4 @@ yarn-error.log
 packages/*/package-lock.json
 packages/*/*.tgz
 packages/prime-ui/build
+packages/*/junit.xml

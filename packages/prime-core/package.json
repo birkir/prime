@@ -25,9 +25,9 @@
     "compile": "rm -rf ./lib && tsc -p .",
     "dev": "DEBUG=prime* ts-node src",
     "dev:debug": "DEBUG=* ts-node src",
-    "test": "jest",
+    "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
     "@primecms/field": "^0.3.0-alpha.0",
