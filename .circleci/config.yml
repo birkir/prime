@@ -13,9 +13,6 @@ jobs:
       SESSION_SECRET: 'very-secret'
     steps:
       - checkout
-      - run:
-          name: prepare reports
-          command: yarn add tslint-junit-formatter jest-junit -DEW; mkdir -p ./reports/junit
       - run: yarn install --frozen-lockfile
       - run: yarn run lerna bootstrap
       - run: yarn lint:ci
@@ -24,7 +21,7 @@ jobs:
       - run: yarn test:prettier
       - run: yarn codecov
       - run:
-          name: copy artifacts
+          name: Copy artifacts
           command: cd packages; for x in */junit.xml; do mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
           when: always
       - store_test_results:
