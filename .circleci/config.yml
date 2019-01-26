@@ -22,9 +22,9 @@ jobs:
       - run: yarn coverage:ci
       - run: yarn test:prettier
       - run: yarn codecov
-  collect_artifacts:
-    steps:
-      - run: cd packages; for x in */junit.xml; do cp $x "../reports/junit/${x%/junit.xml}.xml"; done; cd ..
+      - run:
+          command: cd packages; for x in */junit.xml; do cp $x "../reports/junit/${x%/junit.xml}.xml"; done; cd ..
+          when: always
       - store_test_results:
           path: reports/junit
       - store_artifacts:
