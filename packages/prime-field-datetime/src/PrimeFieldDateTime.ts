@@ -23,10 +23,9 @@ export class PrimeFieldDateTime extends PrimeField {
       type: time ? GraphQLDateTime : GraphQLDate,
       resolve(root, rArgs, context, info) {
         if (!isEmpty(root[info.fieldName])) {
-          try {
-            return new Date(root[info.fieldName]);
-          } catch (e) {
-            return null;
+          const res = new Date(root[info.fieldName]);
+          if (res.toString() !== 'Invalid Date') {
+            return res;
           }
         }
 
