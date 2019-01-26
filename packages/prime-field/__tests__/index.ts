@@ -18,14 +18,14 @@ class PrimeFieldTest extends PrimeField {
 
 describe('PrimeField', () => {
   it('should have PrimeField export', () => {
-    expect(typeof PrimeField).toBe('string');
+    expect(typeof PrimeField).toBe('function');
   });
 
   it('should return same input for processInput', () => {
     const test = new PrimeFieldTest();
 
     const input = 1;
-    expect(test.processInput(input, {} as any)).toBe(2);
+    expect(test.processInput(input, {} as any)).toBe(input);
   });
 
   it('should return same output for processOutput', () => {
