@@ -30,6 +30,7 @@
     "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
+    "@accounts/typeorm": "0.10.0",
     "@primecms/field": "^0.3.0-alpha.0",
     "@primecms/field-asset": "^0.3.0-alpha.0",
     "@primecms/field-boolean": "^0.3.0-alpha.0",
@@ -46,6 +47,7 @@
     "arg": "^3.0.0",
     "bcrypt": "3.0.2",
     "body-parser": "1.18.3",
+    "class-validator": "0.9.1",
     "connect-session-sequelize": "6.0.0",
     "cookies": "^0.7.3",
     "cors": "2.8.5",
@@ -69,6 +71,7 @@
     "reflect-metadata": "0.1.12",
     "sequelize": "4.41.0",
     "sequelize-typescript": "0.6.7-beta.0",
+    "typeorm": "0.2.12",
     "uuid": "3.3.2",
     "which-pm": "^1.1.0"
   },
