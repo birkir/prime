@@ -21,9 +21,9 @@
     "precompile": "yarn clean",
     "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
     "prepublishOnly": "yarn compile",
-    "test": "jest",
+    "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "yarn testonly --coverage"
   },
   "jest": {
     "preset": "ts-jest"

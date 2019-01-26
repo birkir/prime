@@ -15,5 +15,16 @@ jobs:
       - checkout
       - run: yarn install --frozen-lockfile
       - run: yarn run lerna bootstrap
-      - run: yarn test
+      - run: yarn lint:ci
+      - run: yarn compile
+      - run: yarn coverage:ci
+      - run: yarn test:prettier
       - run: yarn codecov
+      - run:
+          name: Copy artifacts
+          command: cd packages; for x in */junit.xml; do mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
+          when: always
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
