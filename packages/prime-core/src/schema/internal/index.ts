@@ -3,12 +3,13 @@ import { PubSub } from 'apollo-server-express';
 import { isNumber, omitBy } from 'lodash';
 import { Connection } from 'typeorm';
 import { buildTypeDefsAndResolvers } from '../../utils/build-resolvers/buildTypeDefsAndResolvers';
+import { ReleaseResolver } from './resolvers/ReleaseResolver';
 import { WebhookResolver } from './resolvers/WebhookResolver';
 export const pubSub = new PubSub();
 
 export const createInternal = async (connection: Connection) => {
   const schema = await buildTypeDefsAndResolvers({
-    resolvers: [WebhookResolver],
+    resolvers: [WebhookResolver, ReleaseResolver],
     pubSub,
   });
 

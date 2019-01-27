@@ -1,4 +1,5 @@
 import { User } from '@accounts/typeorm';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Column,
   CreateDateColumn,
@@ -11,11 +12,14 @@ import {
 import { Document } from './Document';
 
 @Entity()
+@ObjectType()
 export class Release {
   @PrimaryGeneratedColumn('uuid')
+  @Field(type => ID)
   public id: any;
 
   @Column()
+  @Field()
   public name: string;
 
   @Column({ nullable: true })

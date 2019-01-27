@@ -6,6 +6,7 @@
     "missing-jsdoc": false,
     "no-relative-imports": false,
     "typedef": false,
+    "interface-name": false,
     "no-unsafe-any": false,
     "quotemark": [true, "single", "jsx-double"],
     "completed-docs": false,

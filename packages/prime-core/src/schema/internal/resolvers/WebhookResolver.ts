@@ -18,10 +18,10 @@ import { getRepository, Repository } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Webhook } from '../../../entities/Webhook';
+import { WebhookCall } from '../../../entities/WebhookCall';
 import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
 import { WebhookRepository } from '../repositories/WebhookRepository';
 import { User } from '../types/User';
-import { WebhookCall } from '../types/WebhookCall';
 import { WebhookInput } from '../types/WebhookInput';
 
 const WebhookConnection = createConnectionType(Webhook);
@@ -44,12 +44,7 @@ export class WebhookResolver {
   @InjectRepository(WebhookCall)
   private readonly webhookCallRepository: Repository<WebhookCall>;
 
-  @Query(returns => String)
-  public test() {
-    return '1';
-  }
-
-  @Query(returns => Webhook, { nullable: true })
+  @Query(returns => Webhook, { nullable: true, description: 'Get Webhook by ID' })
   public Webhook(
     @Arg('id', type => ID) id: string,
     @Ctx() context: Context,
@@ -58,12 +53,15 @@ export class WebhookResolver {
     return this.webhookRepository.loadOne(id);
   }
 
-  @Subscription({ topics: 'WEBHOOK_ADDED' })
+  @Subscription({
+    topics: 'WEBHOOK_ADDED',
+    description: 'Get latest Webhook as a subscription',
+  })
   public webhookAdded(@Root() payload: Webhook): Webhook {
     return payload;
   }
 
-  @Query(returns => WebhookConnection)
+  @Query(returns => WebhookConnection, { description: 'Get many Webhooks' })
   public allWebhooks(
     @Args() args: ConnectionArgs,
     @Arg('order', type => WebhookOrder, { defaultValue: 0 }) orderBy: string
@@ -75,7 +73,7 @@ export class WebhookResolver {
     });
   }
 
-  @Mutation(returns => Webhook)
+  @Mutation(returns => Webhook, { description: 'Create Webhook' })
   public async createWebhook(
     @Arg('input') input: WebhookInput,
     @Ctx() context: Context
@@ -85,7 +83,7 @@ export class WebhookResolver {
     return webhook;
   }
 
-  @Mutation(returns => Webhook)
+  @Mutation(returns => Webhook, { description: 'Update Webhook by ID' })
   public async updateWebhook(
     @Arg('id') webhookId: string,
     @Arg('input') input: WebhookInput,
@@ -95,7 +93,7 @@ export class WebhookResolver {
     return this.webhookRepository.merge(webhook, input);
   }
 
-  @Mutation(returns => Boolean)
+  @Mutation(returns => Boolean, { description: 'Remove Webhook by ID' })
   public async removeWebhook(
     @Arg('id') webhookId: string,
     @Ctx() context: Context
@@ -104,7 +102,7 @@ export class WebhookResolver {
     return Boolean(this.webhookRepository.remove(webhook));
   }
 
-  @FieldResolver(returns => [WebhookCall])
+  @FieldResolver(returns => [WebhookCall], { description: 'Get many Webhook calls' })
   public calls(@Root() webhook: Webhook): Promise<WebhookCall[]> {
     return this.webhookCallRepository.find({
       cache: 1000,
@@ -112,7 +110,7 @@ export class WebhookResolver {
     });
   }
 
-  @FieldResolver(returns => User)
+  @FieldResolver(returns => User, { description: 'Get Webhook User' })
   public user(@Root() webhook: Webhook): Promise<User> {
     return getRepository(User).findOneOrFail({
       cache: 1000,
