@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { pubSub } from '../schema/internal';
+import { pubSub } from '../modules/internal';
 import { WebhookCall } from './WebhookCall';
 
 @Entity()

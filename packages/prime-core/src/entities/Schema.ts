@@ -1,6 +1,8 @@
 import { User } from '@accounts/typeorm';
 import { Matches } from 'class-validator';
+import GraphQLJSON from 'graphql-type-json';
 import { startCase } from 'lodash';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   BeforeInsert,
   Column,
@@ -22,37 +24,46 @@ export enum SchemaVariant {
 }
 
 @Entity()
+@ObjectType()
 export class Schema {
   @PrimaryGeneratedColumn('uuid')
+  @Field(type => ID)
   public id: string;
 
   @Column({ unique: true })
   @Matches(/^[A-Za-z][A-Za-z0-9]+$/, { message: 'not in alphanumeric' })
+  @Field()
   public name: string;
 
   @Column()
+  @Field()
   public title: string;
 
   @Column('enum', { enum: SchemaVariant, default: SchemaVariant.Default })
+  @Field(type => SchemaVariant)
   public variant: SchemaVariant; // was "isSlice" and "isTemplate"
 
   @Column('jsonb', { default: [] })
+  @Field(type => GraphQLJSON)
   public groups: any;
 
   @Column('jsonb', { default: {} })
+  @Field(type => GraphQLJSON)
   public settings: any;
+
+  @CreateDateColumn()
+  @Field()
+  public createdAt: Date;
+
+  @UpdateDateColumn()
+  @Field()
+  public updatedAt: Date;
 
   @OneToMany(type => Schema, schema => schema.documents)
   public documents: Document[];
 
   @OneToMany(type => SchemaField, field => field.schema)
   public fields: SchemaField[];
-
-  @CreateDateColumn()
-  public createdAt: Date;
-
-  @UpdateDateColumn()
-  public updatedAt: Date;
 
   @ManyToOne(type => User)
   public user: User;
@@ -76,7 +87,4 @@ export class Schema {
       this.name = name;
     }
   }
-
-  // @BelongsTo(() => User, 'userId')
-  // public user: User;
 }

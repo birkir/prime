@@ -4,7 +4,7 @@ import http from 'http';
 import { ResolverData, useContainer as useTypeContainer } from 'type-graphql';
 import { Container } from 'typedi';
 import { useContainer } from 'typeorm';
-import { createSchema } from './schema';
+import { createModules } from './modules';
 import { Context } from './types/Context';
 import { ServerConfig } from './types/ServerConfig';
 const debug = require('debug')('prime'); // tslint:disable-line no-var-requires
@@ -15,7 +15,7 @@ useTypeContainer<Context>(({ context }) => context.container);
 export const createServer = async ({ port, connection }: ServerConfig) => {
   const app = express();
   const server = http.createServer(app);
-  const { schema, context, subscriptions } = await createSchema(connection);
+  const { schema, context, subscriptions } = await createModules(connection);
 
   const apollo = new ApolloServer({
     playground: true,

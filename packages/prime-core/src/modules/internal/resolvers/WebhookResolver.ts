@@ -34,7 +34,7 @@ enum WebhookOrder {
 }
 
 registerEnumType(WebhookOrder, {
-  name: 'WebhookOrderStuff',
+  name: 'WebhookConnectionOrder',
 });
 
 @Resolver(of => Webhook)

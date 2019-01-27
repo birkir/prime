@@ -29,7 +29,7 @@ const noUndefinedTypeOf = (item, key) => {
 
 export const createInternal = async (connection: Connection) => {
   const schema = await buildTypeDefsAndResolvers({
-    resolvers: [WebhookResolver, ReleaseResolver, SchemaResolver, PrimeResolver],
+    resolvers: [PrimeResolver, WebhookResolver, ReleaseResolver, SchemaResolver],
     pubSub,
   });
 

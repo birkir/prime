@@ -4,7 +4,7 @@ import { Connection } from 'typeorm';
 import { createAccounts } from './accounts';
 import { createInternal } from './internal';
 
-export const createSchema = async (connection: Connection) => {
+export const createModules = async (connection: Connection) => {
   const accounts = await createAccounts(connection);
   const internal = await createInternal(connection);
   // const external = await createExternal();
