@@ -2,7 +2,6 @@ import { ArgsType, Field, Int, ObjectType } from 'type-graphql';
 import { ObjectType as EntityType } from 'typeorm';
 import { PageInfo } from '../types/PageInfo';
 
-// tslint:disable-next-line
 @ArgsType()
 export class ConnectionArgs {
   @Field(type => Int, { nullable: true })
@@ -19,9 +18,9 @@ export class ConnectionArgs {
 }
 
 export const createConnectionType = <Entity>(model: EntityType<Entity>) => {
-  // tslint:disable-next-line
-  @ObjectType({ description: 'foo' })
-  class ConnectionNode {
+  // tslint:disable-next-line max-classes-per-file
+  @ObjectType(`${model.name}ConnectionEdge`)
+  class ConnectionEdge {
     @Field(type => model)
     public node: Entity;
 
@@ -29,16 +28,19 @@ export const createConnectionType = <Entity>(model: EntityType<Entity>) => {
     public cursor: string;
   }
 
-  // tslint:disable-next-line
-  @ObjectType({ description: 'bleh' })
+  // tslint:disable-next-line max-classes-per-file
+  @ObjectType(`${model.name}Connection`)
   class Connection {
     public static args = ConnectionArgs;
 
-    @Field(type => [ConnectionNode])
-    public edges: ConnectionNode;
+    @Field(type => [ConnectionEdge])
+    public edges: ConnectionEdge;
 
     @Field(type => PageInfo)
     public pageInfo: PageInfo;
+
+    @Field({ nullable: true })
+    public totalCount: number;
   }
 
   return Connection;

@@ -5,7 +5,7 @@ import { AccountsTypeorm } from '@accounts/typeorm';
 import { Connection } from 'typeorm';
 
 export const createAccounts = async (connection: Connection) => {
-  const tokenSecret = process.env.ACCOUNTS_SECRET || 'ELO';
+  const tokenSecret = process.env.ACCOUNTS_SECRET || 'not very secret secret';
   const db = new AccountsTypeorm({ connection });
   const password = new AccountsPassword();
   const accountsServer = new AccountsServer(

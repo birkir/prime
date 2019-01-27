@@ -23,18 +23,23 @@ export class Release {
   public name: string;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
   public description: string;
 
   @Column({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
   public scheduledAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
+  @Field({ nullable: true })
   public publishedAt: Date;
 
   @CreateDateColumn()
+  @Field()
   public createdAt: Date;
 
   @UpdateDateColumn()
+  @Field()
   public updatedAt: Date;
 
   @OneToMany(type => Document, document => document.release)

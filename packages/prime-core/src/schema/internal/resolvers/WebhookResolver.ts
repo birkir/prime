@@ -62,15 +62,19 @@ export class WebhookResolver {
   }
 
   @Query(returns => WebhookConnection, { description: 'Get many Webhooks' })
-  public allWebhooks(
+  public async allWebhooks(
     @Args() args: ConnectionArgs,
     @Arg('order', type => WebhookOrder, { defaultValue: 0 }) orderBy: string
   ) {
     const [sort, order]: any = orderBy.split('_');
-    return new EntityConnection(args, {
+    const connection = await new EntityConnection(args, {
       repository: this.webhookRepository,
       sortOptions: [{ sort, order }],
     });
+    return {
+      edges: await connection.edges,
+      totalCount: await this.webhookRepository.count(),
+    };
   }
 
   @Mutation(returns => Webhook, { description: 'Create Webhook' })
@@ -85,21 +89,21 @@ export class WebhookResolver {
 
   @Mutation(returns => Webhook, { description: 'Update Webhook by ID' })
   public async updateWebhook(
-    @Arg('id') webhookId: string,
+    @Arg('id', type => ID) id: string,
     @Arg('input') input: WebhookInput,
     @Ctx() context: Context
   ): Promise<Webhook> {
-    const webhook = await this.webhookRepository.findOneOrFail(webhookId);
-    return this.webhookRepository.merge(webhook, input);
+    const entity = await this.webhookRepository.findOneOrFail(id);
+    return this.webhookRepository.merge(entity, input);
   }
 
   @Mutation(returns => Boolean, { description: 'Remove Webhook by ID' })
   public async removeWebhook(
-    @Arg('id') webhookId: string,
+    @Arg('id', type => ID) id: string,
     @Ctx() context: Context
   ): Promise<boolean> {
-    const webhook = await this.webhookRepository.findOneOrFail(webhookId);
-    return Boolean(this.webhookRepository.remove(webhook));
+    const entity = await this.webhookRepository.findOneOrFail(id);
+    return Boolean(this.webhookRepository.remove(entity));
   }
 
   @FieldResolver(returns => [WebhookCall], { description: 'Get many Webhook calls' })

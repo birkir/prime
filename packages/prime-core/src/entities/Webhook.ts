@@ -22,15 +22,15 @@ export class Webhook {
   public id: string;
 
   @Column()
-  @Field(type => String)
+  @Field()
   public name: string;
 
   @Column()
-  @Field(type => String)
+  @Field()
   public url: string;
 
   @Column({ default: 'POST' })
-  @Field(type => String)
+  @Field()
   public method: string;
 
   @Column({ type: 'jsonb', default: {} })

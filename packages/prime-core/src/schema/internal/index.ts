@@ -1,31 +1,43 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { PubSub } from 'apollo-server-express';
-import { isNumber, omitBy } from 'lodash';
+import { isNumber, mapValues, omitBy } from 'lodash';
 import { Connection } from 'typeorm';
 import { buildTypeDefsAndResolvers } from '../../utils/build-resolvers/buildTypeDefsAndResolvers';
+import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
+import { SchemaResolver } from './resolvers/SchemaResolver';
 import { WebhookResolver } from './resolvers/WebhookResolver';
+
 export const pubSub = new PubSub();
+
+const noEnumsOrInheritedModels = (item: any, key: string) => {
+  if (key === 'User') {
+    return true;
+  }
+  if (typeof item === 'object' && Object.values(item).every(isNumber)) {
+    return true;
+  }
+  return false;
+};
+
+const noUndefinedTypeOf = (item, key) => {
+  if (typeof item.__isTypeOf === 'undefined') {
+    delete item.__isTypeOf;
+  }
+  return item;
+};
 
 export const createInternal = async (connection: Connection) => {
   const schema = await buildTypeDefsAndResolvers({
-    resolvers: [WebhookResolver, ReleaseResolver],
+    resolvers: [WebhookResolver, ReleaseResolver, SchemaResolver, PrimeResolver],
     pubSub,
   });
 
   return new GraphQLModule({
-    name: 'Prime.Internal',
+    name: 'prime-internal',
     typeDefs: () => [schema.typeDefs],
-    resolvers: ({ config = {} }) =>
-      omitBy(schema.resolvers, (item: any, key: string) => {
-        if (key === 'User') {
-          return true;
-        }
-        if (typeof item === 'object' && Object.values(item).every(isNumber)) {
-          return true;
-        }
-        return false;
-      }),
+    resolvers: () =>
+      mapValues(omitBy(schema.resolvers, noEnumsOrInheritedModels), noUndefinedTypeOf),
     configRequired: false,
   });
 };

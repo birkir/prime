@@ -15,7 +15,7 @@ import {
 import { Document } from './Document';
 import { SchemaField } from './SchemaField';
 
-enum SchemaVariant {
+export enum SchemaVariant {
   Default,
   Slice,
   Template,
