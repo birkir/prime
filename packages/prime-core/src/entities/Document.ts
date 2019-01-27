@@ -1,3 +1,4 @@
+import { User } from '@accounts/typeorm';
 import {
   BeforeInsert,
   Column,
@@ -11,7 +12,6 @@ import {
 import { getUniqueHashId } from '../utils/getUniqueHashId';
 import { Release } from './Release';
 import { Schema } from './Schema';
-import { User } from './User';
 
 @Entity()
 export class Document {

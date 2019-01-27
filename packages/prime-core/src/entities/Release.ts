@@ -1,3 +1,4 @@
+import { User } from '@accounts/typeorm';
 import {
   Column,
   CreateDateColumn,
@@ -8,7 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Document } from './Document';
-import { User } from './User';
 
 @Entity()
 export class Release {

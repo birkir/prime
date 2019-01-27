@@ -1,3 +1,4 @@
+import { User } from '@accounts/typeorm';
 import { Matches } from 'class-validator';
 import { startCase } from 'lodash';
 import {
@@ -13,7 +14,6 @@ import {
 } from 'typeorm';
 import { Document } from './Document';
 import { SchemaField } from './SchemaField';
-import { User } from './User';
 
 enum SchemaVariant {
   Default,

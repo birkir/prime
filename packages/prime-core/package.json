@@ -30,7 +30,12 @@
     "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
+    "@accounts/database-manager": "0.10.0",
+    "@accounts/graphql-api": "0.9.2",
+    "@accounts/password": "0.9.2",
+    "@accounts/server": "0.10.0",
     "@accounts/typeorm": "0.10.0",
+    "@graphql-modules/core": "0.3.0",
     "@primecms/field": "^0.3.0-alpha.0",
     "@primecms/field-asset": "^0.3.0-alpha.0",
     "@primecms/field-boolean": "^0.3.0-alpha.0",
@@ -71,7 +76,12 @@
     "reflect-metadata": "0.1.12",
     "sequelize": "4.41.0",
     "sequelize-typescript": "0.6.7-beta.0",
+    "type-graphql": "0.16.0",
+    "typedi": "0.8.0",
     "typeorm": "0.2.12",
+    "typeorm-cursor-connection": "0.5.2",
+    "typeorm-loader": "0.0.1-0.5",
+    "typeorm-typedi-extensions": "0.2.3",
     "uuid": "3.3.2",
     "which-pm": "^1.1.0"
   },

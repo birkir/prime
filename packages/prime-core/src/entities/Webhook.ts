@@ -1,4 +1,8 @@
+import { User } from '@accounts/typeorm';
+import GraphQLJSON from 'graphql-type-json';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,30 +11,38 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { WebhookCall } from '../models/WebhookCall';
-import { User } from './User';
+import { pubSub } from '../schema/internal';
+import { WebhookCall } from './WebhookCall';
 
 @Entity()
+@ObjectType()
 export class Webhook {
   @PrimaryGeneratedColumn('uuid')
+  @Field(type => ID)
   public id: string;
 
   @Column()
+  @Field(type => String)
   public name: string;
 
   @Column()
+  @Field(type => String)
   public url: string;
 
   @Column({ default: 'POST' })
+  @Field(type => String)
   public method: string;
 
   @Column({ type: 'jsonb', default: {} })
+  @Field(type => GraphQLJSON)
   public options: any;
 
   @CreateDateColumn()
+  @Field(type => Date)
   public createdAt: Date;
 
   @UpdateDateColumn()
+  @Field(type => Date)
   public updatedAt: Date;
 
   @ManyToOne(type => User)
@@ -38,4 +50,9 @@ export class Webhook {
 
   @OneToMany(type => WebhookCall, call => call.webhook)
   public calls: WebhookCall[];
+
+  @AfterInsert()
+  public notify() {
+    pubSub.publish('WEBHOOK_ADDED', this);
+  }
 }
