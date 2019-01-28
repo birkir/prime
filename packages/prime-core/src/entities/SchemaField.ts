@@ -1,6 +1,6 @@
-import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { GraphQLJSON } from '../types/GraphQLJSON';
 import { Schema } from './Schema';
 
 @Entity()

@@ -1,10 +1,13 @@
 // tslint:disable non-literal-require no-console
+import debug from 'debug';
 import fs from 'fs';
 import path from 'path';
-import { primeConfig } from './utils/primeConfig';
+import { config } from './config';
+
+const log = debug('prime:fields');
 
 // Resolve fields
-export const fields = (primeConfig.fields || [])
+export const fields = (config.fields || [])
   .map((moduleName: string) => {
     try {
       const instance = new (require(moduleName)).default();
@@ -37,8 +40,7 @@ export const fields = (primeConfig.fields || [])
 
       return instance;
     } catch (err) {
-      console.error('ERROR: Could not resolve field module', `"${moduleName}"`);
-      console.error(err);
+      log('Could not resolve field module %o', moduleName);
     }
 
     return null;

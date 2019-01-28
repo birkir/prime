@@ -1,8 +1,7 @@
 import { User } from '@accounts/typeorm';
 import { Matches } from 'class-validator';
-import GraphQLJSON from 'graphql-type-json';
 import { startCase } from 'lodash';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
   BeforeInsert,
   Column,
@@ -14,6 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { GraphQLJSON } from '../types/GraphQLJSON';
 import { Document } from './Document';
 import { SchemaField } from './SchemaField';
 
@@ -22,6 +22,10 @@ export enum SchemaVariant {
   Slice,
   Template,
 }
+
+registerEnumType(SchemaVariant, {
+  name: 'SchemaVariant',
+});
 
 @Entity()
 @ObjectType()

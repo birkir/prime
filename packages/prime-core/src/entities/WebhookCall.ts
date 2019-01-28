@@ -1,6 +1,6 @@
-import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { GraphQLJSON } from '../types/GraphQLJSON';
 import { Webhook } from './Webhook';
 
 @Entity()

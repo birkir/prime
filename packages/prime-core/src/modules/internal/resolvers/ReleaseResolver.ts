@@ -76,7 +76,7 @@ export class ReleaseResolver {
 
   // @todo missing implementation
   @Mutation(returns => Boolean, { description: 'Publish Release by ID' })
-  public async publishContentRelease() {
+  public async publishRelease() {
     return false;
   }
 

@@ -2,7 +2,7 @@ import { defaultsDeep, get } from 'lodash';
 import { getRepository, In } from 'typeorm';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
 import { SchemaField } from '../../../entities/SchemaField';
-import { fields as allFields } from '../../../fields';
+import { fields as allFields } from '../../../utils/fields';
 
 export const getSchemaFields = async (schemaId: string, inheritance = true) => {
   const schemaRepo = getRepository(Schema);

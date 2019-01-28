@@ -3,10 +3,12 @@ import { PubSub } from 'apollo-server-express';
 import { isNumber, mapValues, omitBy } from 'lodash';
 import { Connection } from 'typeorm';
 import { buildTypeDefsAndResolvers } from '../../utils/build-resolvers/buildTypeDefsAndResolvers';
+import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
 import { SchemaResolver } from './resolvers/SchemaResolver';
 import { WebhookResolver } from './resolvers/WebhookResolver';
+import { authChecker } from './utils/authChecker';
 
 export const pubSub = new PubSub();
 
@@ -29,8 +31,9 @@ const noUndefinedTypeOf = (item, key) => {
 
 export const createInternal = async (connection: Connection) => {
   const schema = await buildTypeDefsAndResolvers({
-    resolvers: [PrimeResolver, WebhookResolver, ReleaseResolver, SchemaResolver],
+    resolvers: [PrimeResolver, WebhookResolver, ReleaseResolver, SchemaResolver, DocumentResolver],
     pubSub,
+    authChecker,
   });
 
   return new GraphQLModule({

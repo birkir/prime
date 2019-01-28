@@ -3,6 +3,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   FieldResolver,
   ID,
@@ -44,6 +45,7 @@ export class WebhookResolver {
   @InjectRepository(WebhookCall)
   private readonly webhookCallRepository: Repository<WebhookCall>;
 
+  @Authorized()
   @Query(returns => Webhook, { nullable: true, description: 'Get Webhook by ID' })
   public Webhook(
     @Arg('id', type => ID) id: string,

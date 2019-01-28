@@ -1,28 +1,33 @@
 import DataLoader from 'dataloader';
 import { Service } from 'typedi';
-import { FindConditions, In, ObjectLiteral, Repository } from 'typeorm';
+import { FindConditions, ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 import { FindOptionsUtils } from 'typeorm/find-options/FindOptionsUtils';
 
 @Service()
 export class DataLoaderRepository<T> extends Repository<T> {
   public cache = new Map();
 
-  public getLoader(where?: FindConditions<T> | ObjectLiteral | string) {
-    const qb = this.createQueryBuilder();
-    FindOptionsUtils.applyOptionsToQueryBuilder(qb, { where });
-    qb.whereInIds([null]);
-    const hash = Buffer.from(qb.getSql(), 'utf8').toString('hex');
+  public getLoader(
+    qb: SelectQueryBuilder<T>,
+    keyMatcher?: (qb: SelectQueryBuilder<T>, keys: string[]) => void,
+    keyName: string = 'id'
+  ) {
+    const hashKey = qb.getQuery() + JSON.stringify(qb.getParameters());
+    const hash = Buffer.from(hashKey, 'utf8').toString('hex');
 
     if (!this.cache.has(hash)) {
       this.cache.set(
         hash,
         new DataLoader(async keys => {
-          const results = await this.find({
-            where: {
-              id: In(keys),
-            },
-          });
-          return keys.map(key => results.find((r: any) => r.id === key));
+          const b = qb.clone();
+
+          if (keyMatcher) {
+            keyMatcher(b, keys as any);
+          } else {
+            b.andWhereInIds(keys);
+          }
+          const results = await b.getMany();
+          return keys.map(key => results.find((r: any) => r[keyName] === key));
         })
       );
     }
@@ -34,7 +39,8 @@ export class DataLoaderRepository<T> extends Repository<T> {
     if (['null', 'undefined'].indexOf(typeof id) >= 0) {
       return Promise.resolve(null);
     }
-
-    return this.getLoader(where).load(id.toLowerCase());
+    const qb = this.createQueryBuilder();
+    FindOptionsUtils.applyOptionsToQueryBuilder(qb, { where });
+    return this.getLoader(qb).load(id.toLowerCase());
   }
 }

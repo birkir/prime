@@ -1,6 +1,6 @@
-import GraphQLJSON from 'graphql-type-json';
 import { Field, InputType } from 'type-graphql';
 import { SchemaVariant } from '../../../entities/Schema';
+import { GraphQLJSON } from './../../../types/GraphQLJSON';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
 
 @InputType()
