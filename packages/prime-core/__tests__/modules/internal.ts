@@ -1,11 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
-import { useContainer as useTypeContainer } from 'type-graphql';
 import { Container } from 'typedi';
 import { Connection, createConnection, useContainer } from 'typeorm';
 import { createInternal } from '../../src/modules/internal';
 
 useContainer(Container);
-useTypeContainer(({ context }: any) => context.container);
 
 describe('InternalModule', () => {
   let connection: Connection;
