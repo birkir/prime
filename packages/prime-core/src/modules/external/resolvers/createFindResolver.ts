@@ -1,7 +1,7 @@
 import { getRepository, Raw } from 'typeorm';
 import { Document } from '../../../entities/Document';
 import { Schema } from '../../../entities/Schema';
-import { DocumentTransformer } from '../../../utils/documentTransformer';
+import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 
 const getDefaultLocale = () => 'en';
 
