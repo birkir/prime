@@ -1,10 +1,9 @@
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GraphQLJSON } from '../types/GraphQLJSON';
 import { Schema } from './Schema';
 
 @Entity()
-@InputType('SchemaFieldInput')
 @ObjectType()
 export class SchemaField {
   @PrimaryGeneratedColumn('uuid')

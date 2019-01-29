@@ -7,11 +7,6 @@ import { createInternal } from './internal';
 export const createModules = async (connection: Connection) => {
   const accounts = await createAccounts(connection);
   const internal = await createInternal(connection);
-  // const external = await createExternal();
-
-  // Fixes postgres timezone bug
-  (connection.driver as any).postgres.defaults.parseInputDatesAsUTC = true;
-  (connection.driver as any).postgres.types.setTypeParser(1114, (str: any) => new Date(str + 'Z'));
 
   return new GraphQLModule({
     imports: () => [internal, accounts],

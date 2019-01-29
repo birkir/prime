@@ -57,7 +57,7 @@ export class Document {
   public schema = Schema;
 
   @Column({ nullable: true })
-  public releaseId: string;
+  public releaseId?: string;
 
   @ManyToOne(type => Release, release => release.documents, { cascade: true, onDelete: 'SET NULL' })
   public release = Release;

@@ -1,25 +1,25 @@
 import { Field, InputType } from 'type-graphql';
 import { SchemaVariant } from '../../../entities/Schema';
 import { GraphQLJSON } from './../../../types/GraphQLJSON';
-import { SchemaFieldGroup } from './SchemaFieldGroup';
+import { SchemaFieldGroupInput } from './SchemaFieldGroupInput';
 
 @InputType()
 export class SchemaInput {
-  @Field()
+  @Field({ nullable: true })
   public name: string;
 
-  @Field()
+  @Field({ nullable: true })
   public title: string;
 
   @Field({ nullable: true })
   public description?: string;
 
-  @Field(type => SchemaVariant)
+  @Field(type => SchemaVariant, { nullable: true })
   public variant: SchemaVariant;
 
   @Field(type => GraphQLJSON, { nullable: true })
   public settings: any;
 
-  @Field(type => [SchemaFieldGroup], { nullable: true })
-  public fields: SchemaFieldGroup;
+  @Field(type => [SchemaFieldGroupInput], { nullable: true })
+  public fields: SchemaFieldGroupInput;
 }

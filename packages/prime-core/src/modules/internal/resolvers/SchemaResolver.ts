@@ -37,10 +37,10 @@ export class SchemaResolver {
   ): Promise<Schema> {
     input.variant = SchemaVariant[(input.variant as unknown) as string];
     const entity = this.schemaRepository.create(input);
+    await this.schemaRepository.save(entity);
     if (input.fields) {
       await setSchemaFields(entity.id, input.fields);
     }
-    await this.schemaRepository.save(entity);
     return entity;
   }
 
@@ -50,6 +50,9 @@ export class SchemaResolver {
     @Arg('input', type => SchemaInput) input: SchemaInput & { fields: any }
   ): Promise<Schema> {
     const entity = await this.schemaRepository.findOneOrFail(id);
+    if (input.fields) {
+      await setSchemaFields(entity.id, input.fields);
+    }
     input.variant = parseEnum(SchemaVariant, input.variant);
     return this.schemaRepository.merge(entity, input);
   }

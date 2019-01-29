@@ -10,7 +10,8 @@ export class DataLoaderRepository<T> extends Repository<T> {
   public getLoader(
     qb: SelectQueryBuilder<T>,
     keyMatcher?: (qb: SelectQueryBuilder<T>, keys: string[]) => void,
-    keyName: string = 'id'
+    keyName: string = 'id',
+    raw: boolean = false
   ) {
     const hashKey = qb.getQuery() + JSON.stringify(qb.getParameters());
     const hash = Buffer.from(hashKey, 'utf8').toString('hex');
@@ -26,8 +27,11 @@ export class DataLoaderRepository<T> extends Repository<T> {
           } else {
             b.andWhereInIds(keys);
           }
-          const results = await b.getMany();
-          return keys.map(key => results.find((r: any) => r[keyName] === key));
+          const results = await b.getRawAndEntities();
+          if (raw) {
+            results.raw.forEach((r, i) => Object.assign(results.entities[i], r));
+          }
+          return keys.map(key => results.entities.find((r: any) => r[keyName] === key));
         })
       );
     }

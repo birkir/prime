@@ -38,7 +38,7 @@
     "field",
     "base"
   ],
-  "peerDependencies": {
+  "dependencies": {
     "antd": "^3.0.0",
     "apollo-boost": "^0.1.20",
     "graphql": "^14.0.0",

@@ -1,16 +1,31 @@
-import { Arg, Args, Ctx, ID, Mutation, Query, registerEnumType, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Ctx,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  registerEnumType,
+  Resolver,
+  Root,
+} from 'type-graphql';
+import { IsNull, Not } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Context } from '../../../types/Context';
+import { GraphQLJSON } from '../../../types/GraphQLJSON';
 import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { DocumentInput } from '../types/DocumentInput';
+import { DocumentVersion } from '../types/DocumentVersion';
+import { DocumentTransformer } from '../utils/DocumentTransformer';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const DocumentConnection = createConnectionType(Document);
 
-enum DocumentConnectionOrder {
+enum DocumentOrder {
   updatedAt_ASC,
   updatedAt_DESC,
   createdAt_ASC,
@@ -29,12 +44,13 @@ const sortOptions = orders =>
     return { sort, order };
   });
 
-registerEnumType(DocumentConnectionOrder, { name: 'DocumentConnectionOrder' });
+registerEnumType(DocumentOrder, { name: 'DocumentConnectionOrder' });
 
 @Resolver(of => Document)
 export class DocumentResolver {
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
+  private readonly documentTransformer: DocumentTransformer = new DocumentTransformer();
 
   @Query(returns => Document, { nullable: true })
   public Document(
@@ -43,25 +59,21 @@ export class DocumentResolver {
     @Arg('locale', { nullable: true }) locale: string,
     @Arg('releaseId', type => ID, { nullable: true }) releaseId: string
   ) {
-    if (id.length === 36) {
-      return this.documentRepository.loadOne(id);
-    } else {
-      return this.documentRepository.loadOneByDocumentId(id, {
-        releaseId,
-        locale,
-      });
-    }
+    const key = id.length === 36 ? 'id' : 'documentId';
+    return this.documentRepository.loadOneByDocumentId(id, key, {
+      releaseId,
+      locale,
+    });
   }
 
   @Query(returns => DocumentConnection)
   public allDocuments(
-    @Args() args: ConnectionArgs,
-    @Arg('order', type => [DocumentConnectionOrder], { defaultValue: 1, nullable: true })
-    orders: string[],
+    @Arg('order', type => [DocumentOrder], { defaultValue: 1, nullable: true }) orders: string[],
     @Arg('releaseId', { nullable: true }) releaseId: string,
     @Arg('schemaId', { nullable: true }) schemaId: string,
     @Arg('userId', { nullable: true }) userId: string,
-    @Arg('locale', { nullable: true }) locale: string
+    @Arg('locale', { nullable: true }) locale: string,
+    @Args() args: ConnectionArgs
   ) {
     return new ExtendedConnection(args, {
       where: qb => {
@@ -76,8 +88,11 @@ export class DocumentResolver {
         if (schemaId) {
           subquery.andWhere('schemaId = :schemaId', { schemaId });
         }
-        if (schemaId) {
+        if (locale) {
           subquery.andWhere('locale = :locale', { locale });
+        }
+        if (userId) {
+          subquery.andWhere('userId = :userId', { userId });
         }
 
         subquery
@@ -87,11 +102,6 @@ export class DocumentResolver {
 
         qb.having(`Document.id = ${subquery.getQuery()}`);
         qb.groupBy('Document.id');
-
-        if (userId) {
-          subquery.andWhere('userId = :userId', { userId });
-        }
-
         return qb;
       },
       repository: this.documentRepository,
@@ -106,9 +116,10 @@ export class DocumentResolver {
   ): Promise<Document> {
     const document = await this.documentRepository.insert({
       ...input,
+      data: await this.documentTransformer.transformInput(input as Document),
+      userId: context.user.id,
       documentId:
         input.documentId || (await getUniqueHashId(this.documentRepository, 'documentId')),
-      userId: context.user.id,
     });
     const doc = document.identifiers.pop() || { id: null };
     return this.documentRepository.findOneOrFail(doc.id);
@@ -133,10 +144,13 @@ export class DocumentResolver {
 
   // @todo missing implementation
   @Mutation(returns => Boolean)
-  public async publishDocument(
-    @Arg('id', type => ID) id: string //
-  ) {
-    return false;
+  public async publishDocument(@Arg('id', type => ID) id: string, @Ctx() context: Context) {
+    const doc = await this.documentRepository.findOneOrFail(id);
+    delete doc.id;
+    delete doc.releaseId;
+    doc.publishedAt = new Date();
+    doc.userId = context.user.id;
+    return this.documentRepository.save(doc);
   }
 
   // @todo missing implementation
@@ -145,5 +159,27 @@ export class DocumentResolver {
     @Arg('id', type => ID) id: string //
   ) {
     return false;
+  }
+
+  @FieldResolver(returns => GraphQLJSON, { nullable: true })
+  public async data(@Root() document: Document): Promise<any> {
+    return this.documentTransformer.transformOutput(document);
+  }
+
+  @FieldResolver(returns => [DocumentVersion], { nullable: true })
+  public async versions(@Root() document: Document): Promise<Array<Partial<Document>>> {
+    return this.documentRepository.find({
+      where: { documentId: document.documentId },
+    });
+  }
+
+  @FieldResolver(returns => Document, {
+    nullable: true,
+    description: 'Get published version of the document (if any)',
+  })
+  public async published(@Root() document: Document): Promise<Document> {
+    return this.documentRepository.loadOneByDocumentId(document.id, 'id', {
+      publishedAt: Not(IsNull()),
+    });
   }
 }

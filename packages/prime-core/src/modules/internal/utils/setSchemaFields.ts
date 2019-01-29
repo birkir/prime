@@ -6,75 +6,69 @@ export const setSchemaFields = async (schemaId: string, groups) => {
   const schemaRepo = getRepository(Schema);
   const schemaFieldRepo = getRepository(SchemaField);
 
-  const originalFields = await schemaFieldRepo.find({
+  const schemaFields = await schemaFieldRepo.find({
     where: {
       schemaId,
     },
   });
 
-  const removeFieldIds = new Set(originalFields.map(f => f.id));
+  const fieldsToBeRemovedSet = new Set(schemaFields.map(f => f.id));
 
   const updateOrCreateField = async (
-    field: SchemaField,
+    data: Partial<SchemaField>,
     group: string,
     position: number,
-    parent?: any
+    parentField?: any
   ) => {
-    if (field.schemaId !== schemaId) {
+    if (data.schemaId && data.schemaId !== schemaId) {
       return null;
     }
 
-    const obj: any = {
+    const field: SchemaField = schemaFieldRepo.create({
       schemaId,
       position,
-      type: field.type,
-      name: field.name,
-      description: field.description,
       group,
-      title: field.title,
-      primary: field.primary || false,
-      options: field.options,
-    };
+      ...data,
+    });
 
-    if (parent) {
-      obj.parentFieldId = parent.id;
+    if (parentField) {
+      field.parentFieldId = parentField.id;
     }
-
-    let ctField;
 
     if (field.id) {
-      removeFieldIds.delete(field.id);
-      ctField = await schemaFieldRepo.findOne(field.id);
+      fieldsToBeRemovedSet.delete(field.id);
+      const source = await schemaFieldRepo.findOneOrFail(field.id);
+      await schemaFieldRepo.merge(source, field);
     }
 
-    if (ctField) {
-      await ctField.update(obj);
-    } else {
-      ctField = await schemaFieldRepo.create(obj);
-      await schemaFieldRepo.save(ctField);
+    await schemaFieldRepo.save(field);
+
+    if (data.fields) {
+      await Promise.all(
+        data.fields.map((children, i) => {
+          return updateOrCreateField(children, group, i, field);
+        })
+      );
     }
 
-    return ctField;
+    return field;
   };
 
   for (const group of groups) {
     if (group.fields) {
-      for (let f = 0; f < group.fields.length; f += 1) {
-        const field = await updateOrCreateField(group.fields[f], group.title, f);
-        const subfields = group.fields[f].fields;
-
-        if (field && subfields) {
-          for (let ff = 0; ff < subfields.length; ff += 1) {
-            await updateOrCreateField(subfields[ff], group.title, ff, field);
-          }
-        }
-      }
+      await Promise.all(
+        group.fields.map((children, i) => {
+          return updateOrCreateField(children, group.title, i);
+        })
+      );
     }
   }
 
-  await schemaFieldRepo.delete({
-    id: In(Array.from(removeFieldIds)),
-  });
+  if (fieldsToBeRemovedSet.size > 0) {
+    await schemaFieldRepo.delete({
+      id: In(Array.from(fieldsToBeRemovedSet)),
+    });
+  }
 
   const schema = await schemaRepo.findOne({
     where: {

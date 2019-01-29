@@ -1,8 +1,8 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { PubSub } from 'apollo-server-express';
 import { isNumber, mapValues, omitBy } from 'lodash';
+import { buildTypeDefsAndResolvers } from 'type-graphql';
 import { Connection } from 'typeorm';
-import { buildTypeDefsAndResolvers } from '../../utils/build-resolvers/buildTypeDefsAndResolvers';
 import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
@@ -34,6 +34,7 @@ export const createInternal = async (connection: Connection) => {
     resolvers: [PrimeResolver, WebhookResolver, ReleaseResolver, SchemaResolver, DocumentResolver],
     pubSub,
     authChecker,
+    container: ({ context }) => context.container,
   });
 
   return new GraphQLModule({

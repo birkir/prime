@@ -6,14 +6,14 @@ import { DataLoaderRepository } from './DataLoaderRepository';
 export class DocumentRepository extends DataLoaderRepository<Document> {
   public loadOneByDocumentId(
     id: string,
+    key: string = 'documentId',
     where?: FindConditions<Document> | ObjectLiteral | string
   ) {
     if (!id) {
       return Promise.resolve(null);
     }
 
-    const qb = this.createQueryBuilder('document');
-
+    const qb = this.createQueryBuilder();
     const subquery = qb
       .subQuery()
       .select('id')
@@ -30,16 +30,14 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
     }
 
     subquery
-      .andWhere('d.documentId = document.documentId')
+      .andWhere('d.documentId = Document.documentId')
       // .andWhere('d.deletedAt IS NULL')
       .orderBy({ '"createdAt"': 'DESC' })
       .limit(1);
 
-    qb.having(`document.id = ${subquery.getQuery()}`);
-    qb.groupBy('document.id');
+    qb.having(`Document.id = ${subquery.getQuery()}`);
+    qb.groupBy('Document.id');
 
-    return this.getLoader(qb, (b, keys) => b.where({ documentId: In(keys) }), 'documentId').load(
-      id
-    );
+    return this.getLoader(qb, (b, keys) => b.where({ [key]: In(keys) }), key).load(id);
   }
 }

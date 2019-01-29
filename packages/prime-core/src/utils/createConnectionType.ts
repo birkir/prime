@@ -17,12 +17,12 @@ export class ConnectionArgs {
   public before?: string;
 }
 
-export const createConnectionType = <Entity>(model: EntityType<Entity>) => {
+export const createConnectionType = <T>(model: EntityType<T>) => {
   // tslint:disable-next-line max-classes-per-file
   @ObjectType(`${model.name}ConnectionEdge`)
   class ConnectionEdge {
     @Field(type => model)
-    public node: Entity;
+    public node: T;
 
     @Field()
     public cursor: string;
@@ -43,5 +43,5 @@ export const createConnectionType = <Entity>(model: EntityType<Entity>) => {
     public totalCount: number;
   }
 
-  return Connection;
+  return Connection as any;
 };
