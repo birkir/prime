@@ -10,17 +10,18 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { IsNull, Not } from 'typeorm';
+import { Brackets, IsNull, Not } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Context } from '../../../types/Context';
 import { GraphQLJSON } from '../../../types/GraphQLJSON';
 import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
+import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
 import { DocumentRepository } from '../repositories/DocumentRepository';
+import { DocumentFilterInput } from '../types/DocumentFilterInput';
 import { DocumentInput } from '../types/DocumentInput';
 import { DocumentVersion } from '../types/DocumentVersion';
-import { DocumentTransformer } from '../utils/DocumentTransformer';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const DocumentConnection = createConnectionType(Document);
@@ -56,8 +57,8 @@ export class DocumentResolver {
   public Document(
     @Arg('id', type => ID, { description: 'Can be either id(uuid) or documentId(hashid)' })
     id: string,
-    @Arg('locale', { nullable: true }) locale: string,
-    @Arg('releaseId', type => ID, { nullable: true }) releaseId: string
+    @Arg('locale', { nullable: true }) locale?: string,
+    @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ) {
     const key = id.length === 36 ? 'id' : 'documentId';
     return this.documentRepository.loadOneByDocumentId(id, key, {
@@ -69,10 +70,8 @@ export class DocumentResolver {
   @Query(returns => DocumentConnection)
   public allDocuments(
     @Arg('order', type => [DocumentOrder], { defaultValue: 1, nullable: true }) orders: string[],
-    @Arg('releaseId', { nullable: true }) releaseId: string,
-    @Arg('schemaId', { nullable: true }) schemaId: string,
-    @Arg('userId', { nullable: true }) userId: string,
-    @Arg('locale', { nullable: true }) locale: string,
+    @Arg('filter', type => [DocumentFilterInput], { nullable: true })
+    filters: DocumentFilterInput[],
     @Args() args: ConnectionArgs
   ) {
     return new ExtendedConnection(args, {
@@ -80,25 +79,28 @@ export class DocumentResolver {
         const subquery = qb
           .subQuery()
           .select('id')
-          .from(Document, 'd');
+          .from(Document, 'd')
+          .where('d.documentId = Document.documentId');
 
-        if (releaseId) {
-          subquery.andWhere('releaseId = :releaseId', { releaseId });
-        }
-        if (schemaId) {
-          subquery.andWhere('schemaId = :schemaId', { schemaId });
-        }
-        if (locale) {
-          subquery.andWhere('locale = :locale', { locale });
-        }
-        if (userId) {
-          subquery.andWhere('userId = :userId', { userId });
+        const filterWithName = name =>
+          new Brackets(builder => {
+            filters.map((filter, i) => {
+              builder.orWhere(
+                new Brackets(sq => {
+                  Object.entries(filter).map(([key, value]) =>
+                    sq.andWhere(`${name}.${key} = :${key}_${i}`, { [`${key}_${i}`]: value })
+                  );
+                })
+              );
+            });
+          });
+
+        if (filters.length > 0) {
+          subquery.andWhere(filterWithName('d'));
+          qb.andWhere(filterWithName('Document'));
         }
 
-        subquery
-          .andWhere('d.documentId = Document.documentId')
-          .orderBy({ '"createdAt"': 'DESC' })
-          .limit(1);
+        subquery.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
 
         qb.having(`Document.id = ${subquery.getQuery()}`);
         qb.groupBy('Document.id');
@@ -128,37 +130,73 @@ export class DocumentResolver {
   @Mutation(returns => Document)
   public async updateDocument(
     @Arg('id', type => ID) id: string,
-    @Arg('input', type => DocumentInput) input: DocumentInput
+    @Arg('input', type => DocumentInput) input: DocumentInput,
+    @Ctx() context: Context //
   ): Promise<Document> {
-    const entity = await this.documentRepository.findOneOrFail(id);
-    return this.documentRepository.merge(entity, input as any);
+    const doc = await this.documentRepository.findOneOrFail(id);
+
+    if (
+      doc.publishedAt ||
+      input.locale !== doc.locale ||
+      input.releaseId !== doc.releaseId ||
+      context.user.id !== doc.userId
+    ) {
+      delete doc.id;
+      delete doc.publishedAt;
+    }
+
+    await this.documentRepository.merge(doc, {
+      ...input,
+      userId: context.user.id,
+      data: await this.documentTransformer.transformInput(input as Document),
+    });
+
+    return doc;
   }
 
   @Mutation(returns => Boolean)
   public async removeDocument(
-    @Arg('id', type => ID) id: string //
+    @Arg('id', type => ID) id: string,
+    @Arg('locale', { nullable: true }) locale?: string,
+    @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ): Promise<boolean> {
-    const entity = await this.documentRepository.findOneOrFail(id);
-    return Boolean(this.documentRepository.remove(entity));
+    const doc = this.Document(id, locale, releaseId);
+    await this.documentRepository.remove(doc);
+    // @todo run webhook
+    // @todo update algolia
+    return true;
   }
 
-  // @todo missing implementation
-  @Mutation(returns => Boolean)
-  public async publishDocument(@Arg('id', type => ID) id: string, @Ctx() context: Context) {
-    const doc = await this.documentRepository.findOneOrFail(id);
-    delete doc.id;
-    delete doc.releaseId;
-    doc.publishedAt = new Date();
-    doc.userId = context.user.id;
-    return this.documentRepository.save(doc);
-  }
-
-  // @todo missing implementation
-  @Mutation(returns => Boolean)
-  public async unpublishDocument(
-    @Arg('id', type => ID) id: string //
+  @Mutation(returns => Document)
+  public async publishDocument(
+    @Arg('id', type => ID) id: string,
+    @Ctx() context: Context //
   ) {
-    return false;
+    const doc = await this.documentRepository.findOneOrFail(id);
+    await this.documentRepository.publish(doc, context.user.id);
+    // @todo run webhook
+    // @todo update algolia
+    return doc;
+  }
+
+  @Mutation(returns => Document)
+  public async unpublishDocument(
+    @Arg('id', type => ID) id: string,
+    @Ctx() context: Context //
+  ) {
+    const doc = await this.documentRepository.findOneOrFail(id);
+    this.documentRepository.update(
+      {
+        documentId: doc.documentId,
+        locale: doc.locale,
+      },
+      {
+        publishedAt: null as any,
+      }
+    );
+    // @todo run webhook
+    // @todo update algolia
+    return this.Document(id);
   }
 
   @FieldResolver(returns => GraphQLJSON, { nullable: true })
@@ -167,7 +205,7 @@ export class DocumentResolver {
   }
 
   @FieldResolver(returns => [DocumentVersion], { nullable: true })
-  public async versions(@Root() document: Document): Promise<Array<Partial<Document>>> {
+  public async versions(@Root() document: Document): Promise<Document[]> {
     return this.documentRepository.find({
       where: { documentId: document.documentId },
     });

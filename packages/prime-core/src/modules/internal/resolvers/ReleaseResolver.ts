@@ -1,22 +1,12 @@
 import { Context } from 'apollo-server-core';
-import { GraphQLResolveInfo } from 'graphql';
-import {
-  Arg,
-  Args,
-  Ctx,
-  FieldResolver,
-  ID,
-  Info,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from 'type-graphql';
+import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getRepository } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
 import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
+import { DocumentRepository } from '../repositories/DocumentRepository';
 import { ReleaseRepository } from '../repositories/ReleaseRepository';
 import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
@@ -28,17 +18,20 @@ export class ReleaseResolver {
   @InjectRepository(ReleaseRepository)
   private readonly releaseRepository: ReleaseRepository;
 
+  @InjectRepository(DocumentRepository)
+  private readonly documentRepository: DocumentRepository;
+
   @Query(returns => Release, { nullable: true, description: 'Get Release by ID' })
   public Release(
-    @Arg('id', type => ID) id: string,
-    @Ctx() context: Context,
-    @Info() info: GraphQLResolveInfo
-  ) {
+    @Arg('id', type => ID) id: string //
+  ): Promise<Release> {
     return this.releaseRepository.loadOne(id);
   }
 
   @Query(returns => ReleaseConnection, { description: 'Get many Releases' })
-  public allReleases(@Args() args: ConnectionArgs) {
+  public allReleases(
+    @Args() args: ConnectionArgs //
+  ) {
     return new EntityConnection(args, {
       repository: this.releaseRepository,
       sortOptions: [{ sort: 'createdAt', order: 'DESC' }],
@@ -70,14 +63,59 @@ export class ReleaseResolver {
     @Arg('id', type => ID) id: string,
     @Ctx() context: Context
   ): Promise<boolean> {
-    const entity = await this.releaseRepository.findOneOrFail(id);
-    return Boolean(this.releaseRepository.remove(entity));
+    const release = await this.releaseRepository.findOneOrFail(id);
+
+    await this.documentRepository.delete({
+      releaseId: id,
+    });
+
+    await this.releaseRepository.remove(release);
+
+    return true;
   }
 
-  // @todo missing implementation
-  @Mutation(returns => Boolean, { description: 'Publish Release by ID' })
-  public async publishRelease() {
-    return false;
+  @Mutation(returns => Release, { description: 'Publish Release by ID' })
+  public async publishRelease(
+    @Arg('id', type => ID) id: string,
+    @Ctx() context: Context
+  ): Promise<Release> {
+    const release = await this.Release(id);
+
+    const ids = await this.documentRepository
+      .createQueryBuilder()
+      .select(
+        qb =>
+          qb
+            .select('id')
+            .from(Document, 'd')
+            .where('d.documentId = Document.documentId')
+            .andWhere('d.locale = Document.locale')
+            .orderBy({ 'd.updatedAt': 'DESC' }),
+        'id'
+      )
+      .addSelect('documentId')
+      .where({
+        releaseId: release.id,
+      })
+      .groupBy('documentId')
+      .groupBy('locale')
+      .getMany();
+
+    const docs = await this.documentRepository.find({ where: { id: ids.map(d => d.id) } });
+    await Promise.all(docs.map(doc => this.documentRepository.publish(doc, context.user.id)));
+
+    this.documentRepository.update(
+      { releaseId: release.id },
+      {
+        releaseId: undefined,
+      }
+    );
+
+    release.publishedAt = new Date();
+    release.publishedBy = context.user.id;
+    await this.releaseRepository.save(release);
+
+    return release;
   }
 
   @FieldResolver(returns => User, { description: 'Get Release User' })
@@ -85,6 +123,13 @@ export class ReleaseResolver {
     return getRepository(User).findOneOrFail({
       cache: 1000,
       where: release.user,
+    });
+  }
+
+  @FieldResolver(returns => [Document], { description: 'Get Release Documents' })
+  public documents(@Root() release: Release): Promise<Document[]> {
+    return this.documentRepository.find({
+      releaseId: release.id,
     });
   }
 }

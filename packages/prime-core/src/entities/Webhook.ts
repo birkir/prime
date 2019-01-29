@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { pubSub } from '../modules/internal';
+import { pubSub } from '../modules';
 import { GraphQLJSON } from '../types/GraphQLJSON';
 import { WebhookCall } from './WebhookCall';
 

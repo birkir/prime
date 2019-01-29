@@ -6,5 +6,5 @@ export class PrimeResolver {
   public getSettings() {}
   public getFields() {}
   public updateSystem() {} // was primeUpdate
-  public updateAlgolia() {} // was syncAlgolia
+  // public updateAlgolia() {} // was syncAlgolia
 }

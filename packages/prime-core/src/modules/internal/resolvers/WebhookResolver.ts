@@ -105,7 +105,7 @@ export class WebhookResolver {
     @Ctx() context: Context
   ): Promise<boolean> {
     const entity = await this.webhookRepository.findOneOrFail(id);
-    return Boolean(this.webhookRepository.remove(entity));
+    return Boolean(await this.webhookRepository.remove(entity));
   }
 
   @FieldResolver(returns => [WebhookCall], { description: 'Get many Webhook calls' })

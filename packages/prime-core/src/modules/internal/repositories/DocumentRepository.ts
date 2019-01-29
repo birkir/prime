@@ -1,4 +1,11 @@
-import { EntityRepository, FindConditions, In, ObjectLiteral } from 'typeorm';
+import {
+  Brackets,
+  EntityRepository,
+  FindConditions,
+  FindOperator,
+  In,
+  ObjectLiteral,
+} from 'typeorm';
 import { Document } from '../../../entities/Document';
 import { DataLoaderRepository } from './DataLoaderRepository';
 
@@ -19,25 +26,51 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
       .select('id')
       .from(Document, 'd');
 
-    if (where) {
-      const { locale, releaseId } = where as any;
-      if (locale) {
-        subquery.andWhere('locale = :locale', { locale });
-      }
-      if (releaseId) {
-        subquery.andWhere('releaseId = :releaseId', { releaseId });
-      }
+    const filterWithName = name =>
+      new Brackets(sq => {
+        Object.entries(where as ObjectLiteral).map(([k, value]) => {
+          if (value instanceof FindOperator) {
+            sq.andWhere(value.value(`${name}.${k}`));
+          } else {
+            sq.andWhere(`${name}.${k} = :${k}`, { [k]: value });
+          }
+        });
+      });
+
+    if (Object.keys(where as ObjectLiteral).length > 0) {
+      subquery.andWhere(filterWithName('d'));
+      qb.where(filterWithName('Document'));
     }
+
+    // if (where) {
+    //   const { locale, releaseId } = where as any;
+    //   if (locale) {
+    //     subquery.andWhere('locale = :locale', { locale });
+    //   }
+    //   if (releaseId) {
+    //     subquery.andWhere('releaseId = :releaseId', { releaseId });
+    //   }
+    // }
 
     subquery
       .andWhere('d.documentId = Document.documentId')
       // .andWhere('d.deletedAt IS NULL')
-      .orderBy({ '"createdAt"': 'DESC' })
+      .orderBy({ 'd.createdAt': 'DESC' })
       .limit(1);
 
     qb.having(`Document.id = ${subquery.getQuery()}`);
     qb.groupBy('Document.id');
 
     return this.getLoader(qb, (b, keys) => b.where({ [key]: In(keys) }), key).load(id);
+  }
+
+  public async publish(document: Document, userId: string) {
+    delete document.id;
+    delete document.releaseId;
+    document.publishedAt = new Date();
+    document.userId = userId;
+    const res = await this.insert(document);
+    const doc = res.identifiers.pop() || { id: null };
+    return this.findOneOrFail(doc.id);
   }
 }

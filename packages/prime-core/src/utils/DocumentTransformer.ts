@@ -1,9 +1,9 @@
 import { defaultsDeep, get } from 'lodash';
 import { Service } from 'typedi';
 import { getRepository, In } from 'typeorm';
-import { Document } from '../../../entities/Document';
-import { Schema } from '../../../entities/Schema';
-import { SchemaField } from '../../../entities/SchemaField';
+import { Document } from '../entities/Document';
+import { Schema } from '../entities/Schema';
+import { SchemaField } from '../entities/SchemaField';
 
 const Types = {
   ROOT: 0,
@@ -120,15 +120,23 @@ export class DocumentTransformer {
     return output;
   };
 
-  public transformInput = async (document: Document) => {
-    const schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
-    const fields = await this.getFields(schema);
+  public transformInput = async (document: Document, schema?: Schema, fields?: SchemaField[]) => {
+    if (!schema) {
+      schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
+    }
+    if (!fields) {
+      fields = await this.getFields(schema);
+    }
     return this.transform(fields, document.data, schema, Types.INPUT);
   };
 
-  public transformOutput = async (document: Document) => {
-    const schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
-    const fields = await this.getFields(schema);
+  public transformOutput = async (document: Document, schema?: Schema, fields?: SchemaField[]) => {
+    if (!schema) {
+      schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
+    }
+    if (!fields) {
+      fields = await this.getFields(schema);
+    }
     return this.transform(fields, document.data, schema, Types.OUTPUT);
   };
 }

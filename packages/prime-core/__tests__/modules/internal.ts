@@ -15,7 +15,7 @@ describe('InternalModule', () => {
   beforeAll(async () => {
     connection = await createConnection({
       type: 'postgres',
-      url: 'postgres://birkir@localhost:5432/prime-typeorm',
+      url: process.env.DATABASE_URL || 'postgres://birkir@localhost:5432/prime-test',
       entities: [
         ...require('@accounts/typeorm').entities,
         'src/entities/*.ts',

@@ -1,7 +1,21 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  AfterLoad,
+  Column,
+  Entity,
+  getRepository,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { GraphQLJSON } from '../types/GraphQLJSON';
+import { PrimeField } from '../utils/PrimeField';
+import { PrimeFieldGroup } from '../utils/PrimeFieldGroup';
+import { PrimeFieldString } from '../utils/PrimeFieldString';
+import { Document } from './Document';
+import { Release } from './Release';
 import { Schema } from './Schema';
+import { Webhook } from './Webhook';
 
 @Entity()
 @ObjectType()
@@ -59,4 +73,25 @@ export class SchemaField {
 
   @ManyToOne(type => Schema, schema => schema.fields, { cascade: true, onDelete: 'SET NULL' })
   public schema: Schema;
+
+  public primeField?: PrimeField;
+
+  @AfterLoad()
+  public setPrimeField() {
+    if (!this.primeField) {
+      const repositories = {
+        document: getRepository(Document),
+        schema: getRepository(Schema),
+        schemaField: getRepository(SchemaField),
+        release: getRepository(Release),
+        webhook: getRepository(Webhook),
+      };
+
+      if (this.type === 'string') {
+        this.primeField = new PrimeFieldString(this, repositories);
+      } else if (this.type === 'group') {
+        this.primeField = new PrimeFieldGroup(this, repositories);
+      }
+    }
+  }
 }

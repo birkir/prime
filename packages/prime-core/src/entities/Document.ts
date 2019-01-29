@@ -59,7 +59,10 @@ export class Document {
   @Column({ nullable: true })
   public releaseId?: string;
 
-  @ManyToOne(type => Release, release => release.documents, { cascade: true, onDelete: 'SET NULL' })
+  @ManyToOne(type => Release, release => release.documents, {
+    cascade: 'remove' as any,
+    onDelete: 'SET NULL',
+  })
   public release = Release;
 
   @Column()
