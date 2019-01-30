@@ -67,7 +67,10 @@ export class SchemaSettingsComponent extends React.Component<IProps, IState> {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <div key={`cropSize${index}`} style={{ flexDirection: 'row', display: 'flex', width: '100%', marginBottom: 8 }}>
+      <div
+        key={`cropSize${index}`}
+        style={{ flexDirection: 'row', display: 'flex', width: '100%', marginBottom: 8 }}
+      >
         {getFieldDecorator(`options.crops.${index}.name`, {
           initialValue: get(this.initialCropSizes, `${index}.name`, ''),
         })(<Input type="text" placeholder="Name" style={{ flex: 1, marginRight: 8 }} />)}

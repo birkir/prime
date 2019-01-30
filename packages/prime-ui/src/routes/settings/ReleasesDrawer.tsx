@@ -15,12 +15,9 @@ interface IProps extends FormComponentProps {
 }
 
 export const ReleasesDrawer = Form.create()(({ form, isOpen, onClose, item }: IProps) => {
-  React.useEffect(
-    () => {
-      form.resetFields();
-    },
-    [isOpen]
-  );
+  React.useEffect(() => {
+    form.resetFields();
+  }, [isOpen]);
 
   const onSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();

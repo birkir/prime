@@ -20,7 +20,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
   public render() {
     const { entry, field, form, path, initialValue } = this.props;
     const isTime = get(field.options, 'time', false);
-    const value = isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue);
+    const value =
+      isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue);
 
     return (
       <Form.Item label={field.title}>

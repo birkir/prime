@@ -60,7 +60,11 @@ export const Account = () => {
         okText="Change"
         onCancel={() => setChangeEmail(false)}
       >
-        <ChangeEmail forwardRef={changeEmailRef} close={() => setChangeEmail(false)} visible={changeEmail} />
+        <ChangeEmail
+          forwardRef={changeEmailRef}
+          close={() => setChangeEmail(false)}
+          visible={changeEmail}
+        />
       </Modal>
       <Modal
         visible={changePassword}

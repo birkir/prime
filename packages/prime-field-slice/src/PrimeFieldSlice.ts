@@ -67,7 +67,9 @@ export class PrimeFieldSlice extends PrimeField {
       types: [...types, unknownSliceType],
       resolveType(value, context, info): GraphQLObjectType {
         if (value.__inputname) {
-          const sliceTypeIndex = sliceTypes.findIndex((s: { id: string }) => s.id === value.__inputname);
+          const sliceTypeIndex = sliceTypes.findIndex(
+            (s: { id: string }) => s.id === value.__inputname
+          );
           if (sliceTypeIndex >= 0) {
             return types[sliceTypeIndex];
           }
@@ -89,7 +91,14 @@ export class PrimeFieldSlice extends PrimeField {
   /**
    * GraphQL type for input mutation
    */
-  public getGraphQLInput({ field, queries, contentTypes, contentType, resolveFieldType, isUpdate }) {
+  public getGraphQLInput({
+    field,
+    queries,
+    contentTypes,
+    contentType,
+    resolveFieldType,
+    isUpdate,
+  }) {
     const options = this.getOptions(field);
 
     if (!contentType || !options.contentTypeIds) {

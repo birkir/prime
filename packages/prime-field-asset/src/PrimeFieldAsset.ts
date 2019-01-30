@@ -37,7 +37,9 @@ export class PrimeFieldAsset extends PrimeField {
 
             image = image.replace(
               '/image/upload/',
-              `/image/upload/${mods.join(',')}/w_${Math.round(fieldCrop.width)},h_${Math.round(fieldCrop.height)}/`
+              `/image/upload/${mods.join(',')}/w_${Math.round(fieldCrop.width)},h_${Math.round(
+                fieldCrop.height
+              )}/`
             );
           } else {
             return null;

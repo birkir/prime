@@ -28,9 +28,9 @@ describe('PrimeFieldNumber', () => {
 
   it('should have graphql input type', () => {
     expect(test.getGraphQLInput({ field: {} } as any)).not.toBeNull();
-    expect(test.getGraphQLInput({ field: { options: { rules: { required: true } } } } as any).type).toBeInstanceOf(
-      GraphQLNonNull
-    );
+    expect(
+      test.getGraphQLInput({ field: { options: { rules: { required: true } } } } as any).type
+    ).toBeInstanceOf(GraphQLNonNull);
   });
 
   it('should have graphql where type', () => {

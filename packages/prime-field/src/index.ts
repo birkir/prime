@@ -1,1 +1,7 @@
-export { IPrimeFieldProps, IPrimeFieldGraphQLArguments, IRegisterField, PrimeField, registerField } from './PrimeField';
+export {
+  IPrimeFieldProps,
+  IPrimeFieldGraphQLArguments,
+  IRegisterField,
+  PrimeField,
+  registerField,
+} from './PrimeField';

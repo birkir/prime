@@ -59,9 +59,13 @@ export class OnboardingBase extends React.Component<FormComponentProps> {
   public render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
         <Form onSubmit={this.onSubmit} style={{ width: 300 }} action="/login" layout="vertical">
-          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>prime</div>
+          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>
+            prime
+          </div>
           <Form.Item label="First name">
             {getFieldDecorator('firstname')(<Input placeholder="Name" size="large" />)}
           </Form.Item>
@@ -97,7 +101,14 @@ export class OnboardingBase extends React.Component<FormComponentProps> {
                   validator: this.validateToNextPassword,
                 },
               ],
-            })(<Input type="password" size="large" placeholder="Password" onBlur={this.onPasswordBlur} />)}
+            })(
+              <Input
+                type="password"
+                size="large"
+                placeholder="Password"
+                onBlur={this.onPasswordBlur}
+              />
+            )}
           </Form.Item>
           <Form.Item label="Confirm password" required>
             {getFieldDecorator('confirm', {

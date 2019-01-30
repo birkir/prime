@@ -60,21 +60,27 @@ export class PrimeFieldString extends PrimeField {
 
     if (rules.urlsafe) {
       if (!value.match(/^[A-Za-z][A-Za-z0-9_-]*$/)) {
-        throw new ValidationError(`Field '${field.name}' must be url-safe (/^[A-Za-z][A-Za-z0-9_-]*$/)`);
+        throw new ValidationError(
+          `Field '${field.name}' must be url-safe (/^[A-Za-z][A-Za-z0-9_-]*$/)`
+        );
       }
     }
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
       if (value.length < min) {
-        throw new ValidationError(`Field '${field.name}' must be ${min} character${min === 1 ? '' : 's'} or more`);
+        throw new ValidationError(
+          `Field '${field.name}' must be ${min} character${min === 1 ? '' : 's'} or more`
+        );
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
       if (value.length > max) {
-        throw new ValidationError(`Field '${field.name}' must be ${max} character${max === 1 ? '' : 's'} or less`);
+        throw new ValidationError(
+          `Field '${field.name}' must be ${max} character${max === 1 ? '' : 's'} or less`
+        );
       }
     }
 

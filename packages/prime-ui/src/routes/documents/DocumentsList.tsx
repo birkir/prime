@@ -1,4 +1,18 @@
-import { Avatar, Badge, Button, Card, Dropdown, Icon, Layout, Menu, message, Modal, Table, Tag, Tooltip } from 'antd';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Dropdown,
+  Icon,
+  Layout,
+  Menu,
+  message,
+  Modal,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { distanceInWordsToNow } from 'date-fns';
 import gql from 'graphql-tag';
 import { get } from 'lodash';
@@ -103,13 +117,10 @@ export const DocumentsList = ({ match, history }: any) => {
 
   const locale = Settings.locales.find(l => l.id === options.locale) || Settings.masterLocale;
 
-  React.useEffect(
-    () => {
-      ContentReleases.loadAll();
-      ContentTypes.loadAll();
-    },
-    [match.location]
-  );
+  React.useEffect(() => {
+    ContentReleases.loadAll();
+    ContentTypes.loadAll();
+  }, [match.location]);
 
   const onLocaleClick = (e: any) => {
     history.push(`/documents/by/${opts({ locale: e.key })}`);
@@ -336,7 +347,9 @@ export const DocumentsList = ({ match, history }: any) => {
           <Layout>
             <Toolbar>
               <div style={{ flex: 1 }}>
-                <h2 style={{ margin: 0 }}>{contentRelease ? `Release "${contentRelease.name}"` : 'Documents'}</h2>
+                <h2 style={{ margin: 0 }}>
+                  {contentRelease ? `Release "${contentRelease.name}"` : 'Documents'}
+                </h2>
               </div>
               {contentRelease && (
                 <Button
@@ -350,7 +363,10 @@ export const DocumentsList = ({ match, history }: any) => {
               )}
               <Dropdown overlay={locales} trigger={['click']}>
                 <Button type="default" style={{ marginRight: 16 }}>
-                  <span className={`flagstrap-icon flagstrap-${locale.flag}`} style={{ marginRight: 8 }} />
+                  <span
+                    className={`flagstrap-icon flagstrap-${locale.flag}`}
+                    style={{ marginRight: 8 }}
+                  />
                   {locale.name}
                   <Icon type="down" />
                 </Button>

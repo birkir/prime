@@ -25,7 +25,9 @@ const getInitialFile = (value?: { url: string } | string) => {
     status: 'done',
     url: value.url,
     imageUrl: value.url.replace(/\.[a-z]{3,4}$/, '.png'),
-    thumbUrl: value.url.replace('/image/upload/', '/image/upload/w_100,h_100,c_fill/').replace(/\.[a-z]{3,4}$/, '.png'),
+    thumbUrl: value.url
+      .replace('/image/upload/', '/image/upload/w_100,h_100,c_fill/')
+      .replace(/\.[a-z]{3,4}$/, '.png'),
     width: null,
     height: null,
   };
@@ -47,7 +49,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
   public url = (() => {
     try {
-      return new URL(String(this.props.stores.Settings.env.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http'));
+      return new URL(
+        String(this.props.stores.Settings.env.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http')
+      );
     } catch (err) {
       console.warn('No "PRIME_CLOUDINARY_URL" set'); // tslint:disable-line no-console
     }
@@ -156,7 +160,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     const file = this.state.file;
 
     if (crop && file) {
-      const index = get(this.props, 'initialValue.crops', []).findIndex((c: { name: string }) => c.name === e.key);
+      const index = get(this.props, 'initialValue.crops', []).findIndex(
+        (c: { name: string }) => c.name === e.key
+      );
 
       const cropValue = form.getFieldValue(`${path}.crops.${index}.zoom`);
       let cropZoom = 1;
@@ -192,7 +198,10 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     this.setState({ cropOffset });
   };
 
-  public onCropComplete = (croppedArea: null, cropPixels: { x: number; y: number; width: number; height: number }) => {
+  public onCropComplete = (
+    croppedArea: null,
+    cropPixels: { x: number; y: number; width: number; height: number }
+  ) => {
     this.cropPixels = cropPixels;
   };
 
@@ -211,9 +220,11 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
         [`${path}.crops.${crop}.y`]: Math.round(Number(this.cropPixels.y)),
         [`${path}.crops.${crop}.width`]: Math.round(Number(this.cropPixels.width)),
         [`${path}.crops.${crop}.height`]: Math.round(Number(this.cropPixels.height)),
-        [`${path}.crops.${crop}.zoom`]: [this.state.cropZoom, this.state.cropOffset.x, this.state.cropOffset.y].join(
-          ','
-        ),
+        [`${path}.crops.${crop}.zoom`]: [
+          this.state.cropZoom,
+          this.state.cropOffset.x,
+          this.state.cropOffset.y,
+        ].join(','),
       });
     }
   };
@@ -270,28 +281,30 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
             </Upload>
           </div>
 
-          {getFieldDecorator(`${path}.url`, { initialValue: get(file, 'url', '') })(<input type="hidden" />)}
+          {getFieldDecorator(`${path}.url`, { initialValue: get(file, 'url', '') })(
+            <input type="hidden" />
+          )}
 
           {crops.map((crop: { name: string }, index: number) => (
             <React.Fragment key={crop.name}>
-              {getFieldDecorator(`${path}.crops.${index}.name`, { initialValue: get(crop, 'name', '') })(
-                <input type="hidden" />
-              )}
-              {getFieldDecorator(`${path}.crops.${index}.x`, { initialValue: get(crop, 'crop.x', -1) })(
-                <input type="hidden" />
-              )}
-              {getFieldDecorator(`${path}.crops.${index}.y`, { initialValue: get(crop, 'crop.y', -1) })(
-                <input type="hidden" />
-              )}
-              {getFieldDecorator(`${path}.crops.${index}.width`, { initialValue: get(crop, 'crop.width', -1) })(
-                <input type="hidden" />
-              )}
-              {getFieldDecorator(`${path}.crops.${index}.height`, { initialValue: get(crop, 'crop.height', -1) })(
-                <input type="hidden" />
-              )}
-              {getFieldDecorator(`${path}.crops.${index}.zoom`, { initialValue: get(crop, 'crop.zoom', '') })(
-                <input type="hidden" />
-              )}
+              {getFieldDecorator(`${path}.crops.${index}.name`, {
+                initialValue: get(crop, 'name', ''),
+              })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.x`, {
+                initialValue: get(crop, 'crop.x', -1),
+              })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.y`, {
+                initialValue: get(crop, 'crop.y', -1),
+              })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.width`, {
+                initialValue: get(crop, 'crop.width', -1),
+              })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.height`, {
+                initialValue: get(crop, 'crop.height', -1),
+              })(<input type="hidden" />)}
+              {getFieldDecorator(`${path}.crops.${index}.zoom`, {
+                initialValue: get(crop, 'crop.zoom', ''),
+              })(<input type="hidden" />)}
             </React.Fragment>
           ))}
 

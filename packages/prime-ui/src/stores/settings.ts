@@ -121,7 +121,8 @@ export const Settings = types
       if (node) {
         const iframe = node as HTMLIFrameElement;
         try {
-          const doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+          const doc =
+            iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
           if (doc) {
             const reloadButton = doc.querySelector('[title="Reload Schema"]');
             if (reloadButton) {
@@ -130,7 +131,10 @@ export const Settings = types
           }
         } catch (err) {
           const parentNode = iframe.parentNode as HTMLDivElement;
-          parentNode.setAttribute('style', 'opacity:0; pointer-events: none; position: fixed; top: 0');
+          parentNode.setAttribute(
+            'style',
+            'opacity:0; pointer-events: none; position: fixed; top: 0'
+          );
           parentNode.hidden = false;
           iframe.src = iframe.src.replace(/\?.*/g, '') + '?' + Math.random();
           setTimeout(() => {
@@ -160,7 +164,11 @@ export const Settings = types
         variables: {
           input: {
             accessType: self.accessType,
-            previews: self.previews.map(({ name, hostname, pathname }) => ({ name, hostname, pathname })),
+            previews: self.previews.map(({ name, hostname, pathname }) => ({
+              name,
+              hostname,
+              pathname,
+            })),
             locales: self.locales.map(({ id, name, flag, master }) => ({ id, name, flag, master })),
           },
         },

@@ -30,10 +30,9 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
     return null;
   };
 
-  const displayPlaceHolder = `${String(user.firstname || '').split(' ')[0]} ${String(user.lastname || '').substr(
-    0,
-    1
-  )}.`;
+  const displayPlaceHolder = `${String(user.firstname || '').split(' ')[0]} ${String(
+    user.lastname || ''
+  ).substr(0, 1)}.`;
 
   return (
     <Form onSubmit={onSubmit}>

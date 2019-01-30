@@ -19,12 +19,20 @@ describe('PrimeFieldSelect', () => {
   });
 
   it('should have where type', () => {
-    const field = { contentType, field: { name: 'arigato', apiName: 'Arigato', options: { items } } } as any;
-    expect(test.getGraphQLWhere(field)!.type.toString()).toEqual('PrimeFieldSelectWhereExample_Arigato');
+    const field = {
+      contentType,
+      field: { name: 'arigato', apiName: 'Arigato', options: { items } },
+    } as any;
+    expect(test.getGraphQLWhere(field)!.type.toString()).toEqual(
+      'PrimeFieldSelectWhereExample_Arigato'
+    );
   });
 
   it('should resolve', () => {
-    const field = { contentType, field: { name: 'arigato', apiName: 'Arigato', options: { items } } } as any;
+    const field = {
+      contentType,
+      field: { name: 'arigato', apiName: 'Arigato', options: { items } },
+    } as any;
     const { resolve } = test.getGraphQLOutput(field)!;
     expect(resolve({ a: 'foo' }, {}, {}, { fieldName: 'a' })).toEqual('Foo');
     expect(resolve({}, {}, {}, { fieldName: 'a' })).toBeFalsy();
@@ -43,21 +51,30 @@ describe('PrimeFieldSelect', () => {
   });
 
   describe('enum', () => {
-    const field = { contentType, field: { name: 'arigato', options: { enum: true, items } } } as any;
+    const field = {
+      contentType,
+      field: { name: 'arigato', options: { enum: true, items } },
+    } as any;
     it('should be of enum type', () => {
       expect(test.getGraphQLOutput(field)!.type).toBeInstanceOf(GraphQLEnumType);
     });
   });
 
   describe('required', () => {
-    const field = { contentType, field: { name: 'arigato', options: { items, required: true } } } as any;
+    const field = {
+      contentType,
+      field: { name: 'arigato', options: { items, required: true } },
+    } as any;
     it('should be of nonnull type', () => {
       expect(test.getGraphQLInput(field)!.type).toBeInstanceOf(GraphQLNonNull);
     });
   });
 
   describe('multiple', () => {
-    const field = { contentType, field: { name: 'arigato', options: { multiple: true, items } } } as any;
+    const field = {
+      contentType,
+      field: { name: 'arigato', options: { multiple: true, items } },
+    } as any;
     it('output should be of GraphQLList type', () => {
       const output = test.getGraphQLOutput(field);
       expect(output!.type!).toBeInstanceOf(GraphQLList);

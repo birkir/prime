@@ -37,7 +37,13 @@ export const SchemaField = types
     },
   }))
   .actions(self => ({
-    update(obj: { name: string; title: string; description: string; type: string; options: JSONObject }) {
+    update(obj: {
+      name: string;
+      title: string;
+      description: string;
+      type: string;
+      options: JSONObject;
+    }) {
       self.name = obj.name;
       self.title = obj.title;
       self.description = obj.description;
@@ -90,7 +96,12 @@ export const Schema = types
         tree.splice(position, 0, node);
       }
     },
-    add(obj: IAddField, position: number, groupName: string = DEFAULT_GROUP_TITLE, nodeId?: string) {
+    add(
+      obj: IAddField,
+      position: number,
+      groupName: string = DEFAULT_GROUP_TITLE,
+      nodeId?: string
+    ) {
       const id = `new-${Array.from({ length: 5 })
         .map(() => 100000 + Math.floor(Math.random() * 99999))
         .join('-')}`;

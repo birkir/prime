@@ -45,7 +45,11 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
   };
 
   const compareToFirstPassword = (rule: any, value: any, callback: (input?: string) => void) =>
-    callback(value && value !== form.getFieldValue('newpassword') ? 'The passwords do not match' : undefined);
+    callback(
+      value && value !== form.getFieldValue('newpassword')
+        ? 'The passwords do not match'
+        : undefined
+    );
 
   const validateToNextPassword = (rule: any, value: any, callback: (input?: string) => void) => {
     if (value && confirmDirty) {
@@ -54,7 +58,8 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
     callback();
   };
 
-  const onPasswordBlur = (e: React.FocusEvent<HTMLInputElement>) => setConfirmDirty(confirmDirty || !!e.target.value);
+  const onPasswordBlur = (e: React.FocusEvent<HTMLInputElement>) =>
+    setConfirmDirty(confirmDirty || !!e.target.value);
 
   return (
     <Form onSubmit={onSubmit} ref={forwardRef}>
@@ -83,7 +88,15 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
               validator: validateToNextPassword,
             },
           ],
-        })(<Input autoComplete="off" type="password" size="large" placeholder="Password" onBlur={onPasswordBlur} />)}
+        })(
+          <Input
+            autoComplete="off"
+            type="password"
+            size="large"
+            placeholder="Password"
+            onBlur={onPasswordBlur}
+          />
+        )}
       </Form.Item>
       <Form.Item label="Confirm password" required>
         {form.getFieldDecorator('confirm', {
@@ -96,7 +109,9 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
               validator: compareToFirstPassword,
             },
           ],
-        })(<Input autoComplete="off" type="password" placeholder="Confirm password" size="large" />)}
+        })(
+          <Input autoComplete="off" type="password" placeholder="Confirm password" size="large" />
+        )}
       </Form.Item>
       <input type="submit" hidden />
     </Form>

@@ -1,4 +1,15 @@
-import { Avatar, Button, Drawer, Form, Icon, Input, message, Popconfirm, Select, Table } from 'antd';
+import {
+  Avatar,
+  Button,
+  Drawer,
+  Form,
+  Icon,
+  Input,
+  message,
+  Popconfirm,
+  Select,
+  Table,
+} from 'antd';
 import gql from 'graphql-tag';
 import { get, omit, startCase } from 'lodash';
 import React from 'react';
@@ -92,7 +103,11 @@ export const Users = Form.create()(({ form }) => {
         });
 
         if (res.errors) {
-          const errorMessage = get(res.errors, '0.extensions.exception.errors.0.message', 'Unknown error');
+          const errorMessage = get(
+            res.errors,
+            '0.extensions.exception.errors.0.message',
+            'Unknown error'
+          );
           message.error(errorMessage);
         } else {
           refetchTable();
@@ -145,7 +160,10 @@ export const Users = Form.create()(({ form }) => {
               onConfirm={() => onRemoveClick(record.id)}
               trigger={record.id === Auth.user!.id ? 'contextMenu' : undefined}
             >
-              <Button style={{ paddingLeft: 8, paddingRight: 8 }} disabled={record.id === Auth.user!.id}>
+              <Button
+                style={{ paddingLeft: 8, paddingRight: 8 }}
+                disabled={record.id === Auth.user!.id}
+              >
                 <Icon type="delete" theme="filled" />
               </Button>
             </Popconfirm>
@@ -184,7 +202,9 @@ export const Users = Form.create()(({ form }) => {
               footer={() => <Button onClick={onCreateClick}>Create</Button>}
               columns={columns}
               dataSource={
-                data && data.allUsers && data.allUsers.sort((a: any, b: any) => a.firstname.localeCompare(b.firstname))
+                data &&
+                data.allUsers &&
+                data.allUsers.sort((a: any, b: any) => a.firstname.localeCompare(b.firstname))
               }
               rowClassName={() => 'prime-row-click'}
               rowKey="id"
@@ -238,7 +258,9 @@ export const Users = Form.create()(({ form }) => {
                   validator: validateToNextPassword,
                 },
               ],
-            })(<Input type="password" size="large" placeholder="Password" onBlur={onPasswordBlur} />)}
+            })(
+              <Input type="password" size="large" placeholder="Password" onBlur={onPasswordBlur} />
+            )}
           </Form.Item>
           <Form.Item label="Confirm password" required>
             {form.getFieldDecorator('confirm', {

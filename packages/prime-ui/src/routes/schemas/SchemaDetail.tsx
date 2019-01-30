@@ -311,7 +311,9 @@ export class SchemaDetail extends React.Component<IProps> {
           style={{
             minHeight: 80,
             transition: 'background-color 0.3s ease-in-out',
-            backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)',
+            backgroundColor: droppableSnapshot.isDraggingOver
+              ? highlightColor
+              : 'rgba(0, 0, 0, 0.025)',
             padding: 16,
           }}
           {...droppableProvided.droppableProps}
@@ -337,7 +339,11 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   public renderAvailableField = (field: any, index: number) => (
-    <Draggable key={`AvailableField.${field.id}`} draggableId={`AvailableField.${field.id}`} index={index}>
+    <Draggable
+      key={`AvailableField.${field.id}`}
+      draggableId={`AvailableField.${field.id}`}
+      index={index}
+    >
       {(draggableProvided, draggableSnapshot) => (
         <div
           ref={draggableProvided.innerRef}
@@ -364,10 +370,16 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   public renderGroup = (groupName: any) => {
-    const group = this.contentType!.schema.groups.find(g => g.title.toLowerCase() === groupName.toLowerCase());
+    const group = this.contentType!.schema.groups.find(
+      g => g.title.toLowerCase() === groupName.toLowerCase()
+    );
 
     return (
-      <TabPane key={groupName} tab={groupName} style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
+      <TabPane
+        key={groupName}
+        tab={groupName}
+        style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}
+      >
         <Droppable
           key={groupName}
           droppableId={`Group.${groupName}`}
@@ -383,7 +395,10 @@ export class SchemaDetail extends React.Component<IProps> {
                 padding: 32,
               }}
             >
-              {group && group.fields.filter((n: any) => n.contentTypeId === this.contentType!.id).map(this.renderField)}
+              {group &&
+                group.fields
+                  .filter((n: any) => n.contentTypeId === this.contentType!.id)
+                  .map(this.renderField)}
               {droppableProvided.placeholder}
               <div style={{ height: 80 }} />
             </div>
@@ -410,7 +425,13 @@ export class SchemaDetail extends React.Component<IProps> {
               <Spin spinning={this.loading} delay={500} />
             </h3>
           </div>
-          <Button type="dashed" disabled style={{ marginRight: 8 }} title="WIP" icon="cloud-download">
+          <Button
+            type="dashed"
+            disabled
+            style={{ marginRight: 8 }}
+            title="WIP"
+            icon="cloud-download"
+          >
             Import
           </Button>
           <Button type="primary" onClick={this.onSave} icon="save" loading={this.saving}>

@@ -71,9 +71,17 @@ export class App extends React.Component {
                         <Route path="/" exact render={() => <Redirect to="/documents" />} />
                         <Route path="/schemas" component={Schemas} />
                         <Route path="/documents" exact component={DocumentsList} />
-                        <Route path="/documents/doc/:entryId/:options?" exact component={DocumentsDetail} />
+                        <Route
+                          path="/documents/doc/:entryId/:options?"
+                          exact
+                          component={DocumentsDetail}
+                        />
                         <Route path="/documents/by/:options?" exact component={DocumentsList} />
-                        <Route path="/documents/create/:options" exact component={DocumentsDetail} />
+                        <Route
+                          path="/documents/create/:options"
+                          exact
+                          component={DocumentsDetail}
+                        />
                         <Route path="/settings" component={Settings} />
                       </Switch>
                       <div hidden={section !== 'playground'}>

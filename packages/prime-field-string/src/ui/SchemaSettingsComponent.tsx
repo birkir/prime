@@ -52,7 +52,17 @@ const markdownFeatures = [
   },
 ];
 
-const defaultFeatures = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
+const defaultFeatures = [
+  'headings',
+  'bold',
+  'italic',
+  'code',
+  'blockquote',
+  'list-ul',
+  'list-ol',
+  'link',
+  'emoji',
+];
 
 export class SchemaSettingsComponent extends React.PureComponent<IProps> {
   public onClickMarkdownFeature = (e: React.MouseEvent<HTMLElement>) => {
@@ -122,7 +132,11 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
         )}
 
         {isMarkdown && (
-          <Form.Item label="Rich Text features" style={{ marginBottom: 8 }} className="bf-container">
+          <Form.Item
+            label="Rich Text features"
+            style={{ marginBottom: 8 }}
+            className="bf-container"
+          >
             {markdownFeatures.map((
               { id, icon, title }: any // tslint:disable-line
             ) => (
@@ -132,7 +146,13 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
                   data-id={id}
                   onClick={this.onClickMarkdownFeature}
                   type={features.indexOf(id) >= 0 ? 'primary' : undefined}
-                  style={{ paddingTop: 2, paddingLeft: 8, paddingRight: 8, marginRight: 8, marginBottom: 8 }}
+                  style={{
+                    paddingTop: 2,
+                    paddingLeft: 8,
+                    paddingRight: 8,
+                    marginRight: 8,
+                    marginBottom: 8,
+                  }}
                 >
                   <i className={`bfi-${icon || id}`} />
                 </Button>

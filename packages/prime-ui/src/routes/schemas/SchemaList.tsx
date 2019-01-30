@@ -67,7 +67,10 @@ export class SchemaList extends React.Component<any> {
         title: 'Documents',
         key: 'documents',
         render: (text, record) => (
-          <Link to={`/documents/by/type:${record.name.toLocaleLowerCase()}`} onClick={(e: any) => e.stopPropagation()}>
+          <Link
+            to={`/documents/by/type:${record.name.toLocaleLowerCase()}`}
+            onClick={(e: any) => e.stopPropagation()}
+          >
             {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
           </Link>
         ),

@@ -35,7 +35,9 @@ export const ContentType = types
   .preProcessSnapshot(snapshot => {
     const groupName = snapshot.isTemplate ? snapshot.title : 'Main';
     const schema: any =
-      snapshot.schema && Array.isArray(snapshot.schema) ? { groups: snapshot.schema } : snapshot.schema;
+      snapshot.schema && Array.isArray(snapshot.schema)
+        ? { groups: snapshot.schema }
+        : snapshot.schema;
     return {
       ...snapshot,
       schema,

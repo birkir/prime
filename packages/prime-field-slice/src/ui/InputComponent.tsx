@@ -42,10 +42,12 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
   public componentWillReceiveProps(nextProps: any) {
     if (JSON.stringify(this.props.initialValue) !== JSON.stringify(nextProps.initialValue)) {
       this.setState({
-        slices: [].concat(nextProps.initialValue || []).map((n: { __inputname: string }, index: number) => ({
-          ...this.props.stores.ContentTypes.items.get(n.__inputname),
-          index,
-        })),
+        slices: []
+          .concat(nextProps.initialValue || [])
+          .map((n: { __inputname: string }, index: number) => ({
+            ...this.props.stores.ContentTypes.items.get(n.__inputname),
+            index,
+          })),
       });
     }
   }
@@ -143,7 +145,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
                   onClick={this.onMoveUpClick}
                 />
                 <Icon
-                  className={`prime-slice-item-button ${idx === this.state.slices.length - 1 ? 'disabled' : ''}`}
+                  className={`prime-slice-item-button ${
+                    idx === this.state.slices.length - 1 ? 'disabled' : ''
+                  }`}
                   type="down"
                   data-index={idx}
                   onClick={this.onMoveDownClick}

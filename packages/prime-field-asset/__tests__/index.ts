@@ -21,16 +21,22 @@ describe('PrimeFieldAsset', () => {
     } as any)!;
     expect(type.type).toBeTruthy();
     expect(type.resolve({}, {}, {}, { fieldName: 'foo' })).toBeNull();
-    expect(type.resolve({ foo: { url: imageUrl } }, {}, {}, { fieldName: 'foo' })).toEqual(imageUrl);
+    expect(type.resolve({ foo: { url: imageUrl } }, {}, {}, { fieldName: 'foo' })).toEqual(
+      imageUrl
+    );
     expect(
       type.resolve(
-        { foo: { url: imageUrl, crops: [{ name: 'thumb', width: 100, height: 80, x: 10, y: 15 }] } },
+        {
+          foo: { url: imageUrl, crops: [{ name: 'thumb', width: 100, height: 80, x: 10, y: 15 }] },
+        },
         { crop: 'thumb' },
         {},
         { fieldName: 'foo' }
       )
     ).toEqual(imageThumbUrl);
-    expect(type.resolve({ foo: { url: imageUrl } }, { crop: 'thumb' }, {}, { fieldName: 'foo' })).toBeNull();
+    expect(
+      type.resolve({ foo: { url: imageUrl } }, { crop: 'thumb' }, {}, { fieldName: 'foo' })
+    ).toBeNull();
   });
 
   it('should have GraphQLString input type', () => {

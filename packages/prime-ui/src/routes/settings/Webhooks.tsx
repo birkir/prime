@@ -99,7 +99,9 @@ export const Webhooks = Form.create()(({ form, history }: IProps) => {
                     }
                     return 'error';
                   })();
-                  return <Badge status={status} text={empty ? 'n/a' : `${Math.floor(ratio * 100)}%`} />;
+                  return (
+                    <Badge status={status} text={empty ? 'n/a' : `${Math.floor(ratio * 100)}%`} />
+                  );
                 },
               },
               {
@@ -136,7 +138,10 @@ export const Webhooks = Form.create()(({ form, history }: IProps) => {
                         e.stopPropagation();
                       }}
                     >
-                      <Button style={{ paddingLeft: 8, paddingRight: 8 }} onClick={(e: any) => e.stopPropagation()}>
+                      <Button
+                        style={{ paddingLeft: 8, paddingRight: 8 }}
+                        onClick={(e: any) => e.stopPropagation()}
+                      >
                         <Icon type="delete" theme="filled" />
                       </Button>
                     </Popconfirm>

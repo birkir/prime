@@ -54,7 +54,11 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
     this.forceUpdate();
   };
 
-  public ensureUnique = (id: number) => (rule: any, value: any, callback: (input?: string) => void) => {
+  public ensureUnique = (id: number) => (
+    rule: any,
+    value: any,
+    callback: (input?: string) => void
+  ) => {
     const values = this.props.form.getFieldsValue() as any;
     const found = values.options.items.find((item: any, index: number) => {
       return item && item.key === value && index !== id;

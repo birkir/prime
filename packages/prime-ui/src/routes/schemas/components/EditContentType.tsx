@@ -1,4 +1,14 @@
-import { Button, Checkbox, Divider, Form, Input, message, notification, Select, Switch } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Form,
+  Input,
+  message,
+  notification,
+  Select,
+  Switch,
+} from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
 import { debounce, get, startCase } from 'lodash';
@@ -17,7 +27,14 @@ interface IProps extends FormComponentProps {
 
 const forbiddenNames = ['PageInfo', 'DocumentMeta'];
 
-const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
+const EditContentTypeBase = ({
+  form,
+  onCancel,
+  onSubmit,
+  contentTypes,
+  contentTypeId,
+  item,
+}: IProps) => {
   const { getFieldDecorator } = form;
 
   const checkNameAvailability = async () => {
@@ -111,7 +128,13 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
               },
             ],
           })(
-            <Input autoFocus autoComplete="off" size="large" onKeyUp={updateApiField} placeholder="e.g. Custom page" />
+            <Input
+              autoFocus
+              autoComplete="off"
+              size="large"
+              onKeyUp={updateApiField}
+              placeholder="e.g. Custom page"
+            />
           )}
         </Form.Item>
 
@@ -149,7 +172,12 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
             <Divider dashed />
             <Form.Item label="Templates">
               {getFieldDecorator('settings.contentTypeIds')(
-                <Select mode="multiple" size="large" style={{ width: '100%' }} placeholder="No templates">
+                <Select
+                  mode="multiple"
+                  size="large"
+                  style={{ width: '100%' }}
+                  placeholder="No templates"
+                >
                   {[]
                     .concat(contentTypes)
                     .filter((n: any) => n.isTemplate)
@@ -207,9 +235,13 @@ export const EditContentType = Form.create({
       const item = toJS(props.item);
       res.title = Form.createFormField({ value: get(item, 'title', '') });
       res.name = Form.createFormField({ value: get(item, 'name', '') });
-      res['settings.contentTypeIds'] = Form.createFormField({ value: get(item, 'settings.contentTypeIds', []) });
+      res['settings.contentTypeIds'] = Form.createFormField({
+        value: get(item, 'settings.contentTypeIds', []),
+      });
       res['settings.single'] = Form.createFormField({ value: get(item, 'settings.single', false) });
-      res['settings.mutations'] = Form.createFormField({ value: get(item, 'settings.mutations', true) });
+      res['settings.mutations'] = Form.createFormField({
+        value: get(item, 'settings.mutations', true),
+      });
     }
 
     return res;

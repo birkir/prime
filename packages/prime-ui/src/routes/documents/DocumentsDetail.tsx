@@ -1,4 +1,16 @@
-import { Alert, Button, Card, Dropdown, Icon, Layout, Menu, message, Popconfirm, Skeleton, Spin } from 'antd';
+import {
+  Alert,
+  Button,
+  Card,
+  Dropdown,
+  Icon,
+  Layout,
+  Menu,
+  message,
+  Popconfirm,
+  Skeleton,
+  Spin,
+} from 'antd';
 import { distanceInWordsToNow } from 'date-fns';
 import { isObject } from 'lodash';
 import { observable } from 'mobx';
@@ -106,7 +118,11 @@ export class DocumentsDetail extends React.Component<IProps> {
       const loadDocTimer = setTimeout(() => {
         this.loading.document = true;
       }, 125);
-      this.contentEntry = await ContentEntries.loadById(options.entryId, locale.id, options.release);
+      this.contentEntry = await ContentEntries.loadById(
+        options.entryId,
+        locale.id,
+        options.release
+      );
       clearTimeout(loadDocTimer);
       if (this.contentEntry && !options.type) {
         this.contentType = await ContentTypes.loadById(this.contentEntry.contentTypeId);
@@ -188,7 +204,9 @@ export class DocumentsDetail extends React.Component<IProps> {
                   this.options.entryId
                 );
                 if (this.contentEntry) {
-                  this.props.history.replace(`/documents/doc/${this.contentEntry.entryId}/${this.opts()}`);
+                  this.props.history.replace(
+                    `/documents/doc/${this.contentEntry.entryId}/${this.opts()}`
+                  );
                 }
                 resolve();
               } catch (err) {
@@ -238,7 +256,9 @@ export class DocumentsDetail extends React.Component<IProps> {
         await this.save();
         await this.contentEntry.release(record.id);
         message.success('Document was added to release');
-        this.props.history.replace(`/documents/doc/${this.contentEntry.entryId}/${this.opts({ release: record.id })}`);
+        this.props.history.replace(
+          `/documents/doc/${this.contentEntry.entryId}/${this.opts({ release: record.id })}`
+        );
       } catch (err) {
         message.error('Could not add document to release');
       }
@@ -274,12 +294,15 @@ export class DocumentsDetail extends React.Component<IProps> {
   public onPreviewPress = async (e: any) => {
     const index = Number(e.key || 0);
     const preview = Settings.previews[index];
-    const url = encodeURIComponent(preview.hostname + preview.pathname + '?' + this.contentEntry!.versionId);
+    const url = encodeURIComponent(
+      preview.hostname + preview.pathname + '?' + this.contentEntry!.versionId
+    );
     window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
   };
 
   public renderVersion = (version: any) => {
-    const draftLabel = this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
+    const draftLabel =
+      this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
       <Alert
         key={version.versionId}
@@ -327,7 +350,14 @@ export class DocumentsDetail extends React.Component<IProps> {
     }
 
     if (Settings.previews.length === 1) {
-      return <Button onClick={this.onPreviewPress} style={{ marginLeft: 16 }} disabled={loading} icon="eye" />;
+      return (
+        <Button
+          onClick={this.onPreviewPress}
+          style={{ marginLeft: 16 }}
+          disabled={loading}
+          icon="eye"
+        />
+      );
     }
 
     const menu = (
@@ -366,7 +396,10 @@ export class DocumentsDetail extends React.Component<IProps> {
           </div>
           <Dropdown overlay={this.localesMenu} trigger={['click']}>
             <Button type="default">
-              <span className={`flagstrap-icon flagstrap-${this.locale.flag}`} style={{ marginRight: 8 }} />
+              <span
+                className={`flagstrap-icon flagstrap-${this.locale.flag}`}
+                style={{ marginRight: 8 }}
+              />
               {this.locale.name}
               <Icon type="down" />
             </Button>
@@ -408,7 +441,10 @@ export class DocumentsDetail extends React.Component<IProps> {
                     backgroundColor: 'white',
                   }}
                 />
-                <Card bordered={false} style={{ borderRadius: 3, borderTopLeftRadius: 0, marginBottom: 16 }}>
+                <Card
+                  bordered={false}
+                  style={{ borderRadius: 3, borderTopLeftRadius: 0, marginBottom: 16 }}
+                >
                   <Skeleton loading={true} />
                 </Card>
               </div>

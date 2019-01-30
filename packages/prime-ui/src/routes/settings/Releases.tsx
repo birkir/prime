@@ -120,7 +120,10 @@ export class Releases extends React.Component<any> {
               }}
               onCancel={(e: any) => e.stopPropagation()}
             >
-              <Button style={{ paddingLeft: 8, paddingRight: 8 }} onClick={(e: any) => e.stopPropagation()}>
+              <Button
+                style={{ paddingLeft: 8, paddingRight: 8 }}
+                onClick={(e: any) => e.stopPropagation()}
+              >
                 <Icon type="delete" theme="filled" />
               </Button>
             </Popconfirm>

@@ -21,7 +21,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       const min = Number(rules.minValue);
       fieldRules.push({
         validator: (_, value, cb) =>
-          cb(Number(value) >= min ? undefined : `${field.title} must be greater or equal to ${min}`),
+          cb(
+            Number(value) >= min ? undefined : `${field.title} must be greater or equal to ${min}`
+          ),
       });
     }
 
@@ -35,7 +37,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     return (
       <Form.Item label={field.title}>
-        {getFieldDecorator(path, { initialValue, rules: fieldRules })(<Input size="large" type="number" />)}
+        {getFieldDecorator(path, { initialValue, rules: fieldRules })(
+          <Input size="large" type="number" />
+        )}
       </Form.Item>
     );
   }

@@ -1,5 +1,11 @@
 import { IPrimeFieldGraphQLArguments, PrimeField } from '@primecms/field';
-import { GraphQLEnumType, GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
+import {
+  GraphQLEnumType,
+  GraphQLInputObjectType,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLString,
+} from 'graphql';
 import { get } from 'lodash';
 
 interface IOptions {

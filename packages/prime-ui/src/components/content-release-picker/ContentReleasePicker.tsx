@@ -5,14 +5,11 @@ import React from 'react';
 import { ContentReleases } from '../../stores/contentReleases';
 
 export const ContentReleasePicker = (props: any) => {
-  React.useEffect(
-    () => {
-      if (props.visible) {
-        ContentReleases.loadAll();
-      }
-    },
-    [props.visible]
-  );
+  React.useEffect(() => {
+    if (props.visible) {
+      ContentReleases.loadAll();
+    }
+  }, [props.visible]);
 
   return (
     <Modal

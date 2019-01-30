@@ -23,9 +23,18 @@ class LoginBase extends React.Component<FormComponentProps> {
   public render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Form onSubmit={this.onSubmit} style={{ width: 300 }} action="/login" autoComplete="prime-login">
-          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>prime</div>
+      <div
+        style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Form
+          onSubmit={this.onSubmit}
+          style={{ width: 300 }}
+          action="/login"
+          autoComplete="prime-login"
+        >
+          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>
+            prime
+          </div>
           <Form.Item>
             {getFieldDecorator('email')(
               <Input

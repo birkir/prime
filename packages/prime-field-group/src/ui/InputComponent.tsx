@@ -87,7 +87,12 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
       <Card key={key} className="prime-group-item">
         {repeated && (
           <div className="prime-slice-item-actions">
-            <Icon className="prime-slice-item-button" type="minus" data-key={key} onClick={this.onRemoveClick} />
+            <Icon
+              className="prime-slice-item-button"
+              type="minus"
+              data-key={key}
+              onClick={this.onRemoveClick}
+            />
           </div>
         )}
         {fields.map((f: any) => this.renderField(f, key, index))}
@@ -105,7 +110,13 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
         {items.map(this.renderGroupItem)}
         {repeated && (
           <div style={{ textAlign: 'center' }}>
-            <Button size="large" shape="circle" onClick={this.add} icon="plus" className="prime-slice-add" />
+            <Button
+              size="large"
+              shape="circle"
+              onClick={this.add}
+              icon="plus"
+              className="prime-slice-add"
+            />
           </div>
         )}
       </Form.Item>

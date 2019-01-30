@@ -59,7 +59,10 @@ export const Locales = Form.create()(({ form }) => {
                 render: (text, record) => {
                   return (
                     <span>
-                      <span className={`flagstrap-icon flagstrap-${record.flag}`} style={{ marginRight: 16 }} />
+                      <span
+                        className={`flagstrap-icon flagstrap-${record.flag}`}
+                        style={{ marginRight: 16 }}
+                      />
                       {text}
                     </span>
                   );
@@ -88,7 +91,10 @@ export const Locales = Form.create()(({ form }) => {
                       }}
                     >
                       <Tooltip title="">
-                        <Button style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }} disabled={record.master}>
+                        <Button
+                          style={{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}
+                          disabled={record.master}
+                        >
                           <Icon type="star" theme={record.master ? 'filled' : 'outlined'} />
                         </Button>
                       </Tooltip>
@@ -141,7 +147,14 @@ export const Locales = Form.create()(({ form }) => {
                       message: 'Must be in a format like: is or en-GB',
                     },
                   ],
-                })(<Input size="large" disabled={isEditing} placeholder="eg. en-GB" autoFocus={!isEditing} />)}
+                })(
+                  <Input
+                    size="large"
+                    disabled={isEditing}
+                    placeholder="eg. en-GB"
+                    autoFocus={!isEditing}
+                  />
+                )}
               </Form.Item>
               <Form.Item label="Name">
                 {form.getFieldDecorator('name', {
@@ -160,11 +173,16 @@ export const Locales = Form.create()(({ form }) => {
                     size="large"
                     placeholder="Select country flag"
                     showSearch
-                    filterOption={(input, option: any) => option.key.indexOf(input.toLowerCase()) >= 0}
+                    filterOption={(input, option: any) =>
+                      option.key.indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {Object.entries(countries).map(([key, country]) => (
                       <Select.Option key={country.toLowerCase() + ',' + key.toLowerCase()}>
-                        <span className={`flagstrap-icon flagstrap-${key.toLowerCase()}`} style={{ marginRight: 8 }} />
+                        <span
+                          className={`flagstrap-icon flagstrap-${key.toLowerCase()}`}
+                          style={{ marginRight: 8 }}
+                        />
                         {country}
                       </Select.Option>
                     ))}

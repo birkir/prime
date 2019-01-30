@@ -86,7 +86,14 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
         <Form.Item style={{ marginBottom: 8 }}>
           {getFieldDecorator('title', {
             rules: [{ required: true }],
-          })(<Input addonBefore="Title*" onKeyUp={onTitleKeyUp} placeholder="Please enter title" autoFocus />)}
+          })(
+            <Input
+              addonBefore="Title*"
+              onKeyUp={onTitleKeyUp}
+              placeholder="Please enter title"
+              autoFocus
+            />
+          )}
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
@@ -103,7 +110,9 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
                 validator: ensureUniqueName,
               },
             ],
-          })(<Input addonBefore="API*" onKeyUp={onNameKeyUp} placeholder="Please enter api name" />)}
+          })(
+            <Input addonBefore="API*" onKeyUp={onNameKeyUp} placeholder="Please enter api name" />
+          )}
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 8 }}>
@@ -141,7 +150,10 @@ export const EditField = Form.create({
 
     const fromAvailableField = props.availableFields.find((f: any) => f.id === field.type);
 
-    const options = defaultsDeep(get(field, 'options', {}), get(fromAvailableField, 'defaultOptions', {}));
+    const options = defaultsDeep(
+      get(field, 'options', {}),
+      get(fromAvailableField, 'defaultOptions', {})
+    );
 
     Object.entries(options).forEach(([key, value]) => {
       res[`options.${key}`] = Form.createFormField({ value });

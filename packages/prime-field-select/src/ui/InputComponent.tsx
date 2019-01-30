@@ -26,7 +26,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
           rules: required ? [{ required: true }] : undefined,
         })(
           <Select
-            placeholder={field.description && field.description !== '' ? field.description : 'Select item'}
+            placeholder={
+              field.description && field.description !== '' ? field.description : 'Select item'
+            }
             allowClear={!required}
             mode={multiple ? 'multiple' : undefined}
           >
