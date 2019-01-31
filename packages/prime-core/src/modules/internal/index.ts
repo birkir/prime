@@ -1,9 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
+import { PubSub } from 'apollo-server-express';
 import debug from 'debug';
 import { isNumber, mapValues, omitBy } from 'lodash';
 import { buildTypeDefsAndResolvers } from 'type-graphql';
 import { Connection } from 'typeorm';
-import { pubSub } from '../index';
 import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
@@ -12,6 +12,8 @@ import { WebhookResolver } from './resolvers/WebhookResolver';
 import { authChecker } from './utils/authChecker';
 
 export const log = debug('prime:internal');
+
+export const pubSub = new PubSub();
 
 const noEnumsOrInheritedModels = (item: any, key: string) => {
   if (key === 'User') {

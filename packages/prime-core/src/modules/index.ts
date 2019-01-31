@@ -1,11 +1,8 @@
 import { GraphQLModule } from '@graphql-modules/core';
-import { PubSub } from 'apollo-server-express';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
 import { createAccounts } from './accounts';
 import { createInternal } from './internal';
-
-export const pubSub = new PubSub();
 
 export const createModules = async (connection: Connection) => {
   const accounts = await createAccounts(connection);

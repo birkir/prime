@@ -15,9 +15,11 @@ export const createAccounts = async (connection: Connection) => {
     },
     { password }
   );
+
   const accounts = AccountsModule.forRoot({
     accountsServer,
     headerName: 'x-prime-token',
   });
+
   return accounts;
 };

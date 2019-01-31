@@ -5,8 +5,9 @@ import http from 'http';
 import { ResolverData } from 'type-graphql';
 import { Container } from 'typedi';
 import { useContainer } from 'typeorm';
-import { createModules, pubSub } from './modules';
+import { createModules } from './modules';
 import { createExternal } from './modules/external';
+import { pubSub } from './modules/internal';
 import { Context } from './types/Context';
 import { ServerConfig } from './types/ServerConfig';
 

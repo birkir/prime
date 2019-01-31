@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { pubSub } from '../modules';
+// import { pubSub } from '../modules';
 import { GraphQLJSON } from '../types/GraphQLJSON';
 import { WebhookCall } from './WebhookCall';
 
@@ -53,6 +53,6 @@ export class Webhook {
 
   @AfterInsert()
   public notify() {
-    pubSub.publish('WEBHOOK_ADDED', this);
+    // pubSub.publish('WEBHOOK_ADDED', this);
   }
 }

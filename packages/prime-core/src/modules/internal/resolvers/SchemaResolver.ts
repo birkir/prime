@@ -2,9 +2,9 @@ import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 't
 import { Raw } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { pubSub } from '../..';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
 import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
+import { pubSub } from '../index';
 import { SchemaRepository } from '../repositories/SchemaRepository';
 import { SchemaFieldGroup } from '../types/SchemaFieldGroup';
 import { SchemaInput } from '../types/SchemaInput';

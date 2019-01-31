@@ -1,6 +1,7 @@
+import { User } from '@accounts/typeorm';
 import { GraphQLModule } from '@graphql-modules/core';
 import { Container } from 'typedi';
-import { Connection, createConnection, useContainer } from 'typeorm';
+import { Connection, createConnection, getRepository, useContainer } from 'typeorm';
 import { createInternal } from '../../src/modules/internal';
 
 useContainer(Container);
@@ -11,28 +12,26 @@ describe('InternalModule', () => {
   let mutations: any;
   let queries: any;
   let context: any;
+  let user: User;
 
   beforeAll(async () => {
     connection = await createConnection({
       type: 'postgres',
       url: process.env.DATABASE_URL || 'postgres://birkir@localhost:5432/prime-test',
-      entities: [
-        ...require('@accounts/typeorm').entities,
-        'src/entities/*.ts',
-        'src/schema/internal/types/*.ts',
-      ],
+      entities: [...require('@accounts/typeorm').entities, 'src/entities/*.ts'],
       synchronize: true,
     });
 
     internal = await createInternal(connection);
     mutations = internal.resolvers.Mutation;
     queries = internal.resolvers.Query;
+    user = getRepository(User).create({ username: 'test ' });
   });
 
   beforeEach(async () => {
     const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     const container = Container.of(requestId);
-    context = { requestId, container };
+    context = { requestId, container, user };
     container.set('context', context);
 
     await connection.dropDatabase();
@@ -74,6 +73,17 @@ describe('InternalModule', () => {
       expect(result).toBeTruthy();
       const webhook = await queries.Webhook.resolve({}, { id }, context);
       expect(webhook).toBeFalsy();
+    });
+  });
+
+  describe('Authentication', () => {
+    it('should be authorized', async () => {
+      try {
+        await queries.Webhook.resolve({}, { id: 'nah' }, { ...context, user: null });
+        throw new Error();
+      } catch (e) {
+        expect(e.message).toContain('You need to be authorized');
+      }
     });
   });
 });
