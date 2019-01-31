@@ -1,10 +1,11 @@
-import { GraphQLFieldConfig, GraphQLInputFieldConfig } from 'graphql';
+import { GraphQLFieldConfig, GraphQLInputFieldConfig, GraphQLInputType } from 'graphql';
 import { Repository } from 'typeorm';
 import { Document } from '../entities/Document';
 import { Schema } from '../entities/Schema';
 import { SchemaField } from '../entities/SchemaField';
 
 export interface PrimeFieldContext {
+  name: string;
   fields: SchemaField[];
   resolvers: {
     [key: string]: any;
@@ -17,7 +18,6 @@ export enum PrimeFieldOperation {
   READ,
   CREATE,
   UPDATE,
-  ORDER,
 }
 
 export class PrimeField {
@@ -51,10 +51,9 @@ export class PrimeField {
     return Promise.resolve(null);
   }
 
-  public orderType(
-    context: PrimeFieldContext,
-    operation: PrimeFieldOperation.ORDER
-  ): Promise<GraphQLInputFieldConfig | null> | GraphQLInputFieldConfig | null {
+  public whereType(
+    context: PrimeFieldContext
+  ): Promise<GraphQLInputType | null> | GraphQLInputType | null {
     return Promise.resolve(null);
   }
 

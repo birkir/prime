@@ -39,41 +39,41 @@ export class DocumentTransformer {
     io = Types.INPUT,
     type = Types.ROOT
   ) => {
-    const output = {};
+    const output: { [key: string]: any } = {};
 
     if (type === Types.SLICE) {
       if (!data.__inputname) {
         return {};
       }
-      (output as any).__inputname = data.__inputname;
+      output.__inputname = data.__inputname;
     }
 
     for (const field of fields) {
       if (!field) {
         continue;
       }
+
+      const { primeField } = field;
+
       let value = get(data, io === Types.INPUT ? field.name : field.id);
 
       if (typeof value === 'undefined') {
         continue;
       }
 
-      // @todo add field resolvers
-
-      // if (field.field) {
-      //   if (io === Types.INPUT && field.field.processInput) {
-      //     value = await field.field.processInput(value, field);
-      //   } else if (io === Types.OUTPUT && field.field.processOutput) {
-      //     value = await field.field.processOutput(value, field);
-      //   }
-      // }
+      if (primeField) {
+        if (io === Types.INPUT) {
+          value = await primeField.processInput(value);
+        } else if (io === Types.OUTPUT) {
+          value = await primeField.processOutput(value);
+        }
+      }
 
       if (field.parentFieldId && type !== Types.GROUP) {
         continue;
       }
 
-      // const defaultOptions = (field.field && field.field.defaultOptions) || {};
-      const defaultOptions = {};
+      const defaultOptions = primeField ? primeField.options : {};
       const options = defaultsDeep(field.options || {}, defaultOptions);
 
       if (field.type === 'group') {
@@ -120,14 +120,11 @@ export class DocumentTransformer {
     return output;
   };
 
-  public transformInput = async (document: Document, schema?: Schema, fields?: SchemaField[]) => {
-    if (!schema) {
-      schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
-    }
+  public transformInput = async (data: any, schema: Schema, fields?: SchemaField[]) => {
     if (!fields) {
       fields = await this.getFields(schema);
     }
-    return this.transform(fields, document.data, schema, Types.INPUT);
+    return this.transform(fields, data, schema, Types.INPUT);
   };
 
   public transformOutput = async (document: Document, schema?: Schema, fields?: SchemaField[]) => {

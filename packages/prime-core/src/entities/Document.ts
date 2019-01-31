@@ -62,13 +62,14 @@ export class Document {
   @ManyToOne(type => Release, release => release.documents, {
     cascade: 'remove' as any,
     onDelete: 'SET NULL',
+    nullable: true,
   })
   public release = Release;
 
-  @Column()
-  public userId: string;
+  @Column({ nullable: true })
+  public userId?: string;
 
-  @ManyToOne(type => User)
+  @ManyToOne(type => User, { nullable: true })
   public user: User;
 
   @BeforeInsert()

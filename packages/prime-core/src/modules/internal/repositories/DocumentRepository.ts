@@ -21,6 +21,8 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
     }
 
     const qb = this.createQueryBuilder();
+    qb.where('Document.deletedAt IS NULL');
+
     const subquery = qb
       .subQuery()
       .select('id')
@@ -42,19 +44,9 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
       qb.where(filterWithName('Document'));
     }
 
-    // if (where) {
-    //   const { locale, releaseId } = where as any;
-    //   if (locale) {
-    //     subquery.andWhere('locale = :locale', { locale });
-    //   }
-    //   if (releaseId) {
-    //     subquery.andWhere('releaseId = :releaseId', { releaseId });
-    //   }
-    // }
-
     subquery
       .andWhere('d.documentId = Document.documentId')
-      // .andWhere('d.deletedAt IS NULL')
+      .andWhere('d.deletedAt IS NULL')
       .orderBy({ 'd.createdAt': 'DESC' })
       .limit(1);
 

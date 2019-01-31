@@ -1,6 +1,7 @@
 import {
   Arg,
   Args,
+  Authorized,
   Ctx,
   FieldResolver,
   ID,
@@ -19,6 +20,7 @@ import { ConnectionArgs, createConnectionType } from '../../../utils/createConne
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
 import { DocumentRepository } from '../repositories/DocumentRepository';
+import { SchemaRepository } from '../repositories/SchemaRepository';
 import { DocumentFilterInput } from '../types/DocumentFilterInput';
 import { DocumentInput } from '../types/DocumentInput';
 import { DocumentVersion } from '../types/DocumentVersion';
@@ -49,6 +51,9 @@ registerEnumType(DocumentOrder, { name: 'DocumentConnectionOrder' });
 
 @Resolver(of => Document)
 export class DocumentResolver {
+  @InjectRepository(SchemaRepository)
+  private readonly schemaRepository: SchemaRepository;
+
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
   private readonly documentTransformer: DocumentTransformer = new DocumentTransformer();
@@ -76,11 +81,14 @@ export class DocumentResolver {
   ) {
     return new ExtendedConnection(args, {
       where: qb => {
+        qb.andWhere('Document.deletedAt IS NULL');
+
         const subquery = qb
           .subQuery()
           .select('id')
           .from(Document, 'd')
-          .where('d.documentId = Document.documentId');
+          .where('d.documentId = Document.documentId')
+          .andWhere('d.deletedAt IS NULL');
 
         const filterWithName = name =>
           new Brackets(builder => {
@@ -111,14 +119,16 @@ export class DocumentResolver {
     });
   }
 
+  @Authorized()
   @Mutation(returns => Document)
   public async createDocument(
     @Arg('input', type => DocumentInput) input: DocumentInput,
     @Ctx() context: Context
   ): Promise<Document> {
+    const schema = await this.schemaRepository.findOneOrFail(input.schemaId, { cache: 1000 });
     const document = await this.documentRepository.insert({
       ...input,
-      data: await this.documentTransformer.transformInput(input as Document),
+      data: await this.documentTransformer.transformInput(input.data, schema),
       userId: context.user.id,
       documentId:
         input.documentId || (await getUniqueHashId(this.documentRepository, 'documentId')),
@@ -133,7 +143,8 @@ export class DocumentResolver {
     @Arg('input', type => DocumentInput) input: DocumentInput,
     @Ctx() context: Context //
   ): Promise<Document> {
-    const doc = await this.documentRepository.findOneOrFail(id);
+    const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
+    const schema = await this.schemaRepository.findOneOrFail(input.schemaId, { cache: 1000 });
 
     if (
       doc.publishedAt ||
@@ -148,7 +159,7 @@ export class DocumentResolver {
     await this.documentRepository.merge(doc, {
       ...input,
       userId: context.user.id,
-      data: await this.documentTransformer.transformInput(input as Document),
+      data: await this.documentTransformer.transformInput(input.data, schema),
     });
 
     return doc;
@@ -161,7 +172,16 @@ export class DocumentResolver {
     @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ): Promise<boolean> {
     const doc = this.Document(id, locale, releaseId);
-    await this.documentRepository.remove(doc);
+    await this.documentRepository.update(
+      {
+        documentId: doc.documentId,
+        ...(locale && { locale }),
+        ...(releaseId && { releaseId }),
+      },
+      {
+        deletedAt: new Date(),
+      }
+    );
     // @todo run webhook
     // @todo update algolia
     return true;
@@ -172,7 +192,7 @@ export class DocumentResolver {
     @Arg('id', type => ID) id: string,
     @Ctx() context: Context //
   ) {
-    const doc = await this.documentRepository.findOneOrFail(id);
+    const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
     await this.documentRepository.publish(doc, context.user.id);
     // @todo run webhook
     // @todo update algolia
@@ -184,7 +204,7 @@ export class DocumentResolver {
     @Arg('id', type => ID) id: string,
     @Ctx() context: Context //
   ) {
-    const doc = await this.documentRepository.findOneOrFail(id);
+    const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
     this.documentRepository.update(
       {
         documentId: doc.documentId,
@@ -207,7 +227,7 @@ export class DocumentResolver {
   @FieldResolver(returns => [DocumentVersion], { nullable: true })
   public async versions(@Root() document: Document): Promise<Document[]> {
     return this.documentRepository.find({
-      where: { documentId: document.documentId },
+      where: { documentId: document.documentId, deletedAt: IsNull() },
     });
   }
 
