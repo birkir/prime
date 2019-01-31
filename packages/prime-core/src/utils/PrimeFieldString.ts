@@ -1,7 +1,6 @@
 import { GraphQLInputObjectType, GraphQLString } from 'graphql';
 import { PrimeField, PrimeFieldContext, PrimeFieldOperation } from './PrimeField';
 
-// Allocate statically
 export const PrimeFieldStringWhere = new GraphQLInputObjectType({
   name: 'PrimeField_String_Where',
   fields: {
