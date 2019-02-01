@@ -3,6 +3,7 @@ import Container from 'typedi';
 import { Connection } from 'typeorm';
 import { createAccounts } from './accounts';
 import { createInternal } from './internal';
+import { isAuthenticated } from './internal/utils/isAuthenticated';
 
 export const createModules = async (connection: Connection) => {
   const accounts = await createAccounts(connection);
@@ -10,7 +11,7 @@ export const createModules = async (connection: Connection) => {
 
   return new GraphQLModule({
     imports: () => [internal, accounts],
-    context() {
+    context(context) {
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       const container = Container.of(requestId);
       const ctx = {
@@ -19,6 +20,9 @@ export const createModules = async (connection: Connection) => {
       };
       container.set('context', ctx);
       return ctx;
+    },
+    resolversComposition: {
+      'Mutation.createUser': [isAuthenticated()],
     },
   });
 };

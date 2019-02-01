@@ -58,6 +58,7 @@ export class DocumentResolver {
   private readonly documentRepository: DocumentRepository;
   private readonly documentTransformer: DocumentTransformer = new DocumentTransformer();
 
+  @Authorized()
   @Query(returns => Document, { nullable: true })
   public Document(
     @Arg('id', type => ID, { description: 'Can be either id(uuid) or documentId(hashid)' })

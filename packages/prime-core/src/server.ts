@@ -10,6 +10,7 @@ import { ServerConfig } from './interfaces/ServerConfig';
 import { createModules } from './modules';
 import { createExternal } from './modules/external';
 import { pubSub } from './modules/internal';
+import { fields } from './utils/fields';
 
 const log = debug('prime:server');
 
@@ -33,7 +34,11 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     externalServer.schema = external.schema;
   });
 
-  externalServer.applyMiddleware({ app, path: '/external' });
+  externalServer.applyMiddleware({ app });
+
+  fields.forEach(
+    field => field.ui && app.use(`/prime/field/${field.type}`, express.static(field.ui))
+  );
 
   const apollo = new ApolloServer({
     playground: true,
@@ -55,7 +60,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   });
 
   apollo.installSubscriptionHandlers(server);
-  apollo.applyMiddleware({ app });
+  apollo.applyMiddleware({ app, path: '/prime/graphql' });
 
   return server.listen(port, () => {
     log(`🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`);
