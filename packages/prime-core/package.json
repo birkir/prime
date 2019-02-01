@@ -76,7 +76,7 @@
     "@types/acl": "0.4.35",
     "@types/algoliasearch": "3.30.1",
     "@types/bcrypt": "3.0.0",
-    "@types/faker": "4.1.4",
+    "@types/faker": "4.1.5",
     "@types/graphql": "14.0.3",
     "@types/lodash": "4.14.118",
     "@types/rc": "0.0.1",
