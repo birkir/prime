@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
 import { ValidationRule } from 'antd/lib/form';
 import BraftEditor from 'braft-editor';
@@ -38,7 +38,7 @@ const markdownConfig = {
   remarkablePreset: 'full',
 };
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public state = {
     value: BraftEditor.createEditorState(markdownToDraft(this.props.initialValue, markdownConfig)),
   };
@@ -149,7 +149,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     if (rules.urlsafe) {
       fieldRules.push({
         pattern: /^[A-Za-z][A-Za-z0-9_-]*$/,
-        message: `${field.title} must be url safe text`,
+        message: `${field.title} must be url safe texts`,
       });
     }
 

@@ -1,9 +1,9 @@
-import { PrimeField } from '@primecms/field';
+import { PrimeField, PrimeFieldContext, PrimeFieldOperation } from '@primecms/field';
 import { ValidationError } from 'apollo-server-core';
-import { GraphQLNonNull, GraphQLString } from 'graphql';
-import { primeFieldStringWhere } from './PrimeFieldStringWhere';
+import { GraphQLString } from 'graphql';
+import { PrimeFieldStringWhere } from './PrimeFieldStringWhere';
 
-interface IPrimeFieldStringOptions {
+interface Options {
   type: 'singleline' | 'multiline' | 'markdown';
   md?: string[];
   appearance?: string;
@@ -18,51 +18,47 @@ interface IPrimeFieldStringOptions {
 }
 
 export class PrimeFieldString extends PrimeField {
-  public id: string = 'string';
-  public title: string = 'String';
-  public description: string = 'Text field with no formatting';
-
-  public defaultOptions: IPrimeFieldStringOptions = {
+  public static type = 'string';
+  public title = 'String';
+  public description = 'Text field with no formatting';
+  public options: Options = {
     type: 'singleline',
     rules: {},
   };
 
-  public getGraphQLOutput({ field }) {
+  public async outputType(context: PrimeFieldContext) {
     return {
       type: GraphQLString,
-      description: field.description,
+      description: this.schemaField.description,
     };
   }
 
-  public getGraphQLInput({ field }) {
-    const { rules } = this.getOptions(field);
-
-    return {
-      type: rules.required ? new GraphQLNonNull(GraphQLString) : GraphQLString,
-      description: field.description,
-    };
+  public async inputType(context: PrimeFieldContext, operation: PrimeFieldOperation) {
+    if (operation === PrimeFieldOperation.CREATE) {
+      return { type: GraphQLString };
+    } else if (operation === PrimeFieldOperation.UPDATE) {
+      return { type: GraphQLString };
+    }
+    return null;
   }
 
-  public getGraphQLWhere() {
-    return {
-      type: primeFieldStringWhere,
-    };
+  public async whereType() {
+    return PrimeFieldStringWhere;
   }
 
-  public processInput(value, field) {
-    const { rules } = this.getOptions(field);
+  public async processInput(value) {
+    const { rules = {} } = this.options;
+    const { name } = this.schemaField;
 
     if (rules.required) {
       if (value === '' || value === undefined || value === null) {
-        throw new ValidationError(`Field '${field.name}' is required`);
+        throw new ValidationError(`Field '${name}' is required`);
       }
     }
 
     if (rules.urlsafe) {
       if (!value.match(/^[A-Za-z][A-Za-z0-9_-]*$/)) {
-        throw new ValidationError(
-          `Field '${field.name}' must be url-safe (/^[A-Za-z][A-Za-z0-9_-]*$/)`
-        );
+        throw new ValidationError(`Field '${name}' must be url-safe (/^[A-Za-z][A-Za-z0-9_-]*$/)`);
       }
     }
 
@@ -70,7 +66,7 @@ export class PrimeFieldString extends PrimeField {
       const min = Number(rules.minValue);
       if (value.length < min) {
         throw new ValidationError(
-          `Field '${field.name}' must be ${min} character${min === 1 ? '' : 's'} or more`
+          `Field '${name}' must be ${min} character${min === 1 ? '' : 's'} or more`
         );
       }
     }
@@ -79,7 +75,7 @@ export class PrimeFieldString extends PrimeField {
       const max = Number(rules.maxValue);
       if (value.length > max) {
         throw new ValidationError(
-          `Field '${field.name}' must be ${max} character${max === 1 ? '' : 's'} or less`
+          `Field '${name}' must be ${max} character${max === 1 ? '' : 's'} or less`
         );
       }
     }

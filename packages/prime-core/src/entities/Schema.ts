@@ -1,5 +1,6 @@
 import { User } from '@accounts/typeorm';
 import { Matches } from 'class-validator';
+import GraphQLJSON from 'graphql-type-json';
 import { startCase } from 'lodash';
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
@@ -13,7 +14,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import GraphQLJSON from 'graphql-type-json';
 import { Document } from './Document';
 import { SchemaField } from './SchemaField';
 

@@ -1,12 +1,15 @@
+import 'reflect-metadata';
+
 import { User } from '@accounts/typeorm';
 import { GraphQLModule } from '@graphql-modules/core';
 import { gql } from 'apollo-server-core';
 import { execute } from 'graphql';
-import 'reflect-metadata';
 import Container from 'typedi';
-import { Connection, createConnection, getRepository, useContainer } from 'typeorm';
-import { createExternal } from '../../src/modules/external/index';
-import { createModules } from '../../src/modules/index';
+import { Connection, getRepository, useContainer } from 'typeorm';
+
+import { createModules } from '../../src/modules';
+import { createExternal } from '../../src/modules/external';
+import { connect } from '../../src/utils/connect';
 
 useContainer(Container);
 
@@ -25,12 +28,7 @@ describe('InternalModule', () => {
     });
 
   beforeAll(async () => {
-    connection = await createConnection({
-      type: 'postgres',
-      url: process.env.DATABASE_URL || 'postgres://birkir@localhost:5432/prime-test',
-      entities: [...require('@accounts/typeorm').entities, 'src/entities/*.ts'],
-      synchronize: true,
-    });
+    connection = await connect(process.env.TEST_DATABASE_URL);
 
     await connection.dropDatabase();
     await connection.synchronize();

@@ -1,9 +1,9 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input, Select, Switch, Tooltip } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
-type IProps = IPrimeFieldProps & {
+type IProps = PrimeFieldProps & {
   options: {
     type: 'singleline' | 'multiline' | 'markdown';
   };

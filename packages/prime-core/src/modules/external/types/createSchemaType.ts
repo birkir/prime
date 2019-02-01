@@ -1,5 +1,6 @@
+import { PrimeFieldContext } from '@primecms/field';
+import { PrimeFieldOperation } from '@primecms/field';
 import { GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
-import { PrimeFieldOperation } from '../../../utils/PrimeField';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { DocumentMetadata } from './DocumentMetadata';
@@ -12,13 +13,13 @@ export const createSchemaType = async ({ name, schema, fields, resolvers }: Sche
   for (const field of fields) {
     if (field.primeField && !field.parentFieldId) {
       const type = await field.primeField.outputType(
-        {
+        ({
           name,
           schema,
           fields,
           uniqueTypeName,
           resolvers,
-        },
+        } as unknown) as PrimeFieldContext,
         PrimeFieldOperation.READ
       );
       if (type) {

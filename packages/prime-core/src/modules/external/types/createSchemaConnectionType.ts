@@ -1,3 +1,4 @@
+import { PrimeFieldContext } from '@primecms/field';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -54,13 +55,13 @@ export const createSchemaConnectionType = async (
 
   for (const field of fields) {
     if (field.parentFieldId === null && field.primeField) {
-      const WhereType = await field.primeField.whereType({
+      const WhereType = await field.primeField.whereType(({
         fields,
         schema,
         name: whereName,
         resolvers,
         uniqueTypeName,
-      });
+      } as unknown) as PrimeFieldContext);
 
       addFieldSort(field, sortName, sortFields);
 

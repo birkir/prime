@@ -2,6 +2,7 @@ import { User } from '@accounts/typeorm';
 import { GraphQLModule } from '@graphql-modules/core';
 import { Container } from 'typedi';
 import { Connection, getRepository, useContainer } from 'typeorm';
+
 import { createInternal } from '../../src/modules/internal';
 import { connect } from '../../src/utils/connect';
 

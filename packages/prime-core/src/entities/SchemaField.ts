@@ -1,3 +1,5 @@
+import { PrimeField } from '@primecms/field';
+import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
   AfterLoad,
@@ -8,10 +10,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import GraphQLJSON from 'graphql-type-json';
-import { PrimeField } from '../utils/PrimeField';
-import { PrimeFieldGroup } from '../utils/PrimeFieldGroup';
-import { PrimeFieldString } from '../utils/PrimeFieldString';
+import { fields } from '../utils/fields';
 import { Document } from './Document';
 import { Release } from './Release';
 import { Schema } from './Schema';
@@ -87,10 +86,10 @@ export class SchemaField {
         webhook: getRepository(Webhook),
       };
 
-      if (this.type === 'string') {
-        this.primeField = new PrimeFieldString(this, repositories);
-      } else if (this.type === 'group') {
-        this.primeField = new PrimeFieldGroup(this, repositories);
+      const PrimeFieldClass = fields.find(field => field.type === this.type);
+
+      if (typeof PrimeFieldClass === 'function') {
+        this.primeField = new PrimeFieldClass(this, repositories);
       }
     }
   }

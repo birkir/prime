@@ -1,0 +1,190 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>&quot;prime-ui/src/routes/settings/Webhooks&quot; | Prime CMS</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Prime CMS</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">Globals</a>
+				</li>
+				<li>
+					<a href="_prime_ui_src_routes_settings_webhooks_.html">&quot;prime-ui/src/routes/settings/Webhooks&quot;</a>
+				</li>
+			</ul>
+			<h1>External module &quot;prime-ui/src/routes/settings/Webhooks&quot;</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_prime_ui_src_routes_settings_webhooks_.iprops.html" class="tsd-kind-icon">IProps</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_prime_ui_src_routes_settings_webhooks_.html#webhooks" class="tsd-kind-icon">Webhooks</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="webhooks" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Webhooks</h3>
+					<div class="tsd-signature tsd-kind-icon">Webhooks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;Form.create()(({ form, history }: IProps) &#x3D;&gt; {const [isVisible, setVisible] &#x3D; React.useState(false);const [webhook, setWebhook] &#x3D; React.useState(null as Instance&lt;typeof Webhook&gt; | null);React.useEffect(() &#x3D;&gt; {stores.Webhooks.loadAll();}, []);const showDialog &#x3D; (selectedWebhook?: Instance&lt;typeof Webhook&gt;) &#x3D;&gt; {if (!selectedWebhook) {form.resetFields();} else {setWebhook(selectedWebhook);const { name, url, method &#x3D; &#x27;POST&#x27; } &#x3D; selectedWebhook;form.setFieldsValue({ name, url, method });}setVisible(true);};const hideDialog &#x3D; () &#x3D;&gt; {setVisible(false);setWebhook(null);};const isEditing &#x3D; webhook !&#x3D;&#x3D; null;const renderFooter &#x3D; () &#x3D;&gt; &lt;Button onClick&#x3D;{() &#x3D;&gt; showDialog()}&gt;Create&lt;/Button&gt;;const onSubmit &#x3D; (e: any) &#x3D;&gt; {e.preventDefault();form.validateFieldsAndScroll(async (error, values) &#x3D;&gt; {if (!error) {try {if (isEditing &amp;&amp; webhook) {await webhook.update(values);} else {await stores.Webhooks.create(values);}hideDialog();} catch (err) {message.error(err.message);}}});};return (&lt;Observerrender&#x3D;{() &#x3D;&gt; (&lt;&gt;&lt;TabledataSource&#x3D;{stores.Webhooks.list}pagination&#x3D;{false}footer&#x3D;{renderFooter}rowKey&#x3D;&quot;name&quot;columns&#x3D;{[{key: &#x27;name&#x27;,title: &#x27;Name&#x27;,dataIndex: &#x27;name&#x27;,},{key: &#x27;url&#x27;,title: &#x27;Url&#x27;,dataIndex: &#x27;url&#x27;,},{key: &#x27;method&#x27;,title: &#x27;Method&#x27;,dataIndex: &#x27;method&#x27;,},{key: &#x27;&#x27;,title: &#x27;Successful calls&#x27;,render(text, record) {const empty &#x3D; record.count &#x3D;&#x3D;&#x3D; 0;const ratio &#x3D; record.success / record.count;const status &#x3D; (() &#x3D;&gt; {if (empty) {return &#x27;default&#x27;;}if (ratio &#x3D;&#x3D;&#x3D; 1) {return &#x27;success&#x27;;}if (ratio &gt; 0.9) {return &#x27;warning&#x27;;}return &#x27;error&#x27;;})();return (&lt;Badge status&#x3D;{status} text&#x3D;{empty ? &#x27;n/a&#x27; : &#x60;${Math.floor(ratio * 100)}%&#x60;} /&gt;);},},{align: &#x27;right&#x27;,key: &#x27;actions&#x27;,render: (text, record, index) &#x3D;&gt; (&lt;&gt;&lt;Buttonstyle&#x3D;{{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}onClick&#x3D;{(e: any) &#x3D;&gt; {e.stopPropagation();history.push(&#x60;/settings/webhooks/${record.id}&#x60;);}}&gt;&lt;Icon type&#x3D;&quot;database&quot; theme&#x3D;&quot;filled&quot; /&gt;&lt;/Button&gt;&lt;Buttonstyle&#x3D;{{ paddingLeft: 8, paddingRight: 8, marginRight: 8 }}onClick&#x3D;{(e: any) &#x3D;&gt; {e.stopPropagation();showDialog(record);}}&gt;&lt;Icon type&#x3D;&quot;edit&quot; theme&#x3D;&quot;filled&quot; /&gt;&lt;/Button&gt;&lt;Popconfirmtitle&#x3D;&quot;Are you sure?&quot;icon&#x3D;{&lt;Icon type&#x3D;&quot;question-circle-o&quot; style&#x3D;{{ color: &#x27;red&#x27; }} /&gt;}onConfirm&#x3D;{(e: any) &#x3D;&gt; {stores.Webhooks.remove(record);e.stopPropagation();}}onCancel&#x3D;{(e: any) &#x3D;&gt; {e.stopPropagation();}}&gt;&lt;Buttonstyle&#x3D;{{ paddingLeft: 8, paddingRight: 8 }}onClick&#x3D;{(e: any) &#x3D;&gt; e.stopPropagation()}&gt;&lt;Icon type&#x3D;&quot;delete&quot; theme&#x3D;&quot;filled&quot; /&gt;&lt;/Button&gt;&lt;/Popconfirm&gt;&lt;/&gt;),},]}/&gt;&lt;Drawertitle&#x3D;{&#x60;${isEditing ? &#x27;Edit&#x27; : &#x27;Create&#x27;} Webhook&#x60;}width&#x3D;{360}placement&#x3D;&quot;right&quot;maskClosable&#x3D;{true}onClose&#x3D;{hideDialog}visible&#x3D;{isVisible}className&#x3D;&quot;prime__drawer&quot;&gt;&lt;Form onSubmit&#x3D;{onSubmit}&gt;&lt;Form.Item label&#x3D;&quot;Name&quot;&gt;{form.getFieldDecorator(&#x27;name&#x27;, {rules: [{ required: true }],})(&lt;Input autoFocus&#x3D;{!isEditing} size&#x3D;&quot;large&quot; /&gt;)}&lt;/Form.Item&gt;&lt;Form.Item label&#x3D;&quot;URL&quot;&gt;{form.getFieldDecorator(&#x27;url&#x27;, {rules: [{required: true,},{type: &#x27;url&#x27;,message: &#x27;Must be a valid URL&#x27;,},],})(&lt;Input size&#x3D;&quot;large&quot; placeholder&#x3D;&quot;https://yoursite.com&quot; /&gt;)}&lt;/Form.Item&gt;&lt;Form.Item label&#x3D;&quot;Method&quot;&gt;{form.getFieldDecorator(&#x27;method&#x27;, {rules: [{ required: true }],initialValue: &#x27;POST&#x27;,})(&lt;Select size&#x3D;&quot;large&quot;&gt;&lt;Select.Option key&#x3D;&quot;POST&quot;&gt;POST&lt;/Select.Option&gt;&lt;Select.Option key&#x3D;&quot;GET&quot;&gt;GET&lt;/Select.Option&gt;&lt;Select.Option key&#x3D;&quot;PUT&quot;&gt;PUT&lt;/Select.Option&gt;&lt;Select.Option key&#x3D;&quot;PATCH&quot;&gt;PATCH&lt;/Select.Option&gt;&lt;Select.Option key&#x3D;&quot;DELETE&quot;&gt;DELETE&lt;/Select.Option&gt;&lt;/Select&gt;)}&lt;/Form.Item&gt;&lt;div className&#x3D;&quot;prime__drawer__bottom&quot;&gt;&lt;Button style&#x3D;{{ marginRight: 8 }} onClick&#x3D;{hideDialog}&gt;Cancel&lt;/Button&gt;&lt;Button onClick&#x3D;{onSubmit} type&#x3D;&quot;primary&quot; htmlType&#x3D;&quot;submit&quot;&gt;{isEditing ? &#x27;Save&#x27; : &#x27;Create&#x27;}&lt;/Button&gt;&lt;/div&gt;&lt;/Form&gt;&lt;/Drawer&gt;&lt;/&gt;)}/&gt;);})</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/c6fe0db/packages/prime-ui/src/routes/settings/Webhooks.tsx#L13">prime-ui/src/routes/settings/Webhooks.tsx:13</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../index.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="_prime_ui_src_routes_settings_webhooks_.html">"prime-<wbr>ui/src/routes/settings/<wbr>Webhooks"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/_prime_ui_src_routes_settings_webhooks_.iprops.html" class="tsd-kind-icon">IProps</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_prime_ui_src_routes_settings_webhooks_.html#webhooks" class="tsd-kind-icon">Webhooks</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

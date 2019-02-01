@@ -1,3 +1,4 @@
+import { PrimeFieldContext, PrimeFieldOperation } from '@primecms/field';
 import {
   GraphQLBoolean,
   GraphQLID,
@@ -6,7 +7,6 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { PrimeFieldOperation } from '../../../utils/PrimeField';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 
@@ -26,13 +26,13 @@ export const createSchemaInputType = async (
   for (const field of fields) {
     if (field.primeField && !field.parentFieldId) {
       const type = await field.primeField.inputType(
-        {
+        ({
           name,
           schema,
           fields,
           uniqueTypeName,
           resolvers,
-        },
+        } as unknown) as PrimeFieldContext,
         operation
       );
       if (type) {

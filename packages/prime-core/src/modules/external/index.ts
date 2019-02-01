@@ -1,4 +1,5 @@
 import { GraphQLModule } from '@graphql-modules/core';
+import { PrimeFieldOperation } from '@primecms/field';
 import debug from 'debug';
 import {
   GraphQLObjectType,
@@ -12,7 +13,6 @@ import Container from 'typedi';
 import { Connection, getRepository } from 'typeorm';
 import { Schema } from '../../entities/Schema';
 import { DocumentTransformer } from '../../utils/DocumentTransformer';
-import { PrimeFieldOperation } from '../../utils/PrimeField';
 import { createAllDocumentResolver } from './resolvers/createAllDocumentResolver';
 import { createDocumentCreateResolver } from './resolvers/createDocumentCreateResolver';
 import { createDocumentRemoveResolver } from './resolvers/createDocumentRemoveResolver';

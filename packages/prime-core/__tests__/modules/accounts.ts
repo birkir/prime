@@ -1,7 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { Container } from 'typedi';
-import { Connection, createConnection, useContainer } from 'typeorm';
+import { Connection, useContainer } from 'typeorm';
+
 import { createAccounts } from '../../src/modules/accounts';
+import { connect } from '../../src/utils/connect';
 
 useContainer(Container);
 
@@ -10,13 +12,7 @@ describe('AccountsModule', () => {
   let accounts: GraphQLModule;
 
   beforeAll(async () => {
-    connection = await createConnection({
-      type: 'postgres',
-      url: process.env.DATABASE_URL || 'postgres://birkir@localhost:5432/prime-test',
-      entities: require('@accounts/typeorm').entities,
-      synchronize: true,
-    });
-
+    connection = await connect(process.env.TEST_DATABASE_URL);
     accounts = await createAccounts(connection);
   });
 
