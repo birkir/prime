@@ -1,7 +1,7 @@
 import { User as AccountsUser } from '@accounts/typeorm';
+import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Entity } from 'typeorm';
-import { GraphQLJSON } from '../../../types/GraphQLJSON';
 
 @Entity()
 @ObjectType()

@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { GraphQLJSON } from '../types/GraphQLJSON';
+import GraphQLJSON from 'graphql-type-json';
 import { PrimeField } from '../utils/PrimeField';
 import { PrimeFieldGroup } from '../utils/PrimeFieldGroup';
 import { PrimeFieldString } from '../utils/PrimeFieldString';

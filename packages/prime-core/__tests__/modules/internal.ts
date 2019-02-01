@@ -1,7 +1,8 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { Container } from 'typedi';
-import { Connection, createConnection, useContainer } from 'typeorm';
+import { Connection, useContainer } from 'typeorm';
 import { createInternal } from '../../src/modules/internal';
+import { connect } from '../../src/utils/connect';
 
 useContainer(Container);
 
@@ -13,17 +14,7 @@ describe('InternalModule', () => {
   let context: any;
 
   beforeAll(async () => {
-    connection = await createConnection({
-      type: 'postgres',
-      url: process.env.DATABASE_URL || 'postgres://birkir@localhost:5432/prime-test',
-      entities: [
-        ...require('@accounts/typeorm').entities,
-        'src/entities/*.ts',
-        'src/schema/internal/types/*.ts',
-      ],
-      synchronize: true,
-    });
-
+    connection = await connect(process.env.TEST_DATABASE_URL);
     internal = await createInternal(connection);
     mutations = internal.resolvers.Mutation;
     queries = internal.resolvers.Query;

@@ -44,24 +44,26 @@ export const createAllDocumentResolver = async ({
     sortOptions.push({ sort: '"id"', order: 'DESC' });
 
     const connection = new FindAllConnection(args, {
-      where: qb => {
+      where: (qb, count = false) => {
         const sqb = qb
           .subQuery()
           .select('id')
           .from(Document, 'd')
           .where('d.documentId = Document.documentId');
 
-        qb.addSelect(
-          fqb =>
-            fqb
-              .subQuery()
-              .select('array_agg(DISTINCT "locale")') // @todo postgres only
-              .from(Document, 'd')
-              .where('d.documentId = Document.documentId')
-              .andWhere(`Document.publishedAt IS ${published ? 'NOT' : ''} NULL`)
-              .andWhere(`Document.deletedAt IS NULL`),
-          'locales'
-        );
+        if (!count) {
+          qb.addSelect(
+            fqb =>
+              fqb
+                .subQuery()
+                .select('array_agg(DISTINCT "locale")') // @todo postgres only
+                .from(Document, 'd')
+                .where('d.documentId = Document.documentId')
+                .andWhere(`Document.publishedAt IS ${published ? 'NOT' : ''} NULL`)
+                .andWhere(`Document.deletedAt IS NULL`),
+            'locales'
+          );
+        }
 
         qb.andWhere('Document.locale = :locale', { locale });
         qb.andWhere(`Document.publishedAt IS ${published ? 'NOT' : ''} NULL`);
@@ -77,12 +79,19 @@ export const createAllDocumentResolver = async ({
         });
 
         sqb.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
-        qb.having(`Document.id = ${sqb.getQuery()}`);
-        qb.groupBy('Document.id');
+        if (!count) {
+          qb.having(`Document.id = ${sqb.getQuery()}`);
+          qb.groupBy('Document.id');
+        }
       },
       repository: documentRepository,
       sortOptions,
     });
+
+    connection.totalCount = await connection
+      .createAppliedQueryBuilder()
+      .cache(2000)
+      .getCount();
 
     return connection;
   };

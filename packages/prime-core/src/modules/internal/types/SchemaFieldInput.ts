@@ -1,6 +1,6 @@
+import GraphQLJSON from 'graphql-type-json';
 import { Field, InputType } from 'type-graphql';
 import { SchemaField } from '../../../entities/SchemaField';
-import { GraphQLJSON } from '../../../types/GraphQLJSON';
 
 @InputType()
 export class SchemaFieldInput extends SchemaField {

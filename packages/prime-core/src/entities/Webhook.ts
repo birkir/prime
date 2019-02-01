@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { pubSub } from '../modules';
-import { GraphQLJSON } from '../types/GraphQLJSON';
+import GraphQLJSON from 'graphql-type-json';
 import { WebhookCall } from './WebhookCall';
 
 @Entity()
