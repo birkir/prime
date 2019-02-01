@@ -13,7 +13,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { GraphQLJSON } from '../types/GraphQLJSON';
+import GraphQLJSON from 'graphql-type-json';
 import { Document } from './Document';
 import { SchemaField } from './SchemaField';
 

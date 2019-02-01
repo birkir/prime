@@ -1,5 +1,5 @@
+import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, InputType } from 'type-graphql';
-import { GraphQLJSON } from '../../../types/GraphQLJSON';
 
 @InputType()
 export class DocumentInput {

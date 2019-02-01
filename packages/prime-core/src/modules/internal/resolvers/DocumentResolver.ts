@@ -1,3 +1,4 @@
+import GraphQLJSON from 'graphql-type-json';
 import {
   Arg,
   Args,
@@ -14,13 +15,12 @@ import {
 import { Brackets, IsNull, Not } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
-import { Context } from '../../../types/Context';
-import { GraphQLJSON } from '../../../types/GraphQLJSON';
-import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
+import { Context } from '../../../interfaces/Context';
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { SchemaRepository } from '../repositories/SchemaRepository';
+import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { DocumentFilterInput } from '../types/DocumentFilterInput';
 import { DocumentInput } from '../types/DocumentInput';
 import { DocumentVersion } from '../types/DocumentVersion';

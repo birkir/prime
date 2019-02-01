@@ -9,7 +9,7 @@ jobs:
           POSTGRES_USER: prime
           POSTGRES_DB: prime-test
     environment:
-      DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
+      TEST_DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
       SESSION_SECRET: 'very-secret'
     steps:
       - checkout

@@ -1,17 +1,14 @@
 import { User } from '@accounts/typeorm';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { GraphQLJSON } from '../types/GraphQLJSON';
-import { getUniqueHashId } from '../utils/getUniqueHashId';
+import GraphQLJSON from 'graphql-type-json';
 import { Release } from './Release';
 import { Schema } from './Schema';
 
@@ -71,12 +68,4 @@ export class Document {
 
   @ManyToOne(type => User, { nullable: true })
   public user: User;
-
-  @BeforeInsert()
-  public async ensureDocumentId() {
-    const repository = getRepository(Document);
-    if (!this.documentId) {
-      this.documentId = await getUniqueHashId(repository, 'documentId');
-    }
-  }
 }

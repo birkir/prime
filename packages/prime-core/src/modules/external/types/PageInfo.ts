@@ -1,6 +1,6 @@
 import { GraphQLBoolean, GraphQLObjectType, GraphQLString } from 'graphql';
 
-export const pageInfoType = new GraphQLObjectType({
+export const PageInfo = new GraphQLObjectType({
   name: 'PageInfo',
   fields: {
     hasNextPage: { type: GraphQLBoolean },

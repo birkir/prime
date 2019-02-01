@@ -9,6 +9,7 @@ import {
 import { startCase } from 'lodash';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
+import { PageInfo } from './PageInfo';
 
 export const createSchemaConnectionType = async (
   { name, fields, schema, resolvers }: SchemaPayload,
@@ -97,7 +98,7 @@ export const createSchemaConnectionType = async (
     name: uniqueTypeName(`${name}_Connection`),
     fields: {
       edges: { type: new GraphQLList(ConnectionEdge) },
-      // pageInfo: { type: pageInfoType },
+      pageInfo: { type: PageInfo },
       totalCount: { type: GraphQLInt },
     },
   });

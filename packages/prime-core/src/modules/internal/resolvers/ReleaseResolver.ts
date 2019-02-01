@@ -5,9 +5,9 @@ import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
-import { ConnectionArgs, createConnectionType } from '../../../utils/createConnectionType';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { ReleaseRepository } from '../repositories/ReleaseRepository';
+import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
 

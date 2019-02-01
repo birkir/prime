@@ -5,12 +5,13 @@ import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 
 export class FindAllConnection<T> extends EntityConnection<T> {
   public documentTransformer: DocumentTransformer;
+  public totalCount: number | null = null;
 
-  public createAppliedQueryBuilder() {
+  public createAppliedQueryBuilder(counter = false) {
     const queryBuilder = this.repository.createQueryBuilder();
 
     if (this.where) {
-      this.where(queryBuilder);
+      (this.where as any)(queryBuilder, counter);
     }
 
     if (this.afterSelector) {
@@ -43,7 +44,7 @@ export class FindAllConnection<T> extends EntityConnection<T> {
   public async query(): Promise<T[]> {
     const { sortOptions } = this;
 
-    const queryBuilder = this.createAppliedQueryBuilder();
+    const queryBuilder = this.createAppliedQueryBuilder(true);
 
     const reverse = typeof this.args.last === 'number';
     const appliedOrderMap: any = {

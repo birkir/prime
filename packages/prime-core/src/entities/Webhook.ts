@@ -1,4 +1,5 @@
 import { User } from '@accounts/typeorm';
+import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
   AfterInsert,
@@ -10,8 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-// import { pubSub } from '../modules';
-import { GraphQLJSON } from '../types/GraphQLJSON';
 import { WebhookCall } from './WebhookCall';
 
 @Entity()
