@@ -19,6 +19,8 @@ const omitSchema = (collection: any, id: string) => {
   });
 };
 
+const SchemaVariant = types.enumeration('SchemaVariant', ['Default', 'Template', 'Slice']);
+
 export const ContentType = types
   .model('ContentType', {
     id: types.identifier,
@@ -27,20 +29,19 @@ export const ContentType = types
     description: types.maybeNull(types.string),
     groups: types.array(types.string),
     settings: types.frozen<JSONObject>(),
-    isSlice: types.maybeNull(types.boolean),
-    isTemplate: types.maybeNull(types.boolean),
-    entriesCount: types.maybeNull(types.number),
-    schema: types.optional(Schema, { groups: [{ title: 'Main', fields: [] }] }),
+    variant: types.optional(SchemaVariant, 'Default'),
+    documentCount: types.maybeNull(types.number),
+    fields: types.optional(Schema, { groups: [{ title: 'Main', fields: [] }] }),
   })
   .preProcessSnapshot(snapshot => {
-    const groupName = snapshot.isTemplate ? snapshot.title : 'Main';
+    const groupName = snapshot.variant === 'Template' ? snapshot.title : 'Main';
     const schema: any =
-      snapshot.schema && Array.isArray(snapshot.schema)
-        ? { groups: snapshot.schema }
-        : snapshot.schema;
+      snapshot.fields && Array.isArray(snapshot.fields)
+        ? { groups: snapshot.fields }
+        : snapshot.fields;
     return {
       ...snapshot,
-      schema,
+      fields: schema,
       groups: Array.isArray(snapshot.groups) ? snapshot.groups : [groupName],
     };
   })
@@ -53,7 +54,7 @@ export const ContentType = types
       });
       if (data.getContentTypeSchema) {
         if (data.getContentTypeSchema.length > 0) {
-          self.schema = Schema.create({ groups: data.getContentTypeSchema });
+          self.fields = Schema.create({ groups: data.getContentTypeSchema });
         }
       }
     });
@@ -62,20 +63,22 @@ export const ContentType = types
       const result = yield client.mutate({
         mutation: SAVE_SCHEMA,
         variables: {
-          contentTypeId: self.id,
-          schema: omitSchema(self.schema.groups, self.id).filter(
-            (group: any) => ([].concat(self.groups as any) as any).indexOf(group.title) >= 0
-          ),
+          id: self.id,
+          input: {
+            fields: omitSchema(self.fields.groups, self.id).filter(
+              (group: any) => ([].concat(self.groups as any) as any).indexOf(group.title) >= 0
+            ),
+          },
         },
       });
 
       Settings.reloadPlayground();
 
-      if (self.isSlice || self.isTemplate) {
+      if (self.variant !== 'Default') {
         ContentTypes.loadAll();
       }
 
-      return get(result, 'data.setContentTypeSchema');
+      return get(result, 'data.updateSchema');
     });
 
     const replace = (data: any) => {
@@ -85,9 +88,6 @@ export const ContentType = types
     };
 
     const update = flow(function*(input: any) {
-      delete input.isSlice;
-      delete input.isTemplate;
-
       const { data } = yield client.mutate({
         mutation: UPDATE_CONTENT_TYPE,
         variables: {
@@ -95,8 +95,8 @@ export const ContentType = types
           input,
         },
       });
-      if (data.updateContentType) {
-        replace(data.updateContentType);
+      if (data.updateSchema) {
+        replace(data.updateSchema);
       }
 
       Settings.reloadPlayground();
@@ -110,7 +110,7 @@ export const ContentType = types
         },
       });
 
-      if (data.removeContentType) {
+      if (data.removeSchema) {
         ContentTypes.removeById(self.id);
       }
 
@@ -121,7 +121,7 @@ export const ContentType = types
       if (self.groups.indexOf(title) === -1) {
         self.groups.push(title);
       }
-      self.schema.addGroup(title);
+      self.fields.addGroup(title);
     };
 
     const removeGroup = (title: any) => {
@@ -129,7 +129,7 @@ export const ContentType = types
       if (groupIndex >= 0) {
         self.groups.splice(groupIndex, 1);
       }
-      self.schema.removeGroup(title);
+      self.fields.removeGroup(title);
     };
 
     return {

@@ -1,13 +1,15 @@
 const cache = new Set();
 
 export const uniqueTypeName = (name, i = 0) => {
-  if (cache.has(name)) {
-    return uniqueTypeName(`${name}${i + 1}`, i + 1);
+  const typeName = `${name}${i > 0 ? i : ''}`;
+  if (cache.has(typeName)) {
+    return uniqueTypeName(name, i + 1);
   }
-  cache.add(name);
-  return name;
+  cache.add(typeName);
+  return typeName;
 };
 
-export const clearTypeNames = () => {
+export const resetTypeNames = () => {
   cache.clear();
+  cache.add('Order');
 };

@@ -37,7 +37,7 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
           message.error(errorMessage);
         } else {
           message.info('Password has been changed');
-          Auth.user!.updateLastPasswordChange();
+          // Auth.user!.updateLastPasswordChange();
           close();
         }
       }

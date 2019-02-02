@@ -37,8 +37,8 @@ export const ContentReleases = types
         const { data } = yield client.query({
           query: ALL_CONTENT_RELEASES,
         });
-        data.allContentReleases.forEach((contentRelease: any) => {
-          const item = ContentRelease.create(contentRelease);
+        data.allReleases.edges.forEach((contentRelease: any) => {
+          const item = ContentRelease.create(contentRelease.node);
           self.items.put(item);
         });
         self.loaded = true;

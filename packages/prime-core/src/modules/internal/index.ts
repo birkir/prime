@@ -35,5 +35,10 @@ export const createInternal = async (connection: Connection, checkAuth = default
     resolvers: () =>
       mapValues(omitBy(schema.resolvers, noEnumsOrInheritedModels), noUndefinedTypeOf),
     configRequired: false,
+    logger: {
+      clientError(err) {
+        log('error', err);
+      },
+    },
   });
 };

@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
+import cors from 'cors';
 import debug from 'debug';
 import express from 'express';
 import http from 'http';
@@ -21,6 +22,13 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   const server = http.createServer(app);
   const { schema, context, subscriptions } = await createModules(connection);
   let external = await createExternal(connection);
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: true,
+    })
+  );
 
   const externalServer: any = new ApolloServer({
     playground: true,
@@ -60,7 +68,13 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   });
 
   apollo.installSubscriptionHandlers(server);
-  apollo.applyMiddleware({ app, path: '/prime/graphql' });
+  apollo.applyMiddleware({
+    app,
+    path: '/prime/graphql',
+    cors: {
+      origin: true,
+    },
+  });
 
   return server.listen(port, () => {
     log(`🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`);

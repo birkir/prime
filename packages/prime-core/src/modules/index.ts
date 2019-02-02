@@ -2,7 +2,7 @@ import { GraphQLModule } from '@graphql-modules/core';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
 import { createAccounts } from './accounts';
-import { createInternal } from './internal';
+import { createInternal, log } from './internal';
 import { isAuthenticated } from './internal/utils/isAuthenticated';
 
 export const createModules = async (connection: Connection) => {
@@ -20,6 +20,11 @@ export const createModules = async (connection: Connection) => {
       };
       container.set('context', ctx);
       return ctx;
+    },
+    logger: {
+      clientError: log,
+      log,
+      error: log,
     },
     resolversComposition: {
       'Mutation.createUser': [isAuthenticated()],

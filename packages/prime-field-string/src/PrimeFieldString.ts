@@ -19,9 +19,9 @@ interface Options {
 
 export class PrimeFieldString extends PrimeField {
   public static type = 'string';
-  public title = 'String';
-  public description = 'Text field with no formatting';
-  public options: Options = {
+  public static title = 'String';
+  public static description = 'Text field with no formatting';
+  public static options: Options = {
     type: 'singleline',
     rules: {},
   };

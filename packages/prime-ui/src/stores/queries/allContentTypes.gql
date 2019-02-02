@@ -1,31 +1,36 @@
-query allContentTypes {
-  allContentTypes(order: "title") {
-    id
-    name
-    title
-    groups
-    settings
-    isSlice
-    isTemplate
-    entriesCount
-    schema {
-      title
-      fields {
+query allSchemas {
+  allSchemas {
+    edges {
+      node {
         id
         name
         title
-        description
-        type
-        options
-        isDisplay
-        contentTypeId
+        groups
+        settings
+        variant
+        documentCount
         fields {
-          id
-          name
           title
-          description
-          type
-          options
+          fields {
+            id
+            name
+            title
+            description
+            type
+            options
+            primary
+            schemaId
+            fields {
+              id
+              name
+              title
+              description
+              type
+              options
+              primary
+              schemaId
+            }
+          }
         }
       }
     }

@@ -1,20 +1,13 @@
-query contentTypeById(
-  $id: ID
-  $name: String
-) {
-  ContentType(
-    id: $id
-    name: $name
-  ) {
+query contentTypeById($id: ID, $name: String) {
+  Schema(id: $id, name: $name) {
     id
     name
     title
+    variant
     groups
     settings
-    isSlice
-    isTemplate
-    entriesCount
-    schema {
+    # entriesCount
+    fields {
       title
       fields {
         id
@@ -23,8 +16,8 @@ query contentTypeById(
         description
         type
         options
-        isDisplay
-        contentTypeId
+        primary
+        schemaId
         fields {
           id
           name

@@ -148,12 +148,9 @@ export const EditField = Form.create({
       type: Form.createFormField({ value: field.type }),
     };
 
-    const fromAvailableField = props.availableFields.find((f: any) => f.id === field.type);
+    const fromAvailableField = props.availableFields.find((f: any) => f.type === field.type);
 
-    const options = defaultsDeep(
-      get(field, 'options', {}),
-      get(fromAvailableField, 'defaultOptions', {})
-    );
+    const options = defaultsDeep(get(field, 'options', {}), get(fromAvailableField, 'options', {}));
 
     Object.entries(options).forEach(([key, value]) => {
       res[`options.${key}`] = Form.createFormField({ value });

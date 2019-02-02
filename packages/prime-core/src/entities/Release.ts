@@ -34,7 +34,8 @@ export class Release {
   @Field({ nullable: true })
   public publishedAt: Date;
 
-  @Column('uuid')
+  @Column('uuid', { nullable: true })
+  @Field({ nullable: true })
   public publishedBy: string;
 
   @CreateDateColumn()

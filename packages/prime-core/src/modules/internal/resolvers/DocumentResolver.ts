@@ -1,4 +1,5 @@
 import GraphQLJSON from 'graphql-type-json';
+import { get, identity, pickBy } from 'lodash';
 import {
   Arg,
   Args,
@@ -12,9 +13,10 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Brackets, IsNull, Not } from 'typeorm';
+import { Brackets, getRepository, IsNull, Not } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
+import { SchemaField } from '../../../entities/SchemaField';
 import { Context } from '../../../interfaces/Context';
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
@@ -28,7 +30,7 @@ import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const DocumentConnection = createConnectionType(Document);
 
-enum DocumentOrder {
+enum DocumentSort {
   updatedAt_ASC,
   updatedAt_DESC,
   createdAt_ASC,
@@ -47,7 +49,7 @@ const sortOptions = orders =>
     return { sort, order };
   });
 
-registerEnumType(DocumentOrder, { name: 'DocumentConnectionOrder' });
+registerEnumType(DocumentSort, { name: 'DocumentConnectionSort' });
 
 @Resolver(of => Document)
 export class DocumentResolver {
@@ -56,13 +58,13 @@ export class DocumentResolver {
 
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
+
   private readonly documentTransformer: DocumentTransformer = new DocumentTransformer();
 
   @Authorized()
   @Query(returns => Document, { nullable: true })
   public Document(
-    @Arg('id', type => ID, { description: 'Can be either id(uuid) or documentId(hashid)' })
-    id: string,
+    @Arg('id', type => ID, { description: 'Can be either uuid or documentId' }) id: string,
     @Arg('locale', { nullable: true }) locale?: string,
     @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ) {
@@ -75,7 +77,7 @@ export class DocumentResolver {
 
   @Query(returns => DocumentConnection)
   public allDocuments(
-    @Arg('order', type => [DocumentOrder], { defaultValue: 1, nullable: true }) orders: string[],
+    @Arg('sort', type => [DocumentSort], { defaultValue: 1, nullable: true }) sorts: string[],
     @Arg('filter', type => [DocumentFilterInput], { nullable: true })
     filters: DocumentFilterInput[],
     @Args() args: ConnectionArgs
@@ -91,9 +93,9 @@ export class DocumentResolver {
           .where('d.documentId = Document.documentId')
           .andWhere('d.deletedAt IS NULL');
 
-        const filterWithName = name =>
+        const filterWithName = (name, filterArr) =>
           new Brackets(builder => {
-            filters.map((filter, i) => {
+            filterArr.map((filter, i) => {
               builder.orWhere(
                 new Brackets(sq => {
                   Object.entries(filter).map(([key, value]) =>
@@ -104,9 +106,11 @@ export class DocumentResolver {
             });
           });
 
-        if (filters.length > 0) {
-          subquery.andWhere(filterWithName('d'));
-          qb.andWhere(filterWithName('Document'));
+        const filtered = (filters || []).map(filter => pickBy(filter, identity));
+
+        if (filtered.length > 0 && Object.keys(filtered[0]).length > 0) {
+          subquery.andWhere(filterWithName('d', filtered));
+          qb.andWhere(filterWithName('Document', filtered));
         }
 
         subquery.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
@@ -116,7 +120,7 @@ export class DocumentResolver {
         return qb;
       },
       repository: this.documentRepository,
-      sortOptions: sortOptions(orders),
+      sortOptions: sortOptions(sorts),
     });
   }
 
@@ -240,5 +244,40 @@ export class DocumentResolver {
     return this.documentRepository.loadOneByDocumentId(document.id, 'id', {
       publishedAt: Not(IsNull()),
     });
+  }
+
+  @FieldResolver(returns => GraphQLJSON, {
+    nullable: true,
+  })
+  public async primary(@Root() document: Document): Promise<any> {
+    const schemaFieldRepository = getRepository(SchemaField);
+    let field = await schemaFieldRepository.findOne({
+      cache: 1000,
+      where: {
+        schemaId: document.schemaId,
+        primary: true,
+      },
+    });
+
+    if (field) {
+      const path = [field.id];
+
+      if (field.parentFieldId) {
+        field = await schemaFieldRepository.findOne(field.parentFieldId, { cache: 1000 });
+        if (field) {
+          path.push(field.id);
+        }
+      }
+
+      let value = get(document.data, path.reverse().join('.'));
+
+      if (field && field.primeField) {
+        value = field.primeField.processOutput(value);
+      }
+
+      return value;
+    }
+
+    return null;
   }
 }

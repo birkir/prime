@@ -1,7 +1,9 @@
+import { defaultsDeep } from 'lodash';
 import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
-import { Raw } from 'typeorm';
+import { getRepository, Raw } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Document } from '../../../entities/Document';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
 import { pubSub } from '../index';
 import { SchemaRepository } from '../repositories/SchemaRepository';
@@ -20,7 +22,7 @@ export class SchemaResolver {
   private readonly schemaRepository: SchemaRepository;
 
   @Query(returns => Schema, { nullable: true, description: 'Get Schema by ID' })
-  public Schema(
+  public async Schema(
     @Arg('id', type => ID, { nullable: true }) id: string,
     @Arg('name', { nullable: true }) name: string
   ) {
@@ -29,17 +31,26 @@ export class SchemaResolver {
         name: Raw(alias => `lower(${alias}) = lower('${name.replace(/[\W_]+/g, '')}')`),
       });
     }
-    return this.schemaRepository.loadOne(id);
+    const res = await this.schemaRepository.loadOne(id);
+    res.variant = parseEnum(SchemaVariant, res.variant);
+    return res;
   }
 
   @Query(returns => SchemaConnection)
-  public allSchemas(
+  public async allSchemas(
     @Args() args: ConnectionArgs //
   ) {
-    return new EntityConnection(args, {
+    const connection = await new EntityConnection(args, {
       repository: this.schemaRepository,
       sortOptions: [{ sort: 'title', order: 'ASC' }],
     });
+    return {
+      ...connection,
+      edges: (await connection.edges).map(edge => ({
+        ...edge,
+        node: { ...edge.node, variant: parseEnum(SchemaVariant, edge.node.variant) },
+      })),
+    };
   }
 
   @Mutation(returns => Schema)
@@ -53,12 +64,13 @@ export class SchemaResolver {
       await setSchemaFields(schema.id, input.fields);
     }
     pubSub.publish('REBUILD_EXTERNAL', schema);
+    schema.variant = parseEnum(SchemaVariant, schema.variant);
     return schema;
   }
 
   @Mutation(returns => Schema)
   public async updateSchema(
-    @Arg('id') id: string,
+    @Arg('id', type => ID) id: string,
     @Arg('input', type => SchemaInput) input: SchemaInput & { fields: any }
   ): Promise<Schema> {
     const schema = await this.schemaRepository.findOneOrFail(id);
@@ -67,6 +79,9 @@ export class SchemaResolver {
     }
     input.variant = parseEnum(SchemaVariant, input.variant);
     await this.schemaRepository.merge(schema, input);
+    schema.settings = defaultsDeep(input.settings, schema.settings);
+    await this.schemaRepository.save(schema);
+    schema.variant = parseEnum(SchemaVariant, schema.variant);
     pubSub.publish('REBUILD_EXTERNAL', schema);
     return schema;
   }
@@ -99,5 +114,22 @@ export class SchemaResolver {
   })
   public fields(@Root() schema: Schema): Promise<SchemaFieldGroup[]> {
     return getSchemaFields(schema.id);
+  }
+
+  @FieldResolver(returns => Number, { nullable: true })
+  public documentCount(@Root() schema: Schema) {
+    const qb = getRepository(Document).createQueryBuilder();
+
+    const sq = qb
+      .subQuery()
+      .select('id')
+      .from(Document, 'd')
+      .andWhere('d.documentId = Document.documentId')
+      .limit(1);
+
+    qb.andWhere('Document.schemaId = :schemaId', { schemaId: schema.id });
+    qb.andWhere(`id = ${sq.getQuery()}`);
+
+    return qb.getCount();
   }
 }

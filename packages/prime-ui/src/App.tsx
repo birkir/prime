@@ -29,7 +29,7 @@ export class App extends React.Component {
   public async componentDidMount() {
     await Auth.checkLogin();
     if (Auth.isLoggedIn) {
-      await ContentTypes.loadAll();
+      // await ContentTypes.loadAll();
     }
     this.setState({ loading: false });
   }

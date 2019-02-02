@@ -1,4 +1,5 @@
 import { flow, types } from 'mobx-state-tree';
+import { accountsClient, accountsGraphQL } from '../utils/accounts';
 import { fields } from '../utils/fields';
 import { User } from './models/User';
 import { Settings } from './settings';
@@ -6,6 +7,8 @@ import { Settings } from './settings';
 export const Auth = types
   .model('Auth', {
     user: types.maybeNull(User),
+    accessToken: types.maybeNull(types.string),
+    refreshToken: types.maybeNull(types.string),
     isSetup: types.optional(types.maybeNull(types.boolean), null),
     isLoggedIn: false,
   })
@@ -26,47 +29,38 @@ export const Auth = types
     };
 
     const login = flow(function*(email: string, password: string) {
-      const res: any = yield fetch(`${Settings.coreUrl}/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      }).then(r => r.json());
+      const result = yield accountsGraphQL.loginWithService('password', {
+        email,
+        password,
+      });
 
-      self.isLoggedIn = Boolean(res.user);
-      self.user = res.user;
+      console.log(result);
 
-      yield ensureFields();
+      // self.isLoggedIn = Boolean(res.user);
+      // self.user = res.user;
 
-      return res;
+      // yield ensureFields();
+
+      // return res;
     });
 
     const logout = flow(function*() {
-      yield fetch(`${Settings.coreUrl}/auth/logout`, {
-        credentials: 'include',
-      });
+      yield accountsGraphQL.logout();
       self.isLoggedIn = false;
       self.user = null;
     });
 
     const checkLogin = flow(function*() {
-      const res: any = yield fetch(`${Settings.coreUrl}/auth/user`, {
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
-        },
-      }).then(r => r.json());
-
-      if (res.setup) {
-        self.isSetup = res.setup;
-      } else if (res.user) {
-        self.isLoggedIn = Boolean(res.user);
-        self.user = res.user;
+      const tokens = yield accountsClient.getTokens();
+      if (tokens) {
+        self.accessToken = tokens.accessToken;
+        self.refreshToken = tokens.refreshToken;
+        self.isLoggedIn = true;
+        yield accountsClient.refreshSession();
+        const user = yield accountsGraphQL.getUser();
+        console.log('user %o', user);
       }
-
-      yield ensureFields();
+      // yield ensureFields();
     });
 
     const register = flow(function*({

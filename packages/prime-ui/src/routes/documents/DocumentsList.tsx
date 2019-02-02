@@ -34,63 +34,54 @@ interface IOptions {
 }
 
 const GET_CONTENT_ENTRIES = gql`
-  query contentEntries(
-    $limit: Int
-    $skip: Int
-    $language: String
-    $contentTypeId: ID
-    $contentReleaseId: ID
-    $sort: SortField
-    $order: SortOrder
+  query allDocuments(
+    $locale: String
+    $schemaId: ID
+    $releaseId: ID
+    $sort: [DocumentConnectionSort!]
   ) {
-    ContentType(id: $contentTypeId) {
-      id
-      name
-      title
+    allSchemas {
+      edges {
+        node {
+          id
+          name
+          title
+          variant
+        }
+      }
     }
-    allContentTypes(order: "title") {
-      id
-      name
-      title
-      isSlice
-      isTemplate
-    }
-    allUsers {
-      id
-      email
-    }
-    allContentEntries(
-      limit: $limit
-      skip: $skip
-      language: $language
-      contentTypeId: $contentTypeId
-      contentReleaseId: $contentReleaseId
+    # allUsers {
+    #   id
+    #   email
+    # }
+    allDocuments(
+      first: 10
+      filter: { locale: $locale, schemaId: $schemaId, releaseId: $releaseId }
       sort: $sort
-      order: $order
     ) {
       totalCount
       edges {
         node {
-          entryId
-          versionId
-          contentReleaseId
-          language
-          isPublished
-          publishedVersionId
+          id
+          documentId
+          # releaseId
+          locale
+          publishedAt
+          # publishedId
           updatedAt
           data
-          display
-          contentType {
-            id
-            name
-            title
-          }
-          user {
-            id
-            email
-            firstname
-            lastname
-          }
+          primary
+          # schema {
+          #   id
+          #   name
+          #   title
+          # }
+          # user {
+          #   id
+          #   email
+          #   firstname
+          #   lastname
+          # }
         }
       }
     }
@@ -139,7 +130,7 @@ export const DocumentsList = ({ match, history }: any) => {
 
   let userId: any;
   let contentTypeId: any = null;
-  const contentReleaseId = options.release || '';
+  const contentReleaseId = options.release || null;
 
   if (options.type) {
     const contentType = ContentTypes.list.find(
@@ -156,14 +147,13 @@ export const DocumentsList = ({ match, history }: any) => {
       client={client}
       fetchPolicy="network-only"
       variables={{
-        contentTypeId,
-        contentReleaseId,
+        schemaId: contentTypeId,
+        releaseId: contentReleaseId,
         userId,
-        skip: 0,
-        limit: PER_PAGE,
-        language: locale.id,
-        sort: 'updatedAt',
-        order: 'DESC',
+        // skip: 0,
+        // limit: PER_PAGE,
+        locale: locale.id,
+        sort: 'updatedAt_ASC',
       }}
     >
       {({ loading, error, data, refetch }) => {
@@ -176,26 +166,26 @@ export const DocumentsList = ({ match, history }: any) => {
           pageSize: PER_PAGE,
         };
 
-        const formatSorterField = (field: string) => {
-          if (field === 'user.id') {
-            return 'userId';
-          }
-          return field;
-        };
-
         const onTableChange = async (paging: any, filters: any, sorter: any) => {
           contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
           userId = filters['user.id'] && filters['user.id'][0];
 
+          const formatSorterField = (field: string) => {
+            if (field === 'user.id') {
+              field = 'userId';
+            }
+            return `${field}_${sorter.order === 'ascend' ? 'ASC' : 'DESC'}`;
+          };
+
           const variables = {
-            contentTypeId,
-            contentReleaseId,
+            schemaId: contentTypeId,
+            releaseId: contentReleaseId,
             userId,
-            limit: paging.pageSize,
-            skip: (paging.current - 1) * paging.pageSize,
+            // limit: paging.pageSize,
+            // skip: (paging.current - 1) * paging.pageSize,
             sort: formatSorterField(sorter.field),
-            language: locale.id,
-            order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
+            locale: locale.id,
+            // order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
           };
           refetch(variables);
         };
@@ -209,7 +199,7 @@ export const DocumentsList = ({ match, history }: any) => {
             render(text: string, record: any) {
               let backgroundColor = record.publishedVersionId ? '#79cea3' : '#faad14';
               let icon = record.publishedVersionId ? 'caret-right' : 'exclamation';
-              let dot = !record.publishedVersionId || record.isPublished ? false : true;
+              let dot = !record.publishedVersionId || record.publishedAt !== null ? false : true;
 
               if (contentReleaseId) {
                 dot = false;
@@ -248,15 +238,23 @@ export const DocumentsList = ({ match, history }: any) => {
             title: 'Title',
             dataIndex: 'data.title',
             render(text: string, record: any) {
-              if (options.locale && record.language !== options.locale) {
-                return (
-                  <div style={{ display: 'flex' }}>
-                    <i style={{ display: 'inline-flex', flex: 1 }}>{record.display}</i>
-                    <Tag color="orange">Needs translation</Tag>
-                  </div>
-                );
-              }
-              return record.display;
+              const isLocale = options.locale && record.locale !== options.locale;
+              const isItalic = isLocale || !record.primary;
+              return (
+                <div style={{ display: 'flex' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      flex: 1,
+                      fontStyle: isItalic ? 'italic' : '',
+                      opacity: isItalic ? 0.75 : 1,
+                    }}
+                  >
+                    {record.primary || `(id: ${record.documentId})`}
+                  </span>
+                  {isLocale && <Tag color="orange">Needs translation</Tag>}
+                </div>
+              );
             },
           },
           {
@@ -325,10 +323,10 @@ export const DocumentsList = ({ match, history }: any) => {
           </Menu>
         );
 
-        const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
+        const items = get(data, 'allDocuments.edges', []).map(({ node }: any) => node);
 
-        const contentRelease = ContentReleases.items.has(contentReleaseId)
-          ? ContentReleases.items.get(contentReleaseId)
+        const contentRelease = ContentReleases.items.has(contentReleaseId || '')
+          ? ContentReleases.items.get(contentReleaseId || '')
           : null;
 
         const publishRelease = () => {

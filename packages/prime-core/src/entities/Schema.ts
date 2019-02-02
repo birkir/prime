@@ -45,7 +45,7 @@ export class Schema {
 
   @Column('enum', { enum: SchemaVariant, default: SchemaVariant.Default })
   @Field(type => SchemaVariant)
-  public variant: SchemaVariant; // was "isSlice" and "isTemplate"
+  public variant: SchemaVariant;
 
   @Column('jsonb', { default: [] })
   @Field(type => GraphQLJSON)

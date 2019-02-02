@@ -1,13 +1,17 @@
-query allContentReleases {
-  allContentReleases {
-    id
-    name
-    description
-    documents
-    scheduledAt
-    publishedAt
-    publishedBy
-    updatedAt
-    createdAt
+query allReleases {
+  allReleases {
+    edges {
+      node {
+        id
+        name
+        description
+        # documents -> documents { id }
+        scheduledAt
+        publishedAt
+        publishedBy
+        updatedAt
+        createdAt
+      }
+    }
   }
 }

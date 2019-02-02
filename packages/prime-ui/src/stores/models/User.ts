@@ -8,10 +8,10 @@ export const User = types
     lastname: types.maybeNull(types.string),
     displayName: types.maybeNull(types.string),
     avatarUrl: types.maybeNull(types.string),
-    lastPasswordChange: types.Date,
-    lastLogin: types.Date,
-    createdAt: types.Date,
-    updatedAt: types.Date,
+    // lastPasswordChange: types.Date,
+    // lastLogin: types.Date,
+    // createdAt: types.Date,
+    // updatedAt: types.Date,
   })
   .views(self => ({
     get gravatarUrl() {
@@ -26,19 +26,20 @@ export const User = types
       self.displayName = displayName;
       self.avatarUrl = avatarUrl;
     },
-    updateLastPasswordChange() {
-      self.lastPasswordChange = new Date();
-    },
+    // updateLastPasswordChange() {
+    //   self.lastPasswordChange = new Date();
+    // },
     updateEmail(email: string) {
       self.email = email;
     },
   }))
   .preProcessSnapshot(snapshot => ({
     ...snapshot,
-    ...(snapshot && {
-      lastPasswordChange: new Date(snapshot.lastPasswordChange),
-      lastLogin: new Date(snapshot.lastLogin),
-      createdAt: new Date(snapshot.createdAt),
-      updatedAt: new Date(snapshot.updatedAt),
-    }),
+    ...(snapshot &&
+      {
+        // lastPasswordChange: new Date(snapshot.lastPasswordChange),
+        // lastLogin: new Date(snapshot.lastLogin),
+        // createdAt: new Date(snapshot.createdAt),
+        // updatedAt: new Date(snapshot.updatedAt),
+      }),
   }));

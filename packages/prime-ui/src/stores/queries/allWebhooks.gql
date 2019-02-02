@@ -1,13 +1,17 @@
 query allWebhooks {
   allWebhooks {
-    id
-    name
-    url
-    method
-    count
-    success
-    options
-    createdAt
-    updatedAt
+    edges {
+      node {
+        id
+        name
+        url
+        method
+        # count
+        # success
+        options
+        createdAt
+        updatedAt
+      }
+    }
   }
 }

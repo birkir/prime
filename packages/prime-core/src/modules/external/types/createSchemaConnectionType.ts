@@ -12,18 +12,18 @@ import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { PageInfo } from './PageInfo';
 
+const OrderEnum = new GraphQLEnumType({
+  name: 'Order',
+  values: {
+    ASC: { value: 'ASC' },
+    DESC: { value: 'DESC' },
+  },
+});
+
 export const createSchemaConnectionType = async (
   { name, fields, schema, resolvers }: SchemaPayload,
   SchemaType: GraphQLObjectType
 ) => {
-  const OrderEnum = new GraphQLEnumType({
-    name: uniqueTypeName('Order'),
-    values: {
-      ASC: { value: 'ASC' },
-      DESC: { value: 'DESC' },
-    },
-  });
-
   const sortName = uniqueTypeName(`${name}_Sort`);
   const sortFields = {};
 

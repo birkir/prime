@@ -1,4 +1,5 @@
 import { GraphQLFieldConfig, GraphQLInputFieldConfig, GraphQLInputType } from 'graphql';
+import { defaultsDeep } from 'lodash';
 import { Repository } from 'typeorm';
 import { Document } from './interfaces/Document';
 import { PrimeFieldContext } from './interfaces/PrimeFieldContext';
@@ -8,9 +9,9 @@ import { SchemaField } from './interfaces/SchemaField';
 
 export class PrimeField {
   public static type: string;
-  public title: string;
-  public description: string;
-  public options: any;
+  public static title: string;
+  public static description: string;
+  public static options: any;
 
   constructor(
     protected schemaField: SchemaField,
@@ -20,6 +21,11 @@ export class PrimeField {
       schemaField: Repository<SchemaField>;
     }
   ) {}
+
+  public get options() {
+    const defaults = Object.getPrototypeOf(this).constructor.options;
+    return defaultsDeep(this.schemaField.options, defaults);
+  }
 
   public outputType<TSource, TContext>(
     context: PrimeFieldContext,

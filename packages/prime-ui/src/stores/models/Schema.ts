@@ -20,8 +20,8 @@ export const SchemaField = types
     name: types.string,
     title: types.string,
     description: types.maybeNull(types.string),
-    isDisplay: types.optional(types.boolean, false),
-    contentTypeId: types.maybeNull(types.string),
+    primary: types.optional(types.boolean, false),
+    schemaId: types.maybeNull(types.string),
     options: types.frozen<JSONObject>(),
     group: DEFAULT_GROUP_TITLE,
     fields: types.maybeNull(types.array(types.late((): any => SchemaField))),
@@ -51,7 +51,7 @@ export const SchemaField = types
       self.options = obj.options;
     },
     setIsDisplay(isDisplay: boolean) {
-      self.isDisplay = isDisplay;
+      self.primary = isDisplay;
     },
   }));
 
@@ -116,8 +116,8 @@ export const Schema = types
           name: obj.name,
           title: obj.title,
           description: obj.description,
-          isDisplay: obj.type === 'string' && !self.fields.find(f => f.isDisplay),
-          contentTypeId: contentType.id,
+          primary: obj.type === 'string' && !self.fields.find(f => f.primary),
+          schemaId: contentType.id,
           type: obj.type || DEFAULT_TYPE,
           group: obj.group || DEFAULT_GROUP_TITLE,
           options: {},

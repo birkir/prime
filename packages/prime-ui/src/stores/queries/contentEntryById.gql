@@ -1,15 +1,5 @@
-query contentEntryById(
-  $entryId: ID
-  $versionId: ID
-  $contentReleaseId: ID
-  $language: String
-) {
-  ContentEntry(
-    entryId: $entryId
-    versionId: $versionId
-    contentReleaseId: $contentReleaseId
-    language: $language
-  ) {
+query contentEntryById($entryId: ID, $versionId: ID, $contentReleaseId: ID, $language: String) {
+  Document(id: $versionId, documentId: $entryId, releaseId: $contentReleaseId, locale: $language) {
     versionId
     entryId
     contentTypeId

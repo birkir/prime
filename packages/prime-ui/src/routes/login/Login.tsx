@@ -8,12 +8,8 @@ class LoginBase extends React.Component<FormComponentProps> {
     e.preventDefault();
     const values: any = this.props.form.getFieldsValue();
     try {
-      const res = await Auth.login(values.email, values.password);
-      if (res.success) {
-        (this.props as any).history.push('/');
-      } else {
-        message.error('Unknown error');
-      }
+      await Auth.login(values.email, values.password);
+      (this.props as any).history.push('/');
     } catch (err) {
       message.error('Invalid email or password');
     }

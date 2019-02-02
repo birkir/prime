@@ -67,7 +67,8 @@ export class SchemaField {
   @OneToMany(type => SchemaField, category => category.parentField)
   public childFields: SchemaField[];
 
-  @Column()
+  @Column({ nullable: true })
+  @Field()
   public schemaId: string;
 
   @ManyToOne(type => Schema, schema => schema.fields, { cascade: true, onDelete: 'SET NULL' })

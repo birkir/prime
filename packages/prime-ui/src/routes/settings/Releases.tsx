@@ -27,7 +27,7 @@ export class Releases extends React.Component<any> {
       },
     });
 
-    if (res.data && res.data.removeContentRelease) {
+    if (res.data && res.data.removeRelease) {
       ContentReleases.remove(contentRelease);
     } else {
       message.error('Could not remove release');

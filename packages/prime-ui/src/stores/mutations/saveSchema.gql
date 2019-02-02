@@ -1,9 +1,5 @@
-mutation updateSchema(
-  $contentTypeId: ID!
-  $schema: [ContentTypeFieldGroupInputType]!
-) {
-  setContentTypeSchema(
-    contentTypeId: $contentTypeId
-    schema: $schema
-  )
+mutation updateSchema($id: ID!, $input: SchemaInput!) {
+  updateSchema(id: $id, input: $input) {
+    id
+  }
 }

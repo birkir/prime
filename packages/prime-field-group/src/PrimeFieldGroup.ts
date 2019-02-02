@@ -8,10 +8,9 @@ interface Options {
 
 export class PrimeFieldGroup extends PrimeField {
   public static type = 'group';
-
-  public title = 'Group';
-  public description = 'Group other fields to list';
-  public options: Options = {
+  public static title = 'Group';
+  public static description = 'Group other fields to list';
+  public static options: Options = {
     repeated: true,
   };
 
@@ -35,7 +34,7 @@ export class PrimeFieldGroup extends PrimeField {
     });
 
     return {
-      type: this.schemaField.options.repeated ? new GraphQLList(type) : type,
+      type: this.options.repeated ? new GraphQLList(type) : type,
     };
   }
 
@@ -69,7 +68,7 @@ export class PrimeFieldGroup extends PrimeField {
     });
 
     return {
-      type: this.schemaField.options.repeated ? new GraphQLList(type) : type,
+      type: this.options.repeated ? new GraphQLList(type) : type,
     };
   }
 

@@ -27,18 +27,20 @@ export const ReleasesDrawer = Form.create()(({ form, isOpen, onClose, item }: IP
         mutation: item ? UPDATE_CONTENT_RELEASE : CREATE_CONTENT_RELEASE,
         variables: {
           ...(item ? { id: item.id } : {}),
-          name: values.name,
-          description: values.description,
-          scheduledAt: values.scheduledAt,
+          input: {
+            name: values.name,
+            description: values.description,
+            scheduledAt: values.scheduledAt,
+          },
         },
       });
       const data: any = res.data;
       if (data) {
-        if (item && data.updateContentRelease) {
-          item.update(data.updateContentRelease);
+        if (item && data.updateRelease) {
+          item.update(data.updateRelease);
           onClose();
-        } else if (!item && data.createContentRelease) {
-          ContentReleases.add(ContentRelease.create(data.createContentRelease));
+        } else if (!item && data.createRelease) {
+          ContentReleases.add(ContentRelease.create(data.createRelease));
           onClose();
         }
       }

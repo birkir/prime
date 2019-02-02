@@ -449,13 +449,13 @@ export class DocumentsDetail extends React.Component<IProps> {
                 </Card>
               </div>
             )}
-            {contentType && contentType.schema && (
+            {contentType && contentType.fields && (
               <DocumentForm
                 wrappedComponentRef={this.onFormRef}
                 promptEnabled={this.promptEnabled}
                 onSave={this.onSave}
                 entry={contentEntry}
-                schema={contentType.schema}
+                schema={contentType.fields}
               />
             )}
           </Content>

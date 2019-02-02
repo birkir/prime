@@ -23,7 +23,7 @@ export const Account = () => {
   const accountList = [
     {
       title: 'Password',
-      description: `Last changed ${distanceInWordsToNow(user.lastPasswordChange)} ago`,
+      // description: `Last changed ${distanceInWordsToNow(user.lastPasswordChange)} ago`,
       actions: [<a onClick={() => setChangePassword(true)}>Change password</a>],
     },
     {

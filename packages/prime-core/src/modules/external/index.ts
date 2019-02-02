@@ -8,7 +8,7 @@ import {
   GraphQLUnionType,
   printSchema,
 } from 'graphql';
-import { pick, startCase } from 'lodash';
+import { camelCase, omit, pick, upperFirst } from 'lodash';
 import Container from 'typedi';
 import { Connection, getRepository } from 'typeorm';
 import { Schema } from '../../entities/Schema';
@@ -23,7 +23,7 @@ import { createSchemaConnectionType } from './types/createSchemaConnectionType';
 import { createSchemaInputType } from './types/createSchemaInputType';
 import { createSchemaType } from './types/createSchemaType';
 import { DocumentRemove } from './types/DocumentRemove';
-import { clearTypeNames, uniqueTypeName } from './utils/uniqueTypeNames';
+import { resetTypeNames, uniqueTypeName } from './utils/uniqueTypeNames';
 
 export const log = debug('prime:external');
 
@@ -31,7 +31,7 @@ export const getDefaultLocale = () => 'en';
 
 export const createExternal = async (connection: Connection) => {
   log('building schema');
-  clearTypeNames();
+  resetTypeNames();
 
   const documentTransformer = new DocumentTransformer();
   const schemas = await getRepository(Schema).find();
@@ -49,13 +49,13 @@ export const createExternal = async (connection: Connection) => {
 
   for (const schema of schemas) {
     const fields = await documentTransformer.getFields(schema);
-    const name = uniqueTypeName(startCase(schema.name));
+    const name = uniqueTypeName(upperFirst(camelCase(schema.name)));
     const payload = { schema, fields, name, resolvers, documentTransformer };
     const SchemaTypeConfig = await createSchemaType(payload);
     const SchemaType = SchemaTypeConfig.type;
     const { CREATE, UPDATE } = PrimeFieldOperation;
 
-    if (!SchemaType || Object.keys(SchemaType.getFields()).length === 0) {
+    if (!SchemaType || Object.keys(omit(SchemaType.getFields(), ['id', '_meta'])).length === 0) {
       continue;
     }
 

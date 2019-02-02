@@ -1,7 +1,17 @@
 import { Context } from 'apollo-server-core';
-import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { getRepository } from 'typeorm';
-import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
@@ -10,6 +20,7 @@ import { ReleaseRepository } from '../repositories/ReleaseRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
+import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const ReleaseConnection = createConnectionType(Release);
 
@@ -32,7 +43,7 @@ export class ReleaseResolver {
   public allReleases(
     @Args() args: ConnectionArgs //
   ) {
-    return new EntityConnection(args, {
+    return new ExtendedConnection(args, {
       repository: this.releaseRepository,
       sortOptions: [{ sort: 'createdAt', order: 'DESC' }],
     });
@@ -54,8 +65,9 @@ export class ReleaseResolver {
     @Arg('input') input: ReleaseInput,
     @Ctx() context: Context
   ): Promise<Release> {
-    const entity = await this.releaseRepository.findOneOrFail(id);
-    return this.releaseRepository.merge(entity, input);
+    const release = await this.releaseRepository.findOneOrFail(id);
+    await this.releaseRepository.merge(release, input);
+    return await this.releaseRepository.save(release);
   }
 
   @Mutation(returns => Boolean, { description: 'Remove Release by ID' })
@@ -74,6 +86,7 @@ export class ReleaseResolver {
     return true;
   }
 
+  @Authorized()
   @Mutation(returns => Release, { description: 'Publish Release by ID' })
   public async publishRelease(
     @Arg('id', type => ID) id: string,
@@ -81,28 +94,31 @@ export class ReleaseResolver {
   ): Promise<Release> {
     const release = await this.Release(id);
 
-    const ids = await this.documentRepository
-      .createQueryBuilder()
-      .select(
-        qb =>
-          qb
-            .select('id')
-            .from(Document, 'd')
-            .where('d.documentId = Document.documentId')
-            .andWhere('d.locale = Document.locale')
-            .orderBy({ 'd.updatedAt': 'DESC' }),
-        'id'
-      )
-      .addSelect('documentId')
+    const qb = this.documentRepository.createQueryBuilder();
+
+    const subquery = qb
+      .subQuery()
+      .select('id')
+      .from(Document, 'd')
+      .where('d.documentId = Document.documentId')
+      .andWhere('d.locale = Document.locale')
+      .andWhere('d.deletedAt IS NULL')
+      .orderBy({ 'd.updatedAt': 'DESC' })
+      .limit(1);
+
+    const ids = await qb
       .where({
         releaseId: release.id,
       })
-      .groupBy('documentId')
-      .groupBy('locale')
+      .having(`Document.id = ${subquery.getQuery()}`)
+      .groupBy('Document.id')
+      .addGroupBy('Document.locale')
       .getMany();
 
-    const docs = await this.documentRepository.find({ where: { id: ids.map(d => d.id) } });
-    await Promise.all(docs.map(doc => this.documentRepository.publish(doc, context.user.id)));
+    if (ids.length > 0) {
+      const docs = await this.documentRepository.find({ where: { id: ids.map(d => d.id) } });
+      await Promise.all(docs.map(doc => this.documentRepository.publish(doc, context.user.id)));
+    }
 
     this.documentRepository.update(
       { releaseId: release.id },

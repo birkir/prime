@@ -30,8 +30,8 @@ export const Webhooks = types
         const { data } = yield client.query({
           query: ALL_WEBHOOKS,
         });
-        data.allWebhooks.forEach((webhook: any) => {
-          const item = Webhook.create(webhook);
+        data.allWebhooks.edges.forEach((webhook: any) => {
+          const item = Webhook.create(webhook.node);
           self.items.put(item);
         });
         self.loaded = true;

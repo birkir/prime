@@ -79,10 +79,10 @@ export const Settings = types
           query {
             getSettings
             allFields {
-              id
+              type
               title
               description
-              defaultOptions
+              options
               ui
             }
           }

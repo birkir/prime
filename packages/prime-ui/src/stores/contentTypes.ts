@@ -1,4 +1,5 @@
 import { when } from 'mobx';
+import makeInspectable from 'mobx-devtools-mst';
 import { flow, Instance, types } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { ContentType } from './models/ContentType';
@@ -27,12 +28,12 @@ export const ContentTypes = types
         variables: { name },
         fetchPolicy: 'network-only',
       });
-      if (data.ContentType) {
-        item = ContentType.create(data.ContentType);
+      if (data.Schema) {
+        item = ContentType.create(data.Schema);
         if (self.items.has(item.id)) {
           item = self.items.get(item.id);
           if (item) {
-            item.replace(data.ContentType);
+            item.replace(data.Schema);
           }
         } else {
           self.items.put(item);
@@ -48,12 +49,12 @@ export const ContentTypes = types
         variables: { id },
         fetchPolicy: 'network-only',
       });
-      if (data.ContentType) {
-        item = ContentType.create(data.ContentType);
+      if (data.Schema) {
+        item = ContentType.create(data.Schema);
         if (self.items.has(id)) {
           item = self.items.get(id);
           if (item) {
-            item.replace(data.ContentType);
+            item.replace(data.Schema);
           }
         } else {
           self.items.put(item);
@@ -75,8 +76,8 @@ export const ContentTypes = types
         const { data } = yield client.query({
           query: ALL_CONTENT_TYPES,
         });
-        data.allContentTypes.forEach((contentType: any) => {
-          const item = ContentType.create(contentType);
+        data.allSchemas.edges.forEach((contentType: any) => {
+          const item = ContentType.create(contentType.node);
           const prevItem = self.items.get(item.id);
           if (prevItem) {
             prevItem.replace(contentType);
@@ -98,8 +99,8 @@ export const ContentTypes = types
           mutation: CREATE_CONTENT_TYPE,
           variables: { input },
         });
-        if (data.createContentType) {
-          const item = ContentType.create(data.createContentType);
+        if (data.createSchema) {
+          const item = ContentType.create(data.createSchema);
           return self.items.put(item);
         }
       } catch (err) {
@@ -120,6 +121,8 @@ export const ContentTypes = types
     };
   })
   .create();
+
+makeInspectable(ContentTypes);
 
 export const ContentTypeRef = types.reference(ContentType, {
   get(identifier: string) {

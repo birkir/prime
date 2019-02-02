@@ -20,7 +20,8 @@ export const ContentRelease = types
     updatedAt: snapshot.updatedAt ? new Date(snapshot.updatedAt) : null,
   }))
   .actions(self => ({
-    update({ name, description, scheduledAt }: any) {
+    update(data: any) {
+      const { name, description, scheduledAt } = data;
       self.name = name;
       self.description = description;
       self.scheduledAt = scheduledAt ? new Date(scheduledAt) : null;
@@ -32,7 +33,7 @@ export const ContentRelease = types
           id: self.id,
         },
       });
-      if (res.data && res.data.publishContentRelease) {
+      if (res.data && res.data.publishRelease) {
         self.publishedAt = new Date();
       }
     }),

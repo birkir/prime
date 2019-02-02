@@ -63,6 +63,7 @@ export class WebhookResolver {
     return payload;
   }
 
+  @Authorized()
   @Query(returns => WebhookConnection, { description: 'Get many Webhooks' })
   public async allWebhooks(
     @Args() args: ConnectionArgs,
@@ -96,7 +97,9 @@ export class WebhookResolver {
     @Ctx() context: Context
   ): Promise<Webhook> {
     const entity = await this.webhookRepository.findOneOrFail(id);
-    return this.webhookRepository.merge(entity, input);
+    await this.webhookRepository.merge(entity, input);
+    await this.webhookRepository.save(entity);
+    return entity;
   }
 
   @Mutation(returns => Boolean, { description: 'Remove Webhook by ID' })

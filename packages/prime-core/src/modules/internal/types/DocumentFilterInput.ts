@@ -1,14 +1,14 @@
-import { Field, InputType } from 'type-graphql';
+import { Field, ID, InputType } from 'type-graphql';
 
 @InputType()
 export class DocumentFilterInput {
-  @Field({ nullable: true })
+  @Field(type => ID, { nullable: true })
   public releaseId: string;
 
-  @Field({ nullable: true })
+  @Field(type => ID, { nullable: true })
   public schemaId: string;
 
-  @Field({ nullable: true })
+  @Field(type => ID, { nullable: true })
   public userId: string;
 
   @Field({ nullable: true })
