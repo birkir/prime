@@ -39,7 +39,7 @@ export const Auth = types
       // self.isLoggedIn = Boolean(res.user);
       // self.user = res.user;
 
-      // yield ensureFields();
+      yield ensureFields();
 
       // return res;
     });
@@ -58,9 +58,8 @@ export const Auth = types
         self.isLoggedIn = true;
         yield accountsClient.refreshSession();
         const user = yield accountsGraphQL.getUser();
-        console.log('user %o', user);
       }
-      // yield ensureFields();
+      yield ensureFields();
     });
 
     const register = flow(function*({

@@ -23,6 +23,7 @@ export const createDocumentUpdateResolver = async (payload: SchemaPayload) => {
         [key]: args.id,
         ...(key === 'documentId' && { locale }),
         deletedAt: IsNull(),
+        schemaId: payload.schema.id,
       },
       order: {
         createdAt: 'DESC',

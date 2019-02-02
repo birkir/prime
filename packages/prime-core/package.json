@@ -51,6 +51,7 @@
     "graphql": "^14.1.1",
     "graphql-type-json": "^0.2.1",
     "hashids": "1.2.2",
+    "latest": "0.2.0",
     "lodash": "^4.17.11",
     "pg": "7.8.0",
     "rc": "1.2.8",

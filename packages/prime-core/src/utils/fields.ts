@@ -11,6 +11,8 @@ export const fields = (config.fields || [])
   .map((moduleName: string) => {
     try {
       const field = require(moduleName).default;
+      field.packageName = moduleName;
+
       const pkgDir = moduleName.replace(/\/*(src\/*?)?$/, '');
       let pkgJson;
 

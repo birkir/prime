@@ -89,7 +89,8 @@ export const createAllDocumentResolver = async ({
     });
 
     connection.totalCount = await connection
-      .createAppliedQueryBuilder()
+      .createAppliedQueryBuilder(true)
+      .addSelect('id')
       .cache(2000)
       .getCount();
 

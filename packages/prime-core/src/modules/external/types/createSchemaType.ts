@@ -1,6 +1,6 @@
 import { PrimeFieldContext } from '@primecms/field';
 import { PrimeFieldOperation } from '@primecms/field';
-import { GraphQLID, GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { DocumentMetadata } from './DocumentMetadata';
@@ -34,8 +34,8 @@ export const createSchemaType = async ({ name, schema, fields, resolvers }: Sche
 
   return {
     args: {
-      id: { type: GraphQLID },
-      language: { type: GraphQLString },
+      ...(!schema.settings.single && { id: { type: new GraphQLNonNull(GraphQLID) } }),
+      locale: { type: GraphQLString },
     },
     type: new GraphQLObjectType({
       name,

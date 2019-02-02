@@ -22,7 +22,7 @@ jobs:
       - run: yarn codecov
       - run:
           name: Copy artifacts
-          command: cd packages; for x in */junit.xml; do mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
+          command: cd packages; for x in */junit.xml; do [ -f $x ] && mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
           when: always
       - store_test_results:
           path: reports/junit

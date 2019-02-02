@@ -17,15 +17,15 @@ import { Schema } from './Schema';
 export class Document {
   @Field(type => ID)
   @PrimaryGeneratedColumn('uuid')
-  public id: string; // was: versionId
+  public id: string;
 
   @Column({ length: 10 })
   @Field(type => ID)
-  public documentId: string; // was entryId
+  public documentId: string;
 
   @Column({ default: 'en' })
   @Field()
-  public locale: string; // was: language
+  public locale: string;
 
   @Column('jsonb')
   @Field(type => GraphQLJSON)
@@ -47,25 +47,30 @@ export class Document {
   @Field({ nullable: true })
   public deletedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   public schemaId: string;
 
-  @ManyToOne(type => Schema, schema => schema.documents)
+  @ManyToOne(type => Schema, schema => schema.documents, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   public schema = Schema;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
   public releaseId?: string;
 
   @ManyToOne(type => Release, release => release.documents, {
-    cascade: 'remove' as any,
     onDelete: 'SET NULL',
     nullable: true,
   })
   public release = Release;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
   public userId?: string;
 
-  @ManyToOne(type => User, { nullable: true })
+  @ManyToOne(type => User, { nullable: true, onDelete: 'SET NULL' })
   public user: User;
 }

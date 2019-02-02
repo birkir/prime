@@ -68,10 +68,14 @@ export class SchemaField {
   public childFields: SchemaField[];
 
   @Column({ nullable: true })
-  @Field()
+  @Field({ nullable: true })
   public schemaId: string;
 
-  @ManyToOne(type => Schema, schema => schema.fields, { cascade: true, onDelete: 'SET NULL' })
+  @ManyToOne(type => Schema, schema => schema.fields, {
+    onDelete: 'SET NULL',
+    nullable: true,
+    persistence: false,
+  })
   public schema: Schema;
 
   public primeField?: PrimeField;

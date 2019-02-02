@@ -11,7 +11,7 @@ import {
 import { camelCase, omit, pick, upperFirst } from 'lodash';
 import Container from 'typedi';
 import { Connection, getRepository } from 'typeorm';
-import { Schema } from '../../entities/Schema';
+import { Schema, SchemaVariant } from '../../entities/Schema';
 import { DocumentTransformer } from '../../utils/DocumentTransformer';
 import { createAllDocumentResolver } from './resolvers/createAllDocumentResolver';
 import { createDocumentCreateResolver } from './resolvers/createDocumentCreateResolver';
@@ -48,6 +48,10 @@ export const createExternal = async (connection: Connection) => {
   const resolvers: { [key: string]: any } = {};
 
   for (const schema of schemas) {
+    if (schema.variant !== SchemaVariant.Default) {
+      continue;
+    }
+
     const fields = await documentTransformer.getFields(schema);
     const name = uniqueTypeName(upperFirst(camelCase(schema.name)));
     const payload = { schema, fields, name, resolvers, documentTransformer };

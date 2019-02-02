@@ -66,7 +66,10 @@ export class Schema {
   @OneToMany(type => Schema, schema => schema.documents)
   public documents: Document[];
 
-  @OneToMany(type => SchemaField, field => field.schema)
+  @OneToMany(type => SchemaField, field => field.schema, {
+    nullable: true,
+    persistence: false,
+  })
   public fields: SchemaField[];
 
   @ManyToOne(type => User)

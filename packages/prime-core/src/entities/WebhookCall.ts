@@ -30,6 +30,8 @@ export class WebhookCall {
   @Field(type => Date)
   public executedAt: Date;
 
-  @ManyToOne(type => Webhook, webhook => webhook.calls)
+  @ManyToOne(type => Webhook, webhook => webhook.calls, {
+    onDelete: 'CASCADE',
+  })
   public webhook: Webhook;
 }

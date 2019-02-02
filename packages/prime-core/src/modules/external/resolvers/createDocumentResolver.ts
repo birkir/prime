@@ -15,15 +15,18 @@ export const createDocumentResolver = async ({
   return async (root, args: { id: string; locale?: string }, context, info) => {
     const key = args.id.length === 36 ? 'id' : 'documentId';
     const locale = args.locale || (await getDefaultLocale());
+    const single = schema.settings.single;
     const published = true;
 
-    const doc = await documentRepository.findOneOrFail({
+    const doc = await documentRepository.findOne({
       where: {
-        [key]: args.id,
-        ...(key === 'documentId' && {
-          locale,
-          publishedAt: Raw(alias => `${alias} IS ${published ? 'NOT' : ''} NULL`),
-        }),
+        ...(single && { [key]: args.id }),
+        ...(single ||
+          (key === 'documentId' && {
+            locale,
+            publishedAt: Raw(alias => `${alias} IS ${published ? 'NOT' : ''} NULL`),
+          })),
+        schemaId: schema.id,
         deletedAt: IsNull(),
       },
       order: {
@@ -31,21 +34,23 @@ export const createDocumentResolver = async ({
       },
     });
 
-    const data = await documentTransformer.transformOutput(doc, schema, fields);
+    if (doc) {
+      const data = await documentTransformer.transformOutput(doc, schema, fields);
 
-    const locales = await documentRepository
-      .createQueryBuilder('d')
-      .select('d.locale')
-      .where('d.documentId = :documentId', { documentId: doc.documentId })
-      .where(`d.publishedAt IS ${published ? 'NOT' : ''} NULL`)
-      .groupBy('d.locale')
-      .getRawMany();
+      const locales = await documentRepository
+        .createQueryBuilder('d')
+        .select('d.locale')
+        .where('d.documentId = :documentId', { documentId: doc.documentId })
+        .where(`d.publishedAt IS ${published ? 'NOT' : ''} NULL`)
+        .groupBy('d.locale')
+        .getRawMany();
 
-    const meta = {
-      ...doc,
-      locales: locales.map(d => d.d_locale),
-    };
+      const meta = {
+        ...doc,
+        locales: locales.map(d => d.d_locale),
+      };
 
-    return { id: doc.documentId, _meta: meta, ...data, __typeOf: name };
+      return { id: doc.documentId, _meta: meta, ...data, __typeOf: name };
+    }
   };
 };

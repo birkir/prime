@@ -73,10 +73,10 @@ export class SchemaResolver {
     @Arg('id', type => ID) id: string,
     @Arg('input', type => SchemaInput) input: SchemaInput & { fields: any }
   ): Promise<Schema> {
-    const schema = await this.schemaRepository.findOneOrFail(id);
     if (input.fields) {
-      await setSchemaFields(schema.id, input.fields);
+      await setSchemaFields(id, input.fields);
     }
+    const schema = await this.schemaRepository.findOneOrFail(id);
     input.variant = parseEnum(SchemaVariant, input.variant);
     await this.schemaRepository.merge(schema, input);
     schema.settings = defaultsDeep(input.settings, schema.settings);

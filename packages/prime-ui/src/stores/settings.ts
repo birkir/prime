@@ -55,15 +55,20 @@ const Locale = types
 
 export const defaultLocale = Locale.create({ id: 'en', name: 'English', flag: 'en', master: true });
 
+const PackageVersion = types.model('PackageVersion', {
+  name: types.string,
+  currentVersion: types.maybeNull(types.string),
+  latestVersion: types.maybeNull(types.string),
+});
+
 export const Settings = types
   .model('Settings', {
     isProd,
     coreUrl,
-    latestVersion: types.maybeNull(types.string),
-    version: types.maybeNull(types.string),
+    packages: types.array(PackageVersion),
     env: types.frozen(),
     fields: types.frozen(),
-    accessType: types.enumeration('AccessType', ['public', 'private']),
+    accessType: types.enumeration('AccessType', ['PUBLIC', 'PRIVATE']),
     previews: types.array(Preview),
     locales: types.array(Locale),
   })
@@ -77,7 +82,20 @@ export const Settings = types
       const { data } = yield client.query({
         query: gql`
           query {
-            getSettings
+            getSettings {
+              accessType
+              previews {
+                name
+                hostname
+                pathname
+              }
+              locales {
+                id
+                name
+                flag
+                master
+              }
+            }
             allFields {
               type
               title
@@ -103,16 +121,16 @@ export const Settings = types
       const { data } = yield client.query({
         query: gql`
           query {
-            primeVersion {
-              current
-              latest
+            system {
+              name
+              currentVersion
+              latestVersion
             }
           }
         `,
       });
       if (data) {
-        self.version = data.primeVersion.current;
-        self.latestVersion = data.primeVersion.latest;
+        self.packages.replace(data.system);
       }
     });
 
@@ -155,10 +173,23 @@ export const Settings = types
     };
 
     const save = flow(function*() {
-      yield client.mutate({
+      const { data } = yield client.mutate({
         mutation: gql`
-          mutation setSettings($input: SettingsInput) {
-            setSettings(input: $input)
+          mutation setSettings($input: SettingsInput!) {
+            setSettings(input: $input) {
+              accessType
+              previews {
+                name
+                hostname
+                pathname
+              }
+              locales {
+                id
+                name
+                flag
+                master
+              }
+            }
           }
         `,
         variables: {
@@ -173,21 +204,35 @@ export const Settings = types
           },
         },
       });
-      yield read();
+      if (data.setSettings) {
+        self.accessType = data.setSettings.accessType;
+        self.previews = data.setSettings.previews;
+        self.locales = data.setSettings.locales;
+        self.env = data.setSettings.env;
+      }
       Settings.reloadPlayground();
     });
 
-    const updateSystem = flow(function*(version: string) {
+    const updateSystem = flow(function*(packages: string[]) {
+      const versions = packages.map(pkg => {
+        const fromList = self.packages.find(p => p.name === pkg);
+        return {
+          name: pkg,
+          version: fromList && fromList.latestVersion,
+        };
+      });
+
       const res = yield client.mutate({
         mutation: gql`
-          mutation PrimeUpdate($version: String) {
-            primeUpdate(version: $version)
+          mutation SystemUpdate($versions: [PackageVersionInput!]!) {
+            updateSystem(versions: $versions)
           }
         `,
         variables: {
-          version,
+          versions,
         },
       });
+      return res;
     });
 
     const removePreview = (node: any) => {
@@ -221,7 +266,7 @@ export const Settings = types
     };
   })
   .create({
-    accessType: 'public',
+    accessType: 'PUBLIC',
     previews: [],
     locales: [],
     fields,

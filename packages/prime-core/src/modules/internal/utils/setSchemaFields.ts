@@ -25,10 +25,10 @@ export const setSchemaFields = async (schemaId: string, groups) => {
     }
 
     const field: SchemaField = schemaFieldRepo.create({
-      schemaId,
+      ...data,
       position,
       group,
-      ...data,
+      schemaId,
     });
 
     if (parentField) {
@@ -40,8 +40,9 @@ export const setSchemaFields = async (schemaId: string, groups) => {
       const source = await schemaFieldRepo.findOneOrFail(field.id);
       await schemaFieldRepo.merge(source, field);
     }
-
+    console.log('saving');
     await schemaFieldRepo.save(field);
+    console.log('saved');
 
     if (data.fields) {
       await Promise.all(
@@ -50,6 +51,8 @@ export const setSchemaFields = async (schemaId: string, groups) => {
         })
       );
     }
+
+    console.log('subfields');
 
     return field;
   };
@@ -70,15 +73,13 @@ export const setSchemaFields = async (schemaId: string, groups) => {
     });
   }
 
-  const schema = await schemaRepo.findOne({
-    where: {
-      id: schemaId,
-    },
-  });
+  const schema = await schemaRepo.findOne(schemaId);
 
   if (schema) {
     schema.groups = groups.map(group => group.title);
+    console.log('save schema');
     await schemaRepo.save(schema);
+    console.log('saved schema');
   }
 
   return true;

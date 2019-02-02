@@ -9,9 +9,11 @@ export const createDocumentRemoveResolver = async (payload: SchemaPayload) => {
   return async (root, args: { id: string; locale?: string }, context, info) => {
     const key = args.id.length === 36 ? 'id' : 'documentId';
     const locale = args.locale || (await getDefaultLocale());
+    const single = payload.schema.settings.single;
     const doc = await documentRepository.findOneOrFail({
-      [key]: args.id,
-      ...(key === 'documentId' && { locale }),
+      ...(single && { [key]: args.id }),
+      ...(single || (key === 'documentId' && { locale })),
+      schemaId: payload.schema.id,
       deletedAt: IsNull(),
     });
     const result = await documentRepository.update(
