@@ -52,11 +52,7 @@ import { Form, Input } from 'antd';
 
 export default registerField('demo', {
   InputComponent({ form, field, path, initialValue = false }) {
-    return (
-      <Form.Item label={field.title}>
-        {form.getFieldDecorator(path, { initialValue })(<Input />)}
-      </Form.Item>
-    );
+    return <Form.Item label={field.title}>{form.getFieldDecorator(path, { initialValue })(<Input />)}</Form.Item>;
   },
 });
 ```
