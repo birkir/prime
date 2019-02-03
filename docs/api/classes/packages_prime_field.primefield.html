@@ -67,6 +67,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Abstract Field class for Prime CMS</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -80,130 +87,85 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#defaultoptions" class="tsd-kind-icon">default<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#description" class="tsd-kind-icon">description</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#options" class="tsd-kind-icon">options</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="packages_prime_field.primefield.html#repositories" class="tsd-kind-icon">repositories</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="packages_prime_field.primefield.html#schemafield-1" class="tsd-kind-icon">schema<wbr>Field</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#title" class="tsd-kind-icon">title</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="packages_prime_field.primefield.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#inputtype" class="tsd-kind-icon">input<wbr>Type</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="packages_prime_field.primefield.html#outputtype" class="tsd-kind-icon">output<wbr>Type</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#getgraphqlinput" class="tsd-kind-icon">get<wbr>GraphQLInput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#getgraphqloutput" class="tsd-kind-icon">get<wbr>GraphQLOutput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#getgraphqlwhere" class="tsd-kind-icon">get<wbr>GraphQLWhere</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#getoptions" class="tsd-kind-icon">get<wbr>Options</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#processinput" class="tsd-kind-icon">process<wbr>Input</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#processoutput" class="tsd-kind-icon">process<wbr>Output</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_field.primefield.html#wheretype" class="tsd-kind-icon">where<wbr>Type</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Prime<wbr>Field<span class="tsd-signature-symbol">(</span>schemaField<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-signature-type">SchemaField</a>, repositories<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="packages_prime_field.primefield.html" class="tsd-signature-type">PrimeField</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L13">prime-field/src/PrimeField.ts:13</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>schemaField: <a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-signature-type">SchemaField</a></h5>
-								</li>
-								<li>
-									<h5>repositories: <span class="tsd-signature-type">object</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>document<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.document.html" class="tsd-signature-type">Document</a><span class="tsd-signature-symbol">&gt;</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.schema.html" class="tsd-signature-type">Schema</a><span class="tsd-signature-symbol">&gt;</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>schema<wbr>Field<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span></h5>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="packages_prime_field.primefield.html" class="tsd-signature-type">PrimeField</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="defaultoptions" class="tsd-anchor"></a>
+					<h3>default<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L119">prime-field/src/PrimeField.ts:119</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Default options</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+						</ul>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="description" class="tsd-anchor"></a>
 					<h3>description</h3>
 					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L12">prime-field/src/PrimeField.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L114">prime-field/src/PrimeField.ts:114</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="options" class="tsd-anchor"></a>
-					<h3>options</h3>
-					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L13">prime-field/src/PrimeField.ts:13</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a name="repositories" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> repositories</h3>
-					<div class="tsd-signature tsd-kind-icon">repositories<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L17">prime-field/src/PrimeField.ts:17</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>document<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.document.html" class="tsd-signature-type">Document</a><span class="tsd-signature-symbol">&gt;</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>schema<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.schema.html" class="tsd-signature-type">Schema</a><span class="tsd-signature-symbol">&gt;</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>schema<wbr>Field<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span></h5>
-							</li>
-						</ul>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Describe what the field does</p>
+						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a name="schemafield-1" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> schema<wbr>Field</h3>
-					<div class="tsd-signature tsd-kind-icon">schema<wbr>Field<span class="tsd-signature-symbol">:</span> <a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-signature-type">SchemaField</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L16">prime-field/src/PrimeField.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L104">prime-field/src/PrimeField.ts:104</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Field identifier (alphanumeric string)
+							Has to be unique</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>example</dt>
+							<dd><p>&#39;my-field&#39;</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="title" class="tsd-anchor"></a>
@@ -211,91 +173,131 @@
 					<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L11">prime-field/src/PrimeField.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L109">prime-field/src/PrimeField.ts:109</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L10">prime-field/src/PrimeField.ts:10</a></li>
-						</ul>
-					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Field title (Display name)</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="inputtype" class="tsd-anchor"></a>
-					<h3>input<wbr>Type</h3>
+					<a name="getgraphqlinput" class="tsd-anchor"></a>
+					<h3>get<wbr>GraphQLInput</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">input<wbr>Type<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a>, operation<span class="tsd-signature-symbol">: </span><a href="../enums/packages_prime_field.primefieldoperation.html#create" class="tsd-signature-type">CREATE</a><span class="tsd-signature-symbol"> | </span><a href="../enums/packages_prime_field.primefieldoperation.html#update" class="tsd-signature-type">UPDATE</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLInputFieldConfig</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphQLInputFieldConfig</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>GraphQLInput<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/packages_prime_field.html#iprimefieldgraphqlinput" class="tsd-signature-type">IPrimeFieldGraphQLInput</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L34">prime-field/src/PrimeField.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L131">prime-field/src/PrimeField.ts:131</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return a object that can be used as GraphQL input type</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a></h5>
-								</li>
-								<li>
-									<h5>operation: <a href="../enums/packages_prime_field.primefieldoperation.html#create" class="tsd-signature-type">CREATE</a><span class="tsd-signature-symbol"> | </span><a href="../enums/packages_prime_field.primefieldoperation.html#update" class="tsd-signature-type">UPDATE</a></h5>
+									<h5>args: <a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>All the necessery things you will need from Prime Core</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLInputFieldConfig</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">GraphQLInputFieldConfig</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/packages_prime_field.html#iprimefieldgraphqlinput" class="tsd-signature-type">IPrimeFieldGraphQLInput</a></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-					<a name="outputtype" class="tsd-anchor"></a>
-					<h3>output<wbr>Type</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">output<wbr>Type&lt;TSource, TContext&gt;<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a>, operation<span class="tsd-signature-symbol">: </span><a href="../enums/packages_prime_field.primefieldoperation.html#read" class="tsd-signature-type">READ</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLFieldConfig</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TSource</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TContext</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphQLFieldConfig</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TSource</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TContext</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getgraphqloutput" class="tsd-anchor"></a>
+					<h3>get<wbr>GraphQLOutput</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>GraphQLOutput<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/packages_prime_field.html#iprimefieldgraphqloutput" class="tsd-signature-type">IPrimeFieldGraphQLOutput</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L24">prime-field/src/PrimeField.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L125">prime-field/src/PrimeField.ts:125</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-type-parameters-title">Type parameters</h4>
-							<ul class="tsd-type-parameters">
-								<li>
-									<h4>TSource</h4>
-								</li>
-								<li>
-									<h4>TContext</h4>
-								</li>
-							</ul>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return a object that can be used as GraphQL type</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a></h5>
-								</li>
-								<li>
-									<h5>operation: <a href="../enums/packages_prime_field.primefieldoperation.html#read" class="tsd-signature-type">READ</a></h5>
+									<h5>args: <a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>All the necessery things you will need from Prime Core</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLFieldConfig</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TSource</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TContext</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">GraphQLFieldConfig</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TSource</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TContext</span><span class="tsd-signature-symbol">&gt;</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/packages_prime_field.html#iprimefieldgraphqloutput" class="tsd-signature-type">IPrimeFieldGraphQLOutput</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getgraphqlwhere" class="tsd-anchor"></a>
+					<h3>get<wbr>GraphQLWhere</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>GraphQLWhere<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/packages_prime_field.html#iprimefieldgraphqlinput" class="tsd-signature-type">IPrimeFieldGraphQLInput</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L137">prime-field/src/PrimeField.ts:137</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return a object that can be used as GraphQL input type to query the field via <code>where</code></p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-signature-type">IPrimeFieldGraphQLArguments</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>All the necessery things you will need from Prime Core</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/packages_prime_field.html#iprimefieldgraphqlinput" class="tsd-signature-type">IPrimeFieldGraphQLInput</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getoptions" class="tsd-anchor"></a>
+					<h3>get<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Options<span class="tsd-signature-symbol">(</span>field<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L155">prime-field/src/PrimeField.ts:155</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>field: <a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -303,22 +305,33 @@
 					<a name="processinput" class="tsd-anchor"></a>
 					<h3>process<wbr>Input</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">process<wbr>Input<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Input<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, field<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L47">prime-field/src/PrimeField.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L143">prime-field/src/PrimeField.ts:143</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Process input data</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">object</span></h5>
+									<h5>input: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Object for input</p>
+									</div>
+								</li>
+								<li>
+									<h5>field: <a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -326,50 +339,33 @@
 					<a name="processoutput" class="tsd-anchor"></a>
 					<h3>process<wbr>Output</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">process<wbr>Output<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Output<span class="tsd-signature-symbol">(</span>output<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, field<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L51">prime-field/src/PrimeField.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-field/src/PrimeField.ts#L151">prime-field/src/PrimeField.ts:151</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Process output data</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <span class="tsd-signature-type">object</span></h5>
+									<h5>output: <span class="tsd-signature-type">any</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Object for output</p>
+									</div>
 								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="wheretype" class="tsd-anchor"></a>
-					<h3>where<wbr>Type</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">where<wbr>Type<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLInputType</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GraphQLInputType</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-field/src/PrimeField.ts#L41">prime-field/src/PrimeField.ts:41</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-signature-type">PrimeFieldContext</a></h5>
+									<h5>field: <a href="../interfaces/packages_prime_field.ifield.html" class="tsd-signature-type">IField</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">GraphQLInputType</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">GraphQLInputType</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -421,52 +417,40 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/packages_prime_field.primefieldoperation.html" class="tsd-kind-icon">Prime<wbr>Field<wbr>Operation</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/packages_prime_field.schemavariant.html" class="tsd-kind-icon">Schema<wbr>Variant</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="packages_prime_field.primefield.html" class="tsd-kind-icon">Prime<wbr>Field</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="packages_prime_field.primefield.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_field.primefield.html#defaultoptions" class="tsd-kind-icon">default<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="packages_prime_field.primefield.html#description" class="tsd-kind-icon">description</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_field.primefield.html#options" class="tsd-kind-icon">options</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-								<a href="packages_prime_field.primefield.html#repositories" class="tsd-kind-icon">repositories</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-								<a href="packages_prime_field.primefield.html#schemafield-1" class="tsd-kind-icon">schema<wbr>Field</a>
+								<a href="packages_prime_field.primefield.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="packages_prime_field.primefield.html#title" class="tsd-kind-icon">title</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="packages_prime_field.primefield.html#type" class="tsd-kind-icon">type</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_field.primefield.html#getgraphqlinput" class="tsd-kind-icon">get<wbr>GraphQLInput</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="packages_prime_field.primefield.html#inputtype" class="tsd-kind-icon">input<wbr>Type</a>
+								<a href="packages_prime_field.primefield.html#getgraphqloutput" class="tsd-kind-icon">get<wbr>GraphQLOutput</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="packages_prime_field.primefield.html#outputtype" class="tsd-kind-icon">output<wbr>Type</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_field.primefield.html#getgraphqlwhere" class="tsd-kind-icon">get<wbr>GraphQLWhere</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_field.primefield.html#getoptions" class="tsd-kind-icon">get<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_field.primefield.html#processinput" class="tsd-kind-icon">process<wbr>Input</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_field.primefield.html#processoutput" class="tsd-kind-icon">process<wbr>Output</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="packages_prime_field.primefield.html#wheretype" class="tsd-kind-icon">where<wbr>Type</a>
 							</li>
 						</ul>
 					</li>
@@ -475,26 +459,32 @@
 					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="packages_prime_field.primefieldtest.html" class="tsd-kind-icon">Prime<wbr>Field<wbr>Test</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.document.html" class="tsd-kind-icon">Document</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/packages_prime_field.icontenttype.html" class="tsd-kind-icon">IContent<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/packages_prime_field.ientry.html" class="tsd-kind-icon">IEntry</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/packages_prime_field.ifield.html" class="tsd-kind-icon">IField</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.primefieldcontext.html" class="tsd-kind-icon">Prime<wbr>Field<wbr>Context</a>
+						<a href="../interfaces/packages_prime_field.iprimefieldgraphqlarguments.html" class="tsd-kind-icon">IPrime<wbr>Field<wbr>GraphQLArguments</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.primefieldprops.html" class="tsd-kind-icon">Prime<wbr>Field<wbr>Props</a>
+						<a href="../interfaces/packages_prime_field.iprimefieldprops.html" class="tsd-kind-icon">IPrime<wbr>Field<wbr>Props</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.registerfield.html" class="tsd-kind-icon">Register<wbr>Field</a>
+						<a href="../interfaces/packages_prime_field.iregisterfield.html" class="tsd-kind-icon">IRegister<wbr>Field</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.schema.html" class="tsd-kind-icon">Schema</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/packages_prime_field.html#iprimefieldgraphqlinput" class="tsd-kind-icon">IPrime<wbr>Field<wbr>GraphQLInput</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/packages_prime_field.schemafield.html" class="tsd-kind-icon">Schema<wbr>Field</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/packages_prime_field.html#iprimefieldgraphqloutput" class="tsd-kind-icon">IPrime<wbr>Field<wbr>GraphQLOutput</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/packages_prime_field.html#registerfield-1" class="tsd-kind-icon">register<wbr>Field</a>
+						<a href="../modules/packages_prime_field.html#registerfield" class="tsd-kind-icon">register<wbr>Field</a>
 					</li>
 				</ul>
 			</nav>

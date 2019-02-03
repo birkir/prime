@@ -71,10 +71,15 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">any</span>
+						<a href="packages_prime_core.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">User</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="packages_prime_core.user.html" class="tsd-signature-type">User</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -87,8 +92,23 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#avatarurl" class="tsd-kind-icon">avatar<wbr>Url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#displayname" class="tsd-kind-icon">display<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#email" class="tsd-kind-icon">email</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#firstname" class="tsd-kind-icon">firstname</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#profile" class="tsd-kind-icon">profile</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#lastlogin" class="tsd-kind-icon">last<wbr>Login</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#lastpasswordchange" class="tsd-kind-icon">last<wbr>Password<wbr>Change</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#lastname" class="tsd-kind-icon">lastname</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.user.html#password" class="tsd-kind-icon">password</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.user.html#ispasswordmatch" class="tsd-kind-icon">is<wbr>Password<wbr>Match</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.user.html#updatepassword" class="tsd-kind-icon">update<wbr>Password</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="packages_prime_core.user.html#hash_password" class="tsd-kind-icon">HASH_<wbr>PASSWORD</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,24 +117,166 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;super.id</span></div>
+					<a name="avatarurl" class="tsd-anchor"></a>
+					<h3>avatar<wbr>Url</h3>
+					<div class="tsd-signature tsd-kind-icon">avatar<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-core/src/modules/internal/types/User.ts#L10">prime-core/src/modules/internal/types/User.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L37">prime-core/src/models/User.ts:37</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="profile" class="tsd-anchor"></a>
-					<h3>profile</h3>
-					<div class="tsd-signature tsd-kind-icon">profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;super.profile</span></div>
+					<a name="displayname" class="tsd-anchor"></a>
+					<h3>display<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">display<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/17f33c0/packages/prime-core/src/modules/internal/types/User.ts#L13">prime-core/src/modules/internal/types/User.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L34">prime-core/src/models/User.ts:34</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="email" class="tsd-anchor"></a>
+					<h3>email</h3>
+					<div class="tsd-signature tsd-kind-icon">email<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L42">prime-core/src/models/User.ts:42</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="firstname" class="tsd-anchor"></a>
+					<h3>firstname</h3>
+					<div class="tsd-signature tsd-kind-icon">firstname<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L28">prime-core/src/models/User.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L25">prime-core/src/models/User.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="lastlogin" class="tsd-anchor"></a>
+					<h3>last<wbr>Login</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Login<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L48">prime-core/src/models/User.ts:48</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="lastpasswordchange" class="tsd-anchor"></a>
+					<h3>last<wbr>Password<wbr>Change</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Password<wbr>Change<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L52">prime-core/src/models/User.ts:52</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="lastname" class="tsd-anchor"></a>
+					<h3>lastname</h3>
+					<div class="tsd-signature tsd-kind-icon">lastname<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L31">prime-core/src/models/User.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="password" class="tsd-anchor"></a>
+					<h3>password</h3>
+					<div class="tsd-signature tsd-kind-icon">password<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L45">prime-core/src/models/User.ts:45</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ispasswordmatch" class="tsd-anchor"></a>
+					<h3>is<wbr>Password<wbr>Match</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Password<wbr>Match<span class="tsd-signature-symbol">(</span>password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L61">prime-core/src/models/User.ts:61</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>password: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updatepassword" class="tsd-anchor"></a>
+					<h3>update<wbr>Password</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Password<span class="tsd-signature-symbol">(</span>password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L54">prime-core/src/models/User.ts:54</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>password: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="hash_password" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> HASH_<wbr>PASSWORD</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">HASH_<wbr>PASSWORD<span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><a href="packages_prime_core.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/cf881a4/packages/prime-core/src/models/User.ts#L17">prime-core/src/models/User.ts:17</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>instance: <a href="packages_prime_core.user.html" class="tsd-signature-type">User</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -170,10 +332,40 @@
 						<a href="packages_prime_core.user.html" class="tsd-kind-icon">User</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#avatarurl" class="tsd-kind-icon">avatar<wbr>Url</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#displayname" class="tsd-kind-icon">display<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#email" class="tsd-kind-icon">email</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#firstname" class="tsd-kind-icon">firstname</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="packages_prime_core.user.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_core.user.html#profile" class="tsd-kind-icon">profile</a>
+								<a href="packages_prime_core.user.html#lastlogin" class="tsd-kind-icon">last<wbr>Login</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#lastpasswordchange" class="tsd-kind-icon">last<wbr>Password<wbr>Change</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#lastname" class="tsd-kind-icon">lastname</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#password" class="tsd-kind-icon">password</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#ispasswordmatch" class="tsd-kind-icon">is<wbr>Password<wbr>Match</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_core.user.html#updatepassword" class="tsd-kind-icon">update<wbr>Password</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="packages_prime_core.user.html#hash_password" class="tsd-kind-icon">HASH_<wbr>PASSWORD</a>
 							</li>
 						</ul>
 					</li>

@@ -1,7 +1,8 @@
 import { flow, types } from 'mobx-state-tree';
-import { accountsClient, accountsGraphQL } from '../utils/accounts';
+import { accountsClient, client } from '../utils/accounts';
 import { fields } from '../utils/fields';
 import { User } from './models/User';
+import { GET_USER } from './queries';
 import { Settings } from './settings';
 
 export const Auth = types
@@ -21,31 +22,27 @@ export const Auth = types
       Settings.fields.forEach((field: any) => {
         if (field.ui && !fields[field.id]) {
           const script = document.createElement('script');
-          script.src = `${Settings.coreUrl}/fields/${field.id}/index.js`;
-          script.id = `Prime_Field_${field.id}`;
+          script.src = `${Settings.coreUrl}/prime/field/${field.type}/index.js`;
+          script.id = `Prime_Field_${field.type}`;
           document.body.appendChild(script);
         }
       });
     };
 
     const login = flow(function*(email: string, password: string) {
-      const result = yield accountsGraphQL.loginWithService('password', {
-        email,
+      yield accountsClient.loginWithService('password', {
+        user: {
+          email,
+        },
         password,
       });
-
-      console.log(result);
-
-      // self.isLoggedIn = Boolean(res.user);
-      // self.user = res.user;
+      yield checkLogin();
 
       yield ensureFields();
-
-      // return res;
     });
 
     const logout = flow(function*() {
-      yield accountsGraphQL.logout();
+      yield accountsClient.logout();
       self.isLoggedIn = false;
       self.user = null;
     });
@@ -53,13 +50,17 @@ export const Auth = types
     const checkLogin = flow(function*() {
       const tokens = yield accountsClient.getTokens();
       if (tokens) {
-        self.accessToken = tokens.accessToken;
-        self.refreshToken = tokens.refreshToken;
-        self.isLoggedIn = true;
-        yield accountsClient.refreshSession();
-        const user = yield accountsGraphQL.getUser();
+        const { data } = yield client.query({
+          query: GET_USER,
+        });
+        if (data) {
+          self.accessToken = tokens.accessToken;
+          self.refreshToken = tokens.refreshToken;
+          self.isLoggedIn = true;
+          self.user = data.getUser;
+          yield ensureFields();
+        }
       }
-      yield ensureFields();
     });
 
     const register = flow(function*({

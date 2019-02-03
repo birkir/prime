@@ -2,6 +2,7 @@ import { Avatar, Button, Form, Input, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
 import React from 'react';
+import { Auth } from '../../stores/auth';
 import { client } from '../../utils/client';
 
 type IUpdateProfileProps = FormComponentProps & { user: any };
@@ -13,14 +14,20 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
       if (!err) {
         client.mutate({
           mutation: gql`
-            mutation updateProfile($firstname: String, $lastname: String, $displayName: String) {
-              updateProfile(firstname: $firstname, lastname: $lastname, displayName: $displayName)
+            mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+              updateUser(id: $id, input: $input) {
+                id
+                profile
+              }
             }
           `,
           variables: {
-            firstname: values.firstname,
-            lastname: values.lastname,
-            displayName: values.displayName,
+            id: Auth.user!.id,
+            input: {
+              firstname: values.firstname,
+              lastname: values.lastname,
+              displayName: values.displayName,
+            },
           },
         });
         user.updateProfile(values);
@@ -40,17 +47,17 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
         <div style={{ maxWidth: 448, minWidth: 224 }}>
           <Form.Item label="First name" colon={false} style={{ marginBottom: 0 }}>
             {form.getFieldDecorator('firstname', {
-              initialValue: user.firstname,
+              initialValue: user.profile.firstname,
             })(<Input />)}
           </Form.Item>
           <Form.Item label="Last name" colon={false} style={{ marginBottom: 0 }}>
             {form.getFieldDecorator('lastname', {
-              initialValue: user.lastname,
+              initialValue: user.profile.lastname,
             })(<Input />)}
           </Form.Item>
           <Form.Item label="Display name" colon={false} style={{ marginBottom: 12 }}>
             {form.getFieldDecorator('displayName', {
-              initialValue: user.displayName,
+              initialValue: user.profile.displayName,
             })(<Input />)}
           </Form.Item>
           <Button htmlType="submit">Update profile</Button>

@@ -28,7 +28,7 @@ export const Account = () => {
     },
     {
       title: 'Email Address',
-      description: user.email,
+      description: user.emails[0].address,
       actions: [<a onClick={() => setChangeEmail(true)}>Change email</a>],
     },
   ];

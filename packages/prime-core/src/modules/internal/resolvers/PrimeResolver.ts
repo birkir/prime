@@ -11,7 +11,7 @@ import { Settings as SettingsType, SettingsAccessType } from '../types/Settings'
 import { getPackagesVersion } from '../utils/getPackagesVersion';
 import { updateNpmPackages } from '../utils/updateNpmPackages';
 
-@Resolver(of => Settings)
+@Resolver()
 export class PrimeResolver {
   @InjectRepository(Settings)
   private readonly settingsRepository: Repository<Settings>;

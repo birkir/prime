@@ -84,20 +84,24 @@ export const Users = Form.create()(({ form }) => {
             mutation createUser($input: CreateUserInput) {
               createUser(input: $input) {
                 id
-                firstname
-                lastname
-                email
-                roles
-                lastLogin
-                createdAt
-                updatedAt
+                emails {
+                  address
+                  verified
+                }
+                profile
+                username
+                # firstname
+                # lastname
+                # roles
+                # lastLogin
+                # createdAt
+                # updatedAt
               }
             }
           `,
           variables: {
             input: {
-              ...omit(data, ['confirm', 'role']),
-              roles: [get(data, 'role', 'user')],
+              email: data.email,
             },
           },
         });
@@ -124,14 +128,17 @@ export const Users = Form.create()(({ form }) => {
     {
       key: 'name',
       title: 'Name',
-      render(text: string, record: any) {
+      render(text: string, { node }: any) {
+        const email = get(node, 'emails.0.address', '');
+        const firstname = get(node, 'profile.firstname', '');
+        const lastname = get(node, 'profile.lastname', '');
         return (
           <>
-            <Avatar style={{ backgroundColor: stringToColor(record.email), marginRight: 16 }}>
-              {record.firstname.substring(0, 1)}
-              {record.lastname.substring(0, 1)}
+            <Avatar style={{ backgroundColor: stringToColor(email), marginRight: 16 }}>
+              {firstname.substring(0, 1)}
+              {lastname.substring(0, 1)}
             </Avatar>
-            {[record.firstname, record.lastname].join(' ')}
+            {[firstname, lastname].join(' ')}
           </>
         );
       },
@@ -139,13 +146,21 @@ export const Users = Form.create()(({ form }) => {
     {
       key: 'email',
       title: 'Email',
-      dataIndex: 'email',
+      render(value: string, record: any) {
+        return get(record, 'node.emails.0.address');
+      },
+    },
+    {
+      key: 'username',
+      title: 'Username',
+      dataIndex: 'node.username',
     },
     {
       key: 'roles',
       title: 'Roles',
       render(text: string, record: any) {
-        return record.roles.map((role: string) => startCase(role)).join(', ');
+        return 'N/A';
+        // return record.roles.map((role: string) => startCase(role)).join(', ');
       },
     },
     {
@@ -157,12 +172,12 @@ export const Users = Form.create()(({ form }) => {
             <Popconfirm
               title="Are you sure?"
               icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}
-              onConfirm={() => onRemoveClick(record.id)}
-              trigger={record.id === Auth.user!.id ? 'contextMenu' : undefined}
+              onConfirm={() => onRemoveClick(record.node.id)}
+              trigger={record.node.id === Auth.user!.id ? 'contextMenu' : undefined}
             >
               <Button
                 style={{ paddingLeft: 8, paddingRight: 8 }}
-                disabled={record.id === Auth.user!.id}
+                disabled={record.node.id === Auth.user!.id}
               >
                 <Icon type="delete" theme="filled" />
               </Button>
@@ -180,14 +195,17 @@ export const Users = Form.create()(({ form }) => {
         query={gql`
           query {
             allUsers {
-              id
-              firstname
-              lastname
-              email
-              roles
-              lastLogin
-              createdAt
-              updatedAt
+              edges {
+                node {
+                  id
+                  profile
+                  username
+                  emails {
+                    address
+                    verified
+                  }
+                }
+              }
             }
           }
         `}
@@ -201,11 +219,7 @@ export const Users = Form.create()(({ form }) => {
             <Table
               footer={() => <Button onClick={onCreateClick}>Create</Button>}
               columns={columns}
-              dataSource={
-                data &&
-                data.allUsers &&
-                data.allUsers.sort((a: any, b: any) => a.firstname.localeCompare(b.firstname))
-              }
+              dataSource={data && data.allUsers && data.allUsers.edges}
               rowClassName={() => 'prime-row-click'}
               rowKey="id"
               onRow={record => ({

@@ -8,6 +8,7 @@ import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
 import { SchemaResolver } from './resolvers/SchemaResolver';
+import { UserResolver } from './resolvers/UserResolver';
 import { WebhookResolver } from './resolvers/WebhookResolver';
 import { authChecker } from './utils/authChecker';
 import { noEnumsOrInheritedModels } from './utils/noEnumsOrInheritedModels';
@@ -23,7 +24,14 @@ export const createInternal = async (connection: Connection, checkAuth = default
   log('building schema');
 
   const schema = await buildTypeDefsAndResolvers({
-    resolvers: [PrimeResolver, WebhookResolver, ReleaseResolver, SchemaResolver, DocumentResolver],
+    resolvers: [
+      DocumentResolver,
+      PrimeResolver,
+      ReleaseResolver,
+      SchemaResolver,
+      UserResolver,
+      WebhookResolver,
+    ],
     pubSub,
     authChecker,
     container: ({ context }) => context.container,

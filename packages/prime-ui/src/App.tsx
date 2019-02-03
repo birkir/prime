@@ -8,6 +8,7 @@ import { Login } from './routes/login/Login';
 import { Logout } from './routes/logout/Logout';
 import { Onboarding } from './routes/onboarding/Onboarding';
 import { Playground } from './routes/playground/Playground';
+import { ResetPassword } from './routes/reset-password/ResetPassword';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
 import { Auth } from './stores/auth';
@@ -29,7 +30,7 @@ export class App extends React.Component {
   public async componentDidMount() {
     await Auth.checkLogin();
     if (Auth.isLoggedIn) {
-      // await ContentTypes.loadAll();
+      await ContentTypes.loadAll();
     }
     this.setState({ loading: false });
   }
@@ -64,6 +65,8 @@ export class App extends React.Component {
                 <Switch key={preKey} location={location}>
                   <Route path="/setup" exact component={Onboarding} />
                   <Route path="/login" exact component={Login} />
+                  <Route path="/reset-password/:token?" exact component={ResetPassword} />
+                  <Route path="/verify-email/:token" exact component={Login} />
                   <Route path="/logout" exact component={Logout} />
                   <Private>
                     <Layout>

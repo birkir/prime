@@ -25,8 +25,8 @@ export const Users = types
 
       try {
         const { data } = yield client.query({ query: ALL_USERS });
-        data.allUsers.forEach((user: any) => {
-          self.items.put(user);
+        data.allUsers.edges.forEach((user: any) => {
+          self.items.put(user.node);
         });
         self.loaded = true;
       } catch (err) {

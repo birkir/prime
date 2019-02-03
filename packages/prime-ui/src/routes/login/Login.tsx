@@ -1,6 +1,7 @@
 import { Button, Form, Icon, Input, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Auth } from '../../stores/auth';
 
 class LoginBase extends React.Component<FormComponentProps> {
@@ -55,6 +56,9 @@ class LoginBase extends React.Component<FormComponentProps> {
               Log in
             </Button>
           </Form.Item>
+          <div>
+            <Link to="/reset-password">Reset password</Link>
+          </div>
         </Form>
       </div>
     );
