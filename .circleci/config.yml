@@ -13,7 +13,7 @@ jobs:
       SESSION_SECRET: 'very-secret'
     steps:
       - checkout
-      - run: yarn install --frozen-lockfile --ignore-engines
+      - run: yarn install --frozen-lockfile
       - run: yarn run lerna bootstrap
       - run: yarn lint:ci
       - run: yarn compile

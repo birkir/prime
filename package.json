@@ -1,5 +1,8 @@
 {
   "private": true,
+  "engines" : {
+    "node" : ">= 10.*"
+  },
   "scripts": {
     "setup": "lerna bootstrap; yarn run link",
     "start": "lerna exec -- yarn dev --stream",
