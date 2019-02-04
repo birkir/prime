@@ -17,18 +17,18 @@ export const createDocumentResolver = async ({
     const locale = args.locale || (await getDefaultLocale());
     const single = schema.settings.single;
     const published = true;
+    const where = {
+      ...(!single && { [key]: args.id }),
+      ...((single || key === 'documentId') && {
+        locale,
+        publishedAt: Raw(alias => `${alias} IS ${published ? 'NOT' : ''} NULL`),
+      }),
+      schemaId: schema.id,
+      deletedAt: IsNull(),
+    };
 
     const doc = await documentRepository.findOne({
-      where: {
-        ...(single && { [key]: args.id }),
-        ...(single ||
-          (key === 'documentId' && {
-            locale,
-            publishedAt: Raw(alias => `${alias} IS ${published ? 'NOT' : ''} NULL`),
-          })),
-        schemaId: schema.id,
-        deletedAt: IsNull(),
-      },
+      where,
       order: {
         createdAt: 'DESC',
       },

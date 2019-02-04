@@ -1,131 +1,122 @@
-import { IPrimeFieldGraphQLArguments, PrimeField } from '@primecms/field';
-import { GraphQLID, GraphQLList, GraphQLObjectType, GraphQLUnionType } from 'graphql';
+import { PrimeField, PrimeFieldContext } from '@primecms/field';
+import {
+  GraphQLID,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLUnionType,
+} from 'graphql';
 
-interface IPrimeFieldDocumentOptions {
-  contentTypeIds: string[] | null;
-  contentTypeId: string | null;
+interface Options {
+  schemaIds: string[];
+  schemaId: string | null;
   multiple: boolean;
 }
 
-export class PrimeFieldDocument extends PrimeField {
-  public id: string = 'document';
-  public title: string = 'Document';
-  public description: string = 'Link and resolve documents';
+const NotFound = new GraphQLObjectType({
+  name: 'Prime_Field_Document_NotFound',
+  fields: {
+    id: { type: GraphQLString },
+    message: { type: GraphQLString },
+  },
+});
 
-  public defaultOptions: IPrimeFieldDocumentOptions = {
-    contentTypeIds: null,
-    contentTypeId: null,
+export class PrimeFieldDocument extends PrimeField {
+  public static type: string = 'document';
+  public static title: string = 'Document';
+  public static description: string = 'Link and resolve documents';
+  public static options: Options = {
+    schemaIds: [],
+    schemaId: null,
     multiple: false,
   };
 
-  public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
-    const { field, queries, contentTypes, models } = args;
-    const options = this.getOptions(field);
+  public outputType(context: PrimeFieldContext) {
+    const options = this.options;
 
-    options.contentTypeIds = options.contentTypeIds || [];
-
-    if (options.contentTypeId) {
-      options.contentTypeIds.push(options.contentTypeId);
+    if (options.schemaId) {
+      options.schemaIds.push(options.schemaId);
     }
 
-    const types = options.contentTypeIds.map(contentTypeId => {
-      const contentType = contentTypes.find(ct => ct.id === contentTypeId);
-      if (!contentType || !queries[contentType.name]) {
-        return null;
-      }
-      const query = queries[contentType.name];
+    const types = options.schemaIds
+      .map(schemaId => {
+        const schema = context.schemas.find(s => s.id === schemaId);
+        if (schema && context.types.has(schema.name)) {
+          const type = context.types.get(schema.name)!.type;
+          return { type, schema };
+        }
+      })
+      .filter(t => !!t);
 
-      return { contentTypeId, type: query.type, resolve: query.resolve };
-    });
-
-    const entryMap = new Map();
-    const getEntryType = async (id: string) => {
-      if (!id || typeof id !== 'string') {
-        return null;
-      }
-
-      if (entryMap.has(id)) {
-        return entryMap.get(id);
-      }
-
-      // @todo do we want to cache failed lookups
-      // entryMap.set(id, { resolve: null, type: null });
-
-      const entry = await models.ContentEntry.findOne({ where: { entryId: id } });
-
-      if (!entry) {
-        return null;
-      }
-
-      const type = types.find(({ contentTypeId }) => contentTypeId === entry.contentTypeId);
-
-      if (!type) {
-        return null;
-      }
-
-      entryMap.set(id, type);
-
-      return type;
-    };
-
-    if (types.filter(n => !!n).length === 0) {
+    if (types.length === 0) {
       return null;
     }
 
-    const unionType = new GraphQLUnionType({
-      name: `${args.contentType.name}_${field.apiName}`,
-      types: types.map(({ type }) => type),
-      async resolveType(value, context, info): Promise<GraphQLObjectType> {
-        const entry = await getEntryType(value.id || value);
+    if (this.options.multiple) {
+      const unionType = new GraphQLUnionType({
+        name: context.uniqueTypeName(`${context.name}_${this.schemaField.name}`),
+        types: [...types.map(item => item.type), NotFound],
+        async resolveType(value, ctx, info): Promise<GraphQLObjectType> {
+          if (value.__inputname) {
+            const foundType = types.find(({ schema }) => schema.id === value.__inputname);
+            if (foundType) {
+              return foundType.type;
+            }
+          }
 
-        if (!entry) {
-          throw new Error('Unknown error');
-        }
+          return NotFound;
+        },
+      });
 
-        return entry.type;
-      },
-    });
-
-    if (options.multiple) {
       return {
-        type: new GraphQLList(unionType),
-        async resolve(root, unusedArgs, context, info) {
-          const value = root[field.name];
-          const ids = Array.isArray(value) ? value : [value];
-
+        type: unionType,
+        args: {
+          locale: { type: GraphQLString },
+        },
+        resolve: async (root, args, ctx, info) => {
+          const values = root[this.schemaField.name];
           return Promise.all(
-            ids.map(async id => {
-              const entry = await getEntryType(id);
-
-              return entry && entry.resolve(root, { id }, context, info);
+            values.map(value => {
+              const [schemaId, documentId] = value.split(',');
+              const type = types.find(t => t.schema.id === schemaId);
+              if (type) {
+                const resolve = context.resolvers[type.schema.name];
+                return resolve(root, { ...args, id: documentId }, ctx, info);
+              }
+              return null;
             })
           );
         },
       };
+    } else if (types.length) {
+      return {
+        type: types[0].type,
+        args: {
+          locale: { type: GraphQLString },
+        },
+        resolve: async (root, args, ctx, info) => {
+          const values: string[][] = []
+            .concat(root[this.schemaField.name])
+            .map(s => String(s).split(','));
+          const entry = values.find(value => value[0] === types[0].schema.id);
+          if (entry) {
+            const [, id] = entry;
+            const resolve = context.resolvers[types[0].schema.name];
+            return resolve(root, { ...args, id }, ctx, info);
+          }
+          return null;
+        },
+      };
     }
 
-    return {
-      type: unionType,
-      async resolve(root, unusedArgs, context, info) {
-        const value = root[field.name];
-        const id = Array.isArray(value) ? value[0] : value;
-        const entry = await getEntryType(id);
-
-        return entry && entry.resolve(root, { id }, context, info);
-      },
-    };
+    return null;
   }
 
-  public getGraphQLInput(args: IPrimeFieldGraphQLArguments) {
-    const { field } = args;
-    const options = this.getOptions(field);
+  public inputType() {
+    const options = this.options;
 
     return {
       type: options.multiple ? new GraphQLList(GraphQLID) : GraphQLID,
     };
-  }
-
-  public getGraphQLWhere() {
-    return null;
   }
 }

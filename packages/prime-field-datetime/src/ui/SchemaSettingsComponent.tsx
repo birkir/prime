@@ -1,14 +1,14 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Switch } from 'antd';
 import React from 'react';
 
-type IProps = IPrimeFieldProps & {
+type Props = PrimeFieldProps & {
   options: {
     time?: boolean;
   };
 };
 
-export class SchemaSettingsComponent extends React.PureComponent<IProps> {
+export class SchemaSettingsComponent extends React.PureComponent<Props> {
   public render() {
     const { form, options = {} } = this.props;
 

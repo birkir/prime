@@ -1863,6 +1863,29 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@primecms/field-asset@^0.3.0-alpha.0":
+  version "0.3.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@primecms/field-asset/-/field-asset-0.3.0-alpha.0.tgz#97d54cd0d8c6370fe1dc487554a7f38883bafb45"
+  integrity sha512-35zwYd7YjVc8It2Tob0uafvvSNZVgYjjqqQqRWO/sgiwusDXDh30fUjmNvgrcqb/wfn2TJfLtG2sUsKxfXfcew==
+  dependencies:
+    "@primecms/field" "^0.3.0-alpha.0"
+    react-easy-crop "^1.6.0"
+
+"@primecms/field-select@^0.3.0-alpha.0":
+  version "0.3.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@primecms/field-select/-/field-select-0.3.0-alpha.0.tgz#fb50993cb21e841735d9775ea32a6095146ec99f"
+  integrity sha512-XqJPx7q6XaU/Toj8fWsLSRoOFvd7cySPSRBxroeJddomoVrHiriDuQQ59ZAjlOnRl26khZT0yI5/DVrvPINZQA==
+  dependencies:
+    "@primecms/field" "^0.3.0-alpha.0"
+
+"@primecms/field-slice@^0.3.0-alpha.0":
+  version "0.3.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@primecms/field-slice/-/field-slice-0.3.0-alpha.0.tgz#47fae10b24b0a5d64c9d3e4d4bb3f5842d62a902"
+  integrity sha512-vWc+AhL6Kvang+vlK3TOWVFJhtkKGkdM/rGvGZcC7RD98JbMjZVduRaQxR1uziY3Nr2yLFbgsN18GtJHTTqvpw==
+  dependencies:
+    "@primecms/field" "^0.3.0-alpha.0"
+    graphql-union-input-type "0.4.0"
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -2065,12 +2088,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/lodash@4.14.118":
-  version "4.14.118"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.118.tgz#247bab39bfcc6d910d4927c6e06cbc70ec376f27"
-  integrity sha512-iiJbKLZbhSa6FYRip/9ZDX6HXhayXLDGY2Fqws9cOkEQ6XeKfaxB0sC541mowZJueYyMnVUmmG+al5/4fCDrgw==
-
-"@types/lodash@^4.14.110", "@types/lodash@^4.14.119":
+"@types/lodash@4.14.120", "@types/lodash@^4.14.110", "@types/lodash@^4.14.119":
   version "4.14.120"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.120.tgz#cf265d06f6c7a710db087ed07523ab8c1a24047b"
   integrity sha512-jQ21kQ120mo+IrDs1nFNVm/AsdFxIx2+vZ347DbogHJPd/JzKNMOqU6HCYin1W6v8l5R9XSO2/e9cxmn7HAnVw==
@@ -16426,12 +16444,7 @@ typeorm@0.2.12, typeorm@^0.2.11:
     yargonaut "^1.1.2"
     yargs "^12.0.5"
 
-typescript@3.2.x:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.4.tgz#c585cb952912263d915b462726ce244ba510ef3d"
-  integrity sha512-0RNDbSdEokBeEAkgNbxJ+BLwSManFy9TeXz8uW+48j/xhEXv1ePME60olyzw2XzUqUBNAYFeJadIqAgNqIACwg==
-
-typescript@3.3.1:
+typescript@3.2.x, typescript@3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.1.tgz#6de14e1db4b8a006ac535e482c8ba018c55f750b"
   integrity sha512-cTmIDFW7O0IHbn1DPYjkiebHxwtCMU+eTy30ZtJNBPF9j2O1ITu5XH2YnBeVRKWHqF+3JQwWJv0Q0aUgX8W7IA==

@@ -21,7 +21,7 @@ const OrderEnum = new GraphQLEnumType({
 });
 
 export const createSchemaConnectionType = async (
-  { name, fields, schema, resolvers }: SchemaPayload,
+  { name, fields, schema, schemas, resolvers }: SchemaPayload,
   SchemaType: GraphQLObjectType
 ) => {
   const sortName = uniqueTypeName(`${name}_Sort`);
@@ -58,6 +58,7 @@ export const createSchemaConnectionType = async (
       const WhereType = await field.primeField.whereType(({
         fields,
         schema,
+        schemas,
         name: whereName,
         resolvers,
         uniqueTypeName,

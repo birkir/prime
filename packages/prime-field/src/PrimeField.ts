@@ -11,7 +11,7 @@ export class PrimeField {
   public static type: string;
   public static title: string;
   public static description: string;
-  public static options: any;
+  public static options: any = {};
 
   constructor(
     protected schemaField: SchemaField,
@@ -50,11 +50,11 @@ export class PrimeField {
     return Promise.resolve(null);
   }
 
-  public processInput(data: object): Promise<object> {
+  public processInput(data: any): Promise<any> {
     return Promise.resolve(data);
   }
 
-  public processOutput(data: object): Promise<object> {
+  public processOutput(data: any): Promise<any> {
     return Promise.resolve(data);
   }
 }

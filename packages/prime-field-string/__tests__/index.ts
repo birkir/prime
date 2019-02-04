@@ -1,34 +1,35 @@
-import { GraphQLNonNull } from 'graphql';
+import { PrimeFieldOperation } from '@primecms/field';
+import { GraphQLString } from 'graphql';
 import PrimeFieldString from '../src';
 
 describe('PrimeFieldString', () => {
   let test: PrimeFieldString;
 
   beforeAll(() => {
-    test = new PrimeFieldString(null as any, null as any);
+    test = new PrimeFieldString({ options: {} } as any, {} as any);
   });
 
   it('should have default export', () => {
     expect(typeof PrimeFieldString).toBe('function');
   });
 
-  it('should return same input for processInput', () => {
+  it('should return same input for processInput', async () => {
     const input = { foo: 1 };
-    expect(test.processInput(input)).toBe(input);
+    expect(await test.processInput(input)).toBe(input);
   });
 
-  it('should return same output for processOutput', () => {
+  it('should return same output for processOutput', async () => {
     const output = { foo: 2 };
-    expect(test.processOutput(output)).toBe(output);
+    expect(await test.processOutput(output)).toBe(output);
   });
 
   it('should have graphql output type', () => {
-    expect(test.outputType(null as any)).not.toBeNull();
+    expect(test.outputType({} as any)).not.toBeNull();
   });
 
   it('should have graphql input type', async () => {
-    expect(test.inputType(null as any, null as any)).not.toBeNull();
-    expect((await test.inputType(null as any, null as any)).type).toBeInstanceOf(GraphQLNonNull);
+    expect(await test.inputType({} as any, PrimeFieldOperation.CREATE)).not.toBeNull();
+    expect((await test.inputType({} as any, PrimeFieldOperation.CREATE))!.type).toBe(GraphQLString);
   });
 
   it('should have graphql where type', async () => {

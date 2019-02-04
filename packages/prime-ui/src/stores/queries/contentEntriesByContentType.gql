@@ -1,5 +1,5 @@
 query contentEntriesByContentType($contentTypeId: ID) {
-  allDocuments(first: 100, schemaId: $contentTypeId) {
+  allDocuments(first: 100, filter: { schemaId: $contentTypeId }) {
     totalCount
     edges {
       node {
@@ -8,7 +8,7 @@ query contentEntriesByContentType($contentTypeId: ID) {
         schemaId
         releaseId
         locale
-        # display
+        primary
         data
         createdAt
         updatedAt

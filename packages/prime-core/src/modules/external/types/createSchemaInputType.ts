@@ -11,7 +11,7 @@ import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 
 export const createSchemaInputType = async (
-  { name, schema, fields, resolvers }: SchemaPayload,
+  { name, schema, schemas, types, fields, resolvers }: SchemaPayload,
   SchemaType: GraphQLObjectType,
   operation: PrimeFieldOperation.CREATE | PrimeFieldOperation.UPDATE = PrimeFieldOperation.CREATE
 ) => {
@@ -29,6 +29,8 @@ export const createSchemaInputType = async (
         ({
           name,
           schema,
+          schemas,
+          types,
           fields,
           uniqueTypeName,
           resolvers,

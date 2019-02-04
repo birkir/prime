@@ -19,6 +19,7 @@ export const ContentEntry = types
     schemaId: types.string,
     releaseId: types.maybeNull(types.string),
     locale: types.string,
+    primary: types.maybeNull(types.string),
     publishedAt: types.maybeNull(types.Date),
     schema: types.maybeNull(ContentTypeRef),
     data: types.frozen<JSONObject>(),

@@ -1,8 +1,8 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Switch } from 'antd';
 import React from 'react';
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public render() {
     const { form, field, path, initialValue = false } = this.props;
     const { getFieldDecorator } = form;

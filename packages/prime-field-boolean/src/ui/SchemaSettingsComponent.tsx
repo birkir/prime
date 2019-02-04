@@ -1,9 +1,7 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import React from 'react';
 
-type IProps = IPrimeFieldProps;
-
-export class SchemaSettingsComponent extends React.PureComponent<IProps> {
+export class SchemaSettingsComponent extends React.PureComponent<PrimeFieldProps> {
   public render() {
     return null;
   }

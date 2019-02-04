@@ -26,7 +26,7 @@ function renderInputField({ field, path, initialValue, form, entry }: any) {
         client={client}
         stores={stores}
         path={path}
-        entry={entry}
+        document={entry}
         renderField={renderInputField}
         initialValue={initialValue}
       />

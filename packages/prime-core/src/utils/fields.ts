@@ -40,6 +40,19 @@ export const fields = (config.fields || [])
         }
       }
 
+      let error;
+
+      if (!field.type) {
+        error = '%o has no static "type" property';
+      } else if (!field.title) {
+        error = '%o has no static "title" property';
+      }
+
+      if (error) {
+        log(error, moduleName);
+        return null;
+      }
+
       return field;
     } catch (err) {
       log('Could not resolve field module %o', moduleName);

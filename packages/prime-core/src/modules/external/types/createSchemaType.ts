@@ -5,31 +5,46 @@ import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { DocumentMetadata } from './DocumentMetadata';
 
-export const createSchemaType = async ({ name, schema, fields, resolvers }: SchemaPayload) => {
-  const typeFields: { [key: string]: any } = {
-    id: { type: GraphQLID },
-  };
+export const createSchemaType = async ({
+  name,
+  schema,
+  schemas,
+  types,
+  fields,
+  resolvers,
+}: SchemaPayload) => {
+  let resolvedTypeFields = {};
 
-  for (const field of fields) {
-    if (field.primeField && !field.parentFieldId) {
-      const type = await field.primeField.outputType(
-        ({
-          name,
-          schema,
-          fields,
-          uniqueTypeName,
-          resolvers,
-        } as unknown) as PrimeFieldContext,
-        PrimeFieldOperation.READ
-      );
-      if (type) {
-        typeFields[field.name] = type;
+  const resolveFieldsAsync = async () => {
+    const typeFields: { [key: string]: any } = {
+      id: { type: GraphQLID },
+    };
+
+    for (const field of fields) {
+      if (field.primeField && !field.parentFieldId) {
+        const type = await field.primeField.outputType(
+          ({
+            name,
+            schema,
+            schemas,
+            types,
+            fields,
+            uniqueTypeName,
+            resolvers,
+          } as unknown) as PrimeFieldContext,
+          PrimeFieldOperation.READ
+        );
+        if (type) {
+          typeFields[field.name] = type;
+        }
       }
     }
-  }
 
-  typeFields._meta = {
-    type: DocumentMetadata,
+    typeFields._meta = {
+      type: DocumentMetadata,
+    };
+
+    return typeFields;
   };
 
   return {
@@ -39,7 +54,12 @@ export const createSchemaType = async ({ name, schema, fields, resolvers }: Sche
     },
     type: new GraphQLObjectType({
       name,
-      fields: typeFields,
+      fields: () => resolvedTypeFields,
     }),
+    asyncResolve() {
+      return resolveFieldsAsync().then(typeFields => {
+        resolvedTypeFields = typeFields;
+      });
+    },
   };
 };

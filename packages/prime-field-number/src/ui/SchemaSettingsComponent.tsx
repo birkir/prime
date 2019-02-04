@@ -1,9 +1,9 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Input, Switch } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
-type IProps = IPrimeFieldProps & {
+type Props = PrimeFieldProps & {
   options: {
     float: boolean;
     rules?: {
@@ -16,7 +16,7 @@ type IProps = IPrimeFieldProps & {
   };
 };
 
-export class SchemaSettingsComponent extends React.PureComponent<IProps> {
+export class SchemaSettingsComponent extends React.PureComponent<Props> {
   public render() {
     const { form, options } = this.props;
 
