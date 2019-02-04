@@ -123,7 +123,7 @@ export class ReleaseResolver {
     this.documentRepository.update(
       { releaseId: release.id },
       {
-        releaseId: null,
+        releaseId: null as any,
       }
     );
 

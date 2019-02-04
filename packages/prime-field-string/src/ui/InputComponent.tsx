@@ -57,7 +57,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     }
   }, 330);
 
-  public componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps: PrimeFieldProps) {
     if (nextProps.initialValue !== this.props.initialValue) {
       this.setState({
         value: BraftEditor.createEditorState(
