@@ -20,11 +20,11 @@ There are a lot of headless SaaS solutions out there, and many of them better th
 
 ## Features
 
-- 🧬 Headless GraphQL interface
+- 🖨 Headless GraphQL Interface
 - 🚀 Simple to use, yet powerful
-- 🧱 Slices and groups fields
+- 📐 Slices and Groups fields
 - ☑️ Create your own custom fields
-- 🇮🇸 🇯🇵 Multi language
+- 🇮🇸 🇯🇵 Multiple languages
 - 🚧 Preview drafts and releases without publishing
 - 🔑 Resource and user access control
 - 📆 Plan and schedule releases
