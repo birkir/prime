@@ -1,21 +1,17 @@
-mutation publishContentEntry(
-  $versionId: ID!
-) {
-  unpublishContentEntry(
-    versionId: $versionId
-  ) {
-    versionId
-    entryId
-    contentTypeId
-    contentReleaseId
-    language
-    isPublished
+mutation unpublishDocument($id: ID!) {
+  unpublishDocument(id: $id) {
+    id
+    releaseId
+    schemaId
+    releaseId
+    locale
+    publishedAt
     data
     createdAt
     updatedAt
     versions {
-      versionId
-      isPublished
+      id
+      publishedAt
       createdAt
       updatedAt
     }

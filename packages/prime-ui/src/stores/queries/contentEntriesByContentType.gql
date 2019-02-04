@@ -4,11 +4,11 @@ query contentEntriesByContentType($contentTypeId: ID) {
     edges {
       node {
         id
-        entryId
+        documentId
         schemaId
         releaseId
         locale
-        display
+        # display
         data
         createdAt
         updatedAt

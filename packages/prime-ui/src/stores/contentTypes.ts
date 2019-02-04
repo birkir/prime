@@ -23,6 +23,12 @@ export const ContentTypes = types
   .actions(self => {
     const loadByName = flow(function*(name: string) {
       let item;
+      const entries = Array.from(self.items.values());
+      const entry = entries.find(n => n.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+      if (entry) {
+        return entry;
+      }
+
       const { data } = yield client.query({
         query: CONTENT_TYPE_BY_ID,
         variables: { name },

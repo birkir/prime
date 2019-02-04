@@ -11,7 +11,7 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { getRepository } from 'typeorm';
+import { getRepository, In } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
@@ -116,14 +116,14 @@ export class ReleaseResolver {
       .getMany();
 
     if (ids.length > 0) {
-      const docs = await this.documentRepository.find({ where: { id: ids.map(d => d.id) } });
+      const docs = await this.documentRepository.find({ where: { id: In(ids.map(d => d.id)) } });
       await Promise.all(docs.map(doc => this.documentRepository.publish(doc, context.user.id)));
     }
 
     this.documentRepository.update(
       { releaseId: release.id },
       {
-        releaseId: undefined,
+        releaseId: null,
       }
     );
 

@@ -57,6 +57,16 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     }
   }, 330);
 
+  public componentWillReceiveProps(nextProps) {
+    if (nextProps.initialValue !== this.props.initialValue) {
+      this.setState({
+        value: BraftEditor.createEditorState(
+          markdownToDraft(nextProps.initialValue, markdownConfig)
+        ),
+      });
+    }
+  }
+
   public onChange = (value: any) => {
     this.setState({ value }, this.setMarkdownValue);
   };

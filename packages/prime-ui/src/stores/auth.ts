@@ -53,7 +53,7 @@ export const Auth = types
         const { data } = yield client.query({
           query: GET_USER,
         });
-        if (data) {
+        if (data && data.getUser) {
           self.accessToken = tokens.accessToken;
           self.refreshToken = tokens.refreshToken;
           self.isLoggedIn = true;

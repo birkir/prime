@@ -1,21 +1,16 @@
-mutation publishContentEntry(
-  $versionId: ID!
-) {
-  publishContentEntry(
-    versionId: $versionId
-  ) {
-    versionId
-    entryId
-    contentTypeId
-    contentReleaseId
-    language
-    isPublished
+mutation publishDocument($id: ID!) {
+  publishDocument(id: $id) {
+    id
+    locale
     data
+    schemaId
+    releaseId
+    publishedAt
     createdAt
     updatedAt
     versions {
-      versionId
-      isPublished
+      id
+      publishedAt
       createdAt
       updatedAt
     }

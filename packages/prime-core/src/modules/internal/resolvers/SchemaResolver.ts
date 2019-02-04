@@ -26,13 +26,17 @@ export class SchemaResolver {
     @Arg('id', type => ID, { nullable: true }) id: string,
     @Arg('name', { nullable: true }) name: string
   ) {
+    let res;
     if (name) {
-      return this.schemaRepository.findOne({
+      res = await this.schemaRepository.findOne({
         name: Raw(alias => `lower(${alias}) = lower('${name.replace(/[\W_]+/g, '')}')`),
       });
+    } else {
+      res = await this.schemaRepository.loadOne(id);
     }
-    const res = await this.schemaRepository.loadOne(id);
-    res.variant = parseEnum(SchemaVariant, res.variant);
+    if (res) {
+      res.variant = parseEnum(SchemaVariant, res.variant);
+    }
     return res;
   }
 

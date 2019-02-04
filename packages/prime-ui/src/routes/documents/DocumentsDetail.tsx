@@ -103,7 +103,6 @@ export class DocumentsDetail extends React.Component<IProps> {
 
     if (options.type) {
       this.contentType = await ContentTypes.loadByName(options.type);
-      ContentTypes.loadAll();
 
       if (this.contentType) {
         this.forceUpdate();
@@ -125,7 +124,7 @@ export class DocumentsDetail extends React.Component<IProps> {
       );
       clearTimeout(loadDocTimer);
       if (this.contentEntry && !options.type) {
-        this.contentType = await ContentTypes.loadById(this.contentEntry.contentTypeId);
+        this.contentType = await ContentTypes.loadById(this.contentEntry.schemaId);
         if (this.contentType) {
           this.options.type = this.contentType.name.toLocaleLowerCase();
         }
@@ -148,7 +147,11 @@ export class DocumentsDetail extends React.Component<IProps> {
       .join(';');
   }
 
-  public save = () =>
+  public save = ({
+    releaseId,
+    documentId,
+    locale,
+  }: { releaseId?: string; documentId?: string; locale?: string } = {}) =>
     new Promise((resolve, reject) => {
       if (this.documentForm) {
         const { form } = this.documentForm.props;
@@ -192,20 +195,20 @@ export class DocumentsDetail extends React.Component<IProps> {
 
             // Update values
             if (this.contentEntry) {
-              await this.contentEntry.update(parsed);
+              await this.contentEntry.update({ data: parsed, releaseId, locale });
               resolve();
             } else if (this.contentType) {
               try {
-                this.contentEntry = await ContentEntries.create(
-                  this.contentType.id,
-                  parsed,
-                  this.locale.id,
-                  this.options.release,
-                  this.options.entryId
-                );
+                this.contentEntry = await ContentEntries.create({
+                  schemaId: this.contentType.id,
+                  data: parsed,
+                  locale: this.locale.id,
+                  releaseId,
+                  documentId,
+                });
                 if (this.contentEntry) {
                   this.props.history.replace(
-                    `/documents/doc/${this.contentEntry.entryId}/${this.opts()}`
+                    `/documents/doc/${this.contentEntry.documentId}/${this.opts()}`
                   );
                 }
                 resolve();
@@ -253,11 +256,10 @@ export class DocumentsDetail extends React.Component<IProps> {
   public onReleaseSelect = async (record: any) => {
     if (this.contentEntry) {
       try {
-        await this.save();
-        await this.contentEntry.release(record.id);
+        await this.save({ releaseId: record.id });
         message.success('Document was added to release');
         this.props.history.replace(
-          `/documents/doc/${this.contentEntry.entryId}/${this.opts({ release: record.id })}`
+          `/documents/doc/${this.contentEntry.documentId}/${this.opts({ release: record.id })}`
         );
       } catch (err) {
         message.error('Could not add document to release');
@@ -295,7 +297,7 @@ export class DocumentsDetail extends React.Component<IProps> {
     const index = Number(e.key || 0);
     const preview = Settings.previews[index];
     const url = encodeURIComponent(
-      preview.hostname + preview.pathname + '?' + this.contentEntry!.versionId
+      preview.hostname + preview.pathname + '?' + this.contentEntry!.id
     );
     window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
   };
@@ -305,10 +307,10 @@ export class DocumentsDetail extends React.Component<IProps> {
       this.contentEntry && this.contentEntry.hasChanged ? 'Unsaved changes' : 'Draft';
     return (
       <Alert
-        key={version.versionId}
-        type={version.isPublished ? 'info' : 'warning'}
-        icon={version.isPublished ? <Icon type="check-circle" /> : <Icon type="info-circle" />}
-        message={version.isPublished ? 'Published' : draftLabel}
+        key={version.id}
+        type={version.publishedAt ? 'info' : 'warning'}
+        icon={version.publishedAt ? <Icon type="check-circle" /> : <Icon type="info-circle" />}
+        message={version.publishedAt ? 'Published' : draftLabel}
         description={`${distanceInWordsToNow(version.updatedAt)} ago`}
         style={{ marginBottom: 16 }}
         banner
@@ -318,8 +320,8 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   public renderStatus = () => {
     const contentEntry = this.contentEntry!;
-    const lastPublished = contentEntry.versions.findIndex(v => v.isPublished);
-    const lastDraft = contentEntry.versions.findIndex(v => !v.isPublished);
+    const lastPublished = contentEntry.versions.findIndex(v => v.publishedAt !== null);
+    const lastDraft = contentEntry.versions.findIndex(v => v.publishedAt === null);
 
     return (
       <>
@@ -483,7 +485,7 @@ export class DocumentsDetail extends React.Component<IProps> {
             <div style={{ padding: 16 }}>
               {contentEntry && (
                 <>
-                  <pre style={{ fontSize: 13 }}>{contentEntry.versionId}</pre>
+                  <pre style={{ fontSize: 13 }}>{contentEntry.id}</pre>
                 </>
               )}
               {contentEntry && !options.release && (

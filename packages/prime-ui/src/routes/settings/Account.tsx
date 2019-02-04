@@ -1,5 +1,5 @@
 import { Divider, List, Modal } from 'antd';
-import { distanceInWordsToNow } from 'date-fns';
+import { get } from 'lodash';
 import { Observer } from 'mobx-react';
 import React from 'react';
 import { Auth } from '../../stores/auth';
@@ -28,7 +28,7 @@ export const Account = () => {
     },
     {
       title: 'Email Address',
-      description: user.emails[0].address,
+      description: get(user, 'emails.0.address'),
       actions: [<a onClick={() => setChangeEmail(true)}>Change email</a>],
     },
   ];

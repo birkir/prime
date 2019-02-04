@@ -1,27 +1,17 @@
-mutation updateContentEntry(
-  $versionId: ID!
-  $data: JSON
-  $language: String
-  $contentReleaseId: ID
-) {
-  updateContentEntry(
-    versionId: $versionId
-    data: $data
-    language: $language
-    contentReleaseId: $contentReleaseId
-  ) {
-    versionId
-    entryId
-    contentTypeId
-    contentReleaseId
-    language
-    isPublished
+mutation updateDocument($id: ID!, $data: JSON, $locale: String, $releaseId: ID) {
+  updateDocument(id: $id, data: $data, locale: $locale, releaseId: $releaseId) {
+    id
+    documentId
+    schemaId
+    releaseId
+    locale
     data
+    publishedAt
     createdAt
     updatedAt
     versions {
-      versionId
-      isPublished
+      id
+      publishedAt
       createdAt
       updatedAt
     }

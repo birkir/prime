@@ -71,6 +71,11 @@ const GET_CONTENT_ENTRIES = gql`
           updatedAt
           data
           primary
+          schemaId
+          userId
+          published {
+            id
+          }
           # schema {
           #   id
           #   name
@@ -197,9 +202,9 @@ export const DocumentsList = ({ match, history }: any) => {
             sorter: false,
             width: '52px',
             render(text: string, record: any) {
-              let backgroundColor = record.publishedVersionId ? '#79cea3' : '#faad14';
-              let icon = record.publishedVersionId ? 'caret-right' : 'exclamation';
-              let dot = !record.publishedVersionId || record.publishedAt !== null ? false : true;
+              let backgroundColor = record.publishedAt || record.published ? '#79cea3' : '#faad14';
+              let icon = record.publishedAt ? 'caret-right' : 'exclamation';
+              let dot = !record.published || record.publishedAt !== null ? false : true;
 
               if (contentReleaseId) {
                 dot = false;
@@ -260,15 +265,18 @@ export const DocumentsList = ({ match, history }: any) => {
           {
             title: 'Type',
             width: '175px',
-            dataIndex: 'contentType.title',
-            filters: get(data, 'allContentTypes', [])
-              .filter((n: any) => !n.isSlice && !n.isTemplate)
+            dataIndex: 'schemaId',
+            filters: ContentTypes.list
+              .filter((n: any) => n.variant === 'Default')
               .map(({ id, title }: any) => ({
                 text: title,
                 value: id,
               })),
             filteredValue: [contentTypeId] as any[],
             filterMultiple: false,
+            render(schemaId: string) {
+              return ContentTypes.items.get(schemaId)!.name;
+            },
           },
           {
             title: 'Updated',
@@ -315,9 +323,9 @@ export const DocumentsList = ({ match, history }: any) => {
 
         const menu = (
           <Menu onClick={onMenuClick}>
-            {get(data, 'allContentTypes', [])
-              .filter((n: any) => !n.isSlice && !n.isTemplate)
-              .map(({ name, title }: any) => (
+            {get(data, 'allSchemas.edges', [])
+              .filter((n: any) => n.node.variant === 'Default')
+              .map(({ node: { name, title } }: any) => (
                 <Menu.Item key={name}>{title}</Menu.Item>
               ))}
           </Menu>
@@ -380,16 +388,17 @@ export const DocumentsList = ({ match, history }: any) => {
               <Card bodyStyle={{ padding: 0 }} bordered={false} className="with-table-pagination">
                 <Table
                   columns={columns}
-                  rowKey="entryId"
+                  rowKey="documentId"
                   dataSource={items}
                   pagination={pagination}
                   rowClassName={() => 'prime-row-click'}
                   onChange={onTableChange}
                   onRow={record => ({
                     onClick: () => {
+                      const schema = ContentTypes.items.get(record.schemaId);
                       history.push(
-                        `/documents/doc/${record.entryId}/${opts({
-                          type: record.contentType.name.toLocaleLowerCase(),
+                        `/documents/doc/${record.documentId}/${opts({
+                          type: schema!.name.toLowerCase(),
                         })}`
                       );
                     },

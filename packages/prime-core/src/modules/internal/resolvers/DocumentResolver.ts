@@ -13,7 +13,7 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Brackets, getRepository, IsNull, Not } from 'typeorm';
+import { Brackets, getRepository, IsNull, Raw } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { SchemaField } from '../../../entities/SchemaField';
@@ -145,29 +145,29 @@ export class DocumentResolver {
   @Mutation(returns => Document)
   public async updateDocument(
     @Arg('id', type => ID) id: string,
-    @Arg('input', type => DocumentInput) input: DocumentInput,
+    @Arg('data', type => GraphQLJSON, { nullable: true }) data: GraphQLJSON,
+    @Arg('locale', { nullable: true }) locale: string,
+    @Arg('releaseId', type => ID, { nullable: true }) releaseId: string,
     @Ctx() context: Context //
   ): Promise<Document> {
     const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
-    const schema = await this.schemaRepository.findOneOrFail(input.schemaId, { cache: 1000 });
+    const schema = await this.schemaRepository.findOneOrFail(doc.schemaId, { cache: 1000 });
 
-    if (
-      doc.publishedAt ||
-      input.locale !== doc.locale ||
-      input.releaseId !== doc.releaseId ||
-      context.user.id !== doc.userId
-    ) {
-      delete doc.id;
-      delete doc.publishedAt;
-    }
+    delete doc.id;
+    delete doc.publishedAt;
+    delete doc.createdAt;
+    delete doc.updatedAt;
 
-    await this.documentRepository.merge(doc, {
-      ...input,
+    const document = await this.documentRepository.insert({
+      ...doc,
+      ...(data && { data: await this.documentTransformer.transformInput(data, schema) }),
+      ...(releaseId && { releaseId }),
       userId: context.user.id,
-      data: await this.documentTransformer.transformInput(input.data, schema),
+      documentId: doc.documentId || (await getUniqueHashId(this.documentRepository, 'documentId')),
     });
 
-    return doc;
+    const res = document.identifiers.pop() || { id: null };
+    return this.documentRepository.findOneOrFail(res.id);
   }
 
   @Mutation(returns => Boolean)
@@ -176,7 +176,7 @@ export class DocumentResolver {
     @Arg('locale', { nullable: true }) locale?: string,
     @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ): Promise<boolean> {
-    const doc = this.Document(id, locale, releaseId);
+    const doc = await this.Document(id, locale, releaseId);
     await this.documentRepository.update(
       {
         documentId: doc.documentId,
@@ -240,9 +240,9 @@ export class DocumentResolver {
     nullable: true,
     description: 'Get published version of the document (if any)',
   })
-  public async published(@Root() document: Document): Promise<Document> {
-    return this.documentRepository.loadOneByDocumentId(document.id, 'id', {
-      publishedAt: Not(IsNull()),
+  public async published(@Root() document: Document) {
+    return this.documentRepository.loadOneByDocumentId(document.documentId, 'documentId', {
+      publishedAt: Raw(alias => `${alias} IS NOT NULL`),
     });
   }
 

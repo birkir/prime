@@ -1,3 +1,4 @@
+import { omitBy } from 'lodash';
 import {
   Brackets,
   EntityRepository,
@@ -27,6 +28,8 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
       .subQuery()
       .select('id')
       .from(Document, 'd');
+
+    where = omitBy(where, n => !n);
 
     const filterWithName = name =>
       new Brackets(sq => {
@@ -59,6 +62,8 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
   public async publish(document: Document, userId: string) {
     delete document.id;
     delete document.releaseId;
+    delete document.createdAt;
+    delete document.updatedAt;
     document.publishedAt = new Date();
     document.userId = userId;
     const res = await this.insert(document);

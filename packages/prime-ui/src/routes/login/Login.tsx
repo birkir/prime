@@ -3,6 +3,7 @@ import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Auth } from '../../stores/auth';
+import { ContentTypes } from '../../stores/contentTypes';
 
 class LoginBase extends React.Component<FormComponentProps> {
   public onSubmit = async (e: React.FormEvent<HTMLElement>) => {
@@ -10,6 +11,7 @@ class LoginBase extends React.Component<FormComponentProps> {
     const values: any = this.props.form.getFieldsValue();
     try {
       await Auth.login(values.email, values.password);
+      await ContentTypes.loadAll();
       (this.props as any).history.push('/');
     } catch (err) {
       message.error('Invalid email or password');
