@@ -33,7 +33,7 @@
     "@primecms/field-string": "^0.3.0-alpha.0",
     "@types/graphql": "14.0.3",
     "@types/jest": "23.3.9",
-    "@types/lodash": "4.14.118",
+    "@types/lodash": "4.14.120",
     "@types/react": "16.7.20",
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.0.11",
