@@ -2,3 +2,4 @@ coverage
 lib
 package.json
 build/
+docs/api
