@@ -2,21 +2,14 @@
 
 > Open Source GraphQL CMS
 
-- 🧬 Headless CMS
+- 🖨 Headless Interface
 - 🚀 Simple, yet Powerful
-- 🧱 Slices and Groups
+- 📐 Slices and Groups
 - ☑️ Custom Fields
 - 🇮🇸 🇯🇵 Multi Language
 - 🚧 Preview Drafts
 - 🔑 Access Control
 - 📆 Plan Releases
-
-<!-- - 🚀 Node & Browser Support
-- ⚡️️ Simple, Powerful, & Intuitive API
-- 💎 First Class Mocha & QUnit Test Helpers
-- 🔥 Intercept, Pass-Through, and Attach Events
-- 📼 Record to Disk or Local Storage
-- ⏱ Slow Down or Speed Up Time -->
 
 [Get Started](README)
 [GitHub](https://github.com/birkir/prime)
