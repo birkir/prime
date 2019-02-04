@@ -13,14 +13,15 @@ import { Version } from './Version';
 
 export const ContentEntry = types
   .model('ContentEntry', {
-    id: types.identifier,
-    entryId: types.string,
-    versionId: types.string,
-    contentTypeId: types.string,
-    contentReleaseId: types.maybeNull(types.string),
-    language: types.string,
-    isPublished: types.boolean,
-    contentType: types.maybeNull(ContentTypeRef),
+    _id: types.identifier,
+    id: types.string,
+    documentId: types.string,
+    schemaId: types.string,
+    releaseId: types.maybeNull(types.string),
+    locale: types.string,
+    primary: types.maybeNull(types.string),
+    publishedAt: types.maybeNull(types.Date),
+    schema: types.maybeNull(ContentTypeRef),
     data: types.frozen<JSONObject>(),
     createdAt: types.Date,
     updatedAt: types.Date,
@@ -29,14 +30,14 @@ export const ContentEntry = types
     hasChanged: false,
   })
   .preProcessSnapshot(snapshot => {
-    if (!snapshot.id) {
-      snapshot.id = [snapshot.entryId, snapshot.language, snapshot.contentReleaseId].join(':');
+    if (!snapshot._id) {
+      snapshot._id = [snapshot.documentId, snapshot.locale, snapshot.releaseId].join(':');
     }
     return {
       ...snapshot,
       loadedAt: new Date(),
-      contentType: snapshot.contentTypeId ? snapshot.contentTypeId : null,
-      isPublished: Boolean(snapshot.isPublished),
+      schema: snapshot.schemaId ? snapshot.schemaId : null,
+      publishedAt: snapshot.publishedAt ? new Date(snapshot.publishedAt) : null,
       createdAt: new Date(snapshot.createdAt),
       updatedAt: new Date(snapshot.updatedAt),
     };
@@ -44,12 +45,12 @@ export const ContentEntry = types
   .views(self => ({
     get display() {
       if (!self.data) {
-        return self.entryId;
+        return self.documentId;
       }
       return self.data.title || self.data.name || Object.values(self.data).shift();
     },
     get hasBeenPublished() {
-      return self.versions.findIndex(v => v.isPublished) >= 0;
+      return self.versions.findIndex(v => v.publishedAt !== null) >= 0;
     },
   }))
   .actions(self => {
@@ -58,58 +59,55 @@ export const ContentEntry = types
     };
 
     const setContentType = (contentType: Instance<typeof ContentType>) => {
-      self.contentType = contentType;
+      self.schema = contentType;
     };
 
-    const setIsPublished = (isPublished: boolean) => {
-      self.isPublished = isPublished;
+    const setIsPublished = (isPublished: Date | null) => {
+      self.publishedAt = isPublished;
     };
 
     const updateSelf = (data: any) => {
-      if (self.versionId !== data.versionId) {
+      if (self.id !== data.id) {
         self.versions.splice(0, 0, {
-          versionId: data.versionId,
-          isPublished: Boolean(data.isPublished),
+          id: data.id,
+          publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
           createdAt: new Date(data.createdAt),
           updatedAt: new Date(data.updatedAt),
         });
       } else if (self.versions.length > 0) {
-        self.versions[0].isPublished = Boolean(data.isPublished);
-        self.versions[0].updatedAt = new Date(data.updatedAt);
+        (self.versions[0].publishedAt = data.publishedAt ? new Date(data.publishedAt) : null),
+          (self.versions[0].updatedAt = new Date(data.updatedAt));
       }
-      self.versionId = data.versionId;
-      self.contentTypeId = data.contentTypeId;
+      self.id = data.id;
+      self.schemaId = data.schemaId;
+      self.releaseId = data.releaseId;
       self.data = data.data;
-      self.language = data.language;
-      self.isPublished = Boolean(data.isPublished);
+      self.locale = data.locale;
+      self.publishedAt = data.publishedAt ? new Date(data.publishedAt) : null;
       self.createdAt = new Date(data.createdAt);
       self.updatedAt = new Date(data.updatedAt);
     };
 
-    const update = flow(function*(proposedData: JSONObject) {
-      const { data } = yield client.mutate({
+    const update = flow(function*({
+      data,
+      releaseId,
+      locale,
+    }: {
+      data: any;
+      releaseId?: string;
+      locale?: string;
+    }) {
+      const res = yield client.mutate({
         mutation: UPDATE_CONTENT_ENTRY,
         variables: {
-          versionId: self.versionId,
-          language: self.language,
-          data: proposedData,
+          id: self.id,
+          data,
+          ...(releaseId && { releaseId }),
+          ...(locale && { locale }),
         },
       });
-      if (data && data.updateContentEntry) {
-        updateSelf(data.updateContentEntry);
-      }
-    });
-
-    const release = flow(function*(contentReleaseId: string) {
-      const { data } = yield client.mutate({
-        mutation: UPDATE_CONTENT_ENTRY,
-        variables: {
-          versionId: self.versionId,
-          contentReleaseId,
-        },
-      });
-      if (data && data.updateContentEntry) {
-        updateSelf(data.updateContentEntry);
+      if (res.data && res.data.updateDocument) {
+        updateSelf(res.data.updateDocument);
       }
     });
 
@@ -117,11 +115,11 @@ export const ContentEntry = types
       const { data } = yield client.mutate({
         mutation: PUBLISH_CONTENT_ENTRY,
         variables: {
-          versionId: self.versionId,
+          id: self.id,
         },
       });
-      if (data && data.publishContentEntry) {
-        updateSelf(data.publishContentEntry);
+      if (data && data.publishDocument) {
+        updateSelf(data.publishDocument);
       }
     });
 
@@ -129,11 +127,11 @@ export const ContentEntry = types
       const { data } = yield client.mutate({
         mutation: UNPUBLISH_CONTENT_ENTRY,
         variables: {
-          versionId: self.versionId,
+          id: self.id,
         },
       });
-      if (data && data.unpublishContentEntry) {
-        updateSelf(data.unpublishContentEntry);
+      if (data && data.unpublishDocument) {
+        updateSelf(data.unpublishDocument);
       }
     });
 
@@ -141,9 +139,9 @@ export const ContentEntry = types
       return yield client.mutate({
         mutation: REMOVE_CONTENT_ENTRY,
         variables: {
-          id: self.entryId,
-          language: force ? undefined : self.language,
-          contentReleaseId: force ? undefined : self.contentReleaseId,
+          id: self.documentId,
+          locale: force ? undefined : self.locale,
+          releaseId: force ? undefined : self.releaseId,
         },
       });
     });
@@ -154,7 +152,6 @@ export const ContentEntry = types
       setIsPublished,
       remove,
       update,
-      release,
       publish,
       unpublish,
     };

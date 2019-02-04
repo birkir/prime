@@ -1,17 +1,10 @@
-mutation UpdateContentType(
-  $id: ID!
-  $input: UpdateContentTypeInput
-) {
-  updateContentType(
-    id: $id
-    input: $input
-  ) {
+mutation UpdateSchema($id: ID!, $input: SchemaInput!) {
+  updateSchema(id: $id, input: $input) {
     id
     name
     title
     groups
     settings
-    isSlice
-    isTemplate
+    variant
   }
 }

@@ -1,119 +1,98 @@
-import { PrimeField } from '@primecms/field';
-import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import { PrimeField, PrimeFieldContext, PrimeFieldOperation } from '@primecms/field';
+import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
+import { startCase } from 'lodash';
 
-interface IDefaultOptions {
+interface Options {
   repeated: boolean;
 }
 
 export class PrimeFieldGroup extends PrimeField {
-  public id: string = 'group';
-  public title: string = 'Group';
-  public description: string = 'Group other fields to list';
-
-  public defaultOptions: IDefaultOptions = {
+  public static type = 'group';
+  public static title = 'Group';
+  public static description = 'Group other fields to list';
+  public static options: Options = {
     repeated: true,
   };
 
-  public getGraphQLOutput(args) {
-    const { field, contentType, resolveFieldType } = args;
-    if (contentType) {
-      const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
-      const fieldsTypes = subFields.reduce((acc, nfield: any) => {
-        const fieldType = resolveFieldType(nfield, true);
+  public async outputType(context: PrimeFieldContext, operation: PrimeFieldOperation.READ) {
+    const { name, uniqueTypeName } = context;
+    const fields = {};
+    const children = context.fields.filter(f => f.parentFieldId === this.schemaField.id);
+
+    for (const field of children) {
+      if (field.primeField) {
+        const fieldType = await field.primeField.outputType(context, operation);
         if (fieldType) {
-          nfield.prefix = `${field.apiName}_`;
-          acc[nfield.name] = fieldType.getGraphQLOutput({
-            ...args,
-            field: nfield,
-          });
+          fields[field.name] = fieldType;
         }
-
-        if (!acc[nfield.name]) {
-          delete acc[nfield.name];
-        }
-
-        return acc;
-      }, {});
-
-      if (Object.keys(fieldsTypes).length === 0) {
-        return null;
       }
-
-      const groupFieldType = new GraphQLObjectType({
-        name: `${contentType.name}_${field.apiName}`,
-        fields: () => ({
-          ...fieldsTypes,
-        }),
-      });
-
-      if (Object.keys(fieldsTypes).length === 0) {
-        return null;
-      }
-
-      const options = this.getOptions(field);
-
-      if (options.repeated) {
-        return { type: new GraphQLList(groupFieldType) };
-      }
-
-      return { type: groupFieldType };
     }
 
-    return null;
-  }
-
-  /**
-   * GraphQL type for input mutation
-   */
-  public getGraphQLInput({ field, queries, contentType, isUpdate, resolveFieldType }) {
-    if (!contentType || !contentType.fields) {
-      return null;
-    }
-    const subFields = contentType.fields.filter(f => f.contentTypeFieldId === field.id);
-    const fieldsTypes = subFields.reduce((acc, nfield: any) => {
-      const fieldType = resolveFieldType(nfield, true);
-      if (fieldType) {
-        acc[nfield.name] = fieldType.getGraphQLInput({
-          field: nfield,
-          queries,
-          contentType,
-          resolveFieldType,
-          isUpdate,
-        });
-      }
-      if (!acc[nfield.name]) {
-        delete acc[nfield.name];
-      }
-
-      return acc;
-    }, {});
-
-    if (Object.keys(fieldsTypes).length === 0) {
-      return null;
-    }
-
-    const actionName = isUpdate ? 'Update' : 'Create';
-
-    const groupFieldType = new GraphQLInputObjectType({
-      name: `${contentType.name}_${field.apiName}${actionName}Input`,
-      fields: fieldsTypes,
+    const type = new GraphQLObjectType({
+      name: uniqueTypeName(`${name}_${startCase(this.schemaField.name)}`),
+      fields,
     });
 
-    const options = this.getOptions(field);
-
-    if (options.repeated) {
-      return {
-        type: new GraphQLList(new GraphQLNonNull(groupFieldType)),
-      };
-    }
-
-    return { type: groupFieldType };
+    return {
+      type: this.options.repeated ? new GraphQLList(type) : type,
+    };
   }
 
-  /**
-   * GraphQL type for where query
-   */
-  public getGraphQLWhere() {
-    return null;
+  public async inputType(
+    context: PrimeFieldContext,
+    operation: PrimeFieldOperation.CREATE | PrimeFieldOperation.UPDATE
+  ) {
+    const { name, uniqueTypeName } = context;
+    const fields = {};
+    const children = context.fields.filter(f => f.parentFieldId === this.schemaField.id);
+
+    for (const field of children) {
+      if (field.primeField) {
+        const fieldType = await field.primeField.inputType(context, operation);
+        if (fieldType) {
+          fields[field.name] = fieldType;
+        }
+      }
+    }
+
+    const operationNames = {
+      [PrimeFieldOperation.CREATE]: 'Create',
+      [PrimeFieldOperation.UPDATE]: 'Update',
+    };
+
+    const type = new GraphQLInputObjectType({
+      name: uniqueTypeName(
+        `${name}_${startCase(this.schemaField.name)}${operationNames[operation]}Input`
+      ),
+      fields,
+    });
+
+    return {
+      type: this.options.repeated ? new GraphQLList(type) : type,
+    };
+  }
+
+  public async whereType(context: PrimeFieldContext) {
+    const name = context.uniqueTypeName(`${context.name}_Sort_${startCase(this.schemaField.name)}`);
+    const fields = {};
+
+    for (const field of context.fields) {
+      if (field.parentFieldId === this.schemaField.id && field.primeField) {
+        const WhereType = await field.primeField.whereType({
+          ...context,
+          name,
+        });
+        if (WhereType) {
+          fields[field.name] = {
+            type: WhereType,
+          };
+        }
+      }
+    }
+
+    return new GraphQLInputObjectType({
+      name,
+      fields,
+    });
   }
 }

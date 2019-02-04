@@ -13,7 +13,14 @@ export const Layout = withRouter(({ children, history, location }: any) => {
 
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
-      <Sider width={280} theme="dark" trigger={null} collapsed={isOpen} collapsible className="prime__sidebar">
+      <Sider
+        width={280}
+        theme="dark"
+        trigger={null}
+        collapsed={isOpen}
+        collapsible
+        className="prime__sidebar"
+      >
         <Header className="prime__sidebar__header">
           <Link to="/" className="prime__sidebar__logo">
             prime

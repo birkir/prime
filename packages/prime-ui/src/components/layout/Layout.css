@@ -81,6 +81,13 @@
   background: rgba(0, 0, 0, 0.2);
   margin: 0 !important;
   height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.prime__sidebar__logout > .nav-text {
+  margin-top: -4px;
 }
 
 .prime__drawer__bottom {

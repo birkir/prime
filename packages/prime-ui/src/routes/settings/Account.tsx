@@ -1,5 +1,5 @@
 import { Divider, List, Modal } from 'antd';
-import { distanceInWordsToNow } from 'date-fns';
+import { get } from 'lodash';
 import { Observer } from 'mobx-react';
 import React from 'react';
 import { Auth } from '../../stores/auth';
@@ -23,12 +23,12 @@ export const Account = () => {
   const accountList = [
     {
       title: 'Password',
-      description: `Last changed ${distanceInWordsToNow(user.lastPasswordChange)} ago`,
+      // description: `Last changed ${distanceInWordsToNow(user.lastPasswordChange)} ago`,
       actions: [<a onClick={() => setChangePassword(true)}>Change password</a>],
     },
     {
       title: 'Email Address',
-      description: user.email,
+      description: get(user, 'emails.0.address'),
       actions: [<a onClick={() => setChangeEmail(true)}>Change email</a>],
     },
   ];
@@ -60,7 +60,11 @@ export const Account = () => {
         okText="Change"
         onCancel={() => setChangeEmail(false)}
       >
-        <ChangeEmail forwardRef={changeEmailRef} close={() => setChangeEmail(false)} visible={changeEmail} />
+        <ChangeEmail
+          forwardRef={changeEmailRef}
+          close={() => setChangeEmail(false)}
+          visible={changeEmail}
+        />
       </Modal>
       <Modal
         visible={changePassword}

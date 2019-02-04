@@ -6,6 +6,7 @@ import ALL_WEBHOOKS from './allWebhooks.gql';
 import CONTENT_ENTRIES_BY_CONTENT_TYPE from './contentEntriesByContentType.gql';
 import CONTENT_ENTRY_BY_ID from './contentEntryById.gql';
 import CONTENT_TYPE_BY_ID from './contentTypeById.gql';
+import GET_USER from './getUser.gql';
 import LOAD_SCHEMA from './loadSchema.gql';
 
 export {
@@ -18,4 +19,5 @@ export {
   CONTENT_TYPE_BY_ID,
   CONTENT_ENTRY_BY_ID,
   CONTENT_ENTRIES_BY_CONTENT_TYPE,
+  GET_USER,
 };

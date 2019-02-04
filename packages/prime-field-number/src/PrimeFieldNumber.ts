@@ -1,8 +1,8 @@
-import { IPrimeFieldGraphQLArguments, PrimeField } from '@primecms/field';
+import { PrimeField, PrimeFieldContext } from '@primecms/field';
 import { ValidationError } from 'apollo-server-core';
 import { GraphQLFloat, GraphQLInputObjectType, GraphQLInt, GraphQLNonNull } from 'graphql';
 
-interface IOptions {
+interface Options {
   float: boolean;
   rules?: {
     required?: boolean;
@@ -13,75 +13,85 @@ interface IOptions {
   };
 }
 
-export class PrimeFieldNumber extends PrimeField {
-  public id: string = 'number';
-  public title: string = 'Number';
-  public description: string = 'Number field';
+const WhereFloat = new GraphQLInputObjectType({
+  name: `PrimeField_Number_WhereFloat`,
+  fields: {
+    neq: { type: GraphQLFloat },
+    eq: { type: GraphQLFloat },
+    gt: { type: GraphQLFloat },
+    lt: { type: GraphQLFloat },
+    gte: { type: GraphQLFloat },
+    lte: { type: GraphQLFloat },
+  },
+});
 
-  public defaultOptions: IOptions = {
+const WhereInt = new GraphQLInputObjectType({
+  name: `PrimeField_Number_WhereInt`,
+  fields: {
+    neq: { type: GraphQLInt },
+    eq: { type: GraphQLInt },
+    gt: { type: GraphQLInt },
+    lt: { type: GraphQLInt },
+    gte: { type: GraphQLInt },
+    lte: { type: GraphQLInt },
+  },
+});
+
+export class PrimeFieldNumber extends PrimeField {
+  public static type: string = 'number';
+  public static title: string = 'Number';
+  public static description: string = 'Number field';
+  public static options: Options = {
     float: true,
     rules: {},
   };
 
-  public getGraphQLOutput(args: IPrimeFieldGraphQLArguments) {
-    const { float } = this.getOptions(args.field);
+  public async outputType(context: PrimeFieldContext) {
+    const { float } = this.options;
 
     return {
       type: float ? GraphQLFloat : GraphQLInt,
-      description: args.field.description,
+      description: this.schemaField.description,
     };
   }
 
-  public getGraphQLInput(args: IPrimeFieldGraphQLArguments) {
-    const { float, rules } = this.getOptions(args.field);
+  public async inputType(context: PrimeFieldContext) {
+    const { float, rules } = this.options;
     const type = float ? GraphQLFloat : GraphQLInt;
 
     return {
       type: rules.required ? new GraphQLNonNull(type) : type,
-      description: args.field.description,
+      description: this.schemaField.description,
     };
   }
 
-  public getGraphQLWhere(args: IPrimeFieldGraphQLArguments) {
-    const { float } = this.getOptions(args.field);
-    const type = float ? GraphQLFloat : GraphQLInt;
-
-    return {
-      type: new GraphQLInputObjectType({
-        name: `PrimeFieldNumberWhere${float ? 'Float' : ''}`,
-        fields: {
-          neq: { type },
-          eq: { type },
-          gt: { type },
-          lt: { type },
-          gte: { type },
-          lte: { type },
-        },
-      }),
-    };
+  public async whereType(context: PrimeFieldContext) {
+    const { float } = this.options;
+    return float ? WhereFloat : WhereInt;
   }
 
-  public processInput(value, field) {
-    const { rules } = this.getOptions(field);
+  public processInput(value) {
+    const { rules } = this.options;
+    const { name } = this.schemaField;
     const num = Number(value);
 
     if (rules.required) {
       if (value === '' || value === undefined || value === null) {
-        throw new ValidationError(`Field '${field.name}' is required`);
+        throw new ValidationError(`Field '${name}' is required`);
       }
     }
 
     if (rules.min && rules.minValue) {
       const min = Number(rules.minValue);
       if (num < min) {
-        throw new ValidationError(`Field '${field.name}' must be greater or equal to ${min}`);
+        throw new ValidationError(`Field '${name}' must be greater or equal to ${min}`);
       }
     }
 
     if (rules.max && rules.maxValue) {
       const max = Number(rules.maxValue);
       if (num > max) {
-        throw new ValidationError(`Field '${field.name}' must be less or equal to ${max}`);
+        throw new ValidationError(`Field '${name}' must be less or equal to ${max}`);
       }
     }
 

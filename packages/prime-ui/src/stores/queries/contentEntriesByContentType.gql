@@ -1,23 +1,18 @@
-query contentEntriesByContentType(
-  $contentTypeId: ID
-) {
-  allContentEntries(
-    limit: 10000
-    contentTypeId: $contentTypeId
-  ) {
+query contentEntriesByContentType($contentTypeId: ID) {
+  allDocuments(first: 100, filter: { schemaId: $contentTypeId }) {
     totalCount
     edges {
       node {
-        versionId
-        entryId
-        contentTypeId
-        contentReleaseId
-        language
-        isPublished
-        display
+        id
+        documentId
+        schemaId
+        releaseId
+        locale
+        primary
         data
         createdAt
         updatedAt
+        publishedAt
       }
     }
   }

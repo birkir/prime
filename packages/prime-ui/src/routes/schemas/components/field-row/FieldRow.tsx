@@ -55,7 +55,9 @@ export class FieldRow extends React.Component<IProps> {
                 <>
                   {`${field.title || field.name}`}
                   {field.description && field.description !== '' && (
-                    <p style={{ fontSize: 13, color: '#888', marginBottom: -8 }}>{field.description}</p>
+                    <p style={{ fontSize: 13, color: '#888', marginBottom: -8 }}>
+                      {field.description}
+                    </p>
                   )}
                 </>
               }

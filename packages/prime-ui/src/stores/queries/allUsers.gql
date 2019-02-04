@@ -1,9 +1,15 @@
 query {
   allUsers {
-    id
-    firstname
-    lastname
-    email
-    roles
+    edges {
+      node {
+        id
+        profile
+        emails {
+          address
+          verified
+        }
+        username
+      }
+    }
   }
 }

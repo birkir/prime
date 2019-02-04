@@ -3,17 +3,28 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:9
+      - image: circleci/node:10
       - image: circleci/postgres:10.6
         environment:
           POSTGRES_USER: prime
           POSTGRES_DB: prime-test
     environment:
-      DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
+      TEST_DATABASE_URL: 'postgres://prime@localhost:5432/prime-test'
       SESSION_SECRET: 'very-secret'
     steps:
       - checkout
-      - run: yarn install --frozen-lockfile
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run: yarn run lerna bootstrap
       - run: yarn lint:ci
       - run: yarn compile
@@ -22,7 +33,7 @@ jobs:
       - run: yarn codecov
       - run:
           name: Copy artifacts
-          command: cd packages; for x in */junit.xml; do mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
+          command: cd packages; for x in */junit.xml; do [ -f $x ] && mkdir -p "../reports/junit/${x%/junit.xml}" && cp $x "../reports/junit/${x%/junit.xml}/results.xml"; done; cd ..
           when: always
       - store_test_results:
           path: reports/junit

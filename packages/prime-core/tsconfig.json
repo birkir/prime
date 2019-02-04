@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "es6",
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,

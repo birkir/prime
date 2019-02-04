@@ -1,9 +1,9 @@
 query {
   allFields {
-    id
+    type
     title
     description
-    defaultOptions
+    options
     ui
   }
 }

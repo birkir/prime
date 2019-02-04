@@ -16,8 +16,8 @@ export const Security = Form.create()(({ form }) => {
         <Form.Item label="API Access">
           {form.getFieldDecorator('accessType', { initialValue: Settings.accessType })(
             <Select style={{ width: 150 }}>
-              <Select.Option key="public">Public</Select.Option>
-              <Select.Option key="private">Private</Select.Option>
+              <Select.Option key="PUBLIC">Public</Select.Option>
+              <Select.Option key="PRIVATE">Private</Select.Option>
             </Select>
           )}
         </Form.Item>

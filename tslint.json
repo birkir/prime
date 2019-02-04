@@ -1,15 +1,17 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "object-literal-sort-keys": false,
-    "no-reserved-keywords": false,
+    "completed-docs": false,
+    "interface-name": false,
     "missing-jsdoc": false,
     "no-relative-imports": false,
-    "typedef": false,
+    "no-reserved-keywords": false,
     "no-unsafe-any": false,
+    "no-unused-variable": true,
+    "object-literal-sort-keys": false,
     "quotemark": [true, "single", "jsx-double"],
-    "completed-docs": false,
-    "strict-boolean-expressions": false
+    "strict-boolean-expressions": false,
+    "typedef": false
   },
   "linterOptions": {
     "exclude": ["node_modules", "packages/*/lib/*"]

@@ -1,19 +1,18 @@
 import { Button, Form, Icon, Input, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Auth } from '../../stores/auth';
+import { ContentTypes } from '../../stores/contentTypes';
 
 class LoginBase extends React.Component<FormComponentProps> {
   public onSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const values: any = this.props.form.getFieldsValue();
     try {
-      const res = await Auth.login(values.email, values.password);
-      if (res.success) {
-        (this.props as any).history.push('/');
-      } else {
-        message.error('Unknown error');
-      }
+      await Auth.login(values.email, values.password);
+      await ContentTypes.loadAll();
+      (this.props as any).history.push('/');
     } catch (err) {
       message.error('Invalid email or password');
     }
@@ -23,9 +22,18 @@ class LoginBase extends React.Component<FormComponentProps> {
   public render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Form onSubmit={this.onSubmit} style={{ width: 300 }} action="/login" autoComplete="prime-login">
-          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>prime</div>
+      <div
+        style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Form
+          onSubmit={this.onSubmit}
+          style={{ width: 300 }}
+          action="/login"
+          autoComplete="prime-login"
+        >
+          <div style={{ color: 'black', fontSize: 24, marginBottom: 16, fontFamily: 'system' }}>
+            prime
+          </div>
           <Form.Item>
             {getFieldDecorator('email')(
               <Input
@@ -50,6 +58,9 @@ class LoginBase extends React.Component<FormComponentProps> {
               Log in
             </Button>
           </Form.Item>
+          <div>
+            <Link to="/reset-password">Reset password</Link>
+          </div>
         </Form>
       </div>
     );

@@ -1,15 +1,15 @@
-import { Button, Checkbox, Divider, Form, Input, message, notification, Select, Switch } from 'antd';
+import { Button, Divider, Form, Input, notification, Select, Switch } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
-import { debounce, get, startCase } from 'lodash';
+import { get, startCase } from 'lodash';
 import { toJS } from 'mobx';
 import React from 'react';
 import { ContentTypes } from '../../../stores/contentTypes';
 import { client } from '../../../utils/client';
 
 interface IProps extends FormComponentProps {
-  contentTypeId: string | null;
-  contentTypes: any;
+  schemaId: string | null;
+  schemas: any;
   item?: any;
   onCancel(): void;
   onSubmit(data: any): void;
@@ -17,24 +17,23 @@ interface IProps extends FormComponentProps {
 
 const forbiddenNames = ['PageInfo', 'DocumentMeta'];
 
-const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTypeId, item }: IProps) => {
+const EditContentTypeBase = ({ form, onCancel, onSubmit, schemas, schemaId, item }: IProps) => {
   const { getFieldDecorator } = form;
 
   const checkNameAvailability = async () => {
     const { data } = await client.query({
       query: gql`
-        query isContentTypeAvailable($name: String, $isSlice: Boolean, $isTemplate: Boolean) {
-          isContentTypeAvailable(name: $name, isSlice: $isSlice, isTemplate: $isTemplate)
+        query schemaNameAvailable($name: String!, $variant: SchemaVariant) {
+          schemaNameAvailable(name: $name, variant: $variant)
         }
       `,
       variables: {
         name: form.getFieldValue('name'),
-        isSlice: form.getFieldValue('type') === 'slice',
-        isTemplate: form.getFieldValue('type') === 'template',
+        variant: form.getFieldValue('variant'),
       },
     });
 
-    return data && (data as any).isContentTypeAvailable;
+    return data && (data as any).schemaNameAvailable;
   };
 
   const onFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
@@ -64,14 +63,10 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
         }
 
         const data: any = { ...values };
-        const type = data.type;
-        delete data.type;
-        data.isSlice = type === 'slice';
-        data.isTemplate = type === 'template';
 
         try {
           let result = null;
-          if (contentTypeId && item) {
+          if (schemaId && item) {
             await item.update(data);
           } else {
             result = await ContentTypes.create(data as any);
@@ -111,7 +106,13 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
               },
             ],
           })(
-            <Input autoFocus autoComplete="off" size="large" onKeyUp={updateApiField} placeholder="e.g. Custom page" />
+            <Input
+              autoFocus
+              autoComplete="off"
+              size="large"
+              onKeyUp={updateApiField}
+              placeholder="e.g. Custom page"
+            />
           )}
         </Form.Item>
 
@@ -130,31 +131,36 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
           })(<Input placeholder="e.g. CustomPage" autoComplete="off" size="large" />)}
         </Form.Item>
 
-        {contentTypeId ? (
-          getFieldDecorator('type')(<input type="hidden" />)
+        {schemaId ? (
+          getFieldDecorator('variant')(<input type="hidden" />)
         ) : (
-          <Form.Item label="Type">
-            {getFieldDecorator('type')(
+          <Form.Item label="Variant">
+            {getFieldDecorator('variant')(
               <Select size="large">
-                <Select.Option key="contentType">Content Type</Select.Option>
-                <Select.Option key="template">Template</Select.Option>
-                <Select.Option key="slice">Slice</Select.Option>
+                <Select.Option key="Default">Content Type</Select.Option>
+                <Select.Option key="Template">Template</Select.Option>
+                <Select.Option key="Slice">Slice</Select.Option>
               </Select>
             )}
           </Form.Item>
         )}
 
-        {form.getFieldValue('type') === 'contentType' && (
+        {form.getFieldValue('variant') === 'Default' && (
           <>
             <Divider dashed />
             <Form.Item label="Templates">
-              {getFieldDecorator('settings.contentTypeIds')(
-                <Select mode="multiple" size="large" style={{ width: '100%' }} placeholder="No templates">
+              {getFieldDecorator('settings.schemaIds')(
+                <Select
+                  mode="multiple"
+                  size="large"
+                  style={{ width: '100%' }}
+                  placeholder="No templates"
+                >
                   {[]
-                    .concat(contentTypes)
-                    .filter((n: any) => n.isTemplate)
+                    .concat(schemas)
+                    .filter((n: any) => n.variant === 'Template')
                     .map((n: any) => (
-                      <Select.Option key={item.id}>{n.title}</Select.Option>
+                      <Select.Option key={n.id}>{n.title}</Select.Option>
                     ))}
                 </Select>
               )}
@@ -189,27 +195,20 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, contentTypes, contentTy
 
 export const EditContentType = Form.create({
   mapPropsToFields(props: any) {
-    const type = (() => {
-      if (props.item && props.item.isSlice) {
-        return 'slice';
-      }
-      if (props.item && props.item.isTemplate) {
-        return 'template';
-      }
-      return 'contentType';
-    })();
-
-    const res: any = {
-      type: Form.createFormField({ value: type }),
-    };
+    const res: any = {};
 
     if (props.item) {
       const item = toJS(props.item);
       res.title = Form.createFormField({ value: get(item, 'title', '') });
       res.name = Form.createFormField({ value: get(item, 'name', '') });
-      res['settings.contentTypeIds'] = Form.createFormField({ value: get(item, 'settings.contentTypeIds', []) });
+      res.variant = Form.createFormField({ value: get(item, 'variant', 'Default') });
+      res['settings.schemaIds'] = Form.createFormField({
+        value: get(item, 'settings.schemaIds', []),
+      });
       res['settings.single'] = Form.createFormField({ value: get(item, 'settings.single', false) });
-      res['settings.mutations'] = Form.createFormField({ value: get(item, 'settings.mutations', true) });
+      res['settings.mutations'] = Form.createFormField({
+        value: get(item, 'settings.mutations', true),
+      });
     }
 
     return res;

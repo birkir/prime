@@ -99,14 +99,14 @@ export class SchemaDetail extends React.Component<IProps> {
     if (success) {
       message.success('Schema updated');
     }
-    this.contentType!.schema.setHasChanged(false);
+    this.contentType!.fields.setHasChanged(false);
     this.detectChanges();
     this.saving = false;
   };
 
   public detectChanges() {
-    this.disposeOnPatch = onPatch(this.contentType!.schema, res => {
-      this.contentType!.schema.setHasChanged(true);
+    this.disposeOnPatch = onPatch(this.contentType!.fields, res => {
+      this.contentType!.fields.setHasChanged(true);
     });
   }
 
@@ -132,7 +132,7 @@ export class SchemaDetail extends React.Component<IProps> {
   };
 
   public onDragStart = (e: DragStart) => {
-    const { fields } = this.contentType!.schema;
+    const { fields } = this.contentType!.fields;
 
     // const { fields } = this.state;
     const { source, draggableId } = e;
@@ -195,7 +195,7 @@ export class SchemaDetail extends React.Component<IProps> {
 
     if (draggableKey === 'AvailableField') {
       // Handle dropping of a new field
-      const addedField = this.contentType.schema.add(
+      const addedField = this.contentType.fields.add(
         {
           name: '',
           title: '',
@@ -224,12 +224,12 @@ export class SchemaDetail extends React.Component<IProps> {
       }
     } else {
       // Handle moving of a current field
-      this.contentType.schema.move(fieldId, destination.index);
+      this.contentType.fields.move(fieldId, destination.index);
     }
   };
 
   public onFieldDelete = (field: any) => {
-    this.contentType!.schema.remove(field);
+    this.contentType!.fields.remove(field);
     this.flushSchema();
   };
 
@@ -240,7 +240,7 @@ export class SchemaDetail extends React.Component<IProps> {
   };
 
   public onFieldDisplay = (field: any) => {
-    this.contentType!.schema.setDisplay(field);
+    this.contentType!.fields.setDisplay(field);
     this.flushSchema();
   };
 
@@ -251,7 +251,7 @@ export class SchemaDetail extends React.Component<IProps> {
   public onEditFieldCancel = () => {
     const { selectedField, isNewField } = this;
     if (selectedField && isNewField) {
-      this.contentType!.schema.remove(selectedField);
+      this.contentType!.fields.remove(selectedField);
     }
     this.onCloseDrawer();
   };
@@ -311,7 +311,9 @@ export class SchemaDetail extends React.Component<IProps> {
           style={{
             minHeight: 80,
             transition: 'background-color 0.3s ease-in-out',
-            backgroundColor: droppableSnapshot.isDraggingOver ? highlightColor : 'rgba(0, 0, 0, 0.025)',
+            backgroundColor: droppableSnapshot.isDraggingOver
+              ? highlightColor
+              : 'rgba(0, 0, 0, 0.025)',
             padding: 16,
           }}
           {...droppableProvided.droppableProps}
@@ -337,7 +339,11 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   public renderAvailableField = (field: any, index: number) => (
-    <Draggable key={`AvailableField.${field.id}`} draggableId={`AvailableField.${field.id}`} index={index}>
+    <Draggable
+      key={`AvailableField.${field.type}`}
+      draggableId={`AvailableField.${field.type}`}
+      index={index}
+    >
       {(draggableProvided, draggableSnapshot) => (
         <div
           ref={draggableProvided.innerRef}
@@ -364,10 +370,16 @@ export class SchemaDetail extends React.Component<IProps> {
   );
 
   public renderGroup = (groupName: any) => {
-    const group = this.contentType!.schema.groups.find(g => g.title.toLowerCase() === groupName.toLowerCase());
+    const group = this.contentType!.fields.groups.find(
+      g => g.title.toLowerCase() === groupName.toLowerCase()
+    );
 
     return (
-      <TabPane key={groupName} tab={groupName} style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}>
+      <TabPane
+        key={groupName}
+        tab={groupName}
+        style={{ height: 'calc(100vh - 120px)', overflowY: 'auto' }}
+      >
         <Droppable
           key={groupName}
           droppableId={`Group.${groupName}`}
@@ -383,7 +395,10 @@ export class SchemaDetail extends React.Component<IProps> {
                 padding: 32,
               }}
             >
-              {group && group.fields.filter((n: any) => n.contentTypeId === this.contentType!.id).map(this.renderField)}
+              {group &&
+                group.fields
+                  .filter((n: any) => n.schemaId === this.contentType!.id)
+                  .map(this.renderField)}
               {droppableProvided.placeholder}
               <div style={{ height: 80 }} />
             </div>
@@ -410,7 +425,13 @@ export class SchemaDetail extends React.Component<IProps> {
               <Spin spinning={this.loading} delay={500} />
             </h3>
           </div>
-          <Button type="dashed" disabled style={{ marginRight: 8 }} title="WIP" icon="cloud-download">
+          <Button
+            type="dashed"
+            disabled
+            style={{ marginRight: 8 }}
+            title="WIP"
+            icon="cloud-download"
+          >
             Import
           </Button>
           <Button type="primary" onClick={this.onSave} icon="save" loading={this.saving}>
@@ -422,7 +443,7 @@ export class SchemaDetail extends React.Component<IProps> {
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
               <Content>
                 <Prompt
-                  when={contentType.schema.hasChanged}
+                  when={contentType.fields.hasChanged}
                   message="You have unsaved changes. Are you sure you want to leave?"
                 />
                 {contentType.groups && contentType.groups.map && (
@@ -471,7 +492,7 @@ export class SchemaDetail extends React.Component<IProps> {
                 ref={this.editField}
                 availableFields={availableFields}
                 field={this.selectedField}
-                schema={contentType.schema}
+                schema={contentType.fields}
                 onCancel={this.onEditFieldCancel}
                 onSubmit={this.onEditFieldSubmit}
               />

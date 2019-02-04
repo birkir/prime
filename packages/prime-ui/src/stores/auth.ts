@@ -1,11 +1,15 @@
 import { flow, types } from 'mobx-state-tree';
+import { accountsClient, client } from '../utils/accounts';
 import { fields } from '../utils/fields';
 import { User } from './models/User';
+import { GET_USER } from './queries';
 import { Settings } from './settings';
 
 export const Auth = types
   .model('Auth', {
     user: types.maybeNull(User),
+    accessToken: types.maybeNull(types.string),
+    refreshToken: types.maybeNull(types.string),
     isSetup: types.optional(types.maybeNull(types.boolean), null),
     isLoggedIn: false,
   })
@@ -18,55 +22,45 @@ export const Auth = types
       Settings.fields.forEach((field: any) => {
         if (field.ui && !fields[field.id]) {
           const script = document.createElement('script');
-          script.src = `${Settings.coreUrl}/fields/${field.id}/index.js`;
-          script.id = `Prime_Field_${field.id}`;
+          script.src = `${Settings.coreUrl}/prime/field/${field.type}/index.js`;
+          script.id = `Prime_Field_${field.type}`;
           document.body.appendChild(script);
         }
       });
     };
 
     const login = flow(function*(email: string, password: string) {
-      const res: any = yield fetch(`${Settings.coreUrl}/auth/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+      yield accountsClient.loginWithService('password', {
+        user: {
+          email,
         },
-        body: JSON.stringify({ email, password }),
-      }).then(r => r.json());
-
-      self.isLoggedIn = Boolean(res.user);
-      self.user = res.user;
+        password,
+      });
+      yield checkLogin();
 
       yield ensureFields();
-
-      return res;
     });
 
     const logout = flow(function*() {
-      yield fetch(`${Settings.coreUrl}/auth/logout`, {
-        credentials: 'include',
-      });
+      yield accountsClient.logout();
       self.isLoggedIn = false;
       self.user = null;
     });
 
     const checkLogin = flow(function*() {
-      const res: any = yield fetch(`${Settings.coreUrl}/auth/user`, {
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
-        },
-      }).then(r => r.json());
-
-      if (res.setup) {
-        self.isSetup = res.setup;
-      } else if (res.user) {
-        self.isLoggedIn = Boolean(res.user);
-        self.user = res.user;
+      const tokens = yield accountsClient.getTokens();
+      if (tokens) {
+        const { data } = yield client.query({
+          query: GET_USER,
+        });
+        if (data && data.getUser) {
+          self.accessToken = tokens.accessToken;
+          self.refreshToken = tokens.refreshToken;
+          self.isLoggedIn = true;
+          self.user = data.getUser;
+          yield ensureFields();
+        }
       }
-
-      yield ensureFields();
     });
 
     const register = flow(function*({

@@ -1,11 +1,11 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
 const { uuid } = window as any;
 
-const getItems = ({ initialValue }: IPrimeFieldProps) => {
+const getItems = ({ initialValue }: PrimeFieldProps) => {
   if (Array.isArray(initialValue)) {
     return initialValue.map((_, index) => [uuid.v4(), index]);
   }
@@ -13,24 +13,24 @@ const getItems = ({ initialValue }: IPrimeFieldProps) => {
   return [];
 };
 
-const getIndex = (props: IPrimeFieldProps) => {
+const getIndex = (props: PrimeFieldProps) => {
   return Math.max(-1, ...getItems(props).map(n => n[1])) + 1;
 };
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
   public state = {
     items: getItems(this.props),
     index: getIndex(this.props),
   };
 
-  public componentWillReceiveProps(nextProps: IPrimeFieldProps) {
-    if (!this.props.entry && nextProps.entry) {
+  public componentWillReceiveProps(nextProps: PrimeFieldProps) {
+    if (!this.props.document && nextProps.document) {
       this.setState({
         items: getItems(nextProps),
         index: getIndex(nextProps),
       });
-    } else if (this.props.entry && nextProps.entry) {
-      if (this.props.entry.versionId !== nextProps.entry.versionId) {
+    } else if (this.props.document && nextProps.document) {
+      if (this.props.document.id !== nextProps.document.id) {
         this.setState({
           items: this.state.items.map((item, index) => {
             return [item[0], index];
@@ -87,7 +87,12 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
       <Card key={key} className="prime-group-item">
         {repeated && (
           <div className="prime-slice-item-actions">
-            <Icon className="prime-slice-item-button" type="minus" data-key={key} onClick={this.onRemoveClick} />
+            <Icon
+              className="prime-slice-item-button"
+              type="minus"
+              data-key={key}
+              onClick={this.onRemoveClick}
+            />
           </div>
         )}
         {fields.map((f: any) => this.renderField(f, key, index))}
@@ -105,7 +110,13 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, any> {
         {items.map(this.renderGroupItem)}
         {repeated && (
           <div style={{ textAlign: 'center' }}>
-            <Button size="large" shape="circle" onClick={this.add} icon="plus" className="prime-slice-add" />
+            <Button
+              size="large"
+              shape="circle"
+              onClick={this.add}
+              icon="plus"
+              className="prime-slice-add"
+            />
           </div>
         )}
       </Form.Item>

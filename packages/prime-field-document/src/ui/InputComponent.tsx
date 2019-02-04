@@ -1,10 +1,10 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, TreeSelect } from 'antd';
 import React from 'react';
 
 interface IContentType {
-  entryId: string;
-  display: string;
+  documentId: string;
+  primary: string;
 }
 
 interface IOption {
@@ -20,7 +20,7 @@ interface IState {
   loading: boolean;
 }
 
-export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
+export class InputComponent extends React.Component<PrimeFieldProps, IState> {
   public state: IState = {
     options: [],
     loading: false,
@@ -37,9 +37,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
     this.setState({ loading: true });
 
-    const contentTypeIds = field.options.contentTypeIds || [];
+    const contentTypeIds = field.options.schemaIds || [];
     if (field.options.contentTypeId) {
-      contentTypeIds.push(field.options.contentTypeId);
+      contentTypeIds.push(field.options.schemaId);
     }
 
     const contentTypes = await Promise.all(
@@ -59,9 +59,9 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
         selectable: false,
         isLeaf: false,
         children: items.map((item: IContentType) => ({
-          key: item.entryId,
-          value: item.entryId,
-          title: item.display,
+          key: item.documentId,
+          value: [contentType.id, item.documentId].join(','),
+          title: item.primary,
           isLeaf: true,
         })),
       })),
@@ -92,14 +92,14 @@ export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
 
   public render() {
     const { loading, options } = this.state;
-    const { field, entry, path, form, initialValue } = this.props;
+    const { field, document, path, form, initialValue } = this.props;
     const { getFieldDecorator } = form;
 
     return (
       <Form.Item label={field.title}>
         {loading === false ? (
           <TreeSelect
-            key={(entry && entry.entryId) || 'picker'}
+            key={(document && document.documentId) || 'picker'}
             style={{ width: 300 }}
             defaultValue={this.defaultValue}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}

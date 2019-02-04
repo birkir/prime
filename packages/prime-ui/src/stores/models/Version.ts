@@ -2,14 +2,14 @@ import { types } from 'mobx-state-tree';
 
 export const Version = types
   .model('Version', {
-    versionId: types.string,
-    isPublished: types.boolean,
+    id: types.string,
+    publishedAt: types.maybeNull(types.Date),
     createdAt: types.Date,
     updatedAt: types.Date,
   })
   .preProcessSnapshot(snapshot => ({
     ...snapshot,
-    isPublished: Boolean(snapshot.isPublished),
+    publishedAt: snapshot.publishedAt ? new Date(snapshot.publishedAt) : null,
     createdAt: new Date(snapshot.createdAt),
     updatedAt: new Date(snapshot.updatedAt),
   }));

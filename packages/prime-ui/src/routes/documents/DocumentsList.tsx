@@ -1,4 +1,18 @@
-import { Avatar, Badge, Button, Card, Dropdown, Icon, Layout, Menu, message, Modal, Table, Tag, Tooltip } from 'antd';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Dropdown,
+  Icon,
+  Layout,
+  Menu,
+  message,
+  Modal,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { distanceInWordsToNow } from 'date-fns';
 import gql from 'graphql-tag';
 import { get } from 'lodash';
@@ -20,63 +34,59 @@ interface IOptions {
 }
 
 const GET_CONTENT_ENTRIES = gql`
-  query contentEntries(
-    $limit: Int
-    $skip: Int
-    $language: String
-    $contentTypeId: ID
-    $contentReleaseId: ID
-    $sort: SortField
-    $order: SortOrder
+  query allDocuments(
+    $locale: String
+    $schemaId: ID
+    $releaseId: ID
+    $sort: [DocumentConnectionSort!]
   ) {
-    ContentType(id: $contentTypeId) {
-      id
-      name
-      title
+    allSchemas {
+      edges {
+        node {
+          id
+          name
+          title
+          variant
+        }
+      }
     }
-    allContentTypes(order: "title") {
-      id
-      name
-      title
-      isSlice
-      isTemplate
-    }
-    allUsers {
-      id
-      email
-    }
-    allContentEntries(
-      limit: $limit
-      skip: $skip
-      language: $language
-      contentTypeId: $contentTypeId
-      contentReleaseId: $contentReleaseId
+    # allUsers {
+    #   id
+    #   email
+    # }
+    allDocuments(
+      first: 10
+      filter: { locale: $locale, schemaId: $schemaId, releaseId: $releaseId }
       sort: $sort
-      order: $order
     ) {
       totalCount
       edges {
         node {
-          entryId
-          versionId
-          contentReleaseId
-          language
-          isPublished
-          publishedVersionId
+          id
+          documentId
+          # releaseId
+          locale
+          publishedAt
+          # publishedId
           updatedAt
           data
-          display
-          contentType {
+          primary
+          schemaId
+          userId
+          published {
             id
-            name
-            title
           }
-          user {
-            id
-            email
-            firstname
-            lastname
-          }
+          # schema {
+          #   id
+          #   name
+          #   title
+          # }
+          # user {
+          #   id
+          #   email
+          #   firstname
+          #   lastname
+          # }
         }
       }
     }
@@ -103,13 +113,10 @@ export const DocumentsList = ({ match, history }: any) => {
 
   const locale = Settings.locales.find(l => l.id === options.locale) || Settings.masterLocale;
 
-  React.useEffect(
-    () => {
-      ContentReleases.loadAll();
-      ContentTypes.loadAll();
-    },
-    [match.location]
-  );
+  React.useEffect(() => {
+    ContentReleases.loadAll();
+    ContentTypes.loadAll();
+  }, [match.location]);
 
   const onLocaleClick = (e: any) => {
     history.push(`/documents/by/${opts({ locale: e.key })}`);
@@ -128,7 +135,7 @@ export const DocumentsList = ({ match, history }: any) => {
 
   let userId: any;
   let contentTypeId: any = null;
-  const contentReleaseId = options.release || '';
+  const contentReleaseId = options.release || null;
 
   if (options.type) {
     const contentType = ContentTypes.list.find(
@@ -145,14 +152,13 @@ export const DocumentsList = ({ match, history }: any) => {
       client={client}
       fetchPolicy="network-only"
       variables={{
-        contentTypeId,
-        contentReleaseId,
+        schemaId: contentTypeId,
+        releaseId: contentReleaseId,
         userId,
-        skip: 0,
-        limit: PER_PAGE,
-        language: locale.id,
-        sort: 'updatedAt',
-        order: 'DESC',
+        // skip: 0,
+        // limit: PER_PAGE,
+        locale: locale.id,
+        sort: 'updatedAt_ASC',
       }}
     >
       {({ loading, error, data, refetch }) => {
@@ -165,26 +171,26 @@ export const DocumentsList = ({ match, history }: any) => {
           pageSize: PER_PAGE,
         };
 
-        const formatSorterField = (field: string) => {
-          if (field === 'user.id') {
-            return 'userId';
-          }
-          return field;
-        };
-
         const onTableChange = async (paging: any, filters: any, sorter: any) => {
           contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
           userId = filters['user.id'] && filters['user.id'][0];
 
+          const formatSorterField = (field: string) => {
+            if (field === 'user.id') {
+              field = 'userId';
+            }
+            return `${field}_${sorter.order === 'ascend' ? 'ASC' : 'DESC'}`;
+          };
+
           const variables = {
-            contentTypeId,
-            contentReleaseId,
+            schemaId: contentTypeId,
+            releaseId: contentReleaseId,
             userId,
-            limit: paging.pageSize,
-            skip: (paging.current - 1) * paging.pageSize,
+            // limit: paging.pageSize,
+            // skip: (paging.current - 1) * paging.pageSize,
             sort: formatSorterField(sorter.field),
-            language: locale.id,
-            order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
+            locale: locale.id,
+            // order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
           };
           refetch(variables);
         };
@@ -196,9 +202,9 @@ export const DocumentsList = ({ match, history }: any) => {
             sorter: false,
             width: '52px',
             render(text: string, record: any) {
-              let backgroundColor = record.publishedVersionId ? '#79cea3' : '#faad14';
-              let icon = record.publishedVersionId ? 'caret-right' : 'exclamation';
-              let dot = !record.publishedVersionId || record.isPublished ? false : true;
+              let backgroundColor = record.publishedAt || record.published ? '#79cea3' : '#faad14';
+              let icon = record.publishedAt ? 'caret-right' : 'exclamation';
+              let dot = !record.published || record.publishedAt !== null ? false : true;
 
               if (contentReleaseId) {
                 dot = false;
@@ -237,29 +243,40 @@ export const DocumentsList = ({ match, history }: any) => {
             title: 'Title',
             dataIndex: 'data.title',
             render(text: string, record: any) {
-              if (options.locale && record.language !== options.locale) {
-                return (
-                  <div style={{ display: 'flex' }}>
-                    <i style={{ display: 'inline-flex', flex: 1 }}>{record.display}</i>
-                    <Tag color="orange">Needs translation</Tag>
-                  </div>
-                );
-              }
-              return record.display;
+              const isLocale = options.locale && record.locale !== options.locale;
+              const isItalic = isLocale || !record.primary;
+              return (
+                <div style={{ display: 'flex' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      flex: 1,
+                      fontStyle: isItalic ? 'italic' : '',
+                      opacity: isItalic ? 0.75 : 1,
+                    }}
+                  >
+                    {record.primary || `(id: ${record.documentId})`}
+                  </span>
+                  {isLocale && <Tag color="orange">Needs translation</Tag>}
+                </div>
+              );
             },
           },
           {
             title: 'Type',
             width: '175px',
-            dataIndex: 'contentType.title',
-            filters: get(data, 'allContentTypes', [])
-              .filter((n: any) => !n.isSlice && !n.isTemplate)
+            dataIndex: 'schemaId',
+            filters: ContentTypes.list
+              .filter((n: any) => n.variant === 'Default')
               .map(({ id, title }: any) => ({
                 text: title,
                 value: id,
               })),
             filteredValue: [contentTypeId] as any[],
             filterMultiple: false,
+            render(schemaId: string) {
+              return ContentTypes.items.get(schemaId)!.name;
+            },
           },
           {
             title: 'Updated',
@@ -306,18 +323,18 @@ export const DocumentsList = ({ match, history }: any) => {
 
         const menu = (
           <Menu onClick={onMenuClick}>
-            {get(data, 'allContentTypes', [])
-              .filter((n: any) => !n.isSlice && !n.isTemplate)
-              .map(({ name, title }: any) => (
+            {get(data, 'allSchemas.edges', [])
+              .filter((n: any) => n.node.variant === 'Default')
+              .map(({ node: { name, title } }: any) => (
                 <Menu.Item key={name}>{title}</Menu.Item>
               ))}
           </Menu>
         );
 
-        const items = get(data, 'allContentEntries.edges', []).map(({ node }: any) => node);
+        const items = get(data, 'allDocuments.edges', []).map(({ node }: any) => node);
 
-        const contentRelease = ContentReleases.items.has(contentReleaseId)
-          ? ContentReleases.items.get(contentReleaseId)
+        const contentRelease = ContentReleases.items.has(contentReleaseId || '')
+          ? ContentReleases.items.get(contentReleaseId || '')
           : null;
 
         const publishRelease = () => {
@@ -336,7 +353,9 @@ export const DocumentsList = ({ match, history }: any) => {
           <Layout>
             <Toolbar>
               <div style={{ flex: 1 }}>
-                <h2 style={{ margin: 0 }}>{contentRelease ? `Release "${contentRelease.name}"` : 'Documents'}</h2>
+                <h2 style={{ margin: 0 }}>
+                  {contentRelease ? `Release "${contentRelease.name}"` : 'Documents'}
+                </h2>
               </div>
               {contentRelease && (
                 <Button
@@ -350,7 +369,10 @@ export const DocumentsList = ({ match, history }: any) => {
               )}
               <Dropdown overlay={locales} trigger={['click']}>
                 <Button type="default" style={{ marginRight: 16 }}>
-                  <span className={`flagstrap-icon flagstrap-${locale.flag}`} style={{ marginRight: 8 }} />
+                  <span
+                    className={`flagstrap-icon flagstrap-${locale.flag}`}
+                    style={{ marginRight: 8 }}
+                  />
                   {locale.name}
                   <Icon type="down" />
                 </Button>
@@ -366,16 +388,17 @@ export const DocumentsList = ({ match, history }: any) => {
               <Card bodyStyle={{ padding: 0 }} bordered={false} className="with-table-pagination">
                 <Table
                   columns={columns}
-                  rowKey="entryId"
+                  rowKey="documentId"
                   dataSource={items}
                   pagination={pagination}
                   rowClassName={() => 'prime-row-click'}
                   onChange={onTableChange}
                   onRow={record => ({
                     onClick: () => {
+                      const schema = ContentTypes.items.get(record.schemaId);
                       history.push(
-                        `/documents/doc/${record.entryId}/${opts({
-                          type: record.contentType.name.toLocaleLowerCase(),
+                        `/documents/doc/${record.documentId}/${opts({
+                          type: schema!.name.toLowerCase(),
                         })}`
                       );
                     },

@@ -26,7 +26,7 @@ function renderInputField({ field, path, initialValue, form, entry }: any) {
         client={client}
         stores={stores}
         path={path}
-        entry={entry}
+        document={entry}
         renderField={renderInputField}
         initialValue={initialValue}
       />
@@ -49,6 +49,7 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
 
   public renderField = (field: any, index: number) => {
     const { form } = this.props;
+
     return renderInputField({
       field,
       index,

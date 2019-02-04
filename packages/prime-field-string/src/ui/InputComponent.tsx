@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
 import { ValidationRule } from 'antd/lib/form';
 import BraftEditor from 'braft-editor';
@@ -6,7 +6,17 @@ import { debounce } from 'lodash';
 import { draftToMarkdown, markdownToDraft } from 'markdown-draft-js';
 import React from 'react';
 
-const defaultControls = ['headings', 'bold', 'italic', 'code', 'blockquote', 'list-ul', 'list-ol', 'link', 'emoji'];
+const defaultControls = [
+  'headings',
+  'bold',
+  'italic',
+  'code',
+  'blockquote',
+  'list-ul',
+  'list-ol',
+  'link',
+  'emoji',
+];
 
 const allControls = [
   'headings',
@@ -28,7 +38,7 @@ const markdownConfig = {
   remarkablePreset: 'full',
 };
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public state = {
     value: BraftEditor.createEditorState(markdownToDraft(this.props.initialValue, markdownConfig)),
   };
@@ -37,12 +47,25 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     try {
       const { form, path } = this.props;
       form.setFieldsValue({
-        [path]: draftToMarkdown(JSON.parse(this.state.value.toRAW()), markdownConfig).replace(/\n\n/g, '\n \n'),
+        [path]: draftToMarkdown(JSON.parse(this.state.value.toRAW()), markdownConfig).replace(
+          /\n\n/g,
+          '\n \n'
+        ),
       });
     } catch (err) {
       console.error('Error converting rich text to markdown'); // tslint:disable-line no-console
     }
   }, 330);
+
+  public componentWillReceiveProps(nextProps: PrimeFieldProps) {
+    if (nextProps.initialValue !== this.props.initialValue) {
+      this.setState({
+        value: BraftEditor.createEditorState(
+          markdownToDraft(nextProps.initialValue, markdownConfig)
+        ),
+      });
+    }
+  }
 
   public onChange = (value: any) => {
     this.setState({ value }, this.setMarkdownValue);
@@ -70,7 +93,10 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
         return features.indexOf(item) >= 0;
       })
       .filter((item, index, arr) => {
-        if (item === 'separator' && (index === 0 || arr[index - 1] === item || index - 1 === arr.length)) {
+        if (
+          item === 'separator' &&
+          (index === 0 || arr[index - 1] === item || index - 1 === arr.length)
+        ) {
           return false;
         }
 
@@ -82,7 +108,12 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     return (
       <Form.Item label={field.title}>
-        <BraftEditor controls={controls} value={this.state.value} onChange={this.onChange} language="en" />
+        <BraftEditor
+          controls={controls}
+          value={this.state.value}
+          onChange={this.onChange}
+          language="en"
+        />
         {getFieldDecorator(path, { initialValue, rules })(<input type="hidden" />)}
       </Form.Item>
     );
@@ -128,7 +159,7 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     if (rules.urlsafe) {
       fieldRules.push({
         pattern: /^[A-Za-z][A-Za-z0-9_-]*$/,
-        message: `${field.title} must be url safe text`,
+        message: `${field.title} must be url safe texts`,
       });
     }
 
@@ -150,7 +181,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     const error = form.getFieldError(path);
     const help =
-      field.description && field.description !== '' ? `${field.description}${error ? ` - ${error}` : ''}` : undefined;
+      field.description && field.description !== ''
+        ? `${field.description}${error ? ` - ${error}` : ''}`
+        : undefined;
     const styles: any = {};
 
     if (field.options.appearance) {
@@ -183,7 +216,13 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
         {getFieldDecorator(path, {
           initialValue,
           rules: fieldRules,
-        })(<Input size="large" style={styles} onKeyUp={rules.urlsafe ? this.onUrlSafeKeyUp : undefined} />)}
+        })(
+          <Input
+            size="large"
+            style={styles}
+            onKeyUp={rules.urlsafe ? this.onUrlSafeKeyUp : undefined}
+          />
+        )}
       </Form.Item>
     );
   }

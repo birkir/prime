@@ -12,6 +12,7 @@ yarn-error.log
 !.env.example
 .idea
 .vscode
+.cache
 
 packages/*/package-lock.json
 packages/*/*.tgz

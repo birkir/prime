@@ -1,15 +1,5 @@
-mutation updateContentRelease(
-  $id: ID!
-  $name: String
-  $description: String
-  $scheduledAt: String
-) {
-  updateContentRelease(
-    id: $id
-    name: $name
-    description: $description
-    scheduledAt: $scheduledAt
-  ) {
+mutation updateRelease($id: ID!, $input: ReleaseInput!) {
+  updateRelease(id: $id, input: $input) {
     id
     name
     description

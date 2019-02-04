@@ -1,3 +1,4 @@
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -6,18 +7,24 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
         exclude: /node_modules/,
-        options: {
-          configFile: path.join(__dirname, '..', 'prime-ui', 'tsconfig.json'),
-          compilerOptions: {
-            noEmit: false,
-            jsx: 'react',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              configFile: path.join(__dirname, '..', 'prime-ui', 'tsconfig.json'),
+              compilerOptions: {
+                noEmit: false,
+                jsx: 'react',
+              },
+              transpileOnly: true,
+            },
           },
-        },
+        ],
       },
     ],
   },
+  plugins: [new ForkTsCheckerWebpackPlugin()],
   mode: 'production',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],

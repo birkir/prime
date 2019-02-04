@@ -1,42 +1,39 @@
 import { PrimeField } from '@primecms/field';
 import { GraphQLBoolean } from 'graphql';
 
-interface IPrimeFieldStringOptions {
+interface Options {
   label: string;
 }
 
 export class PrimeFieldBoolean extends PrimeField {
-  public id: string = 'boolean';
-  public title: string = 'Boolean';
-  public description: string = 'Boolean field';
-
-  public defaultOptions: IPrimeFieldStringOptions = {
+  public static type: string = 'boolean';
+  public static title: string = 'Boolean';
+  public static description: string = 'Boolean field';
+  public static options: Options = {
     label: '',
   };
 
-  public getGraphQLOutput() {
+  public outputType() {
     return {
       type: GraphQLBoolean,
     };
   }
 
-  public getGraphQLInput() {
+  public inputType() {
     return {
       type: GraphQLBoolean,
     };
   }
 
-  public getGraphQLWhere() {
-    return {
-      type: GraphQLBoolean,
-    };
+  public whereType() {
+    return GraphQLBoolean;
   }
 
-  public processInput(value) {
+  public async processInput(value) {
     return Boolean(value);
   }
 
-  public processOutput(value) {
+  public async processOutput(value) {
     return Boolean(value);
   }
 }

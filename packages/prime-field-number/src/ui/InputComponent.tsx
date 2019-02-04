@@ -1,9 +1,9 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Input } from 'antd';
 import React from 'react';
 import { ValidationRule } from 'antd/lib/form'; // tslint:disable-line
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public render() {
     const { form, field, path, initialValue = false } = this.props;
     const { getFieldDecorator } = form;
@@ -21,7 +21,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
       const min = Number(rules.minValue);
       fieldRules.push({
         validator: (_, value, cb) =>
-          cb(Number(value) >= min ? undefined : `${field.title} must be greater or equal to ${min}`),
+          cb(
+            Number(value) >= min ? undefined : `${field.title} must be greater or equal to ${min}`
+          ),
       });
     }
 
@@ -35,7 +37,9 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
 
     return (
       <Form.Item label={field.title}>
-        {getFieldDecorator(path, { initialValue, rules: fieldRules })(<Input size="large" type="number" />)}
+        {getFieldDecorator(path, { initialValue, rules: fieldRules })(
+          <Input size="large" type="number" />
+        )}
       </Form.Item>
     );
   }

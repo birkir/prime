@@ -38,12 +38,11 @@
     "field",
     "base"
   ],
-  "peerDependencies": {
-    "antd": "^3.0.0",
-    "apollo-boost": "^0.1.20",
-    "graphql": "^14.0.0",
+  "dependencies": {
+    "antd": "^3.13.0",
+    "graphql": "^14.1.1",
     "lodash": "^4.17.11",
-    "react": "^16.7.0"
+    "react": "^16.8.0-alpha.1"
   },
   "gitHead": "cf881a4fa267b782e875f1fa40e03e1cbbcd9580"
 }

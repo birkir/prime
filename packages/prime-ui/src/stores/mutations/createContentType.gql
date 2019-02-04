@@ -1,11 +1,10 @@
-mutation CreateContentType($input:CreateContentTypeInput) {
-  createContentType(input:$input) {
+mutation CreateSchema($input: SchemaInput!) {
+  createSchema(input: $input) {
     id
     name
     title
     groups
     settings
-    isSlice
-    isTemplate
+    variant
   }
 }

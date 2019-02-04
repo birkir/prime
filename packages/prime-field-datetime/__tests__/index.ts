@@ -2,50 +2,51 @@ import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 import PrimeFieldDateTime from '../src';
 
 describe('PrimeFieldDateTime', () => {
-  let test: PrimeFieldDateTime;
-  const field = { field: { options: { time: true } } } as any;
-  const fieldNoTime = { field: { options: { time: false } } } as any;
+  let testDate: PrimeFieldDateTime;
+  let testDateTime: PrimeFieldDateTime;
+  const payload = {} as any;
 
   beforeAll(() => {
-    test = new PrimeFieldDateTime();
+    testDate = new PrimeFieldDateTime({ options: { time: false } } as any, {} as any);
+    testDateTime = new PrimeFieldDateTime({ options: { time: true } } as any, {} as any);
   });
 
   it('should have default export', () => {
     expect(typeof PrimeFieldDateTime).toBe('function');
   });
 
-  it('should have GraphQLDate input type', () => {
-    const { type } = test.getGraphQLInput(fieldNoTime);
+  it('should have GraphQLDate input type', async () => {
+    const { type } = await testDate.inputType(payload);
     expect(type).toBe(GraphQLDate);
   });
 
-  it('should have GraphQLDate output type', () => {
-    const { type } = test.getGraphQLOutput(fieldNoTime);
+  it('should have GraphQLDate output type', async () => {
+    const { type } = await testDate.outputType(payload);
     expect(type).toBe(GraphQLDate);
   });
 
-  it('should have GraphQLDate where type', () => {
-    const { type } = test.getGraphQLWhere(fieldNoTime);
-    expect(type.toString()).toBe('PrimeFieldDateTimeWhereDate');
+  it('should have GraphQLDate where type', async () => {
+    const type = await testDate.whereType(payload);
+    expect(type.toString()).toBe('Prime_Field_DateTime_WhereDate');
   });
 
-  it('should have GraphQLDateTime input type', () => {
-    const { type } = test.getGraphQLInput(field);
+  it('should have GraphQLDateTime input type', async () => {
+    const { type } = await testDateTime.inputType(payload);
     expect(type).toBe(GraphQLDateTime);
   });
 
-  it('should have GraphQLDateTime output type', () => {
-    const { type } = test.getGraphQLOutput(field);
+  it('should have GraphQLDateTime output type', async () => {
+    const { type } = await testDateTime.outputType(payload);
     expect(type).toBe(GraphQLDateTime);
   });
 
-  it('should have GraphQLDateTime where type', () => {
-    const { type } = test.getGraphQLWhere(field);
-    expect(type.toString()).toBe('PrimeFieldDateTimeWhereDateTime');
+  it('should have GraphQLDateTime where type', async () => {
+    const type = await testDateTime.whereType(payload);
+    expect(type.toString()).toBe('Prime_Field_DateTime_WhereDateTime');
   });
 
-  it('should always resolve Date or null', () => {
-    const outputType = test.getGraphQLOutput(field);
+  it('should always resolve Date or null', async () => {
+    const outputType = await testDateTime.outputType(payload);
     const fieldName = 'foo';
     const date = new Date();
     const root = { [fieldName]: date.toJSON() };

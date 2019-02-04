@@ -1,28 +1,18 @@
-query contentEntryById(
-  $entryId: ID
-  $versionId: ID
-  $contentReleaseId: ID
-  $language: String
-) {
-  ContentEntry(
-    entryId: $entryId
-    versionId: $versionId
-    contentReleaseId: $contentReleaseId
-    language: $language
-  ) {
-    versionId
-    entryId
-    contentTypeId
-    contentReleaseId
-    language
-    isPublished
+query contentEntryById($id: ID!, $releaseId: ID, $language: String) {
+  Document(id: $id, releaseId: $releaseId, locale: $language) {
+    id
+    documentId
+    schemaId
+    releaseId
+    locale
+    publishedAt
     data
     createdAt
     updatedAt
-    display
+    # display
     versions {
-      versionId
-      isPublished
+      id
+      publishedAt
       createdAt
       updatedAt
     }

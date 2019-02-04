@@ -19,7 +19,7 @@ export const ContentEntries = types
           contentTypeId,
         },
       });
-      return data.allContentEntries.edges.map(({ node }: any) => ContentEntry.create(node));
+      return data.allDocuments.edges.map(({ node }: any) => ContentEntry.create({ ...node }));
     });
 
     const loadById = flow(function*(entryId: string, locale: string, release?: string) {
@@ -34,40 +34,48 @@ export const ContentEntries = types
       const { data } = yield client.query({
         query: CONTENT_ENTRY_BY_ID,
         variables: {
-          entryId,
-          contentReleaseId: release,
-          language: locale,
+          id: entryId,
+          releaseId: release,
+          locale,
         },
       });
       self.loading = false;
       self.loaded = true;
-      if (data.ContentEntry) {
-        item = ContentEntry.create({ id, ...data.ContentEntry });
+      if (data.Document) {
+        item = ContentEntry.create({ id, ...data.Document });
         self.items.put(item);
       }
       return item;
     });
 
-    const create = flow(function*(
-      contentTypeId: string,
-      proposedData: any,
-      language: string,
-      contentReleaseId: string | undefined | null,
-      entryId?: string
-    ) {
-      const { data } = yield client.mutate({
+    const create = flow(function*({
+      schemaId,
+      data,
+      locale,
+      releaseId,
+      documentId,
+    }: {
+      schemaId: string;
+      data: any;
+      locale: string;
+      releaseId?: string;
+      documentId?: string;
+    }) {
+      const res = yield client.mutate({
         mutation: CREATE_CONTENT_ENTRY,
         variables: {
-          language,
-          contentTypeId,
-          contentReleaseId,
-          data: proposedData,
-          entryId,
+          input: {
+            locale,
+            schemaId,
+            releaseId,
+            data,
+            documentId,
+          },
         },
       });
-      if (data) {
-        const entry = data.createContentEntry;
-        const id = [entry.entryId, entry.language, entry.contentReleaseId].join(':');
+      if (res.data) {
+        const entry = res.data.createDocument;
+        const id = [entry.documentId, entry.locale, entry.releaseId].join(':');
         const item = ContentEntry.create({
           ...entry,
           id,

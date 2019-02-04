@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Select, Switch } from 'antd';
 import React from 'react';
 
@@ -9,14 +9,14 @@ interface IContentType {
   isTemplate?: boolean;
 }
 
-export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProps> {
+export class SchemaSettingsComponent extends React.PureComponent<PrimeFieldProps> {
   public render() {
     const { form, stores } = this.props;
 
     return (
       <>
         <Form.Item label="Document types" style={{ marginBottom: 8 }}>
-          {form.getFieldDecorator('options.contentTypeIds')(
+          {form.getFieldDecorator('options.schemaIds')(
             <Select placeholder="Select document types" mode="multiple">
               {stores.ContentTypes.list
                 .filter((n: IContentType) => !n.isSlice && !n.isTemplate)

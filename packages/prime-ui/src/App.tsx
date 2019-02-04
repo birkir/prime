@@ -8,6 +8,7 @@ import { Login } from './routes/login/Login';
 import { Logout } from './routes/logout/Logout';
 import { Onboarding } from './routes/onboarding/Onboarding';
 import { Playground } from './routes/playground/Playground';
+import { ResetPassword } from './routes/reset-password/ResetPassword';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
 import { Auth } from './stores/auth';
@@ -64,6 +65,8 @@ export class App extends React.Component {
                 <Switch key={preKey} location={location}>
                   <Route path="/setup" exact component={Onboarding} />
                   <Route path="/login" exact component={Login} />
+                  <Route path="/reset-password/:token?" exact component={ResetPassword} />
+                  <Route path="/verify-email/:token" exact component={Login} />
                   <Route path="/logout" exact component={Logout} />
                   <Private>
                     <Layout>
@@ -71,9 +74,17 @@ export class App extends React.Component {
                         <Route path="/" exact render={() => <Redirect to="/documents" />} />
                         <Route path="/schemas" component={Schemas} />
                         <Route path="/documents" exact component={DocumentsList} />
-                        <Route path="/documents/doc/:entryId/:options?" exact component={DocumentsDetail} />
+                        <Route
+                          path="/documents/doc/:entryId/:options?"
+                          exact
+                          component={DocumentsDetail}
+                        />
                         <Route path="/documents/by/:options?" exact component={DocumentsList} />
-                        <Route path="/documents/create/:options" exact component={DocumentsDetail} />
+                        <Route
+                          path="/documents/create/:options"
+                          exact
+                          component={DocumentsDetail}
+                        />
                         <Route path="/settings" component={Settings} />
                       </Switch>
                       <div hidden={section !== 'playground'}>

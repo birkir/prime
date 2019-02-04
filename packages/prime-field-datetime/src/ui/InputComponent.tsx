@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { DatePicker, Form } from 'antd';
 import { get, isEmpty } from 'lodash';
 import moment from 'moment';
@@ -8,7 +8,7 @@ interface IState {
   value: any;
 }
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps, IState> {
   public onChange = (date: any) => {
     const { field, form, path } = this.props;
     const isTime = get(field.options, 'time', false);
@@ -18,14 +18,15 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps, IState
   };
 
   public render() {
-    const { entry, field, form, path, initialValue } = this.props;
+    const { document, field, form, path, initialValue } = this.props;
     const isTime = get(field.options, 'time', false);
-    const value = isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue);
+    const value =
+      isEmpty(initialValue) || typeof initialValue !== 'string' ? undefined : moment(initialValue);
 
     return (
       <Form.Item label={field.title}>
         <DatePicker
-          key={(entry && entry.entryId) || 'datepicker'}
+          key={(document && document.documentId) || 'datepicker'}
           defaultValue={value}
           format={isTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
           size="large"

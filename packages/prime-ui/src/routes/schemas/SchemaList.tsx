@@ -67,8 +67,11 @@ export class SchemaList extends React.Component<any> {
         title: 'Documents',
         key: 'documents',
         render: (text, record) => (
-          <Link to={`/documents/by/type:${record.name.toLocaleLowerCase()}`} onClick={(e: any) => e.stopPropagation()}>
-            {record.entriesCount} doc{Number(record.entriesCount) !== 1 ? 's' : ''}.
+          <Link
+            to={`/documents/by/type:${record.name.toLocaleLowerCase()}`}
+            onClick={(e: any) => e.stopPropagation()}
+          >
+            {record.documentCount} doc{Number(record.documentCount) !== 1 ? 's' : ''}.
           </Link>
         ),
       },
@@ -189,11 +192,11 @@ export class SchemaList extends React.Component<any> {
               dataSource={this.data.filter(n => {
                 switch (this.state.tab) {
                   case 'slices':
-                    return n.isSlice;
+                    return n.variant === 'Slice';
                   case 'templates':
-                    return n.isTemplate;
+                    return n.variant === 'Template';
                   default:
-                    return !n.isSlice && !n.isTemplate;
+                    return n.variant === 'Default';
                 }
               })}
               columns={this.columns.filter(n => {
@@ -222,16 +225,20 @@ export class SchemaList extends React.Component<any> {
         >
           <EditContentType
             ref={this.formRef}
-            contentTypeId={this.state.settingsId}
+            schemaId={this.state.settingsId}
             item={
               this.state.settingsId
                 ? this.data.find(n => n.id === this.state.settingsId)
                 : {
-                    isSlice: this.state.tab === 'slices',
-                    isTemplate: this.state.tab === 'templates',
+                    variant:
+                      this.state.tab === 'slices'
+                        ? 'Slice'
+                        : this.state.tab === 'templates'
+                        ? 'Template'
+                        : 'Default',
                   }
             }
-            contentTypes={this.data}
+            schemas={this.data}
             onCancel={this.onCloseDrawer}
             onSubmit={contentType => {
               this.onCloseDrawer();
