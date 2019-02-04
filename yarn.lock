@@ -2143,10 +2143,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
   integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
-"@types/rc@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@types/rc/-/rc-0.0.1.tgz#1f5b8a1b3b1ac6d1fee137c53fac5fa0f28ae0d7"
-  integrity sha1-H1uKGzsaxtH+4TfFP6xfoPKK4Nc=
+"@types/rc@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@types/rc/-/rc-0.0.2.tgz#cb639295e98fb2f7c4d008d7647e9b1aa304e4e3"
+  integrity sha512-/SPcseKv5YkXpkKxISvx6T4eQGQNkgmRDrAZdGtkdcjHWHAMDs6LMu3rkJpmUdh7hOZDvX88zA21VLOktSk+UQ==
 
 "@types/react-beautiful-dnd@7.1.2":
   version "7.1.2"
