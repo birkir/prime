@@ -1,9 +1,9 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input, Switch, Table } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
-type IProps = IPrimeFieldProps & {
+type Props = PrimeFieldProps & {
   options: {
     items: string[][];
     required: boolean;
@@ -12,7 +12,7 @@ type IProps = IPrimeFieldProps & {
   };
 };
 
-export class SchemaSettingsComponent extends React.PureComponent<IProps> {
+export class SchemaSettingsComponent extends React.PureComponent<Props> {
   public state = {
     dataSource: get(this.props, 'options.items', [])
       .filter((item: any) => !!item && item.key !== '')
@@ -22,7 +22,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
       })),
   };
 
-  public componentWillReceiveProps(nextProps: IProps) {
+  public componentWillReceiveProps(nextProps: Props) {
     if (this.props.field.id !== nextProps.field.id) {
       this.setState({
         dataSource: get(nextProps, 'options.items', [])

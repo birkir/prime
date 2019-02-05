@@ -34,20 +34,15 @@ export class PrimeFieldString extends PrimeField {
   }
 
   public async inputType(context: PrimeFieldContext, operation: PrimeFieldOperation) {
-    if (operation === PrimeFieldOperation.CREATE) {
-      return { type: GraphQLString };
-    } else if (operation === PrimeFieldOperation.UPDATE) {
-      return { type: GraphQLString };
-    }
-    return null;
+    return { type: GraphQLString };
   }
 
-  public async whereType() {
+  public async whereType(context: PrimeFieldContext) {
     return PrimeFieldStringWhere;
   }
 
   public async processInput(value) {
-    const { rules = {} } = this.options;
+    const { rules } = this.options;
     const { name } = this.schemaField;
 
     if (rules.required) {

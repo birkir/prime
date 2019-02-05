@@ -13,8 +13,8 @@ export interface SchemaField {
   options: any;
   fields: SchemaField[];
   parentFieldId?: string;
-  parentField: SchemaField;
-  childFields: SchemaField[];
+  parentField?: SchemaField | null;
+  childFields?: SchemaField[];
   schemaId: string;
   schema: Schema;
   primeField?: PrimeField;

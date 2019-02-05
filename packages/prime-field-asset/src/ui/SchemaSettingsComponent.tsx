@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Form, Input } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
@@ -13,16 +13,16 @@ interface IOptionsCrop {
   height?: string | number;
 }
 
-interface IOptions {
+interface Options {
   crops?: IOptionsCrop[];
 }
 
-type IProps = IPrimeFieldProps & {
-  options: IOptions;
+type Props = PrimeFieldProps & {
+  options: Options;
 };
 
-export class SchemaSettingsComponent extends React.Component<IProps, IState> {
-  public static BEFORE_SUBMIT(options: IOptions) {
+export class SchemaSettingsComponent extends React.Component<Props, IState> {
+  public static BEFORE_SUBMIT(options: Options) {
     if (options.crops) {
       options.crops = options.crops.filter(n => {
         if (n.name === '' || n.width === '' || n.height === '') {

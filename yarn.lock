@@ -1878,14 +1878,6 @@
   dependencies:
     "@primecms/field" "^0.3.0-alpha.0"
 
-"@primecms/field-slice@^0.3.0-alpha.0":
-  version "0.3.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@primecms/field-slice/-/field-slice-0.3.0-alpha.0.tgz#47fae10b24b0a5d64c9d3e4d4bb3f5842d62a902"
-  integrity sha512-vWc+AhL6Kvang+vlK3TOWVFJhtkKGkdM/rGvGZcC7RD98JbMjZVduRaQxR1uziY3Nr2yLFbgsN18GtJHTTqvpw==
-  dependencies:
-    "@primecms/field" "^0.3.0-alpha.0"
-    graphql-union-input-type "0.4.0"
-
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"

@@ -40,9 +40,7 @@ export const setSchemaFields = async (schemaId: string, groups) => {
       const source = await schemaFieldRepo.findOneOrFail(field.id);
       await schemaFieldRepo.merge(source, field);
     }
-    console.log('saving');
     await schemaFieldRepo.save(field);
-    console.log('saved');
 
     if (data.fields) {
       await Promise.all(
@@ -51,8 +49,6 @@ export const setSchemaFields = async (schemaId: string, groups) => {
         })
       );
     }
-
-    console.log('subfields');
 
     return field;
   };
@@ -77,9 +73,7 @@ export const setSchemaFields = async (schemaId: string, groups) => {
 
   if (schema) {
     schema.groups = groups.map(group => group.title);
-    console.log('save schema');
     await schemaRepo.save(schema);
-    console.log('saved schema');
   }
 
   return true;

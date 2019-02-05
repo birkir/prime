@@ -7,6 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+import { SchemaVariant } from '../../../entities/Schema';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 
@@ -20,32 +21,43 @@ export const createSchemaInputType = async (
     [PrimeFieldOperation.UPDATE]: 'Update',
   };
 
-  const typeName = uniqueTypeName(`${name}_${operationMap[operation]}Input`);
-  const typeFields: { [key: string]: any } = {};
+  let resolvedTypeFields = {};
 
-  for (const field of fields) {
-    if (field.primeField && !field.parentFieldId) {
-      const type = await field.primeField.inputType(
-        ({
-          name,
-          schema,
-          schemas,
-          types,
-          fields,
-          uniqueTypeName,
-          resolvers,
-        } as unknown) as PrimeFieldContext,
-        operation
-      );
-      if (type) {
-        typeFields[field.name] = type;
+  const typeName = uniqueTypeName(`${name}_${operationMap[operation]}Input`);
+
+  const resolveFieldsAsync = async () => {
+    const typeFields: { [key: string]: any } = {};
+
+    if (schema.variant === SchemaVariant.Slice) {
+      typeFields.___inputname = { type: GraphQLString };
+    }
+
+    for (const field of fields) {
+      if (field.primeField && !field.parentFieldId) {
+        const type = await field.primeField.inputType(
+          ({
+            name,
+            schema,
+            schemas,
+            types,
+            fields,
+            uniqueTypeName,
+            resolvers,
+          } as unknown) as PrimeFieldContext,
+          operation
+        );
+        if (type) {
+          typeFields[field.name] = type;
+        }
       }
     }
-  }
+
+    return typeFields;
+  };
 
   const InputType = new GraphQLInputObjectType({
     name: typeName,
-    fields: typeFields,
+    fields: () => resolvedTypeFields,
   });
 
   return {
@@ -62,5 +74,12 @@ export const createSchemaInputType = async (
       input: { type: new GraphQLNonNull(InputType) },
     },
     type: SchemaType,
+    variant: schema.variant,
+    operation,
+    asyncResolve() {
+      return resolveFieldsAsync().then(typeFields => {
+        resolvedTypeFields = typeFields;
+      });
+    },
   };
 };

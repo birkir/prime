@@ -8,24 +8,25 @@ describe('PrimeFieldAsset', () => {
     'http://res.cloudinary.com/foo/image/upload/w_100,h_80,x_10,y_15,c_crop/w_100,h_80/vFOO/bar.jpg';
 
   beforeAll(() => {
-    test = new PrimeFieldAsset();
+    test = new PrimeFieldAsset(
+      { options: { crops: [{ name: 'thumb', width: 100, height: 80 }] } } as any,
+      {} as any
+    );
   });
 
   it('should have default export', () => {
     expect(typeof PrimeFieldAsset).toBe('function');
   });
 
-  it('should have GraphQLString output type', () => {
-    const type = test.getGraphQLOutput({
-      field: { options: { crops: [{ name: 'thumb', width: 100, height: 80 }] } },
-    } as any)!;
+  it('should have GraphQLString output type', async () => {
+    const type = await test.outputType({} as any)!;
     expect(type.type).toBeTruthy();
-    expect(type.resolve({}, {}, {}, { fieldName: 'foo' })).toBeNull();
-    expect(type.resolve({ foo: { url: imageUrl } }, {}, {}, { fieldName: 'foo' })).toEqual(
+    expect(await type.resolve({}, {}, {}, { fieldName: 'foo' })).toBeNull();
+    expect(await type.resolve({ foo: { url: imageUrl } }, {}, {}, { fieldName: 'foo' })).toEqual(
       imageUrl
     );
     expect(
-      type.resolve(
+      await type.resolve(
         {
           foo: { url: imageUrl, crops: [{ name: 'thumb', width: 100, height: 80, x: 10, y: 15 }] },
         },
@@ -35,15 +36,15 @@ describe('PrimeFieldAsset', () => {
       )
     ).toEqual(imageThumbUrl);
     expect(
-      type.resolve({ foo: { url: imageUrl } }, { crop: 'thumb' }, {}, { fieldName: 'foo' })
+      await type.resolve({ foo: { url: imageUrl } }, { crop: 'thumb' }, {}, { fieldName: 'foo' })
     ).toBeNull();
   });
 
-  it('should have GraphQLString input type', () => {
-    expect(test.getGraphQLInput()!.type).toBe(GraphQLString);
+  it('should have GraphQLString input type', async () => {
+    expect(await test.inputType({} as any)!.type).toBe(GraphQLString);
   });
 
-  it('should have null where type', () => {
-    expect(test.getGraphQLWhere()).toBeNull();
+  it('should have null where type', async () => {
+    expect(await test.whereType({} as any)).toBeNull();
   });
 });

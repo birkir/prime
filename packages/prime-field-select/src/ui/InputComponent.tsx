@@ -1,9 +1,9 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Select } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public componentDidMount() {
     if (this.props.form.getFieldValue(this.props.path) === '') {
       this.props.form.setFieldsValue({

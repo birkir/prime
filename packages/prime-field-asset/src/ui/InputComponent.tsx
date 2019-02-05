@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Dropdown, Form, Icon, Menu, Modal, Upload } from 'antd';
 import { ClickParam } from 'antd/lib/menu'; // tslint:disable-line no-submodule-imports
 import { UploadChangeParam } from 'antd/lib/upload'; // tslint:disable-line no-submodule-imports
@@ -33,7 +33,7 @@ const getInitialFile = (value?: { url: string } | string) => {
   };
 };
 
-export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
+export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public state = {
     previewVisible: false,
     crop: { name: null, width: 0, height: 0 },
@@ -65,8 +65,8 @@ export class InputComponent extends React.PureComponent<IPrimeFieldProps> {
     this.getImageSize();
   }
 
-  public componentWillReceiveProps(nextProps: IPrimeFieldProps) {
-    if (!this.props.entry && nextProps.entry) {
+  public componentWillReceiveProps(nextProps: PrimeFieldProps) {
+    if (!this.props.document && nextProps.document) {
       this.setState({
         file: getInitialFile(nextProps.initialValue),
       });

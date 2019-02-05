@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Form, Select, Switch } from 'antd';
 import React from 'react';
 
@@ -8,7 +8,7 @@ interface IContentType {
   isSlice?: boolean;
 }
 
-export class SchemaSettingsComponent extends React.PureComponent<IPrimeFieldProps> {
+export class SchemaSettingsComponent extends React.PureComponent<PrimeFieldProps> {
   public render() {
     const { form, stores, field } = this.props;
     const { options } = field;

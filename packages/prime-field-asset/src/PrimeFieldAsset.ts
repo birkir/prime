@@ -1,23 +1,34 @@
-import { IPrimeFieldGraphQLArguments, PrimeField } from '@primecms/field';
+import { PrimeField, PrimeFieldContext } from '@primecms/field';
 import { GraphQLString } from 'graphql';
 import { get } from 'lodash';
 
+interface OptionsCrop {
+  name: string;
+  width: number;
+  height: number;
+}
+
+interface Options {
+  crops?: OptionsCrop[];
+}
+
 export class PrimeFieldAsset extends PrimeField {
-  public id: string = 'asset';
-  public title: string = 'Asset';
-  public description: string = 'Images, videos and other assets';
+  public static id: string = 'asset';
+  public static title: string = 'Asset';
+  public static description: string = 'Images, videos and other assets';
+  public static options: Options = {
+    crops: [],
+  };
 
-  public defaultOptions: {} = {};
-
-  public getGraphQLOutput({ field }: IPrimeFieldGraphQLArguments) {
-    const options = this.getOptions(field);
+  public outputType(context: PrimeFieldContext) {
+    const options = this.options;
 
     return {
       args: {
         crop: { type: GraphQLString },
       },
       type: GraphQLString,
-      resolve(root, args, context, info) {
+      resolve(root, args, ctx, info) {
         const data = get(root, info.fieldName, {});
         let image = get(data, 'url', '');
 
@@ -55,13 +66,9 @@ export class PrimeFieldAsset extends PrimeField {
     };
   }
 
-  public getGraphQLInput() {
+  public inputType(context: PrimeFieldContext) {
     return {
       type: GraphQLString,
     };
-  }
-
-  public getGraphQLWhere() {
-    return null;
   }
 }

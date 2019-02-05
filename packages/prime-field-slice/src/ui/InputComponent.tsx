@@ -1,4 +1,4 @@
-import { IPrimeFieldProps } from '@primecms/field';
+import { PrimeFieldProps } from '@primecms/field';
 import { Button, Card, Dropdown, Icon, Menu } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
@@ -25,7 +25,7 @@ function noChildren(field: any, index: number, allFields: any) {
   });
 }
 
-export class InputComponent extends React.Component<IPrimeFieldProps, IState> {
+export class InputComponent extends React.Component<PrimeFieldProps, IState> {
   public state: IState = {
     contentTypes: [],
     slices: [],

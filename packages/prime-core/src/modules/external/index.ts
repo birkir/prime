@@ -1,14 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { PrimeFieldOperation } from '@primecms/field';
 import debug from 'debug';
-import {
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-  GraphQLUnionType,
-  printSchema,
-} from 'graphql';
-import { camelCase, omit, pick, upperFirst } from 'lodash';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLUnionType } from 'graphql';
+import { camelCase, omit, upperFirst } from 'lodash';
+import { createResolversMap } from 'type-graphql/dist/utils/createResolversMap';
 import Container from 'typedi';
 import { Connection, getRepository } from 'typeorm';
 import { Schema, SchemaVariant } from '../../entities/Schema';
@@ -47,7 +42,8 @@ export const createExternal = async (connection: Connection) => {
     }
 
     if (schema.variant === SchemaVariant.Slice) {
-      schema.name = uniqueTypeName(`Prime_Slice_${upperFirst(camelCase(schema.name))}`);
+      // maybe do something special?
+      schema.name = uniqueTypeName(upperFirst(camelCase(schema.name)));
     } else {
       schema.name = uniqueTypeName(upperFirst(camelCase(schema.name)));
     }
@@ -58,10 +54,28 @@ export const createExternal = async (connection: Connection) => {
     const payload = { schema, schemas, fields, name, resolvers, types, documentTransformer };
     const SchemaTypeConfig = await createSchemaType(payload);
     types.set(name, SchemaTypeConfig);
+
+    const { CREATE, UPDATE } = PrimeFieldOperation;
+    const SchemaType = SchemaTypeConfig.type;
+
+    const connectionType = await createSchemaConnectionType(payload, SchemaType);
+    const createType = await createSchemaInputType(payload, SchemaType, CREATE);
+    const updateType = await createSchemaInputType(payload, SchemaType, UPDATE);
+
+    if (schema.variant === SchemaVariant.Default) {
+      queries[name] = SchemaTypeConfig;
+      queries[`all${name}`] = connectionType;
+      mutations[`create${name}`] = createType;
+      mutations[`update${name}`] = updateType;
+      mutations[`remove${name}`] = DocumentRemove;
+    }
+
+    types.set(`create${name}`, createType);
+    types.set(`update${name}`, updateType);
   }
 
-  for (const schema of schemas) {
-    const { asyncResolve } = types.get(schema.name) || { asyncResolve: null };
+  for (const [, type] of types) {
+    const { asyncResolve } = type || { asyncResolve: null };
     if (asyncResolve) {
       await asyncResolve();
     }
@@ -73,9 +87,7 @@ export const createExternal = async (connection: Connection) => {
     }
 
     const SchemaTypeConfig = types.get(schema.name);
-
     const SchemaType = SchemaTypeConfig.type;
-    const { CREATE, UPDATE } = PrimeFieldOperation;
 
     if (!SchemaType || Object.keys(omit(SchemaType.getFields(), ['id', '_meta'])).length === 0) {
       continue;
@@ -89,12 +101,11 @@ export const createExternal = async (connection: Connection) => {
     resolvers[`create${name}`] = await createDocumentCreateResolver(payload);
     resolvers[`update${name}`] = await createDocumentUpdateResolver(payload);
     resolvers[`remove${name}`] = await createDocumentRemoveResolver(payload);
-
-    queries[name] = SchemaTypeConfig;
-    queries[`all${name}`] = await createSchemaConnectionType(payload, SchemaType);
-    mutations[`create${name}`] = await createSchemaInputType(payload, SchemaType, CREATE);
-    mutations[`update${name}`] = await createSchemaInputType(payload, SchemaType, UPDATE);
-    mutations[`remove${name}`] = DocumentRemove;
+    queries[name].resolve = resolvers[name];
+    queries[`all${name}`].resolve = resolvers[`all${name}`];
+    mutations[`create${name}`].resolve = resolvers[`create${name}`];
+    mutations[`update${name}`].resolve = resolvers[`update${name}`];
+    mutations[`remove${name}`].resolve = resolvers[`remove${name}`];
   }
 
   const primeDocumentNotFoundTypeName = uniqueTypeName('Prime_Document_NotFound');
@@ -112,62 +123,44 @@ export const createExternal = async (connection: Connection) => {
     },
     type: new GraphQLUnionType({
       name: primeDocumentTypeName,
-      types: Array.from(types.values()).map(typeConfig => typeConfig.type),
+      types: Array.from(types.values())
+        .filter(
+          ({ variant, operation }) =>
+            variant === SchemaVariant.Default && operation === PrimeFieldOperation.READ
+        )
+        .map(typeConfig => typeConfig.type),
     }),
+    resolve: documentUnionResolver(resolvers),
   };
-
-  resolvers[primeDocumentTypeName] = documentUnionResolver(resolvers);
 
   const hasMutations = Object.keys(mutations).length;
 
-  const typeDefs = printSchema(
-    new GraphQLSchema({
-      query: new GraphQLObjectType({
-        name: 'Query',
-        fields: queries,
+  const graphqlSchema = new GraphQLSchema({
+    query: new GraphQLObjectType({
+      name: 'Query',
+      fields: queries,
+    }),
+    ...(hasMutations && {
+      mutation: new GraphQLObjectType({
+        name: 'Mutation',
+        fields: mutations,
       }),
-      ...(hasMutations && {
-        mutation: new GraphQLObjectType({
-          name: 'Mutation',
-          fields: mutations,
-        }),
-      }),
-    })
-  );
+    }),
+  });
 
-  // Extract type field resolvers
-  const typeFieldResolvers = Array.from(types.entries()).reduce((acc, [key, value]) => {
-    if (value && value.type) {
-      const fields = value.type.getFields();
-      const typeResolvers = Object.entries(fields).reduce((acc2, [key2, value2]: any) => {
-        if (value2 && value2.resolve) {
-          acc2[key2] = value2.resolve;
-        }
-        return acc2;
-      }, {});
-      if (Object.keys(typeResolvers).length) {
-        acc[key] = typeResolvers;
-      }
+  const resolverMap = createResolversMap(graphqlSchema);
+  const unionResolvers = Object.entries(resolverMap).reduce((acc, item) => {
+    const [key, value] = item as any;
+    if (key && value.__resolveType) {
+      acc[key] = value;
     }
     return acc;
   }, {});
 
   return new GraphQLModule({
     name: 'prime-external',
-    typeDefs,
-    resolvers: {
-      Query: {
-        [primeDocumentTypeName]: queries[primeDocumentTypeName],
-        ...pick(resolvers, Object.keys(queries)),
-      },
-      ...typeFieldResolvers,
-      ...(hasMutations && { Mutation: pick(resolvers, Object.keys(mutations)) }),
-      [primeDocumentTypeName]: {
-        __resolveType({ __typeOf }) {
-          return __typeOf;
-        },
-      },
-    },
+    extraSchemas: [graphqlSchema],
+    resolvers: unionResolvers,
     context() {
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       log('requestId', requestId);

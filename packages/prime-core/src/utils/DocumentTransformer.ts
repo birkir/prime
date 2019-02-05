@@ -94,7 +94,7 @@ export class DocumentTransformer {
         if (options.multiple && Array.isArray(value)) {
           value = (await Promise.all(
             value.map(async item => {
-              const sfields = await this.getFields(item.__inputname);
+              const sfields = await this.getFields({ id: item.__inputname } as any);
               if (sfields) {
                 return await this.transform(sfields, item, schema, io, Types.SLICE);
               }
@@ -102,7 +102,7 @@ export class DocumentTransformer {
             })
           )).filter(item => Object.keys(item).length > 0);
         } else {
-          const sfields = await this.getFields(value.__inputname);
+          const sfields = await this.getFields({ id: value.__inputname } as any);
           value = await this.transform(sfields, value, schema, io, Types.SLICE);
           if (Object.keys(value).length === 0) {
             continue;

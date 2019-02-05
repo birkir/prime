@@ -1,6 +1,7 @@
 import { PrimeFieldContext } from '@primecms/field';
 import { PrimeFieldOperation } from '@primecms/field';
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { SchemaVariant } from '../../../entities/Schema';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { DocumentMetadata } from './DocumentMetadata';
@@ -44,6 +45,11 @@ export const createSchemaType = async ({
       type: DocumentMetadata,
     };
 
+    if (schema.variant === SchemaVariant.Slice) {
+      delete typeFields.id;
+      delete typeFields._meta;
+    }
+
     return typeFields;
   };
 
@@ -56,6 +62,8 @@ export const createSchemaType = async ({
       name,
       fields: () => resolvedTypeFields,
     }),
+    variant: schema.variant,
+    operation: PrimeFieldOperation.READ,
     asyncResolve() {
       return resolveFieldsAsync().then(typeFields => {
         resolvedTypeFields = typeFields;
