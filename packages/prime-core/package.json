@@ -11,7 +11,8 @@
   ],
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["/node_modules/", "/__tests__/utils"]
   },
   "scripts": {
     "clean": "rimraf lib",

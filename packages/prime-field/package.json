@@ -23,10 +23,11 @@
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "yarn testonly --coverage --collectCoverageFrom=\"!src/tests/**/*\" --collectCoverageFrom=./src/**/*.ts"
+    "coverage": "yarn testonly --coverage"
   },
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "coveragePathIgnorePatterns": ["/node_modules/", "/src/tests"]
   },
   "repository": {
     "type": "git",
