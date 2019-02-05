@@ -123,12 +123,15 @@ export const createExternal = async (connection: Connection) => {
     },
     type: new GraphQLUnionType({
       name: primeDocumentTypeName,
-      types: Array.from(types.values())
-        .filter(
-          ({ variant, operation }) =>
-            variant === SchemaVariant.Default && operation === PrimeFieldOperation.READ
-        )
-        .map(typeConfig => typeConfig.type),
+      types: [
+        ...Array.from(types.values())
+          .filter(
+            ({ variant, operation }) =>
+              variant === SchemaVariant.Default && operation === PrimeFieldOperation.READ
+          )
+          .map(typeConfig => typeConfig.type),
+        PrimeDocumentNotFound,
+      ],
     }),
     resolve: documentUnionResolver(resolvers),
   };
