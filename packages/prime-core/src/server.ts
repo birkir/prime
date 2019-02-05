@@ -1,6 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
-import debug from 'debug';
 import express from 'express';
 import http from 'http';
 import { ResolverData } from 'type-graphql';
@@ -12,8 +11,7 @@ import { createModules } from './modules';
 import { createExternal } from './modules/external';
 import { pubSub } from './modules/internal';
 import { fields } from './utils/fields';
-
-const log = debug('prime:server');
+import { log } from './utils/log';
 
 useContainer(Container);
 

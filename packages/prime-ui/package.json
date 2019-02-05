@@ -11,15 +11,15 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn compile",
-    "dev": "react-app-rewired start",
+    "dev": "SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
     "compile": "SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@accounts/client": "0.9.2",
-    "@accounts/client-password": "0.9.2",
-    "@accounts/graphql-client": "0.9.2",
+    "@accounts/client": "0.9.3",
+    "@accounts/client-password": "0.9.3",
+    "@accounts/graphql-client": "0.9.3",
     "@primecms/field": "^0.3.0-alpha.0",
     "@primecms/field-asset": "^0.3.0-alpha.0",
     "@primecms/field-boolean": "^0.3.0-alpha.0",

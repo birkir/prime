@@ -1,8 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import Container from 'typedi';
 import { Connection } from 'typeorm';
+import { log } from '../utils/log';
 import { createAccounts } from './accounts';
-import { createInternal, log } from './internal';
+import { createInternal } from './internal';
 import { isAuthenticated } from './internal/utils/isAuthenticated';
 
 export const createModules = async (connection: Connection) => {

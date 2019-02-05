@@ -20,7 +20,7 @@ import { createSchemaType } from './types/createSchemaType';
 import { DocumentRemove } from './types/DocumentRemove';
 import { resetTypeNames, uniqueTypeName } from './utils/uniqueTypeNames';
 
-export const log = debug('prime:external');
+export const log = debug('prime:graphql');
 
 export const getDefaultLocale = () => 'en';
 
@@ -174,6 +174,11 @@ export const createExternal = async (connection: Connection) => {
       };
       container.set('context', ctx);
       return ctx;
+    },
+    logger: {
+      clientError: log,
+      log,
+      error: log,
     },
   });
 };

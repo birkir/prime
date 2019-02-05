@@ -1,4 +1,9 @@
+import { AccountsModule } from '@accounts/graphql-api';
+import AccountsPassword from '@accounts/password';
+import { UserEmail } from '@accounts/typeorm';
+import GraphQLJSON from 'graphql-type-json';
 import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { UserRepository } from '../repositories/UserRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
@@ -13,6 +18,9 @@ export class UserResolver {
   @InjectRepository(UserRepository)
   private readonly userRepository: UserRepository;
 
+  @InjectRepository(UserEmail)
+  private readonly userEmailRepository: Repository<UserEmail>;
+
   @Query(returns => User)
   public User(
     @Arg('id', type => ID) id: string //
@@ -24,10 +32,41 @@ export class UserResolver {
   public allUsers(
     @Args() args: ConnectionArgs //
   ) {
-    return new ExtendedConnection(args, {
+    const result = new ExtendedConnection(args, {
       repository: this.userRepository,
       sortOptions: [{ sort: 'createdAt', order: 'ASC' }],
     });
+    (result as any).resolveNode = async user => {
+      user.emails = await this.userEmailRepository.find({ user });
+      return user;
+    };
+    return result;
+  }
+
+  @Mutation(returns => Boolean)
+  public async createPrimeUser(
+    @Arg('email') email: string,
+    @Arg('password', { nullable: true }) maybePassword: string,
+    @Arg('profile', type => GraphQLJSON, { nullable: true }) profile: any
+  ) {
+    const password = AccountsModule.injector.get(AccountsPassword);
+
+    const userId = await password.createUser({
+      email,
+      password: maybePassword,
+    });
+
+    if (!maybePassword) {
+      password.sendEnrollmentEmail(email);
+    }
+
+    await password.server.activateUser(userId);
+
+    if (profile) {
+      await password.server.setProfile(userId, profile);
+    }
+
+    return true;
   }
 
   @Mutation(returns => User)
@@ -48,6 +87,12 @@ export class UserResolver {
     const user = await this.userRepository.findOneOrFail(id);
     await this.userRepository.remove(user);
     return true;
+  }
+
+  @FieldResolver(returns => String, { nullable: true })
+  public async email(@Root() user: User): Promise<string> {
+    const email = await this.userEmailRepository.findOneOrFail({ user });
+    return email.address;
   }
 
   @FieldResolver(returns => [String], { nullable: true })

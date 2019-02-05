@@ -1,6 +1,10 @@
+import { AccountsModule } from '@accounts/graphql-api';
+import AccountsPassword from '@accounts/password';
+import AccountsTypeorm, { User, UserEmail } from '@accounts/typeorm';
+import GraphQLJSON from 'graphql-type-json';
 import { defaults } from 'lodash';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
-import { Repository } from 'typeorm';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { getRepository, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Settings } from '../../../entities/Settings';
 import { fields } from '../../../utils/fields';
@@ -16,6 +20,32 @@ export class PrimeResolver {
   @InjectRepository(Settings)
   private readonly settingsRepository: Repository<Settings>;
 
+  @Query(returns => Boolean)
+  public async isOnboarding() {
+    const count = await getRepository(User).count();
+    return count === 0;
+  }
+
+  @Mutation(returns => Boolean)
+  public async onboard(
+    @Arg('email') email: string,
+    @Arg('profile', type => GraphQLJSON) profile: any
+  ) {
+    const count = await getRepository(User).count();
+    if (count === 1) {
+      const { userId } = await getRepository(UserEmail).findOneOrFail({ address: email });
+      const password = AccountsModule.injector.get(AccountsPassword);
+      const db = password.server.options.db as AccountsTypeorm;
+      await password.server.activateUser(userId);
+      await password.server.setProfile(userId, profile);
+      await db.verifyEmail(userId, email);
+      return true;
+    }
+
+    return false;
+  }
+
+  @Authorized()
   @Query(returns => SettingsType)
   public async getSettings() {
     let settings = await this.settingsRepository.findOne({
@@ -36,6 +66,7 @@ export class PrimeResolver {
     return settings.data;
   }
 
+  @Authorized()
   @Mutation(returns => SettingsType)
   public async setSettings(@Arg('input', type => SettingsType) input: SettingsType) {
     const data = await this.getSettings();
@@ -46,16 +77,19 @@ export class PrimeResolver {
     return this.getSettings();
   }
 
+  @Authorized()
   @Query(returns => [PrimeField])
   public allFields(): PrimeField[] {
     return fields;
   }
 
+  @Authorized()
   @Query(returns => [PackageVersion], { nullable: true })
   public system() {
     return getPackagesVersion();
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async updateSystem(
     @Arg('versions', type => [PackageVersionInput]) packagesVersion: PackageVersionInput[]

@@ -14,7 +14,7 @@ import { authChecker } from './utils/authChecker';
 import { noEnumsOrInheritedModels } from './utils/noEnumsOrInheritedModels';
 import { noUndefinedTypeOf } from './utils/noUndefinedTypeOf';
 
-export const log = debug('prime:internal');
+export const log = debug('prime:core');
 
 export const pubSub = new PubSub();
 
@@ -44,9 +44,9 @@ export const createInternal = async (connection: Connection, checkAuth = default
       mapValues(omitBy(schema.resolvers, noEnumsOrInheritedModels), noUndefinedTypeOf),
     configRequired: false,
     logger: {
-      clientError(err) {
-        log('error', err);
-      },
+      clientError: log,
+      log,
+      error: log,
     },
   });
 };

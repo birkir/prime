@@ -12,7 +12,10 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testPathIgnorePatterns": ["/node_modules/", "/__tests__/utils"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/utils"
+    ]
   },
   "scripts": {
     "clean": "rimraf lib",
@@ -26,11 +29,11 @@
     "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
-    "@accounts/database-manager": "^0.9.2",
-    "@accounts/graphql-api": "^0.9.2",
-    "@accounts/password": "^0.9.2",
-    "@accounts/server": "^0.9.2",
-    "@accounts/typeorm": "^0.10.0",
+    "@accounts/database-manager": "0.9.3",
+    "@accounts/graphql-api": "0.9.3",
+    "@accounts/password": "0.9.3",
+    "@accounts/server": "0.9.3",
+    "@accounts/typeorm": "0.9.3",
     "@graphql-modules/core": "0.4.0",
     "@primecms/field": "^0.3.0-alpha.0",
     "@primecms/field-asset": "^0.3.0-alpha.0",

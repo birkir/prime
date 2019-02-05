@@ -13,7 +13,7 @@ interface Options {
 }
 
 export class PrimeFieldAsset extends PrimeField {
-  public static id: string = 'asset';
+  public static type: string = 'asset';
   public static title: string = 'Asset';
   public static description: string = 'Images, videos and other assets';
   public static options: Options = {

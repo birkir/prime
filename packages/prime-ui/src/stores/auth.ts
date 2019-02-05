@@ -1,6 +1,8 @@
+import gql from 'graphql-tag';
 import { flow, types } from 'mobx-state-tree';
 import { accountsClient, client } from '../utils/accounts';
 import { fields } from '../utils/fields';
+import { ContentTypes } from './contentTypes';
 import { User } from './models/User';
 import { GET_USER } from './queries';
 import { Settings } from './settings';
@@ -18,6 +20,7 @@ export const Auth = types
       if (!self.isLoggedIn) {
         return;
       }
+      await ContentTypes.loadAll();
       await Settings.read();
       Settings.fields.forEach((field: any) => {
         if (field.ui && !fields[field.id]) {
@@ -48,7 +51,7 @@ export const Auth = types
     });
 
     const checkLogin = flow(function*() {
-      const tokens = yield accountsClient.getTokens();
+      const tokens = yield accountsClient.refreshSession();
       if (tokens) {
         const { data } = yield client.query({
           query: GET_USER,
@@ -59,6 +62,18 @@ export const Auth = types
           self.isLoggedIn = true;
           self.user = data.getUser;
           yield ensureFields();
+        }
+      }
+      if (!self.isLoggedIn) {
+        const { data } = yield client.query({
+          query: gql`
+            query {
+              isOnboarding
+            }
+          `,
+        });
+        if (data && data.isOnboarding === true) {
+          self.isSetup = true;
         }
       }
     });
@@ -74,22 +89,34 @@ export const Auth = types
       email: string;
       password: string;
     }) {
-      const res: any = yield fetch(`${Settings.coreUrl}/auth/register`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+      yield accountsClient.transport.createUser({
+        email,
+        password,
+      });
+
+      const { data } = yield client.mutate({
+        mutation: gql`
+          mutation onboard($email: String!, $profile: JSON!) {
+            onboard(email: $email, profile: $profile)
+          }
+        `,
+        variables: {
+          email,
+          profile: {
+            firstname,
+            lastname,
+          },
         },
-        body: JSON.stringify({ firstname, lastname, email, password }),
-      }).then(r => r.json());
+      });
 
-      self.isSetup = false;
-      self.isLoggedIn = Boolean(res.user);
-      self.user = res.user;
+      if (data && data.onboard) {
+        yield login(email, password);
+        yield checkLogin();
+        self.isSetup = false;
+        return true;
+      }
 
-      yield ensureFields();
-
-      return res;
+      return false;
     });
 
     return {

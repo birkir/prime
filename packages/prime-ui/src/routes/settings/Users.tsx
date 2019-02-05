@@ -7,14 +7,15 @@ import {
   Input,
   message,
   Popconfirm,
-  Select,
+  Switch,
   Table,
 } from 'antd';
 import gql from 'graphql-tag';
-import { get, omit, startCase } from 'lodash';
+import { get } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Auth } from '../../stores/auth';
+import { accountsClient, accountsGraphQL, accountsPassword } from '../../utils/accounts';
 import { client } from '../../utils/client';
 import { stringToColor } from '../../utils/stringToColor';
 
@@ -78,45 +79,25 @@ export const Users = Form.create()(({ form }) => {
     e.preventDefault();
     form.validateFieldsAndScroll(async (err, values) => {
       if (!err) {
-        const data = form.getFieldsValue();
-        const res = await client.mutate({
+        const { data } = await client.mutate({
           mutation: gql`
-            mutation createUser($input: CreateUserInput) {
-              createUser(input: $input) {
-                id
-                emails {
-                  address
-                  verified
-                }
-                profile
-                username
-                # firstname
-                # lastname
-                # roles
-                # lastLogin
-                # createdAt
-                # updatedAt
-              }
+            mutation createUser($email: String!, $password: String, $profile: JSON) {
+              createPrimeUser(email: $email, password: $password, profile: $profile)
             }
           `,
           variables: {
-            input: {
-              email: data.email,
+            email: values.email,
+            password: values.enrollment ? values.password : undefined,
+            profile: {
+              firstname: values.firstname || '',
+              lastname: values.lastname || '',
             },
           },
         });
 
-        if (res.errors) {
-          const errorMessage = get(
-            res.errors,
-            '0.extensions.exception.errors.0.message',
-            'Unknown error'
-          );
-          message.error(errorMessage);
-        } else {
-          refetchTable();
+        if (data && data.createPrimeUser) {
           hideDialog();
-          message.info('User has been created');
+          refetchTable();
         }
       }
     });
@@ -155,14 +136,14 @@ export const Users = Form.create()(({ form }) => {
       title: 'Username',
       dataIndex: 'node.username',
     },
-    {
-      key: 'roles',
-      title: 'Roles',
-      render(text: string, record: any) {
-        return 'N/A';
-        // return record.roles.map((role: string) => startCase(role)).join(', ');
-      },
-    },
+    // {
+    //   key: 'roles',
+    //   title: 'Roles',
+    //   render(text: string, record: any) {
+    //     return 'N/A';
+    //     return record.roles.map((role: string) => startCase(role)).join(', ');
+    //   },
+    // },
     {
       key: 'actions',
       align: 'right' as any,
@@ -187,6 +168,8 @@ export const Users = Form.create()(({ form }) => {
       },
     },
   ];
+
+  const enrollment = form.getFieldValue('enrollment');
 
   return (
     <>
@@ -257,11 +240,17 @@ export const Users = Form.create()(({ form }) => {
               ],
             })(<Input placeholder="Email address" size="large" />)}
           </Form.Item>
-          <Form.Item label="Password" required>
+          <Form.Item label="Enrollment">
+            {form.getFieldDecorator('enrollment', {
+              initialValue: false,
+              valuePropName: 'checked',
+            })(<Switch />)}
+          </Form.Item>
+          <Form.Item label="Password" required={!enrollment}>
             {form.getFieldDecorator('password', {
               rules: [
                 {
-                  required: true,
+                  required: !enrollment,
                   message: 'Please enter a password',
                 },
                 {
@@ -273,23 +262,36 @@ export const Users = Form.create()(({ form }) => {
                 },
               ],
             })(
-              <Input type="password" size="large" placeholder="Password" onBlur={onPasswordBlur} />
+              <Input
+                disabled={enrollment}
+                type="password"
+                size="large"
+                placeholder="Password"
+                onBlur={onPasswordBlur}
+              />
             )}
           </Form.Item>
-          <Form.Item label="Confirm password" required>
+          <Form.Item label="Confirm password" required={!enrollment}>
             {form.getFieldDecorator('confirm', {
               rules: [
                 {
-                  required: true,
+                  required: !enrollment,
                   message: 'Please confirm the password',
                 },
                 {
                   validator: compareToFirstPassword,
                 },
               ],
-            })(<Input type="password" placeholder="Confirm password" size="large" />)}
+            })(
+              <Input
+                disabled={enrollment}
+                type="password"
+                placeholder="Confirm password"
+                size="large"
+              />
+            )}
           </Form.Item>
-          <Form.Item label="Roles">
+          {/* <Form.Item label="Roles">
             {form.getFieldDecorator('role')(
               <Select size="large">
                 <Select.Option key="admin">Admin</Select.Option>
@@ -298,7 +300,7 @@ export const Users = Form.create()(({ form }) => {
                 <Select.Option key="editor">Editor</Select.Option>
               </Select>
             )}
-          </Form.Item>
+          </Form.Item> */}
           <div className="prime__drawer__bottom">
             <Button style={{ marginRight: 8 }} onClick={hideDialog}>
               Cancel

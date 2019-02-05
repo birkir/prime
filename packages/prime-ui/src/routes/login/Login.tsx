@@ -1,7 +1,7 @@
 import { Button, Form, Icon, Input, message } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Auth } from '../../stores/auth';
 import { ContentTypes } from '../../stores/contentTypes';
 
@@ -11,7 +11,7 @@ class LoginBase extends React.Component<FormComponentProps> {
     const values: any = this.props.form.getFieldsValue();
     try {
       await Auth.login(values.email, values.password);
-      await ContentTypes.loadAll();
+      await Auth.checkLogin();
       (this.props as any).history.push('/');
     } catch (err) {
       message.error('Invalid email or password');
@@ -20,6 +20,10 @@ class LoginBase extends React.Component<FormComponentProps> {
   };
 
   public render() {
+    if (Auth.isSetup) {
+      return <Redirect to="/setup" />;
+    }
+
     const { getFieldDecorator } = this.props.form;
     return (
       <div
