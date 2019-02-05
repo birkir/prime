@@ -34,7 +34,7 @@ export class PrimeField {
     | Promise<GraphQLFieldConfig<TSource, TContext> | null>
     | GraphQLFieldConfig<TSource, TContext>
     | null {
-    return null;
+    return Promise.resolve(null);
   }
 
   public inputType(

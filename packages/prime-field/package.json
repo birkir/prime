@@ -23,7 +23,7 @@
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "yarn testonly --coverage"
+    "coverage": "yarn testonly --coverage --collectCoverageFrom=\"!src/tests/**/*\" --collectCoverageFrom=./src/**/*.ts"
   },
   "jest": {
     "preset": "ts-jest"
