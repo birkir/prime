@@ -3,6 +3,7 @@ import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
 import React from 'react';
 import { Auth } from '../../stores/auth';
+import { accountsPassword } from '../../utils/accounts';
 import { client } from '../../utils/client';
 
 type IProps = FormComponentProps & {
@@ -19,12 +20,13 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
 
   const onSubmit = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
+
     form.validateFieldsAndScroll(async (err, values) => {
       if (!err) {
         const res = await client.mutate({
           mutation: gql`
-            mutation updatePassword($oldpassword: String!, $newpassword: String!) {
-              updatePassword(oldpassword: $oldpassword, newpassword: $newpassword)
+            mutation changePassword($oldpassword: String!, $newpassword: String!) {
+              changePassword(oldPassword: $oldpassword, newPassword: $newpassword)
             }
           `,
           variables: {
@@ -37,7 +39,6 @@ export const ChangePassword = Form.create()(({ form, forwardRef, close, visible 
           message.error(errorMessage);
         } else {
           message.info('Password has been changed');
-          // Auth.user!.updateLastPasswordChange();
           close();
         }
       }

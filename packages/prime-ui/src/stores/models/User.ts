@@ -18,6 +18,10 @@ export const User = types
     emails: types.array(UserEmail),
     profile: types.optional(UserProfile, {}),
   })
+  .preProcessSnapshot(snapshot => ({
+    ...snapshot,
+    profile: (snapshot && snapshot.profile) || {},
+  }))
   .views(self => ({
     get gravatarUrl() {
       const hash = (window as any).md5(self.emails[0]);

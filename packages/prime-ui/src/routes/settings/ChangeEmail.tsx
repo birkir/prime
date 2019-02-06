@@ -3,6 +3,7 @@ import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
 import React from 'react';
 import { Auth } from '../../stores/auth';
+import { accountsClient, accountsGraphQL } from '../../utils/accounts';
 import { client } from '../../utils/client';
 
 type IProps = FormComponentProps & {
@@ -20,20 +21,24 @@ export const ChangeEmail = Form.create()(({ form, forwardRef, close, visible }: 
       if (!err) {
         const res = await client.mutate({
           mutation: gql`
-            mutation updateEmail($oldpassword: String!, $email: String!) {
-              updateEmail(oldpassword: $oldpassword, email: $email)
+            mutation changeEmail($password: String!, $email: String!) {
+              changeEmail(password: $password, email: $email)
             }
           `,
           variables: {
-            oldpassword: values.oldpassword,
+            password: values.oldpassword,
             email: values.email,
           },
         });
         if (res.errors) {
-          const errorMessage = res.errors[0].message || 'Failed to change email';
-          message.error(errorMessage);
+          if (res.errors.length && res.errors[0].message.match(/duplicate key/)) {
+            message.error('This email address is already in use');
+          } else {
+            const errorMessage = res.errors[0].message || 'Failed to change email';
+            message.error(errorMessage);
+          }
         } else {
-          message.info('Email has been changed');
+          message.info('Verification email has been sent');
           Auth.user!.updateEmail(values.email);
           close();
         }
@@ -51,7 +56,7 @@ export const ChangeEmail = Form.create()(({ form, forwardRef, close, visible }: 
               message: 'Please enter old password',
             },
           ],
-        })(<Input type="password" size="large" placeholder="Old Password" />)}
+        })(<Input type="password" size="large" placeholder="Password" />)}
       </Form.Item>
       <Form.Item label="New Email Address" required>
         {form.getFieldDecorator('email', {
@@ -65,7 +70,7 @@ export const ChangeEmail = Form.create()(({ form, forwardRef, close, visible }: 
               message: 'Please enter valid email address',
             },
           ],
-        })(<Input autoComplete="off" type="email" size="large" />)}
+        })(<Input placeholder="New email address" autoComplete="off" type="email" size="large" />)}
       </Form.Item>
       <input type="submit" hidden />
     </Form>

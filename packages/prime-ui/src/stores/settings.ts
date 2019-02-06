@@ -68,7 +68,7 @@ export const Settings = types
     packages: types.array(PackageVersion),
     env: types.frozen(),
     fields: types.frozen(),
-    accessType: types.enumeration('AccessType', ['PUBLIC', 'PRIVATE']),
+    accessType: types.maybeNull(types.enumeration('AccessType', ['PUBLIC', 'PRIVATE'])),
     previews: types.array(Preview),
     locales: types.array(Locale),
   })

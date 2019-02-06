@@ -2,9 +2,10 @@ import { AccountsModule } from '@accounts/graphql-api';
 import AccountsPassword from '@accounts/password';
 import { UserEmail } from '@accounts/typeorm';
 import GraphQLJSON from 'graphql-type-json';
-import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Context } from '../../../interfaces/Context';
 import { UserRepository } from '../repositories/UserRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { UpdateUserInput } from '../types/UpdateUserInput';
@@ -67,6 +68,27 @@ export class UserResolver {
     }
 
     return true;
+  }
+
+  @Mutation(returns => Boolean)
+  public async changeEmail(
+    @Arg('password') password: string,
+    @Arg('email') email: string,
+    @Ctx() context: Context
+  ): Promise<boolean> {
+    const accounts = AccountsModule.injector.get(AccountsPassword);
+    const user = await accounts.authenticate({
+      user: {
+        id: context.user.id,
+      },
+      password,
+    });
+    if (user) {
+      await accounts.addEmail(user.id, email, false);
+      await accounts.sendVerificationEmail(email);
+      return true;
+    }
+    return false;
   }
 
   @Mutation(returns => User)
