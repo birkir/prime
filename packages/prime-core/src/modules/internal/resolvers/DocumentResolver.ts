@@ -192,16 +192,17 @@ export class DocumentResolver {
     return true;
   }
 
+  @Authorized()
   @Mutation(returns => Document)
   public async publishDocument(
     @Arg('id', type => ID) id: string,
     @Ctx() context: Context //
   ) {
     const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
-    await this.documentRepository.publish(doc, context.user.id);
+    const result = this.documentRepository.publish(doc, context.user.id);
     // @todo run webhook
     // @todo update algolia
-    return doc;
+    return result;
   }
 
   @Mutation(returns => Document)

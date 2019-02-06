@@ -1,6 +1,6 @@
 import { AccountsModule } from '@accounts/graphql-api';
 import AccountsPassword from '@accounts/password';
-import AccountsTypeorm, { User, UserEmail } from '@accounts/typeorm';
+import AccountsTypeorm, { User } from '@accounts/typeorm';
 import GraphQLJSON from 'graphql-type-json';
 import { defaults } from 'lodash';
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
@@ -29,19 +29,20 @@ export class PrimeResolver {
   @Mutation(returns => Boolean)
   public async onboard(
     @Arg('email') email: string,
-    @Arg('profile', type => GraphQLJSON) profile: any
+    @Arg('password') password: string,
+    @Arg('profile', type => GraphQLJSON, { nullable: true }) profile: any
   ) {
-    const count = await getRepository(User).count();
-    if (count === 1) {
-      const { userId } = await getRepository(UserEmail).findOneOrFail({ address: email });
-      const password = AccountsModule.injector.get(AccountsPassword);
-      const db = password.server.options.db as AccountsTypeorm;
-      await password.server.activateUser(userId);
-      await password.server.setProfile(userId, profile);
+    if (await this.isOnboarding()) {
+      const accounts = AccountsModule.injector.get(AccountsPassword);
+      const db = accounts.server.options.db as AccountsTypeorm;
+      const userId = await accounts.createUser({ email, password });
+      await accounts.server.activateUser(userId);
+      if (profile) {
+        await accounts.server.setProfile(userId, profile);
+      }
       await db.verifyEmail(userId, email);
       return true;
     }
-
     return false;
   }
 

@@ -15,6 +15,10 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/__tests__/utils"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/utils"
     ]
   },
   "scripts": {
@@ -75,6 +79,7 @@
     "@types/graphql": "14.0.5",
     "@types/lodash": "4.14.120",
     "@types/rc": "0.0.1",
+    "sql.js": "0.5.0",
     "ts-node": "7.0.1"
   },
   "publishConfig": {

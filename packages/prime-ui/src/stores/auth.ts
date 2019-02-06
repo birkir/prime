@@ -89,15 +89,10 @@ export const Auth = types
       email: string;
       password: string;
     }) {
-      yield accountsClient.transport.createUser({
-        email,
-        password,
-      });
-
       const { data } = yield client.mutate({
         mutation: gql`
-          mutation onboard($email: String!, $profile: JSON!) {
-            onboard(email: $email, profile: $profile)
+          mutation onboard($email: String!, $password: String!, $profile: JSON!) {
+            onboard(email: $email, password: $password, profile: $profile)
           }
         `,
         variables: {

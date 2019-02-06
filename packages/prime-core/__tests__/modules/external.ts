@@ -1,12 +1,10 @@
-import 'reflect-metadata';
-
 import { User } from '@accounts/typeorm';
 import { GraphQLModule } from '@graphql-modules/core';
 import { gql } from 'apollo-server-core';
 import { execute } from 'graphql';
+import 'reflect-metadata';
 import Container from 'typedi';
 import { Connection, getRepository, useContainer } from 'typeorm';
-
 import { createModules } from '../../src/modules';
 import { createExternal } from '../../src/modules/external';
 import { connect } from '../../src/utils/connect';
@@ -18,15 +16,19 @@ describe('InternalModule', () => {
   let connection: Connection;
   let external: GraphQLModule;
   let internal: GraphQLModule;
-  let user: User;
+  let user: any;
   const context: any = { req: { headers: {} } };
 
-  const query = async (document, which = external, ctx = context) =>
-    execute({
+  const query = async (document, which = external, ctx = context) => {
+    const contextValue = await which.context(ctx);
+    contextValue.req = context.req;
+    contextValue.user = user;
+    return execute({
       schema: which.schema,
-      contextValue: await which.context(ctx),
+      contextValue,
       document,
     });
+  };
 
   beforeAll(async () => {
     connection = await connect(process.env.TEST_DATABASE_URL);
@@ -36,8 +38,19 @@ describe('InternalModule', () => {
 
     internal = await createModules(connection);
     external = await createExternal(connection);
-    user = getRepository(User).create({ username: 'test ' });
-    context.user = user;
+
+    const onboard = await query(
+      gql`
+        mutation {
+          onboard(email: "foo@gmail.com", password: "foobar")
+        }
+      `,
+      internal
+    );
+    expect(onboard!.data!.onboard).toBe(true);
+
+    // get user
+    user = await getRepository(User).findOne();
   });
 
   afterAll(() => connection.close());
@@ -68,7 +81,7 @@ describe('InternalModule', () => {
 
   describe('One Schema', () => {
     beforeAll(async () => {
-      const fields = [{ name: 'name' }, { name: 'description' }];
+      const fields = [{ name: 'name' }, { name: 'bio' }];
       await query(
         gql`
           mutation {
@@ -99,6 +112,66 @@ describe('InternalModule', () => {
         `
       );
       expect(res!.data!.__schema!.types.find(n => n.name === 'Author')).toEqual({ name: 'Author' });
+    });
+
+    it('should be able to create author', async () => {
+      const res = await query(
+        gql`
+          mutation {
+            createAuthor(input: { name: "John Doe", bio: "Anonymous person" }) {
+              id
+              _meta {
+                id
+              }
+            }
+          }
+        `
+      );
+
+      const {
+        id,
+        _meta: { id: uuid },
+      } = res!.data!.createAuthor as any;
+
+      expect(id).toBeTruthy();
+
+      const res2 = await query(
+        gql`
+          query {
+            Document(id: "${id}") {
+              id
+              name
+              bio
+            }
+          }
+        `
+      );
+      expect(res2!.data).toEqual({});
+
+      const publish = await query(
+        gql`
+          mutation {
+            publishDocument(id: "${uuid}") {
+              id
+            }
+          }
+      `,
+        internal
+      );
+      expect(publish).toBeTruthy();
+
+      const res3 = await query(
+        gql`
+          query {
+            Author(id: "${id}") {
+              id
+              name
+              bio
+            }
+          }
+        `
+      );
+      expect(res3!.data!.Author).toEqual({ id, name: 'John Doe', bio: 'Anonymous person' });
     });
   });
 });

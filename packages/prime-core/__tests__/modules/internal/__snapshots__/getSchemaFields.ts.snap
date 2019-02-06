@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getSchemaFields should match snapshot 1`] = `
+Array [
+  Object {
+    "fields": Array [
+      Object {
+        "fields": Array [
+          SchemaField {
+            "id": 200,
+            "name": "f2",
+            "parentFieldId": 100,
+            "schemaId": 123,
+          },
+          Object {
+            "id": 200,
+            "name": "f2",
+            "options": Object {},
+            "parentFieldId": 100,
+            "position": 1,
+            "schemaId": 123,
+          },
+        ],
+        "group": "Main",
+        "id": 100,
+        "name": "f1",
+        "options": Object {},
+        "position": 0,
+        "schemaId": 123,
+      },
+    ],
+    "title": "Main",
+  },
+  Object {
+    "fields": Array [
+      Object {
+        "group": "Other",
+        "id": 300,
+        "name": "f3",
+        "options": Object {},
+        "position": 1,
+      },
+    ],
+    "title": "Other",
+  },
+]
+`;
