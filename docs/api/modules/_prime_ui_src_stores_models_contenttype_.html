@@ -92,7 +92,7 @@
 					<div class="tsd-signature tsd-kind-icon">Content<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;ContentType&#x27;, {id: types.identifier,name: types.string,title: types.string,description: types.maybeNull(types.string),groups: types.array(types.string),settings: types.frozen&lt;JSONObject&gt;(),variant: types.optional(SchemaVariant, &#x27;Default&#x27;),documentCount: types.maybeNull(types.number),fields: types.optional(Schema, { groups: [{ title: &#x27;Main&#x27;, fields: [] }] }),}).preProcessSnapshot(snapshot &#x3D;&gt; {const groupName &#x3D; snapshot.variant &#x3D;&#x3D;&#x3D; &#x27;Template&#x27; ? snapshot.title : &#x27;Main&#x27;;const schema: any &#x3D;snapshot.fields &amp;&amp; Array.isArray(snapshot.fields)? { groups: snapshot.fields }: snapshot.fields;return {...snapshot,fields: schema,groups: Array.isArray(snapshot.groups) ? snapshot.groups : [groupName],};}).actions(self &#x3D;&gt; {const loadSchema &#x3D; flow(function*() {const { data } &#x3D; yield client.query({query: LOAD_SCHEMA,variables: { contentTypeId: self.id },fetchPolicy: &#x27;network-only&#x27;,});if (data.getContentTypeSchema) {if (data.getContentTypeSchema.length &gt; 0) {self.fields &#x3D; Schema.create({ groups: data.getContentTypeSchema });}}});const saveSchema &#x3D; flow(function*() {const result &#x3D; yield client.mutate({mutation: SAVE_SCHEMA,variables: {id: self.id,input: {fields: omitSchema(self.fields.groups, self.id).filter((group: any) &#x3D;&gt; ([].concat(self.groups as any) as any).indexOf(group.title) &gt;&#x3D; 0),},},});Settings.reloadPlayground();if (self.variant !&#x3D;&#x3D; &#x27;Default&#x27;) {ContentTypes.loadAll();}return get(result, &#x27;data.updateSchema&#x27;);});const replace &#x3D; (data: any) &#x3D;&gt; {if (data) {applySnapshot(self, data);}};const update &#x3D; flow(function*(input: any) {const { data } &#x3D; yield client.mutate({mutation: UPDATE_CONTENT_TYPE,variables: {id: self.id,input,},});if (data.updateSchema) {replace(data.updateSchema);}Settings.reloadPlayground();});const remove &#x3D; flow(function*() {const { data } &#x3D; yield client.mutate({mutation: REMOVE_CONTENT_TYPE,variables: {id: self.id,},});if (data.removeSchema) {ContentTypes.removeById(self.id);}Settings.reloadPlayground();});const addGroup &#x3D; (title: any) &#x3D;&gt; {if (self.groups.indexOf(title) &#x3D;&#x3D;&#x3D; -1) {self.groups.push(title);}self.fields.addGroup(title);};const removeGroup &#x3D; (title: any) &#x3D;&gt; {const groupIndex &#x3D; self.groups.indexOf(title);if (groupIndex &gt;&#x3D; 0) {self.groups.splice(groupIndex, 1);}self.fields.removeGroup(title);};return {replace,remove,update,addGroup,removeGroup,loadSchema,saveSchema,};})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/ContentType.ts#L24">prime-ui/src/stores/models/ContentType.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/ContentType.ts#L24">prime-ui/src/stores/models/ContentType.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -102,7 +102,7 @@
 					<div class="tsd-signature tsd-kind-icon">Schema<wbr>Variant<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.enumeration(&#x27;SchemaVariant&#x27;, [&#x27;Default&#x27;, &#x27;Template&#x27;, &#x27;Slice&#x27;])</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/ContentType.ts#L22">prime-ui/src/stores/models/ContentType.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/ContentType.ts#L22">prime-ui/src/stores/models/ContentType.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -119,7 +119,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/ContentType.ts#L11">prime-ui/src/stores/models/ContentType.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/ContentType.ts#L11">prime-ui/src/stores/models/ContentType.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

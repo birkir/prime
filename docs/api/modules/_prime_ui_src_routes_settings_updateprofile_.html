@@ -91,7 +91,7 @@
 					<div class="tsd-signature tsd-kind-icon">IUpdate<wbr>Profile<wbr>Props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">FormComponentProps</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/routes/settings/UpdateProfile.tsx#L8">prime-ui/src/routes/settings/UpdateProfile.tsx:8</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/routes/settings/UpdateProfile.tsx#L8">prime-ui/src/routes/settings/UpdateProfile.tsx:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -104,7 +104,7 @@
 					<div class="tsd-signature tsd-kind-icon">Update<wbr>Profile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;Form.create()(({ form, user }: IUpdateProfileProps) &#x3D;&gt; {const onSubmit &#x3D; (e: React.FormEvent&lt;HTMLElement&gt;) &#x3D;&gt; {e.preventDefault();form.validateFieldsAndScroll(async (err, values) &#x3D;&gt; {if (!err) {client.mutate({mutation: gql&#x60;mutation updateUser($id: ID!, $input: UpdateUserInput!) {updateUser(id: $id, input: $input) {idprofile}}&#x60;,variables: {id: Auth.user!.id,input: {firstname: values.firstname,lastname: values.lastname,displayName: values.displayName,},},});user.updateProfile(values);message.info(&#x27;Profile updated&#x27;);}});return null;};const displayPlaceHolder &#x3D; &#x60;${String(user.firstname || &#x27;&#x27;).split(&#x27; &#x27;)[0]} ${String(user.lastname || &#x27;&#x27;).substr(0, 1)}.&#x60;;return (&lt;Form onSubmit&#x3D;{onSubmit}&gt;&lt;div style&#x3D;{{ display: &#x27;flex&#x27; }}&gt;&lt;div style&#x3D;{{ maxWidth: 448, minWidth: 224 }}&gt;&lt;Form.Item label&#x3D;&quot;First name&quot; colon&#x3D;{false} style&#x3D;{{ marginBottom: 0 }}&gt;{form.getFieldDecorator(&#x27;firstname&#x27;, {initialValue: user.profile.firstname,})(&lt;Input /&gt;)}&lt;/Form.Item&gt;&lt;Form.Item label&#x3D;&quot;Last name&quot; colon&#x3D;{false} style&#x3D;{{ marginBottom: 0 }}&gt;{form.getFieldDecorator(&#x27;lastname&#x27;, {initialValue: user.profile.lastname,})(&lt;Input /&gt;)}&lt;/Form.Item&gt;&lt;Form.Item label&#x3D;&quot;Display name&quot; colon&#x3D;{false} style&#x3D;{{ marginBottom: 12 }}&gt;{form.getFieldDecorator(&#x27;displayName&#x27;, {initialValue: user.profile.displayName,})(&lt;Input /&gt;)}&lt;/Form.Item&gt;&lt;Button htmlType&#x3D;&quot;submit&quot;&gt;Update profile&lt;/Button&gt;&lt;/div&gt;&lt;div style&#x3D;{{ flex: 1, paddingLeft: 104 }}&gt;&lt;Form.Item label&#x3D;&quot;Avatar&quot; colon&#x3D;{false}&gt;&lt;Avatar size&#x3D;{128} src&#x3D;{user.avatarUrl || user.gravatarUrl} /&gt;&lt;/Form.Item&gt;&lt;/div&gt;&lt;/div&gt;&lt;/Form&gt;);})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/routes/settings/UpdateProfile.tsx#L10">prime-ui/src/routes/settings/UpdateProfile.tsx:10</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/routes/settings/UpdateProfile.tsx#L10">prime-ui/src/routes/settings/UpdateProfile.tsx:10</a></li>
 						</ul>
 					</aside>
 				</section>

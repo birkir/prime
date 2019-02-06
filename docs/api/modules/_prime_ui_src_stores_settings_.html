@@ -94,7 +94,7 @@
 					<div class="tsd-signature tsd-kind-icon">Locale<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;Locale&#x27;, {id: types.string,name: types.string,flag: types.string,master: types.optional(types.boolean, false),}).actions(self &#x3D;&gt; ({update({ id, name, flag }: any) {self.id &#x3D; id;self.name &#x3D; name;self.flag &#x3D; flag;},setMaster(master: boolean) {self.master &#x3D; master;},}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L38">prime-ui/src/stores/settings.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L38">prime-ui/src/stores/settings.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -104,7 +104,7 @@
 					<div class="tsd-signature tsd-kind-icon">Package<wbr>Version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;PackageVersion&#x27;, {name: types.string,currentVersion: types.maybeNull(types.string),latestVersion: types.maybeNull(types.string),})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L58">prime-ui/src/stores/settings.ts:58</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L58">prime-ui/src/stores/settings.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -114,7 +114,7 @@
 					<div class="tsd-signature tsd-kind-icon">Preview<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;Preview&#x27;, {name: types.string,hostname: types.string,pathname: types.optional(types.string, &#x27;&#x27;),}).actions(self &#x3D;&gt; ({update({ name, hostname, pathname }: any) {self.name &#x3D; name;self.hostname &#x3D; hostname;self.pathname &#x3D; String(pathname || &#x27;&#x27;);},}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L24">prime-ui/src/stores/settings.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L24">prime-ui/src/stores/settings.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -124,7 +124,7 @@
 					<div class="tsd-signature tsd-kind-icon">Settings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;Settings&#x27;, {isProd,coreUrl,packages: types.array(PackageVersion),env: types.frozen(),fields: types.frozen(),accessType: types.enumeration(&#x27;AccessType&#x27;, [&#x27;PUBLIC&#x27;, &#x27;PRIVATE&#x27;]),previews: types.array(Preview),locales: types.array(Locale),}).views(self &#x3D;&gt; ({get masterLocale() {return self.locales.find(({ master }) &#x3D;&gt; master) || defaultLocale;},})).actions(self &#x3D;&gt; {const read &#x3D; flow(function*() {const { data } &#x3D; yield client.query({query: gql&#x60;query {getSettings {accessTypepreviews {namehostnamepathname}locales {idnameflagmaster}}allFields {typetitledescriptionoptionsui}}&#x60;,});if (data.getSettings) {self.accessType &#x3D; data.getSettings.accessType;self.previews &#x3D; data.getSettings.previews;self.locales &#x3D; data.getSettings.locales;self.env &#x3D; data.getSettings.env;}if (data.allFields) {self.fields &#x3D; data.allFields;}});const readVersion &#x3D; flow(function*() {const { data } &#x3D; yield client.query({query: gql&#x60;query {system {namecurrentVersionlatestVersion}}&#x60;,});if (data) {self.packages.replace(data.system);}});const reloadPlayground &#x3D; () &#x3D;&gt; {const node &#x3D; document.getElementById(&#x27;playground&#x27;);if (node) {const iframe &#x3D; node as HTMLIFrameElement;try {const doc &#x3D;iframe.contentDocument || (iframe.contentWindow &amp;&amp; iframe.contentWindow.document);if (doc) {const reloadButton &#x3D; doc.querySelector(&#x27;[title&#x3D;&quot;Reload Schema&quot;]&#x27;);if (reloadButton) {(reloadButton as HTMLButtonElement).click();}}} catch (err) {const parentNode &#x3D; iframe.parentNode as HTMLDivElement;parentNode.setAttribute(&#x27;style&#x27;,&#x27;opacity:0; pointer-events: none; position: fixed; top: 0&#x27;);parentNode.hidden &#x3D; false;iframe.src &#x3D; iframe.src.replace(/\?.*/g, &#x27;&#x27;) + &#x27;?&#x27; + Math.random();setTimeout(() &#x3D;&gt; {parentNode.hidden &#x3D; true;parentNode.setAttribute(&#x27;style&#x27;, &#x27;&#x27;);}, 100);}}};const setAccessType &#x3D; (accessType: any) &#x3D;&gt; {self.accessType &#x3D; accessType;};const setMasterLocale &#x3D; (node: any) &#x3D;&gt; {self.locales.forEach(locale &#x3D;&gt; locale.setMaster(false));node.setMaster(true);};const save &#x3D; flow(function*() {const { data } &#x3D; yield client.mutate({mutation: gql&#x60;mutation setSettings($input: SettingsInput!) {setSettings(input: $input) {accessTypepreviews {namehostnamepathname}locales {idnameflagmaster}}}&#x60;,variables: {input: {accessType: self.accessType,previews: self.previews.map(({ name, hostname, pathname }) &#x3D;&gt; ({name,hostname,pathname,})),locales: self.locales.map(({ id, name, flag, master }) &#x3D;&gt; ({ id, name, flag, master })),},},});if (data.setSettings) {self.accessType &#x3D; data.setSettings.accessType;self.previews &#x3D; data.setSettings.previews;self.locales &#x3D; data.setSettings.locales;self.env &#x3D; data.setSettings.env;}Settings.reloadPlayground();});const updateSystem &#x3D; flow(function*(packages: string[]) {const versions &#x3D; packages.map(pkg &#x3D;&gt; {const fromList &#x3D; self.packages.find(p &#x3D;&gt; p.name &#x3D;&#x3D;&#x3D; pkg);return {name: pkg,version: fromList &amp;&amp; fromList.latestVersion,};});const res &#x3D; yield client.mutate({mutation: gql&#x60;mutation SystemUpdate($versions: [PackageVersionInput!]!) {updateSystem(versions: $versions)}&#x60;,variables: {versions,},});return res;});const removePreview &#x3D; (node: any) &#x3D;&gt; {destroy(node);};const addPreview &#x3D; (values: any) &#x3D;&gt; {self.previews.push(Preview.create(values));};const removeLocale &#x3D; (node: any) &#x3D;&gt; {destroy(node);};const addLocale &#x3D; (values: any) &#x3D;&gt; {self.locales.push(Locale.create(values));};return {read,readVersion,save,updateSystem,reloadPlayground,setAccessType,setMasterLocale,addPreview,addLocale,removePreview,removeLocale,};}).create({accessType: &#x27;PUBLIC&#x27;,previews: [],locales: [],fields,env,})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L64">prime-ui/src/stores/settings.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L64">prime-ui/src/stores/settings.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -134,7 +134,7 @@
 					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;get(window, &#x27;prime.config&#x27;, &#x27;&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L9">prime-ui/src/stores/settings.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L9">prime-ui/src/stores/settings.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -144,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">core<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;isProd ? &#x27;/&#x27; : &#x27;http://localhost:4000&#x27;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L10">prime-ui/src/stores/settings.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L10">prime-ui/src/stores/settings.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -154,7 +154,7 @@
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Locale<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;Locale.create({ id: &#x27;en&#x27;, name: &#x27;English&#x27;, flag: &#x27;en&#x27;, master: true })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L56">prime-ui/src/stores/settings.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L56">prime-ui/src/stores/settings.ts:56</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -164,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">env<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L12">prime-ui/src/stores/settings.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L12">prime-ui/src/stores/settings.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -174,7 +174,7 @@
 					<div class="tsd-signature tsd-kind-icon">fields<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L11">prime-ui/src/stores/settings.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L11">prime-ui/src/stores/settings.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -184,7 +184,7 @@
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Prod<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;process.env.NODE_ENV &#x3D;&#x3D;&#x3D; &#x27;production&#x27;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/settings.ts#L7">prime-ui/src/stores/settings.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/settings.ts#L7">prime-ui/src/stores/settings.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>

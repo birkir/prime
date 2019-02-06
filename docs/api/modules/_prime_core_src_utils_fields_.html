@@ -86,7 +86,7 @@
 					<div class="tsd-signature tsd-kind-icon">fields<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;(config.fields || []).map((moduleName: string) &#x3D;&gt; {try {const field &#x3D; require(moduleName).default;field.packageName &#x3D; moduleName;const pkgDir &#x3D; moduleName.replace(/\/*(src\/*?)?$/, &#x27;&#x27;);let pkgJson;try {const dev &#x3D; path.resolve(path.join(&#x27;node_modules&#x27;, pkgDir, &#x27;package.json&#x27;));const devFile &#x3D; fs.realpathSync(dev);field.mode &#x3D; &#x27;development&#x27;;field.dir &#x3D; devFile.replace(/\/package.json$/, &#x27;&#x27;);pkgJson &#x3D; require(devFile);} catch (err) {try {const dist &#x3D; path.resolve(path.join(&#x27;..&#x27;, &#x27;..&#x27;, &#x27;node_modules&#x27;, pkgDir, &#x27;package.json&#x27;));const distFile &#x3D; fs.realpathSync(dist);field.mode &#x3D; &#x27;production&#x27;;field.dir &#x3D; distFile.replace(/\/package.json$/, &#x27;&#x27;);pkgJson &#x3D; require(distFile);} catch (err2) {// noop}}if (pkgJson) {if (pkgJson.prime) {field.ui &#x3D; path.join(field.dir, pkgJson.prime);}}let error;if (!field.type) {error &#x3D; &#x27;%o has no static &quot;type&quot; property&#x27;;} else if (!field.title) {error &#x3D; &#x27;%o has no static &quot;title&quot; property&#x27;;}if (error) {log(error, moduleName);return null;}return field;} catch (err) {log(&#x27;Could not resolve field module %o&#x27;, moduleName);}return null;}).filter(n &#x3D;&gt; !!n)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-core/src/utils/fields.ts#L10">prime-core/src/utils/fields.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-core/src/utils/fields.ts#L10">prime-core/src/utils/fields.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -96,7 +96,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;debug(&#x27;prime:fields&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-core/src/utils/fields.ts#L7">prime-core/src/utils/fields.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-core/src/utils/fields.ts#L7">prime-core/src/utils/fields.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>

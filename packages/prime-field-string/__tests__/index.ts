@@ -1,4 +1,5 @@
-import { createMockSchema, createMockSchemaField, PrimeFieldOperation } from '@primecms/field';
+import { PrimeFieldOperation } from '@primecms/field';
+import { createMockSchema, createMockSchemaField } from '@primecms/field/lib/tests';
 import { ValidationError } from 'apollo-server-core';
 import { GraphQLString } from 'graphql';
 import PrimeFieldString from '../src';

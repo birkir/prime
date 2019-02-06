@@ -85,7 +85,7 @@
 					<div class="tsd-signature tsd-kind-icon">Content<wbr>Release<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;ContentRelease&#x27;, {id: types.identifier,name: types.maybeNull(types.string),documents: types.number,description: types.maybeNull(types.string),scheduledAt: types.maybeNull(types.Date),publishedAt: types.maybeNull(types.Date),updatedAt: types.maybeNull(types.Date),}).preProcessSnapshot(snapshot &#x3D;&gt; ({...snapshot,documents: Number(snapshot.documents || 0),scheduledAt: snapshot.scheduledAt ? new Date(snapshot.scheduledAt) : null,publishedAt: snapshot.publishedAt ? new Date(snapshot.publishedAt) : null,updatedAt: snapshot.updatedAt ? new Date(snapshot.updatedAt) : null,})).actions(self &#x3D;&gt; ({update(data: any) {const { name, description, scheduledAt } &#x3D; data;self.name &#x3D; name;self.description &#x3D; description;self.scheduledAt &#x3D; scheduledAt ? new Date(scheduledAt) : null;},publish: flow(function*() {const res: any &#x3D; yield client.mutate({mutation: PUBLISH_CONTENT_RELEASE,variables: {id: self.id,},});if (res.data &amp;&amp; res.data.publishRelease) {self.publishedAt &#x3D; new Date();}}),}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/ContentRelease.ts#L5">prime-ui/src/stores/models/ContentRelease.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/ContentRelease.ts#L5">prime-ui/src/stores/models/ContentRelease.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>

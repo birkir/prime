@@ -101,7 +101,7 @@
 					<div class="tsd-signature tsd-kind-icon">ISchema<wbr>Field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Instance</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L4">prime-ui/src/stores/models/Schema.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L4">prime-ui/src/stores/models/Schema.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -114,7 +114,7 @@
 					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>GROUP_<wbr>TITLE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"Main"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Main&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L14">prime-ui/src/stores/models/Schema.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L14">prime-ui/src/stores/models/Schema.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -124,7 +124,7 @@
 					<div class="tsd-signature tsd-kind-icon">DEFAULT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"string"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;string&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L13">prime-ui/src/stores/models/Schema.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L13">prime-ui/src/stores/models/Schema.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -134,7 +134,7 @@
 					<div class="tsd-signature tsd-kind-icon">Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model({groups: types.optional(types.array(SchemaGroup), []),hasChanged: false,}).views(self &#x3D;&gt; ({get fields() {if (!self.groups) {return [];}return self.groups.reduce((acc: ISchemaField[], group) &#x3D;&gt; {group.fields.forEach(field &#x3D;&gt; {acc.push(field);if (field.fields) {field.fields.forEach(subfield &#x3D;&gt; acc.push(subfield as any));}});return acc;}, []);},})).actions(self &#x3D;&gt; ({setHasChanged(hasChanged: boolean) {self.hasChanged &#x3D; hasChanged;},remove(node: ISchemaField) {destroy(node);},move(nodeId: string, position: number) {const node &#x3D; self.fields.find(n &#x3D;&gt; n.id &#x3D;&#x3D;&#x3D; nodeId);if (node) {const tree &#x3D; getParent(node) as ISchemaField[];detach(node);tree.splice(position, 0, node);}},add(obj: IAddField,position: number,groupName: string &#x3D; DEFAULT_GROUP_TITLE,nodeId?: string) {const id &#x3D; &#x60;new-${Array.from({ length: 5 }).map(() &#x3D;&gt; 100000 + Math.floor(Math.random() * 99999)).join(&#x27;-&#x27;)}&#x60;;const node &#x3D; self.fields.find(n &#x3D;&gt; n.id &#x3D;&#x3D;&#x3D; nodeId);const group &#x3D; self.groups.find(n &#x3D;&gt; n.title &#x3D;&#x3D;&#x3D; groupName);const tree &#x3D; nodeId ? node &amp;&amp; node.fields : group &amp;&amp; group.fields;const contentType &#x3D; getParent(self) as any;if (tree) {const newField &#x3D; SchemaField.create({id,name: obj.name,title: obj.title,description: obj.description,primary: obj.type &#x3D;&#x3D;&#x3D; &#x27;string&#x27; &amp;&amp; !self.fields.find(f &#x3D;&gt; f.primary),schemaId: contentType.id,type: obj.type || DEFAULT_TYPE,group: obj.group || DEFAULT_GROUP_TITLE,options: {},fields: [],});tree.splice(position, 0, newField);return newField;}return null;},setDisplay(node: ISchemaField) {self.fields.forEach(field &#x3D;&gt; field.setIsDisplay(false));node.setIsDisplay(true);},addGroup(title: string) {if (self.groups.find(g &#x3D;&gt; g.title.toLowerCase() &#x3D;&#x3D;&#x3D; title.toLowerCase())) {return;}self.groups.push(SchemaGroup.create({title,fields: [],}));},removeGroup(title: string) {const node &#x3D; self.groups.find(g &#x3D;&gt; g.title &#x3D;&#x3D;&#x3D; title);if (node) {destroy(node);}},}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L63">prime-ui/src/stores/models/Schema.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L63">prime-ui/src/stores/models/Schema.ts:63</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -144,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">Schema<wbr>Field<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;SchemaField&#x27;, {id: types.identifier,type: types.string,name: types.string,title: types.string,description: types.maybeNull(types.string),primary: types.optional(types.boolean, false),schemaId: types.maybeNull(types.string),options: types.frozen&lt;JSONObject&gt;(),group: DEFAULT_GROUP_TITLE,fields: types.maybeNull(types.array(types.late((): any &#x3D;&gt; SchemaField))),__typename: types.maybeNull(types.string),}).preProcessSnapshot(snapshot &#x3D;&gt; ({...snapshot,fields: snapshot.fields || [],})).views(self &#x3D;&gt; ({get isLeaf() {return !hasParentOfType(self, SchemaField);},})).actions(self &#x3D;&gt; ({update(obj: {name: string;title: string;description: string;type: string;options: JSONObject;}) {self.name &#x3D; obj.name;self.title &#x3D; obj.title;self.description &#x3D; obj.description;self.type &#x3D; obj.type;self.options &#x3D; obj.options;},setIsDisplay(isDisplay: boolean) {self.primary &#x3D; isDisplay;},}))</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L16">prime-ui/src/stores/models/Schema.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L16">prime-ui/src/stores/models/Schema.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -154,7 +154,7 @@
 					<div class="tsd-signature tsd-kind-icon">Schema<wbr>Group<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;SchemaGroup&#x27;, {title: types.string,fields: types.array(SchemaField),})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Schema.ts#L58">prime-ui/src/stores/models/Schema.ts:58</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Schema.ts#L58">prime-ui/src/stores/models/Schema.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>

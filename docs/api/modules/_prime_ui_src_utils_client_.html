@@ -88,7 +88,7 @@
 					<div class="tsd-signature tsd-kind-icon">auth<wbr>Link<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new ApolloLink((operation, forward) &#x3D;&gt; {const token &#x3D; localStorage.getItem(&#x27;accounts:accessToken&#x27;);operation.setContext({headers: {&#x27;x-prime-token&#x27;: token,},});if (forward) {return forward(operation);}return null;})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/utils/client.ts#L14">prime-ui/src/utils/client.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/utils/client.ts#L14">prime-ui/src/utils/client.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -98,7 +98,7 @@
 					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new ApolloClient({link: concat(authLink, httpLink),cache: new InMemoryCache(),})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/utils/client.ts#L27">prime-ui/src/utils/client.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/utils/client.ts#L27">prime-ui/src/utils/client.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -108,7 +108,7 @@
 					<div class="tsd-signature tsd-kind-icon">core<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;Settings.coreUrl</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/utils/client.ts#L7">prime-ui/src/utils/client.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/utils/client.ts#L7">prime-ui/src/utils/client.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -118,7 +118,7 @@
 					<div class="tsd-signature tsd-kind-icon">http<wbr>Link<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new HttpLink({uri: &#x60;${coreUrl}/prime/graphql&#x60;,credentials: &#x27;include&#x27;,})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/utils/client.ts#L9">prime-ui/src/utils/client.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/utils/client.ts#L9">prime-ui/src/utils/client.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>

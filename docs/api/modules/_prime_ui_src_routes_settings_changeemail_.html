@@ -91,7 +91,7 @@
 					<div class="tsd-signature tsd-kind-icon">IProps<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">FormComponentProps</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/routes/settings/ChangeEmail.tsx#L8">prime-ui/src/routes/settings/ChangeEmail.tsx:8</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/routes/settings/ChangeEmail.tsx#L8">prime-ui/src/routes/settings/ChangeEmail.tsx:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -104,7 +104,7 @@
 					<div class="tsd-signature tsd-kind-icon">Change<wbr>Email<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;Form.create()(({ form, forwardRef, close, visible }: IProps) &#x3D;&gt; {React.useEffect(() &#x3D;&gt; form.resetFields(), [visible]);const onSubmit &#x3D; (e: React.FormEvent&lt;HTMLElement&gt;) &#x3D;&gt; {e.preventDefault();form.validateFieldsAndScroll(async (err, values) &#x3D;&gt; {if (!err) {const res &#x3D; await client.mutate({mutation: gql&#x60;mutation updateEmail($oldpassword: String!, $email: String!) {updateEmail(oldpassword: $oldpassword, email: $email)}&#x60;,variables: {oldpassword: values.oldpassword,email: values.email,},});if (res.errors) {const errorMessage &#x3D; res.errors[0].message || &#x27;Failed to change email&#x27;;message.error(errorMessage);} else {message.info(&#x27;Email has been changed&#x27;);Auth.user!.updateEmail(values.email);close();}}});};return (&lt;Form onSubmit&#x3D;{onSubmit} ref&#x3D;{forwardRef}&gt;&lt;Form.Item label&#x3D;&quot;Password&quot; required&gt;{form.getFieldDecorator(&#x27;oldpassword&#x27;, {rules: [{required: true,message: &#x27;Please enter old password&#x27;,},],})(&lt;Input type&#x3D;&quot;password&quot; size&#x3D;&quot;large&quot; placeholder&#x3D;&quot;Old Password&quot; /&gt;)}&lt;/Form.Item&gt;&lt;Form.Item label&#x3D;&quot;New Email Address&quot; required&gt;{form.getFieldDecorator(&#x27;email&#x27;, {rules: [{required: true,message: &#x27;Please enter email address&#x27;,},{type: &#x27;email&#x27;,message: &#x27;Please enter valid email address&#x27;,},],})(&lt;Input autoComplete&#x3D;&quot;off&quot; type&#x3D;&quot;email&quot; size&#x3D;&quot;large&quot; /&gt;)}&lt;/Form.Item&gt;&lt;input type&#x3D;&quot;submit&quot; hidden /&gt;&lt;/Form&gt;);})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/routes/settings/ChangeEmail.tsx#L14">prime-ui/src/routes/settings/ChangeEmail.tsx:14</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/routes/settings/ChangeEmail.tsx#L14">prime-ui/src/routes/settings/ChangeEmail.tsx:14</a></li>
 						</ul>
 					</aside>
 				</section>

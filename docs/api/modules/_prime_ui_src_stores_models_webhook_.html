@@ -86,7 +86,7 @@
 					<div class="tsd-signature tsd-kind-icon">Webhook<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.model(&#x27;Webhook&#x27;, {id: types.identifier,name: types.maybeNull(types.string),url: types.maybeNull(types.string),method: types.maybeNull(WebhookMethod),calls: types.maybeNull(types.array(WebhookCall)),count: types.number,success: types.number,createdAt: types.maybeNull(types.Date),updatedAt: types.maybeNull(types.Date),}).preProcessSnapshot(snapshot &#x3D;&gt; ({...snapshot,count: Number(snapshot.count || 0),success: Number(snapshot.success || 0),createdAt: snapshot.createdAt ? new Date(snapshot.createdAt) : null,updatedAt: snapshot.updatedAt ? new Date(snapshot.updatedAt) : null,})).actions(self &#x3D;&gt; {const update &#x3D; flow(function*(input: any) {const { data } &#x3D; yield client.mutate({mutation: UPDATE_WEBHOOK,variables: { id: self.id, input },});if (data &amp;&amp; data.updateWebhook) {self.name &#x3D; data.updateWebhook.name;self.url &#x3D; data.updateWebhook.url;self.method &#x3D; data.updateWebhook.method;}});return {update,};})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Webhook.ts#L8">prime-ui/src/stores/models/Webhook.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Webhook.ts#L8">prime-ui/src/stores/models/Webhook.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -96,7 +96,7 @@
 					<div class="tsd-signature tsd-kind-icon">Webhook<wbr>Method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;types.enumeration(&#x27;WebhookMethod&#x27;, [&#x27;POST&#x27;, &#x27;GET&#x27;, &#x27;PUT&#x27;, &#x27;PATCH&#x27;, &#x27;DELETE&#x27;])</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/d002a7f/packages/prime-ui/src/stores/models/Webhook.ts#L6">prime-ui/src/stores/models/Webhook.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/ba4fc2e/packages/prime-ui/src/stores/models/Webhook.ts#L6">prime-ui/src/stores/models/Webhook.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
