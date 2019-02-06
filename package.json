@@ -87,7 +87,7 @@
     "tslint-config-prettier": "1.17.0",
     "tslint-junit-formatter": "5.1.0",
     "typedoc": "0.14.2",
-    "typedoc-plugin-monorepo": "0.1.0",
+    "typedoc-plugin-lerna": "0.1.0",
     "typescript": "3.3.1"
   }
 }
