@@ -63,6 +63,11 @@ export class SchemaResolver {
   ): Promise<Schema> {
     input.variant = SchemaVariant[(input.variant as unknown) as string];
     const schema = this.schemaRepository.create(input);
+    if (schema.variant === SchemaVariant.Default) {
+      schema.groups = ['Main'];
+    } else {
+      schema.groups = [schema.name];
+    }
     await this.schemaRepository.save(schema);
     if (input.fields) {
       await setSchemaFields(schema.id, input.fields);

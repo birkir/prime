@@ -1,7 +1,13 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import { PrimeFieldOperation } from '@primecms/field';
 import debug from 'debug';
-import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLUnionType } from 'graphql';
+import {
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  GraphQLUnionType,
+  printSchema,
+} from 'graphql';
 import { camelCase, omit, upperFirst } from 'lodash';
 import { createResolversMap } from 'type-graphql/dist/utils/createResolversMap';
 import Container from 'typedi';
@@ -53,10 +59,11 @@ export const createExternal = async (connection: Connection) => {
     const { name, fields } = schema;
     const payload = { schema, schemas, fields, name, resolvers, types, documentTransformer };
     const SchemaTypeConfig = await createSchemaType(payload);
-    types.set(name, SchemaTypeConfig);
 
     const { CREATE, UPDATE } = PrimeFieldOperation;
     const SchemaType = SchemaTypeConfig.type;
+
+    types.set(name, SchemaTypeConfig);
 
     const connectionType = await createSchemaConnectionType(payload, SchemaType);
     const createType = await createSchemaInputType(payload, SchemaType, CREATE);
@@ -86,13 +93,6 @@ export const createExternal = async (connection: Connection) => {
       continue;
     }
 
-    const SchemaTypeConfig = types.get(schema.name);
-    const SchemaType = SchemaTypeConfig.type;
-
-    if (!SchemaType || Object.keys(omit(SchemaType.getFields(), ['id', '_meta'])).length === 0) {
-      continue;
-    }
-
     const { name, fields } = schema;
     const payload = { schema, schemas, fields, name, resolvers, types, documentTransformer };
 
@@ -101,11 +101,23 @@ export const createExternal = async (connection: Connection) => {
     resolvers[`create${name}`] = await createDocumentCreateResolver(payload);
     resolvers[`update${name}`] = await createDocumentUpdateResolver(payload);
     resolvers[`remove${name}`] = await createDocumentRemoveResolver(payload);
+
     queries[name].resolve = resolvers[name];
     queries[`all${name}`].resolve = resolvers[`all${name}`];
     mutations[`create${name}`].resolve = resolvers[`create${name}`];
     mutations[`update${name}`].resolve = resolvers[`update${name}`];
     mutations[`remove${name}`].resolve = resolvers[`remove${name}`];
+
+    const SchemaType = types.get(schema.name)!.type!;
+
+    if (!SchemaType || Object.keys(omit(SchemaType.getFields(), ['id', '_meta'])).length === 0) {
+      delete queries[name];
+      delete queries[`all${name}`];
+      delete mutations[`create${name}`];
+      delete mutations[`update${name}`];
+      delete mutations[`remove${name}`];
+      types.delete(name);
+    }
   }
 
   const primeDocumentNotFoundTypeName = uniqueTypeName('Prime_Document_NotFound');
