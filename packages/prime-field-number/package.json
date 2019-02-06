@@ -42,7 +42,7 @@
     "react-dom": "^16.8.0-alpha.1"
   },
   "devDependencies": {
-    "@types/graphql": "^14.0.5",
+    "@types/graphql": "14.0.5",
     "ts-loader": "5.3.0",
     "webpack-cli": "3.1.2"
   },
