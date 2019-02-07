@@ -21,7 +21,7 @@ export const config = rc('prime', {
 function defaultUiDir() {
   try {
     const dir = require.resolve('@primecms/ui/package.json');
-    return path.dirname(dir);
+    return path.join(path.dirname(dir), 'build');
   } catch (err) {
     try {
       const dir = fs.realpathSync(path.join(process.cwd(), 'packages', 'prime-ui', 'build'));
