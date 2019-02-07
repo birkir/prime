@@ -13,14 +13,18 @@ const httpLink = new HttpLink({
   credentials: 'include',
 });
 
-const withToken = setContext(() => {
-  return accountsClient.refreshSession().then(tokens => {
-    return {
-      headers: {
-        'x-prime-token': tokens ? tokens.accessToken : '',
-      },
-    };
-  });
+const withToken = setContext(async (input, b) => {
+  let tokens;
+  try {
+    tokens = await accountsClient.refreshSession();
+  } catch (err) {
+    (window as any).location = '/';
+  }
+  return {
+    headers: {
+      'x-prime-token': tokens ? tokens.accessToken : '',
+    },
+  };
 });
 
 export const client = new ApolloClient({

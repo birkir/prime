@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { flow, types } from 'mobx-state-tree';
-import { accountsClient, client } from '../utils/accounts';
+import { accountsClient } from '../utils/accounts';
+import { client } from '../utils/client';
 import { fields } from '../utils/fields';
 import { ContentTypes } from './contentTypes';
 import { User } from './models/User';
@@ -40,7 +41,6 @@ export const Auth = types
         password,
       });
       yield checkLogin();
-
       yield ensureFields();
     });
 
@@ -51,28 +51,23 @@ export const Auth = types
     });
 
     const checkLogin = flow(function*() {
-      const tokens = yield accountsClient.refreshSession();
-      if (tokens) {
-        const { data } = yield client.query({
-          query: GET_USER,
-        });
-        if (data && data.getUser) {
-          self.accessToken = tokens.accessToken;
-          self.refreshToken = tokens.refreshToken;
-          self.isLoggedIn = true;
-          self.user = data.getUser;
-          yield ensureFields();
-        }
+      const { data } = yield client.query({
+        query: GET_USER,
+      });
+      if (data && data.getUser) {
+        self.isLoggedIn = true;
+        self.user = data.getUser;
+        yield ensureFields();
       }
       if (!self.isLoggedIn) {
-        const { data } = yield client.query({
+        const onboarding = yield client.query({
           query: gql`
             query {
               isOnboarding
             }
           `,
         });
-        if (data && data.isOnboarding === true) {
+        if (onboarding.data && onboarding.data.isOnboarding === true) {
           self.isSetup = true;
         }
       }
