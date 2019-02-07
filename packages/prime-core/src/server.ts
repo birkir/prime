@@ -12,8 +12,10 @@ import { ServerConfig } from './interfaces/ServerConfig';
 import { createModules } from './modules';
 import { createExternal } from './modules/external';
 import { pubSub } from './modules/internal';
+import { config } from './utils/config';
 import { fields } from './utils/fields';
 import { log } from './utils/log';
+import { serveUI } from './utils/serveUI';
 
 useContainer(Container);
 
@@ -36,7 +38,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   });
 
   pubSub.subscribe('REBUILD_EXTERNAL', async payload => {
-    if (!external) {
+    if (external) {
       log('schemas have changed', payload.name);
     }
     external = await createExternal(connection);
@@ -86,6 +88,8 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
       origin: true,
     },
   });
+
+  serveUI(app, config);
 
   return server.listen(port, () => {
     log(`🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`);
