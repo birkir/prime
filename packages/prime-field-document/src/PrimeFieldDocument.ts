@@ -98,7 +98,14 @@ export class PrimeFieldDocument extends PrimeField {
           const values: string[][] = []
             .concat(root[this.schemaField.name])
             .map(s => String(s).split(','));
+
           const entry = values.find(value => value[0] === types[0].schema.id);
+          const rootLocale =
+            info.variableValues[
+              Object.keys(info.variableValues).find(name => /^_v(\d+)_locale$/.test(name)) || ''
+            ];
+          args.locale = args.locale || rootLocale || root._meta.locale;
+
           if (entry) {
             const [, id] = entry;
             const resolve = context.resolvers[types[0].schema.name];

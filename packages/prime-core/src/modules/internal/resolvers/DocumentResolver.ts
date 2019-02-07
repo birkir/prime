@@ -13,14 +13,14 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { Brackets, getRepository, IsNull, Raw } from 'typeorm';
+import { Brackets, In, IsNull, Raw } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
-import { SchemaField } from '../../../entities/SchemaField';
 import { Context } from '../../../interfaces/Context';
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
 import { DocumentRepository } from '../repositories/DocumentRepository';
+import { SchemaFieldRepository } from '../repositories/SchemaFieldRepository';
 import { SchemaRepository } from '../repositories/SchemaRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { DocumentFilterInput } from '../types/DocumentFilterInput';
@@ -56,6 +56,9 @@ export class DocumentResolver {
   @InjectRepository(SchemaRepository)
   private readonly schemaRepository: SchemaRepository;
 
+  @InjectRepository(SchemaFieldRepository)
+  private readonly schemaFieldRepository: SchemaFieldRepository;
+
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
 
@@ -75,6 +78,7 @@ export class DocumentResolver {
     });
   }
 
+  @Authorized()
   @Query(returns => DocumentConnection)
   public allDocuments(
     @Arg('sort', type => [DocumentSort], { defaultValue: 1, nullable: true }) sorts: string[],
@@ -82,7 +86,7 @@ export class DocumentResolver {
     filters: DocumentFilterInput[],
     @Args() args: ConnectionArgs
   ) {
-    return new ExtendedConnection(args, {
+    const result = new ExtendedConnection(args, {
       where: qb => {
         qb.andWhere('Document.deletedAt IS NULL');
 
@@ -122,6 +126,10 @@ export class DocumentResolver {
       repository: this.documentRepository,
       sortOptions: sortOptions(sorts),
     });
+
+    (result as any).totalCount = 15;
+
+    return result;
   }
 
   @Authorized()
@@ -142,6 +150,7 @@ export class DocumentResolver {
     return this.documentRepository.findOneOrFail(doc.id);
   }
 
+  @Authorized()
   @Mutation(returns => Document)
   public async updateDocument(
     @Arg('id', type => ID) id: string,
@@ -170,6 +179,7 @@ export class DocumentResolver {
     return this.documentRepository.findOneOrFail(res.id);
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async removeDocument(
     @Arg('id', type => ID) id: string,
@@ -227,7 +237,8 @@ export class DocumentResolver {
 
   @FieldResolver(returns => GraphQLJSON, { nullable: true })
   public async data(@Root() document: Document): Promise<any> {
-    return this.documentTransformer.transformOutput(document);
+    const schema = await this.schemaRepository.loadOne(document.schemaId);
+    return this.documentTransformer.transformOutput(document, schema);
   }
 
   @FieldResolver(returns => [DocumentVersion], { nullable: true })
@@ -251,20 +262,17 @@ export class DocumentResolver {
     nullable: true,
   })
   public async primary(@Root() document: Document): Promise<any> {
-    const schemaFieldRepository = getRepository(SchemaField);
-    let field = await schemaFieldRepository.findOne({
-      cache: 1000,
-      where: {
-        schemaId: document.schemaId,
-        primary: true,
-      },
-    });
+    const qb = this.schemaFieldRepository.createQueryBuilder().where('primary = TRUE');
+    qb.cache(1000);
+    let field = await this.schemaFieldRepository
+      .getLoader(qb, (b, keys) => b.where({ schemaId: In(keys) }), 'schemaId')
+      .load(document.schemaId);
 
     if (field) {
       const path = [field.id];
 
       if (field.parentFieldId) {
-        field = await schemaFieldRepository.findOne(field.parentFieldId, { cache: 1000 });
+        field = await this.schemaFieldRepository.loadOne(field.parentFieldId);
         if (field) {
           path.push(field.id);
         }

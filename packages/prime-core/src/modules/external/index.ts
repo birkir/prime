@@ -182,7 +182,7 @@ export const createExternal = async (connection: Connection) => {
       return ctx;
     },
     logger: {
-      clientError: log,
+      clientError: () => null,
       log,
       error: log,
     },

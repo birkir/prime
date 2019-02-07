@@ -18,7 +18,7 @@ if (MAILGUN_API_KEY && MAILGUN_API_KEY !== '') {
 
 export const createAccounts = async (connection: Connection) => {
   const tokenSecret = ACCOUNTS_SECRET || 'not very secret secret';
-  const db = new AccountsTypeorm({ connection });
+  const db = new AccountsTypeorm({ connection, cache: 1000 });
   const password = new AccountsPassword({
     twoFactor: {
       appName: 'Prime',

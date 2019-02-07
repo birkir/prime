@@ -1,7 +1,9 @@
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import express from 'express';
+import { buildSchema } from 'graphql';
 import http from 'http';
+import sofa from 'sofa-api';
 import { ResolverData } from 'type-graphql';
 import { Container } from 'typedi';
 import { useContainer } from 'typeorm';
@@ -19,7 +21,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   const app = express();
   const server = http.createServer(app);
   const { schema, context, subscriptions } = await createModules(connection);
-  let external = await createExternal(connection);
+  let external;
 
   app.use(
     cors({
@@ -30,15 +32,26 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
 
   const externalServer: any = new ApolloServer({
     playground: true,
-    context: external.context,
-    schema: external.schema,
+    schema: buildSchema(`type Query { boot: Boolean }`),
   });
 
   pubSub.subscribe('REBUILD_EXTERNAL', async payload => {
-    log('schemas have changed', payload.name);
+    if (!external) {
+      log('schemas have changed', payload.name);
+    }
     external = await createExternal(connection);
     externalServer.schema = external.schema;
+    externalServer.context = external.context;
+    app.use(
+      '/api',
+      sofa({
+        schema: external.schema,
+        ignore: ['Prime_Document'],
+      })
+    );
   });
+
+  pubSub.publish('REBUILD_EXTERNAL', { name: 'SERVER_BOOT' });
 
   externalServer.applyMiddleware({ app });
 

@@ -6,7 +6,7 @@ query contentTypeById($id: ID, $name: String) {
     variant
     groups
     settings
-    # entriesCount
+    documentCount
     fields {
       title
       fields {

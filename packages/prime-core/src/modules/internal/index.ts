@@ -4,6 +4,7 @@ import debug from 'debug';
 import { mapValues, omitBy } from 'lodash';
 import { buildTypeDefsAndResolvers } from 'type-graphql';
 import { Connection } from 'typeorm';
+import { AccessTokenResolver } from './resolvers/AccessTokenResolver';
 import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
@@ -25,6 +26,7 @@ export const createInternal = async (connection: Connection, checkAuth = default
 
   const schema = await buildTypeDefsAndResolvers({
     resolvers: [
+      AccessTokenResolver,
       DocumentResolver,
       PrimeResolver,
       ReleaseResolver,

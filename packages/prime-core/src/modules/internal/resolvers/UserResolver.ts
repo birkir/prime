@@ -2,7 +2,18 @@ import { AccountsModule } from '@accounts/graphql-api';
 import AccountsPassword from '@accounts/password';
 import { UserEmail } from '@accounts/typeorm';
 import GraphQLJSON from 'graphql-type-json';
-import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Context } from '../../../interfaces/Context';
@@ -22,6 +33,7 @@ export class UserResolver {
   @InjectRepository(UserEmail)
   private readonly userEmailRepository: Repository<UserEmail>;
 
+  @Authorized()
   @Query(returns => User)
   public User(
     @Arg('id', type => ID) id: string //
@@ -29,6 +41,7 @@ export class UserResolver {
     return this.userRepository.findOneOrFail(id);
   }
 
+  @Authorized()
   @Query(returns => UserConnection)
   public allUsers(
     @Args() args: ConnectionArgs //
@@ -44,6 +57,7 @@ export class UserResolver {
     return result;
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async createPrimeUser(
     @Arg('email') email: string,
@@ -70,6 +84,7 @@ export class UserResolver {
     return true;
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async changeEmail(
     @Arg('password') password: string,
@@ -91,6 +106,7 @@ export class UserResolver {
     return false;
   }
 
+  @Authorized()
   @Mutation(returns => User)
   public async updateUser(
     @Arg('id', type => ID) id: string,
@@ -102,6 +118,7 @@ export class UserResolver {
     return user;
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async removeUser(
     @Arg('id', type => ID) id: string //

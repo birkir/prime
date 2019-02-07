@@ -66,6 +66,7 @@
     "rc": "1.2.8",
     "read-pkg": "4.0.1",
     "reflect-metadata": "0.1.13",
+    "sofa-api": "0.2.2",
     "type-graphql": "0.17.0-beta.3",
     "typedi": "0.8.0",
     "typeorm": "0.2.12",

@@ -1,4 +1,4 @@
-import { omitBy } from 'lodash';
+import { identity, pickBy } from 'lodash';
 import {
   Brackets,
   EntityRepository,
@@ -29,7 +29,7 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
       .select('id')
       .from(Document, 'd');
 
-    where = omitBy(where, n => !n);
+    where = pickBy(where, identity);
 
     const filterWithName = name =>
       new Brackets(sq => {

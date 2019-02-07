@@ -1,3 +1,4 @@
+import DataLoader from 'dataloader';
 import { defaultsDeep, get } from 'lodash';
 import { Service } from 'typedi';
 import { getRepository, In } from 'typeorm';
@@ -15,6 +16,16 @@ const Types = {
 
 @Service()
 export class DocumentTransformer {
+  public fieldsDataloader = new DataLoader(async keys => {
+    const result = await getRepository(SchemaField).find({
+      where: {
+        schemaId: In(keys),
+      },
+      cache: 1000,
+    });
+    return keys.map(key => result.filter(n => n.schemaId === key));
+  });
+
   public getFields = async (schema: Schema): Promise<SchemaField[]> => {
     const schemaIds: string[] = [schema.id];
 
@@ -22,14 +33,7 @@ export class DocumentTransformer {
       schemaIds.push(...get(schema, 'settings.schemaIds', []));
     }
 
-    const fields = await getRepository(SchemaField).find({
-      where: {
-        schemaId: In(schemaIds),
-      },
-      cache: 1000,
-    });
-
-    return fields;
+    return (await this.fieldsDataloader.loadMany(schemaIds)).flat();
   };
 
   public transform = async (
@@ -129,11 +133,15 @@ export class DocumentTransformer {
 
   public transformOutput = async (document: Document, schema?: Schema, fields?: SchemaField[]) => {
     if (!schema) {
-      schema = await getRepository(Schema).findOneOrFail(document.schemaId, { cache: 1000 });
+      schema = await getRepository(Schema).findOneOrFail(document.schemaId, {
+        cache: 1000,
+      });
     }
+
     if (!fields) {
       fields = await this.getFields(schema);
     }
+
     return this.transform(fields, document.data, schema, Types.OUTPUT);
   };
 }

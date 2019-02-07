@@ -80,6 +80,7 @@ export class WebhookResolver {
     };
   }
 
+  @Authorized()
   @Mutation(returns => Webhook, { description: 'Create Webhook' })
   public async createWebhook(
     @Arg('input') input: WebhookInput,
@@ -102,6 +103,7 @@ export class WebhookResolver {
     return entity;
   }
 
+  @Authorized()
   @Mutation(returns => Boolean, { description: 'Remove Webhook by ID' })
   public async removeWebhook(
     @Arg('id', type => ID) id: string,

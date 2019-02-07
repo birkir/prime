@@ -1,8 +1,10 @@
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
-import { ApolloLink, concat } from 'apollo-link';
+import { concat } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
 import { HttpLink } from 'apollo-link-http';
 import { Settings } from '../stores/settings';
+import { accountsClient } from './accounts';
 
 const coreUrl: string = Settings.coreUrl;
 
@@ -11,21 +13,18 @@ const httpLink = new HttpLink({
   credentials: 'include',
 });
 
-const authLink = new ApolloLink((operation, forward) => {
-  const token = localStorage.getItem('accounts:accessToken');
-  operation.setContext({
-    headers: {
-      'x-prime-token': token,
-    },
+const withToken = setContext(() => {
+  return accountsClient.refreshSession().then(tokens => {
+    return {
+      headers: {
+        'x-prime-token': tokens ? tokens.accessToken : '',
+      },
+    };
   });
-  if (forward) {
-    return forward(operation);
-  }
-  return null;
 });
 
 export const client = new ApolloClient({
-  link: concat(authLink, httpLink),
+  link: concat(withToken, httpLink),
   cache: new InMemoryCache(),
 });
 

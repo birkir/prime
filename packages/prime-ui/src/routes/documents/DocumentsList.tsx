@@ -198,7 +198,7 @@ export const DocumentsList = ({ match, history }: any) => {
         const columns = [
           {
             title: '',
-            dataIndex: 'entryId',
+            dataIndex: 'documentId',
             sorter: false,
             width: '52px',
             render(text: string, record: any) {
@@ -212,7 +212,7 @@ export const DocumentsList = ({ match, history }: any) => {
                 backgroundColor = '#4A90E2';
               }
 
-              if (options.locale && record.language !== options.locale) {
+              if (options.locale && record.locale !== options.locale) {
                 dot = false;
                 icon = 'global';
                 backgroundColor = '#D3D7D6';

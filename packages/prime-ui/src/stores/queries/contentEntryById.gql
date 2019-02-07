@@ -1,5 +1,5 @@
-query contentEntryById($id: ID!, $releaseId: ID, $language: String) {
-  Document(id: $id, releaseId: $releaseId, locale: $language) {
+query contentEntryById($id: ID!, $releaseId: ID, $locale: String) {
+  Document(id: $id, releaseId: $releaseId, locale: $locale) {
     id
     documentId
     schemaId
@@ -7,9 +7,9 @@ query contentEntryById($id: ID!, $releaseId: ID, $language: String) {
     locale
     publishedAt
     data
+    primary
     createdAt
     updatedAt
-    # display
     versions {
       id
       publishedAt

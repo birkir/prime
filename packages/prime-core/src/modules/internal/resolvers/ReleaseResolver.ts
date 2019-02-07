@@ -32,6 +32,7 @@ export class ReleaseResolver {
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
 
+  @Authorized()
   @Query(returns => Release, { nullable: true, description: 'Get Release by ID' })
   public Release(
     @Arg('id', type => ID) id: string //
@@ -39,6 +40,7 @@ export class ReleaseResolver {
     return this.releaseRepository.loadOne(id);
   }
 
+  @Authorized()
   @Query(returns => ReleaseConnection, { description: 'Get many Releases' })
   public allReleases(
     @Args() args: ConnectionArgs //
@@ -59,6 +61,7 @@ export class ReleaseResolver {
     return entity;
   }
 
+  @Authorized()
   @Mutation(returns => Release, { description: 'Update Release by ID' })
   public async updateRelease(
     @Arg('id', type => ID) id: string,
@@ -70,6 +73,7 @@ export class ReleaseResolver {
     return await this.releaseRepository.save(release);
   }
 
+  @Authorized()
   @Mutation(returns => Boolean, { description: 'Remove Release by ID' })
   public async removeRelease(
     @Arg('id', type => ID) id: string,

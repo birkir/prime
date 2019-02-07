@@ -1,5 +1,15 @@
 import { defaultsDeep } from 'lodash';
-import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { getRepository, Raw } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
@@ -21,6 +31,7 @@ export class SchemaResolver {
   @InjectRepository(SchemaRepository)
   private readonly schemaRepository: SchemaRepository;
 
+  @Authorized()
   @Query(returns => Schema, { nullable: true, description: 'Get Schema by ID' })
   public async Schema(
     @Arg('id', type => ID, { nullable: true }) id: string,
@@ -40,6 +51,7 @@ export class SchemaResolver {
     return res;
   }
 
+  @Authorized()
   @Query(returns => SchemaConnection)
   public async allSchemas(
     @Args() args: ConnectionArgs //
@@ -57,6 +69,7 @@ export class SchemaResolver {
     };
   }
 
+  @Authorized()
   @Mutation(returns => Schema)
   public async createSchema(
     @Arg('input', type => SchemaInput) input: SchemaInput & { fields: any }
@@ -77,6 +90,7 @@ export class SchemaResolver {
     return schema;
   }
 
+  @Authorized()
   @Mutation(returns => Schema)
   public async updateSchema(
     @Arg('id', type => ID) id: string,
@@ -95,6 +109,7 @@ export class SchemaResolver {
     return schema;
   }
 
+  @Authorized()
   @Mutation(returns => Boolean)
   public async removeSchema(@Arg('id', type => ID) id: string): Promise<boolean> {
     const schema = await this.schemaRepository.findOneOrFail(id);
@@ -103,6 +118,7 @@ export class SchemaResolver {
     return true;
   }
 
+  @Authorized()
   @Query(returns => Boolean)
   public async schemaNameAvailable(
     @Arg('name', type => String) name: string,
