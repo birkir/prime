@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0-alpha.2](https://github.com/birkir/prime/compare/v0.3.0-alpha.1...v0.3.0-alpha.2) (2019-02-07)
+
+### Bug Fixes
+
+- serve ui and load entities ([dd7fde9](https://github.com/birkir/prime/commit/dd7fde9))
+
 # [0.3.0-alpha.1](https://github.com/birkir/prime/compare/v0.3.0-alpha.0...v0.3.0-alpha.1) (2019-02-07)
 
 ### Bug Fixes
