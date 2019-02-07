@@ -92,6 +92,7 @@ export const Auth = types
         `,
         variables: {
           email,
+          password,
           profile: {
             firstname,
             lastname,
