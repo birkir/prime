@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0-alpha.3](https://github.com/birkir/prime/compare/v0.3.0-alpha.2...v0.3.0-alpha.3) (2019-02-07)
+
+### Bug Fixes
+
+- ui and connect ([5036e49](https://github.com/birkir/prime/commit/5036e49))
+
 # [0.3.0-alpha.2](https://github.com/birkir/prime/compare/v0.3.0-alpha.1...v0.3.0-alpha.2) (2019-02-07)
 
 ### Bug Fixes
