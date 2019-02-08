@@ -12,7 +12,7 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
     e.preventDefault();
     form.validateFieldsAndScroll(async (err, values) => {
       if (!err) {
-        client.mutate({
+        const { data } = await client.mutate({
           mutation: gql`
             mutation updateUser($id: ID!, $input: UpdateUserInput!) {
               updateUser(id: $id, input: $input) {
@@ -30,8 +30,10 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
             },
           },
         });
-        user.updateProfile(values);
-        message.info('Profile updated');
+        if (data) {
+          user.updateProfile(values);
+          message.info('Profile updated');
+        }
       }
     });
     return null;

@@ -33,7 +33,7 @@ export class UserResolver {
   @InjectRepository(UserEmail)
   private readonly userEmailRepository: Repository<UserEmail>;
 
-  @Authorized()
+  @Authorized((role: any, { id }: any) => role.can('read', 'User', { id }))
   @Query(returns => User)
   public User(
     @Arg('id', type => ID) id: string //
@@ -41,7 +41,7 @@ export class UserResolver {
     return this.userRepository.findOneOrFail(id);
   }
 
-  @Authorized()
+  @Authorized((role: any) => role.can('read', 'allUsers'))
   @Query(returns => UserConnection)
   public allUsers(
     @Args() args: ConnectionArgs //
@@ -57,7 +57,7 @@ export class UserResolver {
     return result;
   }
 
-  @Authorized()
+  @Authorized((role: any) => role.can('create', 'User'))
   @Mutation(returns => Boolean)
   public async createPrimeUser(
     @Arg('email') email: string,
@@ -110,10 +110,12 @@ export class UserResolver {
   @Mutation(returns => User)
   public async updateUser(
     @Arg('id', type => ID) id: string,
-    @Arg('input', type => UpdateUserInput) input: UpdateUserInput
+    @Arg('input', type => UpdateUserInput) input: UpdateUserInput,
+    @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
     user.profile = input;
+    context.ability.throwUnlessCan('update', user);
     await this.userRepository.save(user);
     return user;
   }
@@ -121,9 +123,11 @@ export class UserResolver {
   @Authorized()
   @Mutation(returns => Boolean)
   public async removeUser(
-    @Arg('id', type => ID) id: string //
+    @Arg('id', type => ID) id: string, //
+    @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
+    context.ability.throwUnlessCan('delete', user);
     await this.userRepository.remove(user);
     return true;
   }

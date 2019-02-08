@@ -24,6 +24,7 @@ export const createAccounts = async (connection: Connection) => {
       appName: 'Prime',
     },
   });
+
   const accountsServer = new AccountsServer(
     {
       db,

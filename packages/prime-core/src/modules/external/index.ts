@@ -167,7 +167,7 @@ export const createExternal = async (connection: Connection) => {
   }, {});
 
   return new GraphQLModule({
-    name: 'prime-external',
+    name: 'prime-graphql',
     extraSchemas: [graphqlSchema],
     resolvers: unionResolvers,
     context() {

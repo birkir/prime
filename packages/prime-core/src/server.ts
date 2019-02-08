@@ -9,12 +9,12 @@ import { Container } from 'typedi';
 import { useContainer } from 'typeorm';
 import { Context } from './interfaces/Context';
 import { ServerConfig } from './interfaces/ServerConfig';
-import { createModules } from './modules';
 import { createExternal } from './modules/external';
-import { pubSub } from './modules/internal';
+import { createInternal } from './modules/internal';
 import { config } from './utils/config';
 import { fields } from './utils/fields';
 import { log } from './utils/log';
+import { pubSub } from './utils/pubSub';
 import { serveUI } from './utils/serveUI';
 
 useContainer(Container);
@@ -22,7 +22,7 @@ useContainer(Container);
 export const createServer = async ({ port, connection }: ServerConfig) => {
   const app = express();
   const server = http.createServer(app);
-  const { schema, context, subscriptions } = await createModules(connection);
+  const { schema, context, subscriptions } = await createInternal(connection);
   let external;
 
   app.use(
