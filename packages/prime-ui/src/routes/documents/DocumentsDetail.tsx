@@ -103,7 +103,6 @@ export class DocumentsDetail extends React.Component<IProps> {
 
     if (options.type) {
       this.contentType = await ContentTypes.loadByName(options.type);
-
       if (this.contentType) {
         this.forceUpdate();
       }

@@ -1,9 +1,10 @@
 import { cloneDeepWith, get, isObject } from 'lodash';
+import makeInspectable from 'mobx-devtools-mst';
 import { applySnapshot, flow, types } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
 import { client } from '../../utils/client';
 import { ContentTypes } from '../contentTypes';
-import { REMOVE_CONTENT_TYPE, SAVE_SCHEMA, UPDATE_CONTENT_TYPE } from '../mutations';
+import { REMOVE_CONTENT_TYPE, UPDATE_CONTENT_TYPE } from '../mutations';
 import { LOAD_SCHEMA } from '../queries';
 import { Settings } from '../settings';
 import { Schema } from './Schema';
@@ -61,7 +62,7 @@ export const ContentType = types
 
     const saveSchema = flow(function*() {
       const result = yield client.mutate({
-        mutation: SAVE_SCHEMA,
+        mutation: UPDATE_CONTENT_TYPE,
         variables: {
           id: self.id,
           input: {
@@ -72,13 +73,13 @@ export const ContentType = types
         },
       });
 
-      Settings.reloadPlayground();
+      const res = get(result, 'data.updateSchema');
 
-      if (self.variant !== 'Default') {
-        ContentTypes.loadAll();
+      if (res) {
+        replace(res);
       }
 
-      return get(result, 'data.updateSchema');
+      return self;
     });
 
     const replace = (data: any) => {

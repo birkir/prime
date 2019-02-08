@@ -72,10 +72,11 @@ export const ContentTypes = types
     const loadAll = flow(function*() {
       if (self.loading) {
         yield new Promise(resolve => {
-          when(() => self.loading === true, resolve);
+          when(() => self.loading === false, resolve);
         });
         return;
       }
+
       self.loading = true;
 
       try {
@@ -83,11 +84,11 @@ export const ContentTypes = types
           query: ALL_CONTENT_TYPES,
         });
         data.allSchemas.edges.forEach((contentType: any) => {
-          const item = ContentType.create(contentType.node);
-          const prevItem = self.items.get(item.id);
+          const prevItem = self.items.get(contentType.id);
           if (prevItem) {
-            prevItem.replace(contentType);
+            prevItem.replace(contentType.node);
           } else {
+            const item = ContentType.create(contentType.node);
             self.items.put(item);
           }
         });

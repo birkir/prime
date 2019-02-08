@@ -327,7 +327,7 @@ export class SchemaDetail extends React.Component<IProps> {
 
   public renderField = (field: any, index: number) => (
     <FieldRow
-      key={field.id}
+      key={field.id || Math.random()}
       field={field}
       index={index}
       onDisplayClick={this.onFieldDisplay}

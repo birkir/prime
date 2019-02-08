@@ -187,6 +187,7 @@ export class SchemaSettingsComponent extends React.PureComponent<IProps> {
                 URL Safe
               </label>
             </Form.Item>
+            {/* @todo only one field decorator per Form.Item */}
             <Form.Item style={{ margin: 0 }}>
               {form.getFieldDecorator('options.rules.min', {
                 valuePropName: 'checked',

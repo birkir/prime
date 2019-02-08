@@ -66,6 +66,7 @@ export const Settings = types
     isProd,
     coreUrl,
     packages: types.array(PackageVersion),
+    shouldReloadPlayground: false,
     env: types.frozen(),
     fields: types.frozen(),
     accessType: types.maybeNull(types.enumeration('AccessType', ['PUBLIC', 'PRIVATE'])),
@@ -135,6 +136,13 @@ export const Settings = types
     });
 
     const reloadPlayground = () => {
+      self.shouldReloadPlayground = true;
+    };
+
+    const reloadPlaygroundAction = () => {
+      if (!self.shouldReloadPlayground) {
+        return false;
+      }
       const node = document.getElementById('playground');
       if (node) {
         const iframe = node as HTMLIFrameElement;
@@ -161,6 +169,7 @@ export const Settings = types
           }, 100);
         }
       }
+      self.shouldReloadPlayground = false;
     };
 
     const setAccessType = (accessType: any) => {
@@ -257,6 +266,7 @@ export const Settings = types
       save,
       updateSystem,
       reloadPlayground,
+      reloadPlaygroundAction,
       setAccessType,
       setMasterLocale,
       addPreview,

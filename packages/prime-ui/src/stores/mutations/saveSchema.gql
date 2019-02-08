@@ -1,5 +1,28 @@
 mutation updateSchema($id: ID!, $input: SchemaInput!) {
   updateSchema(id: $id, input: $input) {
     id
+    name
+    title
+    groups
+    settings
+    variant
+    fields {
+      id
+      name
+      title
+      description
+      type
+      options
+      isDisplay
+      contentTypeId
+      fields {
+        id
+        name
+        title
+        description
+        type
+        options
+      }
+    }
   }
 }
