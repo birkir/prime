@@ -1,5 +1,4 @@
 import { GraphQLModule } from '@graphql-modules/core';
-import { AuthenticationError } from 'apollo-server-express';
 import debug from 'debug';
 import { mapValues, omitBy } from 'lodash';
 import { buildTypeDefsAndResolvers } from 'type-graphql';
@@ -53,10 +52,6 @@ export const createInternal = async (connection: Connection) => {
     async context(session, currentContext) {
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       const container = Container.of(requestId);
-
-      if (!currentContext.user) {
-        throw new AuthenticationError('Must be authenticated');
-      }
 
       const ctx = {
         requestId,

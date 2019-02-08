@@ -8,6 +8,8 @@ export const createAbility = (context: Context) => {
     cannot('create', 'User');
     cannot('delete', 'User').because('You cannot remove users');
     cannot('update', 'User').because('You can only update your own user');
-    can('update', 'User', { id: context.user.id });
+    if (context.user) {
+      can('update', 'User', { id: context.user.id });
+    }
   });
 };
