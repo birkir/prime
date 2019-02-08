@@ -77,7 +77,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "cf881a4fa267b782e875f1fa40e03e1cbbcd9580",
+  "gitHead": "0ba61f7c3155dd6cce2d4760eaab020cdf8daea4",
   "dependencies": {
     "apollo-link-context": "^1.0.14"
   }
