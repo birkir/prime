@@ -30,11 +30,11 @@ export const ContentEntry = types
     hasChanged: false,
   })
   .preProcessSnapshot(snapshot => {
-    if (!snapshot._id) {
-      snapshot._id = [snapshot.documentId, snapshot.locale, snapshot.releaseId].join(':');
-    }
     return {
       ...snapshot,
+      _id: snapshot._id
+        ? snapshot._id
+        : [snapshot.documentId, snapshot.locale, snapshot.releaseId].join(':'),
       loadedAt: new Date(),
       schema: snapshot.schemaId ? snapshot.schemaId : null,
       publishedAt: snapshot.publishedAt ? new Date(snapshot.publishedAt) : null,

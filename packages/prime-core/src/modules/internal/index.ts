@@ -14,7 +14,6 @@ import { SchemaResolver } from './resolvers/SchemaResolver';
 import { UserResolver } from './resolvers/UserResolver';
 import { WebhookResolver } from './resolvers/WebhookResolver';
 import { abilityForbiddenMiddleware } from './utils/abilityErrorMiddleware';
-import { authChecker } from './utils/authChecker';
 import { createAbility } from './utils/createAbility';
 import { isAuthenticated } from './utils/isAuthenticated';
 import { noEnumsOrInheritedModels } from './utils/noEnumsOrInheritedModels';
@@ -38,7 +37,6 @@ export const createInternal = async (connection: Connection) => {
       WebhookResolver,
     ],
     pubSub,
-    authChecker,
     globalMiddlewares: [abilityForbiddenMiddleware],
     container: ({ context }) => context.container,
   });
@@ -67,7 +65,7 @@ export const createInternal = async (connection: Connection) => {
     },
     configRequired: false,
     logger: {
-      clientError: log,
+      clientError: () => null,
       log,
       error: log,
     },

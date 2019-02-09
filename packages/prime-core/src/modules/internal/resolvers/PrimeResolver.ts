@@ -3,7 +3,7 @@ import AccountsPassword from '@accounts/password';
 import AccountsTypeorm, { User } from '@accounts/typeorm';
 import GraphQLJSON from 'graphql-type-json';
 import { defaults } from 'lodash';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { getRepository, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Settings } from '../../../entities/Settings';
@@ -12,6 +12,7 @@ import { PackageVersion } from '../types/PackageVersion';
 import { PackageVersionInput } from '../types/PackageVersionInput';
 import { PrimeField } from '../types/PrimeField';
 import { Settings as SettingsType, SettingsAccessType } from '../types/Settings';
+import { Authorized } from '../utils/Authorized';
 import { getPackagesVersion } from '../utils/getPackagesVersion';
 import { updateNpmPackages } from '../utils/updateNpmPackages';
 

@@ -79,6 +79,7 @@
   },
   "gitHead": "0ba61f7c3155dd6cce2d4760eaab020cdf8daea4",
   "dependencies": {
+    "@casl/ability": "3.0.0",
     "apollo-link-context": "^1.0.14",
     "apollo-link-error": "1.1.7"
   }

@@ -1,3 +1,4 @@
+import { Ability } from '@casl/ability';
 import { types } from 'mobx-state-tree';
 
 const UserEmail = types.model('UserEmail', {
@@ -17,15 +18,20 @@ export const User = types
     id: types.identifier,
     emails: types.array(UserEmail),
     profile: types.optional(UserProfile, {}),
+    abilities: types.frozen(),
   })
   .preProcessSnapshot(snapshot => ({
     ...snapshot,
+    abilities: (snapshot && (snapshot as any).ability) || [],
     profile: (snapshot && snapshot.profile) || {},
   }))
   .views(self => ({
     get gravatarUrl() {
       const hash = (window as any).md5(self.emails[0]);
       return `https://www.gravatar.com/avatar/${hash}`;
+    },
+    get ability() {
+      return new Ability(self.abilities);
     },
   }))
   .actions(self => ({
