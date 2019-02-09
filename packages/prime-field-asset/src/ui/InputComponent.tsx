@@ -50,10 +50,10 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public url = (() => {
     try {
       return new URL(
-        String(this.props.stores.Settings.env.PRIME_CLOUDINARY_URL).replace(/^cloudinary/, 'http')
+        String(this.props.stores.Settings.env.CLOUDINARY_URL).replace(/^cloudinary/, 'http')
       );
     } catch (err) {
-      console.warn('No "PRIME_CLOUDINARY_URL" set'); // tslint:disable-line no-console
+      console.warn('No "CLOUDINARY_URL" set'); // tslint:disable-line no-console
     }
 
     return new URL('http://localhost');

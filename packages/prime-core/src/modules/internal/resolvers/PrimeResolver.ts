@@ -63,6 +63,18 @@ export class PrimeResolver {
       };
     }
 
+    settings!.data!.env = {};
+
+    fields.forEach(field => {
+      if (field.env) {
+        field.env.forEach(name => {
+          if (process.env[name]) {
+            settings!.data!.env[name] = process.env[name];
+          }
+        });
+      }
+    });
+
     settings.ensureMasterLocale();
 
     return settings.data;

@@ -12,6 +12,7 @@ export class PrimeField {
   public static title: string;
   public static description: string;
   public static options: any = {};
+  public static env = [];
 
   constructor(
     protected schemaField: SchemaField,

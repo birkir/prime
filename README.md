@@ -108,12 +108,13 @@ To get a sandbox to play with, just hit the Deploy button:
 
 This project would not have been made possible without support from the community.
 
-Special thanks to the following projects:
+Special thanks to the following projects (sorted alphabetically):
 
+- [Accounts JS](https://accounts-js.netlify.com/)
 - [Ant Design](https://ant.design) by AFX
 - [Apollo](https://www.apollographql.com/)
-- [GraphQL Sequelize](https://github.com/mickhansen/graphql-sequelize)
+- [GraphQL Modules](https://graphql-modules.com)
 - [Mobx](https://github.com/mobxjs/mobx) and [MST](https://github.com/mobxjs/mobx-state-tree)
 - [React Beautiful DnD](https://github.com/atlassian/react-beautiful-dnd) by Atlassian
-- [Sequelize](http://sequelizejs.com)
-- [Sequelize TypeScript](https://github.com/RobinBuschmann/sequelize-typescript)
+- [TypeGraphQL](https://19majkel94.github.io/type-graphql/)
+- [TypeORM](http://typeorm.io/)

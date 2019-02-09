@@ -3,7 +3,7 @@ import { Context } from '../../../interfaces/Context';
 
 export const createAbility = (context: Context) => {
   return AbilityBuilder.define((can, cannot) => {
-    const userId = context.user.id;
+    const userId = context.user && context.user.id;
     const role = (() => 'editor')();
 
     if (context.user) {

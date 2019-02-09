@@ -96,6 +96,7 @@ export const Settings = types
                 flag
                 master
               }
+              env
             }
             allFields {
               type

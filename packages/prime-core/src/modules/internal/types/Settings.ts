@@ -1,3 +1,4 @@
+import GraphQLJSON from 'graphql-type-json';
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 import { SettingsLocale } from './SettingsLocale';
 import { SettingsPreview } from './SettingsPreview';
@@ -22,4 +23,7 @@ export class Settings {
 
   @Field(type => [SettingsLocale], { nullable: true })
   public locales: SettingsLocale[];
+
+  @Field(type => GraphQLJSON, { nullable: true })
+  public env?: any;
 }
