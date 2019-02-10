@@ -39,6 +39,10 @@ Integration examples with previews.
 - [Gatsby](https://github.com/primecms/example-gatsby) (React)
 - [Next](https://github.com/primecms/example-next) (React)
 
+Tools
+
+- [apollo-link-prime](https://github.com/primecms/apollo-link-prime)
+
 ## Screenshots
 
 <table>
