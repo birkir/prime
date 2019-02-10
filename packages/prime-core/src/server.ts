@@ -34,6 +34,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   );
 
   const externalServer: any = new ApolloServer({
+    introspection: true,
     playground: true,
     schema: buildSchema(`type Query { boot: Boolean }`),
   });
@@ -56,14 +57,20 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
 
   pubSub.publish('REBUILD_EXTERNAL', { name: 'SERVER_BOOT' });
 
-  externalServer.applyMiddleware({ app });
+  externalServer.applyMiddleware({
+    app,
+    cors: {
+      origin: true,
+    },
+  });
 
   fields.forEach(
     field => field.ui && app.use(`/prime/field/${field.type}`, express.static(field.ui))
   );
 
   const apollo = new ApolloServer({
-    playground: true,
+    playground: false,
+    introspection: true,
     subscriptions: {
       ...subscriptions,
       onConnect: (params, ws, ctx) => ctx,
