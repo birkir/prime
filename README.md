@@ -32,6 +32,13 @@ There are a lot of headless SaaS solutions out there, and many of them better th
 
 See the [feature comparison](https://birkir.github.io/prime/#/features) to Prismic, Contentful and Strapi.
 
+## Examples
+
+Integration examples with previews.
+
+ - [Gatsby](https://github.com/primecms/example-gatsby) (React)
+ - [Next](https://github.com/primecms/example-next) (React)
+
 ## Screenshots
 
 <table>
