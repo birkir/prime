@@ -37,7 +37,7 @@ See the [feature comparison](https://birkir.github.io/prime/#/features) to Prism
 Integration examples with previews.
 
 - [Gatsby](https://github.com/primecms/example-gatsby) (React)
-- [Next](https://github.com/primecms/example-next) (React)
+- [Next](https://github.com/primecms/example-nextjs) (React)
 
 Tools
 
