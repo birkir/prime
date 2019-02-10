@@ -61,6 +61,23 @@ describe('InternalModule', () => {
     });
   });
 
+  describe('health', () => {
+    it('should have fields', async () => {
+      const result = await query(gql`
+        query {
+          allFields {
+            type
+            title
+            description
+            options
+            ui
+          }
+        }
+      `);
+      expect(result).toMatchSnapshot();
+    });
+  });
+
   describe('No Schemas', () => {
     it('should work to query PrimeDocument', async () => {
       const result = await query(gql`
