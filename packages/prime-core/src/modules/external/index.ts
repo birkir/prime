@@ -1,11 +1,15 @@
+import { AccountsModule } from '@accounts/graphql-api';
+import AccountsServer from '@accounts/server';
 import { GraphQLModule } from '@graphql-modules/core';
 import { PrimeFieldOperation } from '@primecms/field';
+import { AuthenticationError } from 'apollo-server-core';
 import debug from 'debug';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLUnionType } from 'graphql';
 import { camelCase, omit, upperFirst } from 'lodash';
 import { createResolversMap } from 'type-graphql/dist/utils/createResolversMap';
 import Container from 'typedi';
 import { Connection, getRepository } from 'typeorm';
+import { Document } from '../../entities/Document';
 import { Schema, SchemaVariant } from '../../entities/Schema';
 import { DocumentTransformer } from '../../utils/DocumentTransformer';
 import { createAllDocumentResolver } from './resolvers/createAllDocumentResolver';
@@ -166,18 +170,34 @@ export const createExternal = async (connection: Connection) => {
     return acc;
   }, {});
 
+  const PRIME_TOKEN = 'x-prime-token';
+  const PRIME_PREVIEW = 'x-prime-preview';
+
   return new GraphQLModule({
-    name: 'prime-external',
+    name: 'prime-graphql',
     extraSchemas: [graphqlSchema],
     resolvers: unionResolvers,
-    context() {
+    async context({ req }) {
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       log('requestId', requestId);
       const container = Container.of(requestId);
-      const ctx = {
+      const ctx: { [key: string]: any } = {
         requestId,
         container,
       };
+
+      if (req.headers[PRIME_TOKEN]) {
+        const server = AccountsModule.injector.get(AccountsServer);
+        ctx.userSession = await server.findSessionByAccessToken(req.headers[PRIME_TOKEN]);
+        if (!ctx.userSession) {
+          throw new AuthenticationError('Token not valid');
+        }
+
+        if (req.headers[PRIME_PREVIEW]) {
+          ctx.preview = await getRepository(Document).findOneOrFail(req.headers[PRIME_PREVIEW]);
+        }
+      }
+
       container.set('context', ctx);
       return ctx;
     },

@@ -3,7 +3,6 @@ import { GraphQLResolveInfo } from 'graphql';
 import {
   Arg,
   Args,
-  Authorized,
   Ctx,
   FieldResolver,
   ID,
@@ -24,6 +23,7 @@ import { WebhookRepository } from '../repositories/WebhookRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { User } from '../types/User';
 import { WebhookInput } from '../types/WebhookInput';
+import { Authorized } from '../utils/Authorized';
 
 const WebhookConnection = createConnectionType(Webhook);
 

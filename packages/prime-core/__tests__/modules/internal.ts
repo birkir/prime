@@ -78,7 +78,7 @@ describe('InternalModule', () => {
         await queries.Webhook.resolve({}, { id: 'nah' }, { ...context, user: null });
         throw new Error();
       } catch (e) {
-        expect(e.message).toContain('You need to be authorized');
+        expect(e.message).toContain('Must be authenticated');
       }
     });
   });

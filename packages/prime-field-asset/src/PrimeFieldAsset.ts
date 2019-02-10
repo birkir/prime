@@ -20,6 +20,8 @@ export class PrimeFieldAsset extends PrimeField {
     crops: [],
   };
 
+  public static env = ['CLOUDINARY_URL'];
+
   public outputType(context: PrimeFieldContext) {
     const options = this.options;
 

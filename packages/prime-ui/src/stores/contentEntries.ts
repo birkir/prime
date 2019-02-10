@@ -42,7 +42,7 @@ export const ContentEntries = types
       self.loading = false;
       self.loaded = true;
       if (data.Document) {
-        item = ContentEntry.create({ id, ...data.Document });
+        item = ContentEntry.create(data.Document);
         self.items.put(item);
       }
       return item;
@@ -75,10 +75,8 @@ export const ContentEntries = types
       });
       if (res.data) {
         const entry = res.data.createDocument;
-        const id = [entry.documentId, entry.locale, entry.releaseId].join(':');
         const item = ContentEntry.create({
           ...entry,
-          id,
           versions: [
             {
               ...entry,

@@ -1,8 +1,10 @@
+import { Ability } from '@casl/ability';
 import { Card, Layout, Menu } from 'antd';
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, RouteProps } from 'react-router';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import { Toolbar } from '../../components/toolbar/Toolbar';
+import { Auth } from '../../stores/auth';
 import { Account } from './Account';
 import { Locales } from './Locales';
 import { Previews } from './Previews';
@@ -14,7 +16,14 @@ import { Users } from './Users';
 import { WebhookCalls } from './WebhookCalls';
 import { Webhooks } from './Webhooks';
 
-const nav = [
+interface NavItem {
+  key: string;
+  title: string;
+  component: RouteProps['component'];
+  visible?: (rule: Ability) => boolean;
+}
+
+const nav: NavItem[] = [
   {
     key: 'account',
     title: 'Account',
@@ -24,6 +33,7 @@ const nav = [
     key: 'users',
     title: 'Users',
     component: Users,
+    visible: rule => rule.can('list', 'User'),
   },
   {
     key: 'security',
@@ -57,6 +67,13 @@ const nav = [
   },
 ];
 
+const withAbilities = ({ visible }: NavItem) => {
+  if (visible) {
+    return visible(Auth.user!.ability);
+  }
+  return true;
+};
+
 export const Settings = (props: any) => {
   const { path } = props.match;
   const { pathname } = props.location;
@@ -73,7 +90,7 @@ export const Settings = (props: any) => {
         <Card bordered={false} className="prime__settings__card">
           <div className="prime__settings__left">
             <Menu mode="inline" selectedKeys={[selectedKey]} className="prime__settings__menu">
-              {nav.map(({ key, title }) => (
+              {nav.filter(withAbilities).map(({ key, title }) => (
                 <Menu.Item key={key}>
                   <NavLink to={`${path}/${key}`} className="nav-text">
                     {title}

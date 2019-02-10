@@ -5,8 +5,8 @@ import { execute } from 'graphql';
 import 'reflect-metadata';
 import Container from 'typedi';
 import { Connection, getRepository, useContainer } from 'typeorm';
-import { createModules } from '../../src/modules';
 import { createExternal } from '../../src/modules/external';
+import { createInternal } from '../../src/modules/internal';
 import { connect } from '../../src/utils/connect';
 import { createSchemaQuery } from '../utils/createSchemaQuery';
 
@@ -16,12 +16,11 @@ describe('InternalModule', () => {
   let connection: Connection;
   let external: GraphQLModule;
   let internal: GraphQLModule;
-  let user: any;
+  let user;
   const context: any = { req: { headers: {} } };
 
   const query = async (document, which = external, ctx = context) => {
     const contextValue = await which.context(ctx);
-    contextValue.req = context.req;
     contextValue.user = user;
     return execute({
       schema: which.schema,
@@ -36,20 +35,18 @@ describe('InternalModule', () => {
     await connection.dropDatabase();
     await connection.synchronize();
 
-    internal = await createModules(connection);
+    internal = await createInternal(connection);
     external = await createExternal(connection);
 
     const onboard = await query(
       gql`
         mutation {
-          onboard(email: "foo@gmail.com", password: "foobar")
+          onboard(email: "demodemo@gmail.com", password: "demodemo")
         }
       `,
       internal
     );
     expect(onboard!.data!.onboard).toBe(true);
-
-    // get user
     user = await getRepository(User).findOne();
   });
 
@@ -61,6 +58,27 @@ describe('InternalModule', () => {
     });
     it('should have resolvers', () => {
       expect(external.resolvers).toBeTruthy();
+    });
+  });
+
+  describe('health', () => {
+    it('should have fields', async () => {
+      const result = await query(
+        gql`
+          query {
+            allFields {
+              type
+              title
+              description
+              options
+              ui
+            }
+          }
+        `,
+        internal
+      );
+      const fields = result.data!.allFields!.map(({ ui, ...rest }) => rest);
+      expect(fields).toMatchSnapshot();
     });
   });
 

@@ -295,10 +295,16 @@ export class DocumentsDetail extends React.Component<IProps> {
   public onPreviewPress = async (e: any) => {
     const index = Number(e.key || 0);
     const preview = Settings.previews[index];
-    const url = encodeURIComponent(
-      preview.hostname + preview.pathname + '?' + this.contentEntry!.id
-    );
-    window.open(Settings.coreUrl + '/auth/preview?' + url, '_prime');
+    const query = {
+      id: this.contentEntry!.id,
+      url: preview.hostname + preview.pathname,
+      accessToken: localStorage.getItem('accounts:accessToken'),
+      refreshToken: localStorage.getItem('accounts:refreshToken'),
+    };
+    const search = Object.entries(query)
+      .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+      .join('&');
+    window.open(`${Settings.coreUrl}/prime/redirect?${search}`, '_prime');
   };
 
   public renderVersion = (version: any) => {

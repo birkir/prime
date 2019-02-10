@@ -3,7 +3,6 @@ import { get, identity, pickBy } from 'lodash';
 import {
   Arg,
   Args,
-  Authorized,
   Ctx,
   FieldResolver,
   ID,
@@ -26,6 +25,7 @@ import { ConnectionArgs, createConnectionType } from '../types/createConnectionT
 import { DocumentFilterInput } from '../types/DocumentFilterInput';
 import { DocumentInput } from '../types/DocumentInput';
 import { DocumentVersion } from '../types/DocumentVersion';
+import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const DocumentConnection = createConnectionType(Document);

@@ -15,7 +15,6 @@ import { get } from 'lodash';
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Auth } from '../../stores/auth';
-import { accountsClient, accountsGraphQL, accountsPassword } from '../../utils/accounts';
 import { client } from '../../utils/client';
 import { stringToColor } from '../../utils/stringToColor';
 
@@ -131,11 +130,6 @@ export const Users = Form.create()(({ form }) => {
         return get(record, 'node.emails.0.address');
       },
     },
-    {
-      key: 'username',
-      title: 'Username',
-      dataIndex: 'node.username',
-    },
     // {
     //   key: 'roles',
     //   title: 'Roles',
@@ -148,6 +142,10 @@ export const Users = Form.create()(({ form }) => {
       key: 'actions',
       align: 'right' as any,
       render(text: string, record: any) {
+        if (Auth.user!.ability.cannot('delete', 'User')) {
+          return null;
+        }
+
         return (
           <span onClick={(e: any) => e.stopPropagation()}>
             <Popconfirm
@@ -200,7 +198,14 @@ export const Users = Form.create()(({ form }) => {
           refetchTable = refetch;
           return (
             <Table
-              footer={() => <Button onClick={onCreateClick}>Create</Button>}
+              footer={() => (
+                <Button
+                  disabled={!Auth.user!.ability.can('create', 'User')}
+                  onClick={onCreateClick}
+                >
+                  Create
+                </Button>
+              )}
               columns={columns}
               dataSource={data && data.allUsers && data.allUsers.edges}
               rowClassName={() => 'prime-row-click'}
@@ -246,51 +251,48 @@ export const Users = Form.create()(({ form }) => {
               valuePropName: 'checked',
             })(<Switch />)}
           </Form.Item>
-          <Form.Item label="Password" required={!enrollment}>
-            {form.getFieldDecorator('password', {
-              rules: [
-                {
-                  required: !enrollment,
-                  message: 'Please enter a password',
-                },
-                {
-                  min: 6,
-                  message: 'Enter at least 6 characters',
-                },
-                {
-                  validator: validateToNextPassword,
-                },
-              ],
-            })(
-              <Input
-                disabled={enrollment}
-                type="password"
-                size="large"
-                placeholder="Password"
-                onBlur={onPasswordBlur}
-              />
-            )}
-          </Form.Item>
-          <Form.Item label="Confirm password" required={!enrollment}>
-            {form.getFieldDecorator('confirm', {
-              rules: [
-                {
-                  required: !enrollment,
-                  message: 'Please confirm the password',
-                },
-                {
-                  validator: compareToFirstPassword,
-                },
-              ],
-            })(
-              <Input
-                disabled={enrollment}
-                type="password"
-                placeholder="Confirm password"
-                size="large"
-              />
-            )}
-          </Form.Item>
+          {!enrollment && (
+            <>
+              <Form.Item label="Password">
+                {form.getFieldDecorator('password', {
+                  rules: [
+                    {
+                      required: !enrollment,
+                      message: 'Please enter a password',
+                    },
+                    {
+                      min: 6,
+                      message: 'Enter at least 6 characters',
+                    },
+                    {
+                      validator: validateToNextPassword,
+                    },
+                  ],
+                })(
+                  <Input
+                    disabled={enrollment}
+                    type="password"
+                    size="large"
+                    placeholder="Password"
+                    onBlur={onPasswordBlur}
+                  />
+                )}
+              </Form.Item>
+              <Form.Item label="Confirm password">
+                {form.getFieldDecorator('confirm', {
+                  rules: [
+                    {
+                      required: !enrollment,
+                      message: 'Please confirm the password',
+                    },
+                    {
+                      validator: compareToFirstPassword,
+                    },
+                  ],
+                })(<Input type="password" placeholder="Confirm password" size="large" />)}
+              </Form.Item>
+            </>
+          )}
           {/* <Form.Item label="Roles">
             {form.getFieldDecorator('role')(
               <Select size="large">

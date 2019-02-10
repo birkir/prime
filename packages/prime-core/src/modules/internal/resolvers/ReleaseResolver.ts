@@ -1,16 +1,5 @@
 import { Context } from 'apollo-server-core';
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  FieldResolver,
-  ID,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from 'type-graphql';
+import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getRepository, In } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
@@ -20,6 +9,7 @@ import { ReleaseRepository } from '../repositories/ReleaseRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
+import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 
 const ReleaseConnection = createConnectionType(Release);

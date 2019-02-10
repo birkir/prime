@@ -1,25 +1,16 @@
 import { defaultsDeep } from 'lodash';
-import {
-  Arg,
-  Args,
-  Authorized,
-  FieldResolver,
-  ID,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from 'type-graphql';
+import { Arg, Args, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getRepository, Raw } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
-import { pubSub } from '../index';
+import { pubSub } from '../../../utils/pubSub';
 import { SchemaRepository } from '../repositories/SchemaRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { SchemaFieldGroup } from '../types/SchemaFieldGroup';
 import { SchemaInput } from '../types/SchemaInput';
+import { Authorized } from '../utils/Authorized';
 import { getSchemaFields } from '../utils/getSchemaFields';
 import { setSchemaFields } from '../utils/setSchemaFields';
 

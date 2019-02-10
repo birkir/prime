@@ -16,12 +16,11 @@ export const createDocumentResolver = async ({
     const key = args.id.length === 36 ? 'id' : 'documentId';
     const locale = args.locale || (await getDefaultLocale());
     const single = schema.settings.single;
-    const published = true;
     const where = {
       ...(!single && { [key]: args.id }),
       ...((single || key === 'documentId') && {
         locale,
-        publishedAt: Raw(alias => `${alias} IS ${published ? 'NOT' : ''} NULL`),
+        ...(!context.preview && { publishedAt: Raw(alias => `${alias} IS NOT NULL`) }),
       }),
       schemaId: schema.id,
       deletedAt: IsNull(),
@@ -37,17 +36,18 @@ export const createDocumentResolver = async ({
     if (doc) {
       const data = await documentTransformer.transformOutput(doc, schema, fields);
 
-      const locales = await documentRepository
+      const locales = documentRepository
         .createQueryBuilder('d')
         .select('d.locale')
-        .where('d.documentId = :documentId', { documentId: doc.documentId })
-        .where(`d.publishedAt IS ${published ? 'NOT' : ''} NULL`)
-        .groupBy('d.locale')
-        .getRawMany();
+        .where('d.documentId = :documentId', { documentId: doc.documentId });
+      if (!context.preview) {
+        locales.where(`d.publishedAt IS NOT NULL`);
+      }
+      locales.groupBy('d.locale');
 
       const meta = {
         ...doc,
-        locales: locales.map(d => d.d_locale),
+        locales: (await locales.getRawMany()).map(d => d.d_locale),
       };
 
       return { id: doc.documentId, _meta: meta, ...data, __typeOf: name };
