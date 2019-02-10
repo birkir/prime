@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field/compare/v0.3.2-beta.0...v0.3.2-beta.1) (2019-02-10)
+
+### Bug Fixes
+
+- hashes ([8aa7370](https://github.com/birkir/prime/tree/master/packages/prime-field/commit/8aa7370))
+
 ## [0.3.2-beta.0](https://github.com/birkir/prime/tree/master/packages/prime-field/compare/v0.3.1-alpha.0...v0.3.2-beta.0) (2019-02-10)
 
 ### Bug Fixes
