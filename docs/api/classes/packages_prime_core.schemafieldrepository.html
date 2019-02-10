@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ConnectionArgs | Prime CMS</title>
+	<title>SchemaFieldRepository | Prime CMS</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -57,10 +57,10 @@
 					<a href="../modules/packages_prime_core.html">packages/prime-core</a>
 				</li>
 				<li>
-					<a href="packages_prime_core.connectionargs.html">ConnectionArgs</a>
+					<a href="packages_prime_core.schemafieldrepository.html">SchemaFieldRepository</a>
 				</li>
 			</ul>
-			<h1>Class ConnectionArgs</h1>
+			<h1>Class SchemaFieldRepository</h1>
 		</div>
 	</div>
 </header>
@@ -71,7 +71,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ConnectionArgs</span>
+						<a href="packages_prime_core.dataloaderrepository.html" class="tsd-signature-type">DataLoaderRepository</a><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">SchemaFieldRepository</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -79,59 +84,118 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.connectionargs.html#after" class="tsd-kind-icon">after</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.connectionargs.html#before" class="tsd-kind-icon">before</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.connectionargs.html#first" class="tsd-kind-icon">first</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.connectionargs.html#last" class="tsd-kind-icon">last</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="packages_prime_core.schemafieldrepository.html#cache" class="tsd-kind-icon">cache</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="packages_prime_core.schemafieldrepository.html#getloader" class="tsd-kind-icon">get<wbr>Loader</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="packages_prime_core.schemafieldrepository.html#loadone" class="tsd-kind-icon">load<wbr>One</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="after" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> after</h3>
-					<div class="tsd-signature tsd-kind-icon">after<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="cache" class="tsd-anchor"></a>
+					<h3>cache</h3>
+					<div class="tsd-signature tsd-kind-icon">cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="packages_prime_core.dataloaderrepository.html">DataLoaderRepository</a>.<a href="packages_prime_core.dataloaderrepository.html#cache">cache</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/types/createConnectionType.ts#L14">prime-core/src/modules/internal/types/createConnectionType.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/repositories/DataLoaderRepository.ts#L8">prime-core/src/modules/internal/repositories/DataLoaderRepository.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="before" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> before</h3>
-					<div class="tsd-signature tsd-kind-icon">before<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/types/createConnectionType.ts#L17">prime-core/src/modules/internal/types/createConnectionType.ts:17</a></li>
-						</ul>
-					</aside>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="getloader" class="tsd-anchor"></a>
+					<h3>get<wbr>Loader</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Loader<span class="tsd-signature-symbol">(</span>qb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SelectQueryBuilder</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span>, keyMatcher<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span>, keyName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, raw<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="packages_prime_core.dataloaderrepository.html">DataLoaderRepository</a>.<a href="packages_prime_core.dataloaderrepository.html#getloader">getLoader</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/repositories/DataLoaderRepository.ts#L10">prime-core/src/modules/internal/repositories/DataLoaderRepository.ts:10</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>qb: <span class="tsd-signature-type">SelectQueryBuilder</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> keyMatcher: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>qb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SelectQueryBuilder</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span>, keys<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>qb: <span class="tsd-signature-type">SelectQueryBuilder</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span></h5>
+														</li>
+														<li>
+															<h5>keys: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> keyName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;id&quot;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> raw: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="first" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> first</h3>
-					<div class="tsd-signature tsd-kind-icon">first<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/types/createConnectionType.ts#L8">prime-core/src/modules/internal/types/createConnectionType.ts:8</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="last" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> last</h3>
-					<div class="tsd-signature tsd-kind-icon">last<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/types/createConnectionType.ts#L11">prime-core/src/modules/internal/types/createConnectionType.ts:11</a></li>
-						</ul>
-					</aside>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="loadone" class="tsd-anchor"></a>
+					<h3>load<wbr>One</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, where<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">FindConditions</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="packages_prime_core.dataloaderrepository.html">DataLoaderRepository</a>.<a href="packages_prime_core.dataloaderrepository.html#loadone">loadOne</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/repositories/DataLoaderRepository.ts#L42">prime-core/src/modules/internal/repositories/DataLoaderRepository.ts:42</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> where: <span class="tsd-signature-type">FindConditions</span><span class="tsd-signature-symbol">&lt;</span><a href="packages_prime_core.schemafield.html" class="tsd-signature-type">SchemaField</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -184,19 +248,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="packages_prime_core.connectionargs.html" class="tsd-kind-icon">Connection<wbr>Args</a>
+						<a href="packages_prime_core.schemafieldrepository.html" class="tsd-kind-icon">Schema<wbr>Field<wbr>Repository</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_core.connectionargs.html#after" class="tsd-kind-icon">after</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="packages_prime_core.schemafieldrepository.html#cache" class="tsd-kind-icon">cache</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_core.connectionargs.html#before" class="tsd-kind-icon">before</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="packages_prime_core.schemafieldrepository.html#getloader" class="tsd-kind-icon">get<wbr>Loader</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_core.connectionargs.html#first" class="tsd-kind-icon">first</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="packages_prime_core.connectionargs.html#last" class="tsd-kind-icon">last</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="packages_prime_core.schemafieldrepository.html#loadone" class="tsd-kind-icon">load<wbr>One</a>
 							</li>
 						</ul>
 					</li>

@@ -90,9 +90,12 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#user" class="tsd-kind-icon">User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#ability" class="tsd-kind-icon">ability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#allusers" class="tsd-kind-icon">all<wbr>Users</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#changeemail" class="tsd-kind-icon">change<wbr>Email</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#createprimeuser" class="tsd-kind-icon">create<wbr>Prime<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#email" class="tsd-kind-icon">email</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#getuser" class="tsd-kind-icon">get<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#removeuser" class="tsd-kind-icon">remove<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#roles" class="tsd-kind-icon">roles</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.userresolver.html#updateuser" class="tsd-kind-icon">update<wbr>User</a></li>
@@ -109,7 +112,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<wbr>Email<wbr>Repository<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Repository</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/packages_prime_ui.html#useremail" class="tsd-signature-type">UserEmail</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L22">prime-core/src/modules/internal/resolvers/UserResolver.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L24">prime-core/src/modules/internal/resolvers/UserResolver.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -119,7 +122,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<wbr>Repository<span class="tsd-signature-symbol">:</span> <a href="packages_prime_core.userrepository.html" class="tsd-signature-type">UserRepository</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L19">prime-core/src/modules/internal/resolvers/UserResolver.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L21">prime-core/src/modules/internal/resolvers/UserResolver.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -136,13 +139,36 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L25">prime-core/src/modules/internal/resolvers/UserResolver.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L28">prime-core/src/modules/internal/resolvers/UserResolver.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ability" class="tsd-anchor"></a>
+					<h3>ability</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">ability<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L146">prime-core/src/modules/internal/resolvers/UserResolver.ts:146</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>context: <a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
@@ -159,7 +185,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L32">prime-core/src/modules/internal/resolvers/UserResolver.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L45">prime-core/src/modules/internal/resolvers/UserResolver.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -173,6 +199,35 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="changeemail" class="tsd-anchor"></a>
+					<h3>change<wbr>Email</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">change<wbr>Email<span class="tsd-signature-symbol">(</span>password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, email<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L88">prime-core/src/modules/internal/resolvers/UserResolver.ts:88</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>password: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>email: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="createprimeuser" class="tsd-anchor"></a>
 					<h3>create<wbr>Prime<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -182,7 +237,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L47">prime-core/src/modules/internal/resolvers/UserResolver.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L61">prime-core/src/modules/internal/resolvers/UserResolver.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -211,7 +266,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L93">prime-core/src/modules/internal/resolvers/UserResolver.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L134">prime-core/src/modules/internal/resolvers/UserResolver.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -225,22 +280,48 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removeuser" class="tsd-anchor"></a>
-					<h3>remove<wbr>User</h3>
+					<a name="getuser" class="tsd-anchor"></a>
+					<h3>get<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>User<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L84">prime-core/src/modules/internal/resolvers/UserResolver.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L36">prime-core/src/modules/internal/resolvers/UserResolver.ts:36</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>context: <a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeuser" class="tsd-anchor"></a>
+					<h3>remove<wbr>User</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L123">prime-core/src/modules/internal/resolvers/UserResolver.ts:123</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -257,7 +338,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L99">prime-core/src/modules/internal/resolvers/UserResolver.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L140">prime-core/src/modules/internal/resolvers/UserResolver.ts:140</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -274,13 +355,13 @@
 					<a name="updateuser" class="tsd-anchor"></a>
 					<h3>update<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, input<span class="tsd-signature-symbol">: </span><a href="packages_prime_core.updateuserinput.html" class="tsd-signature-type">UpdateUserInput</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, input<span class="tsd-signature-symbol">: </span><a href="packages_prime_core.updateuserinput.html" class="tsd-signature-type">UpdateUserInput</a>, context<span class="tsd-signature-symbol">: </span><a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L73">prime-core/src/modules/internal/resolvers/UserResolver.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/modules/internal/resolvers/UserResolver.ts#L109">prime-core/src/modules/internal/resolvers/UserResolver.ts:109</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -290,6 +371,9 @@
 								</li>
 								<li>
 									<h5>input: <a href="packages_prime_core.updateuserinput.html" class="tsd-signature-type">UpdateUserInput</a></h5>
+								</li>
+								<li>
+									<h5>context: <a href="../interfaces/packages_prime_core.context.html" class="tsd-signature-type">Context</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -359,13 +443,22 @@
 								<a href="packages_prime_core.userresolver.html#user" class="tsd-kind-icon">User</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_core.userresolver.html#ability" class="tsd-kind-icon">ability</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_core.userresolver.html#allusers" class="tsd-kind-icon">all<wbr>Users</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_core.userresolver.html#changeemail" class="tsd-kind-icon">change<wbr>Email</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_core.userresolver.html#createprimeuser" class="tsd-kind-icon">create<wbr>Prime<wbr>User</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_core.userresolver.html#email" class="tsd-kind-icon">email</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="packages_prime_core.userresolver.html#getuser" class="tsd-kind-icon">get<wbr>User</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_core.userresolver.html#removeuser" class="tsd-kind-icon">remove<wbr>User</a>

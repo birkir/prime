@@ -80,6 +80,12 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="packages_prime_core.documenttransformer.html#fieldsdataloader" class="tsd-kind-icon">fields<wbr>Dataloader</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="packages_prime_core.documenttransformer.html#getfields" class="tsd-kind-icon">get<wbr>Fields</a></li>
@@ -89,6 +95,19 @@
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="fieldsdataloader" class="tsd-anchor"></a>
+					<h3>fields<wbr>Dataloader</h3>
+					<div class="tsd-signature tsd-kind-icon">fields<wbr>Dataloader<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;new DataLoader(async keys &#x3D;&gt; {const result &#x3D; await getRepository(SchemaField).find({where: {schemaId: In(keys),},cache: 1000,});return keys.map(key &#x3D;&gt; result.filter(n &#x3D;&gt; n.schemaId &#x3D;&#x3D;&#x3D; key));})</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/utils/DocumentTransformer.ts#L19">prime-core/src/utils/DocumentTransformer.ts:19</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -103,7 +122,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/utils/DocumentTransformer.ts#L18">prime-core/src/utils/DocumentTransformer.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/utils/DocumentTransformer.ts#L29">prime-core/src/utils/DocumentTransformer.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -126,7 +145,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/utils/DocumentTransformer.ts#L35">prime-core/src/utils/DocumentTransformer.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/utils/DocumentTransformer.ts#L39">prime-core/src/utils/DocumentTransformer.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -161,7 +180,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/utils/DocumentTransformer.ts#L123">prime-core/src/utils/DocumentTransformer.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/utils/DocumentTransformer.ts#L127">prime-core/src/utils/DocumentTransformer.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,7 +209,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/birkir/prime/blob/5ac35b1/packages/prime-core/src/utils/DocumentTransformer.ts#L130">prime-core/src/utils/DocumentTransformer.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/birkir/prime/blob/b9b9fc9/packages/prime-core/src/utils/DocumentTransformer.ts#L134">prime-core/src/utils/DocumentTransformer.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -262,6 +281,9 @@
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="packages_prime_core.documenttransformer.html" class="tsd-kind-icon">Document<wbr>Transformer</a>
 						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="packages_prime_core.documenttransformer.html#fieldsdataloader" class="tsd-kind-icon">fields<wbr>Dataloader</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="packages_prime_core.documenttransformer.html#getfields" class="tsd-kind-icon">get<wbr>Fields</a>
 							</li>
