@@ -63,18 +63,22 @@ describe('InternalModule', () => {
 
   describe('health', () => {
     it('should have fields', async () => {
-      const result = await query(gql`
-        query {
-          allFields {
-            type
-            title
-            description
-            options
-            ui
+      const result = await query(
+        gql`
+          query {
+            allFields {
+              type
+              title
+              description
+              options
+              ui
+            }
           }
-        }
-      `);
-      expect(result).toMatchSnapshot();
+        `,
+        internal
+      );
+      const fields = result.data!.allFields!.map(({ ui, ...rest }) => rest);
+      expect(fields).toMatchSnapshot();
     });
   });
 
