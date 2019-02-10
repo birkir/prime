@@ -23,6 +23,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
   if (networkError) {
     console.log(`[Network error]: %o`, networkError); // tslint:disable-line no-console
+    message.error('Network error');
   }
 });
 

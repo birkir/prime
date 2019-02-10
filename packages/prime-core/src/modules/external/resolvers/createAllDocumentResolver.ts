@@ -26,7 +26,6 @@ export const createAllDocumentResolver = async ({
 
   return async (root, args: Args, context, info) => {
     const locale = args.locale || (await getDefaultLocale());
-    const published = true;
 
     FindAllConnection.prototype.resolveNode = async node => {
       const data = await documentTransformer.transformOutput(node, schema, fields);
@@ -44,33 +43,38 @@ export const createAllDocumentResolver = async ({
     sortOptions.push({ sort: '"id"', order: 'DESC' });
 
     const connection = new FindAllConnection(args, {
-      where: (qb, count = false) => {
+      where: (qb, isCount = false) => {
         const sqb = qb
           .subQuery()
           .select('id')
           .from(Document, 'd')
           .where('d.documentId = Document.documentId');
 
-        if (!count) {
-          qb.addSelect(
-            fqb =>
-              fqb
-                .subQuery()
-                .select('array_agg(DISTINCT "locale")') // @todo postgres only
-                .from(Document, 'd')
-                .where('d.documentId = Document.documentId')
-                .andWhere(`Document.publishedAt IS ${published ? 'NOT' : ''} NULL`)
-                .andWhere(`Document.deletedAt IS NULL`),
-            'locales'
-          );
+        if (!isCount) {
+          qb.addSelect(fqb => {
+            const ffqb = fqb
+              .subQuery()
+              .select('array_agg(DISTINCT "locale")') // @todo postgres only
+              .from(Document, 'd')
+              .where('d.documentId = Document.documentId');
+            if (!context.preview) {
+              ffqb.andWhere(`Document.publishedAt IS NOT NULL`);
+            }
+            ffqb.andWhere(`Document.deletedAt IS NULL`);
+            return ffqb;
+          }, 'locales');
         }
 
         qb.andWhere('Document.locale = :locale', { locale });
-        qb.andWhere(`Document.publishedAt IS ${published ? 'NOT' : ''} NULL`);
+        if (!context.preview) {
+          qb.andWhere(`Document.publishedAt IS NOT NULL`);
+        }
         qb.andWhere(`Document.deletedAt IS NULL`);
 
         sqb.andWhere('d.locale = :locale', { locale });
-        sqb.andWhere(`d.publishedAt IS ${published ? 'NOT' : ''} NULL`);
+        if (!context.preview) {
+          sqb.andWhere(`d.publishedAt IS NOT NULL`);
+        }
         sqb.andWhere(`d.deletedAt IS NULL`);
 
         (args.where || []).map(n => {
@@ -79,20 +83,25 @@ export const createAllDocumentResolver = async ({
         });
 
         sqb.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
-        if (!count) {
+
+        if (!isCount) {
           qb.having(`Document.id = ${sqb.getQuery()}`);
           qb.groupBy('Document.id');
+        } else {
+          qb.groupBy('Document.documentId');
         }
       },
       repository: documentRepository,
       sortOptions,
     });
 
-    connection.totalCount = await connection
+    const { count } = await connection
       .createAppliedQueryBuilder(true)
-      .addSelect('id')
+      .select('COUNT(DISTINCT Document.documentId)')
       .cache(2000)
-      .getCount();
+      .getRawOne();
+
+    connection.totalCount = Number(count || -1);
 
     return connection;
   };

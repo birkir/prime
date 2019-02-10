@@ -14,6 +14,7 @@ import { createInternal } from './modules/internal';
 import { config } from './utils/config';
 import { fields } from './utils/fields';
 import { log } from './utils/log';
+import { previewRoutes } from './utils/preview';
 import { pubSub } from './utils/pubSub';
 import { serveUI } from './utils/serveUI';
 
@@ -89,6 +90,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     },
   });
 
+  previewRoutes(app);
   serveUI(app, config);
 
   return server.listen(port, () => {

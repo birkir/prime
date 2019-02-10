@@ -44,7 +44,7 @@ export class FindAllConnection<T> extends EntityConnection<T> {
   public async query(): Promise<T[]> {
     const { sortOptions } = this;
 
-    const queryBuilder = this.createAppliedQueryBuilder(true);
+    const queryBuilder = this.createAppliedQueryBuilder();
 
     const reverse = typeof this.args.last === 'number';
     const appliedOrderMap: any = {
