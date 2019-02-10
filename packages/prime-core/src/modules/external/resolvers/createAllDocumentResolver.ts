@@ -65,12 +65,14 @@ export const createAllDocumentResolver = async ({
           }, 'locales');
         }
 
+        qb.andWhere('Document.schemaId = :schemaId', { schemaId: schema.id });
         qb.andWhere('Document.locale = :locale', { locale });
         if (!context.preview) {
           qb.andWhere(`Document.publishedAt IS NOT NULL`);
         }
         qb.andWhere(`Document.deletedAt IS NULL`);
 
+        sqb.andWhere('Document.schemaId = :schemaId', { schemaId: schema.id });
         sqb.andWhere('d.locale = :locale', { locale });
         if (!context.preview) {
           sqb.andWhere(`d.publishedAt IS NOT NULL`);

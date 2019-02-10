@@ -4,13 +4,7 @@ import { GraphQLModule } from '@graphql-modules/core';
 import { PrimeFieldOperation } from '@primecms/field';
 import { AuthenticationError } from 'apollo-server-core';
 import debug from 'debug';
-import {
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-  GraphQLUnionType,
-  printSchema,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLUnionType } from 'graphql';
 import { camelCase, omit, upperFirst } from 'lodash';
 import { createResolversMap } from 'type-graphql/dist/utils/createResolversMap';
 import Container from 'typedi';
