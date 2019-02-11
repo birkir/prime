@@ -6,6 +6,7 @@ describe('PrimeFieldGeoPoint', () => {
 
   beforeAll(() => {
     test = new PrimeFieldGeoPoint({ options: {} } as any, {} as any);
+    test;
   });
 
   it('should have default export', () => {
