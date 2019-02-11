@@ -15,7 +15,8 @@
   },
   "files": [
     "src",
-    "lib"
+    "lib",
+    "template"
   ],
   "scripts": {
     "clean": "rimraf lib",
