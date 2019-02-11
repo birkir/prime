@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2-beta.6](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.2-beta.5...v0.3.2-beta.6) (2019-02-11)
+
+### Bug Fixes
+
+- template in cli ([28ce5c6](https://github.com/birkir/prime/tree/master/packages/prime-cli/commit/28ce5c6))
+
 ## [0.3.2-beta.5](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.2-beta.4...v0.3.2-beta.5) (2019-02-11)
 
 ### Bug Fixes
