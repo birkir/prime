@@ -5,9 +5,17 @@ Getting Started is very easy if you already have node and postgres.
 Super Quick Start:
 
 ```bash
-npm init -y
-npm install -S @primecms/core @primecms/ui
-npx primecms start
+npx @primecms/cli init
+```
+
+Or install the CLI globally
+
+```bash
+npm install -g @primecms/cli
+
+primecms init my-project
+cd my-project
+primecms start
 ```
 
 > Please remember to set the environment variable "SESSION_SECRET".
@@ -60,6 +68,9 @@ sudo update-rc.d postgresql enable
 ## Starting prime
 
 ```bash
+npx @primecms/cli start
+
+# or pkg un-safe
 npx primecms start
 ```
 
