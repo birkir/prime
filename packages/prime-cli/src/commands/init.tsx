@@ -137,7 +137,7 @@ class InitCommand extends React.Component<Props, State> {
       });
 
       installer.on('close', () => {
-        this.setState({ wizardState: WizardState.DONE }, () => {
+        this.setState({ wizardState: WizardState.DONE, installMessage: 'Install finished' }, () => {
           setTimeout(() => process.exit(), 1000);
         });
       });
@@ -188,35 +188,40 @@ class InitCommand extends React.Component<Props, State> {
     return null;
   };
 
-  public render() {
+  public renderDone() {
     if (this.state.wizardState === WizardState.DONE) {
       return (
-        <Box marginTop={1} flexDirection="column">
-          <Box>Installation complete!</Box>
+        <Box flexDirection="column">
           <Box marginTop={1}>To start Prime CMS</Box>
           <Box marginTop={1} marginLeft={4} flexDirection="column">
             <Box>
-              <Color green>cd {this.state.projectName}</Color>
+              <Color green>cd {String(this.state.projectName)}</Color>
             </Box>
             <Box>
               <Color green>yarn start</Color>
             </Box>
           </Box>
-          <Box marginTop={1}>
+          <Box marginTop={1} marginBottom={1}>
             Submit issue if you have any problems: https://github.com/birkir/prime/issues
           </Box>
         </Box>
       );
     }
+    return null;
+  }
 
-    if (this.state.wizardState === WizardState.INSTALL) {
+  public render() {
+    if (this.state.wizardState >= WizardState.INSTALL) {
       return (
-        <Box marginTop={1}>
-          <Spinner type="dots12" yellow />
+        <Box flexDirection="column">
           <Box>
-            {' '}
-            <Color green>{this.state.installMessage}</Color>
+            <Spinner type="dots12" yellow={this.state.wizardState === WizardState.INSTALL} />
+            <Box>
+              {' '}
+              <Color green>{this.state.installMessage}</Color>
+            </Box>
           </Box>
+          {this.renderDone()}
         </Box>
       );
     }
