@@ -9,6 +9,7 @@ const primeConfig = require('rc')('prime', {
     '@primecms/field-boolean',
     '@primecms/field-datetime',
     '@primecms/field-document',
+    '@primecms/field-geopoint',
     '@primecms/field-group',
     '@primecms/field-number',
     '@primecms/field-select',

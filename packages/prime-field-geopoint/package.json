@@ -1,0 +1,53 @@
+{
+  "name": "@primecms/field-geopoint",
+  "version": "0.3.2-beta.1",
+  "description": "GeoPoint Field for Prime CMS",
+  "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
+  "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-geopoint",
+  "license": "MIT",
+  "main": "lib/index",
+  "typings": "lib/index",
+  "prime": "lib/ui",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "tsc --watch",
+    "precompile": "yarn clean",
+    "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
+    "prepublishOnly": "yarn compile",
+    "testonly": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "coverage": "yarn testonly --coverage"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-geopoint"
+  },
+  "dependencies": {
+    "@primecms/field": "^0.3.2-beta.1",
+    "antd": "^3.13.0",
+    "apollo-server-core": "^2.3.1",
+    "graphql": "^14.1.1",
+    "leaflet": "1.4.0",
+    "lodash": "^4.17.11",
+    "react": "^16.8.0-alpha.1",
+    "react-dom": "^16.8.0-alpha.1",
+    "react-leaflet": "2.2.0",
+    "react-leaflet-search": "0.6.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.0.5",
+    "ts-loader": "5.3.0",
+    "webpack-cli": "3.1.2"
+  },
+  "gitHead": "31138953252872820486c9e13905c14de7f2067e"
+}
