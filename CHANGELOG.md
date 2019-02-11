@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2-beta.7](https://github.com/birkir/prime/compare/v0.3.2-beta.6...v0.3.2-beta.7) (2019-02-11)
+
+### Bug Fixes
+
+- upload template to npm ([5017000](https://github.com/birkir/prime/commit/5017000))
+
 ## [0.3.2-beta.6](https://github.com/birkir/prime/compare/v0.3.2-beta.5...v0.3.2-beta.6) (2019-02-11)
 
 ### Bug Fixes
