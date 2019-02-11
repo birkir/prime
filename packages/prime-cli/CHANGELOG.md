@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2-beta.8](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.2-beta.7...v0.3.2-beta.8) (2019-02-11)
+
+### Bug Fixes
+
+- timeout in cli for end msg ([7f59e8c](https://github.com/birkir/prime/tree/master/packages/prime-cli/commit/7f59e8c))
+
 ## [0.3.2-beta.7](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.2-beta.6...v0.3.2-beta.7) (2019-02-11)
 
 ### Bug Fixes
