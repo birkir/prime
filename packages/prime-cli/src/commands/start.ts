@@ -15,5 +15,13 @@ export async function startCommand(cli) {
     throw new Error('did not find @primecms/core in node_modules');
   }
 
+  if (!process.env.DEBUG) {
+    process.env.DEBUG = 'prime:*';
+  }
+
+  if (cli.flags.debug) {
+    process.env.DEBUG = `${process.env.DEBUG},typeorm:*`;
+  }
+
   require(path.join(coreDir, 'lib', 'index.js'));
 }

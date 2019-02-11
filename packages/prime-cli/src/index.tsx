@@ -8,10 +8,14 @@ const cli = meow(
     Usage
       $ primecms <command>
 
+    Flags
+      --help
+      --debug
+
     Commands
-      - init
-      - init <projectName>
-      - start
+      init
+      init <projectName>
+      start
 
     Examples
       $ primecms init example

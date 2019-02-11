@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "./lib",
+    "resolveJsonModule": true,
     "declaration": false,
     "lib": ["es6", "es2015", "es2017", "esnext"]
   },

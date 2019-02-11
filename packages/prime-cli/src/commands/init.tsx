@@ -138,7 +138,7 @@ class InitCommand extends React.Component<Props, State> {
 
       installer.on('close', () => {
         this.setState({ wizardState: WizardState.DONE }, () => {
-          process.exit();
+          setTimeout(() => process.exit(), 1000);
         });
       });
     });
