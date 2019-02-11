@@ -262,10 +262,14 @@ export class DocumentResolver {
     nullable: true,
   })
   public async primary(@Root() document: Document): Promise<any> {
-    const qb = this.schemaFieldRepository.createQueryBuilder().where('primary = TRUE');
+    const qb = this.schemaFieldRepository.createQueryBuilder();
     qb.cache(1000);
     let field = await this.schemaFieldRepository
-      .getLoader(qb, (b, keys) => b.where({ schemaId: In(keys) }), 'schemaId')
+      .getLoader(
+        qb,
+        (b, keys) => b.where({ schemaId: In(keys) }).andWhere('SchemaField.primary = TRUE'),
+        'schemaId'
+      )
       .load(document.schemaId);
 
     if (field) {

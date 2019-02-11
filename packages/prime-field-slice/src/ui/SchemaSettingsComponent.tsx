@@ -16,10 +16,10 @@ export class SchemaSettingsComponent extends React.PureComponent<PrimeFieldProps
     return (
       <>
         <Form.Item label="Slices" style={{ marginBottom: 8 }}>
-          {form.getFieldDecorator('options.contentTypeIds')(
+          {form.getFieldDecorator('options.schemaIds')(
             <Select placeholder="Select Slices" mode="multiple">
               {stores.ContentTypes.list
-                .filter((n: IContentType) => n.variant === SchemaVariant.Slice)
+                .filter((n: any) => n.variant === 'Slice')
                 .map((contentType: IContentType) => (
                   <Select.Option value={contentType.id} key={contentType.id}>
                     {contentType.title}

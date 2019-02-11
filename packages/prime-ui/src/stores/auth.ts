@@ -57,7 +57,6 @@ export const Auth = types
       if (data && data.getUser) {
         self.isLoggedIn = true;
         self.user = data.getUser;
-        console.log(self.user);
         yield ensureFields();
       }
       if (!self.isLoggedIn) {

@@ -7,7 +7,7 @@ type ISlice = null | {
   __inputtype: string;
   id: string;
   title: string;
-  schema: any;
+  fields: any;
 };
 
 interface IState {
@@ -54,7 +54,7 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
 
   public async load() {
     const { field, stores } = this.props;
-    const ids = get(field.options, 'contentTypeIds', []);
+    const ids = get(field.options, 'schemaIds', []);
     const initialValue = (this.props.initialValue as any) || [];
 
     this.setState({
@@ -135,6 +135,8 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
           }
           const { index } = slice as any;
 
+          console.log(slice);
+
           return (
             <Card key={`${slice.id}_${index}`} className="prime-slice-item">
               <div className="prime-slice-item-actions">
@@ -165,7 +167,7 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
               {form.getFieldDecorator(`${path}.${index}.__inputname`, {
                 initialValue: slice.id,
               })(<input type="hidden" />)}
-              {slice.schema.fields.filter(noChildren).map((f: any) => this.renderField(f, index))}
+              {slice.fields.fields.filter(noChildren).map((f: any) => this.renderField(f, index))}
             </Card>
           );
         })}

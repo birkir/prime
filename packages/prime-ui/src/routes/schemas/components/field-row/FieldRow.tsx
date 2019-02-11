@@ -87,7 +87,7 @@ export class FieldRow extends React.Component<IProps> {
                         disabled={starDisabled}
                         onClick={this.onDisplayClick}
                       >
-                        <Icon type="star" theme={field.isDisplay ? 'filled' : 'outlined'} />
+                        <Icon type="star" theme={field.primary ? 'filled' : 'outlined'} />
                       </Button>
                     </Tooltip>
                   )}
