@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2-beta.5](https://github.com/birkir/prime/compare/v0.3.2-beta.4...v0.3.2-beta.5) (2019-02-11)
+
+### Bug Fixes
+
+- missing react dep ([9ab168f](https://github.com/birkir/prime/commit/9ab168f))
+
 ## [0.3.2-beta.4](https://github.com/birkir/prime/compare/v0.3.2-beta.3...v0.3.2-beta.4) (2019-02-11)
 
 ### Bug Fixes
