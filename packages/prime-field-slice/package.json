@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-slice",
-  "version": "0.3.2-beta.2",
+  "version": "0.3.2-beta.3",
   "description": "Slice Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-slice",
