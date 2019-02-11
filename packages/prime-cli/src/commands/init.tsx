@@ -110,6 +110,7 @@ class InitCommand extends React.Component<Props, State> {
       connectionString: `postgresql://${postgresUsername}${
         postgresPassword ? `:${postgresPassword}` : ''
       }@localhost:5432/${postgresDatabase}`,
+      randomSecret: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER),
     };
 
     if (fs.existsSync(targetDir)) {
