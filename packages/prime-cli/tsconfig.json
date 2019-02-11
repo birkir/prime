@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "pretty": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "target": "es6",
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "outDir": "./lib",
+    "declaration": false,
+    "lib": ["es6", "es2015", "es2017", "esnext"]
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}

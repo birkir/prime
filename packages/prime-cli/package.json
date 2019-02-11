@@ -1,0 +1,53 @@
+{
+  "name": "@primecms/cli",
+  "private": false,
+  "version": "0.3.2-beta.1",
+  "description": "primecms cli",
+  "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
+  "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-cli",
+  "license": "MIT",
+  "bin": {
+    "primecms": "./lib/index.js"
+  },
+  "main": "lib/index",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "ts-node ./src",
+    "precompile": "yarn clean",
+    "compile": "tsc",
+    "prepublishOnly": "yarn compile"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/src/tests"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/birkir/prime/tree/master/packages/prime-cli"
+  },
+  "keywords": [
+    "prime",
+    "primecms",
+    "cli",
+    "ink"
+  ],
+  "dependencies": {
+    "cli-spinners": "1.3.1",
+    "copy-template-dir": "1.4.0",
+    "ink": "2.0.0-11",
+    "ink-text-input": "3.0.0-0",
+    "lodash": "4.17.11",
+    "meow": "5.0.0"
+  },
+  "gitHead": "31138953252872820486c9e13905c14de7f2067e"
+}
