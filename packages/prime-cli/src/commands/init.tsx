@@ -102,7 +102,7 @@ class InitCommand extends React.Component<Props, State> {
   public install() {
     const { projectName, postgresUsername, postgresPassword, postgresDatabase } = this.state;
 
-    const templateDir = path.join(__dirname, '..', 'template');
+    const templateDir = path.join(__dirname, '..', '..', 'template');
     const targetDir = path.join(process.cwd(), projectName);
     const vars = {
       projectName,
