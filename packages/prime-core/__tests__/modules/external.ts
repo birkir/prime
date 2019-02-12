@@ -190,6 +190,208 @@ describe('InternalModule', () => {
         `
       );
       expect(res3!.data!.Author).toEqual({ id, name: 'John Doe', bio: 'Anonymous person' });
+
+      const res4 = await query(
+        gql`
+          query {
+            allAuthor(sort: { name: ASC }, where: { name: { neq: "" } }) {
+              edges {
+                node {
+                  id
+                  name
+                  bio
+                }
+              }
+            }
+          }
+        `
+      );
+      expect(res4!.data!.allAuthor!.edges).toHaveLength(1);
+
+      const res5 = await query(
+        gql`
+          query {
+            Document(id:"${id}") {
+              id
+            }
+          }
+        `,
+        internal
+      );
+      expect(res5!.data!).toBeTruthy();
+    });
+
+    it('should show list of documents', async () => {
+      const res = await query(
+        gql`
+          query {
+            allDocuments {
+              edges {
+                node {
+                  id
+                  documentId
+                  schemaId
+                  releaseId
+                  locale
+                  primary
+                  data
+                  createdAt
+                  updatedAt
+                  publishedAt
+                }
+              }
+            }
+          }
+        `,
+        internal
+      );
+      expect(res!.data!.allDocuments).toBeTruthy();
+    });
+
+    it('should show list of users', async () => {
+      const res = await query(
+        gql`
+          query {
+            allUsers {
+              edges {
+                node {
+                  id
+                  profile
+                  emails {
+                    address
+                    verified
+                  }
+                  username
+                }
+              }
+            }
+          }
+        `,
+        internal
+      );
+      expect(res!.data!.allUsers).toBeTruthy();
+    });
+
+    it('should show list of schemas', async () => {
+      const res = await query(
+        gql`
+          query allSchemas {
+            allSchemas {
+              edges {
+                node {
+                  id
+                  name
+                  title
+                  groups
+                  settings
+                  variant
+                  documentCount
+                  fields {
+                    title
+                    fields {
+                      id
+                      name
+                      title
+                      description
+                      type
+                      options
+                      primary
+                      schemaId
+                      fields {
+                        id
+                        name
+                        title
+                        description
+                        type
+                        options
+                        primary
+                        schemaId
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `,
+        internal
+      );
+      expect(res!.data!.allSchemas).toBeTruthy();
+    });
+
+    it('should show prime version', async () => {
+      const res = await query(
+        gql`
+          query {
+            allFields {
+              type
+              title
+              description
+              options
+              ui
+            }
+            getSettings {
+              accessType
+              previews {
+                name
+                hostname
+                pathname
+              }
+              locales {
+                id
+                name
+                flag
+                master
+              }
+              env
+            }
+          }
+        `,
+        internal
+      );
+      expect(res!.data!).toBeTruthy();
+    });
+
+    it('should have releases', async () => {
+      await query(
+        gql`
+          mutation {
+            createRelease(input: { name: "foo" }) {
+              id
+              name
+              description
+              scheduledAt
+              publishedAt
+              publishedBy
+              updatedAt
+              createdAt
+            }
+          }
+        `,
+        internal
+      );
+      const res = await query(
+        gql`
+          query {
+            allReleases {
+              edges {
+                node {
+                  id
+                  name
+                  description
+                  scheduledAt
+                  publishedAt
+                  publishedBy
+                  updatedAt
+                  createdAt
+                }
+              }
+            }
+          }
+        `,
+        internal
+      );
+      expect(res!.data!.allReleases!.edges).toHaveLength(1);
     });
   });
 });
