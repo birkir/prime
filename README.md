@@ -4,7 +4,7 @@
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
 [![npm downloads](https://img.shields.io/npm/dt/@primecms/core.svg)](https://www.npmjs.com/package/@primecms/core)
-[![npm](https://img.shields.io/npm/v/@primecms/core.svg?maxAge=2592000)](https://www.npmjs.com/package/@primecms/core)
+[![npm](https://img.shields.io/npm/v/@primecms/core.svg?maxAge=3600)](https://www.npmjs.com/package/@primecms/core)
 [![codecov](https://codecov.io/gh/birkir/prime/branch/master/graph/badge.svg)](https://codecov.io/gh/birkir/prime)
 [![CircleCI](https://circleci.com/gh/birkir/prime.svg?style=shield)](https://circleci.com/gh/birkir/prime)
 ![last commit](https://img.shields.io/github/last-commit/google/skia.svg)
