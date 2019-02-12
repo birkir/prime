@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.3.2-beta.3",
+  "version": "0.3.3-beta.0",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -41,15 +41,15 @@
     "@casl/ability": "3.0.0",
     "@graphql-modules/core": "0.4.2",
     "@primecms/field": "^0.3.2-beta.1",
-    "@primecms/field-asset": "^0.3.2-beta.1",
-    "@primecms/field-boolean": "^0.3.2-beta.1",
-    "@primecms/field-datetime": "^0.3.2-beta.1",
-    "@primecms/field-document": "^0.3.2-beta.1",
-    "@primecms/field-group": "^0.3.2-beta.1",
-    "@primecms/field-number": "^0.3.2-beta.1",
-    "@primecms/field-select": "^0.3.2-beta.1",
-    "@primecms/field-slice": "^0.3.2-beta.3",
-    "@primecms/field-string": "^0.3.2-beta.1",
+    "@primecms/field-asset": "^0.3.3-beta.0",
+    "@primecms/field-boolean": "^0.3.3-beta.0",
+    "@primecms/field-datetime": "^0.3.3-beta.0",
+    "@primecms/field-document": "^0.3.3-beta.0",
+    "@primecms/field-group": "^0.3.3-beta.0",
+    "@primecms/field-number": "^0.3.3-beta.0",
+    "@primecms/field-select": "^0.3.3-beta.0",
+    "@primecms/field-slice": "^0.3.3-beta.0",
+    "@primecms/field-string": "^0.3.3-beta.0",
     "apollo-server-express": "2.4.0",
     "class-validator": "0.9.1",
     "cors": "2.8.5",
@@ -87,5 +87,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "31138953252872820486c9e13905c14de7f2067e"
+  "gitHead": "47d760104a005afa5bb17cac6a9e609bec51eae4"
 }
