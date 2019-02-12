@@ -2,7 +2,6 @@ import { User } from '@accounts/typeorm';
 import GraphQLJSON from 'graphql-type-json';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
-  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -49,9 +48,4 @@ export class Webhook {
 
   @OneToMany(type => WebhookCall, call => call.webhook)
   public calls: WebhookCall[];
-
-  @AfterInsert()
-  public notify() {
-    // pubSub.publish('WEBHOOK_ADDED', this);
-  }
 }
