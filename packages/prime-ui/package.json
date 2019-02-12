@@ -17,9 +17,9 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@accounts/client": "0.9.3",
-    "@accounts/client-password": "0.9.3",
-    "@accounts/graphql-client": "0.9.3",
+    "@accounts/client": "0.11.2",
+    "@accounts/client-password": "0.11.2",
+    "@accounts/graphql-client": "0.11.2",
     "@primecms/field": "^0.3.2-beta.1",
     "@primecms/field-asset": "^0.3.2-beta.1",
     "@primecms/field-boolean": "^0.3.2-beta.1",
