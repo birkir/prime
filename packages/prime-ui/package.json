@@ -20,6 +20,7 @@
     "@accounts/client": "0.11.2",
     "@accounts/client-password": "0.11.2",
     "@accounts/graphql-client": "0.11.2",
+    "@casl/ability": "3.0.0",
     "@primecms/field": "^0.3.2-beta.1",
     "@primecms/field-asset": "^0.3.2-beta.1",
     "@primecms/field-boolean": "^0.3.2-beta.1",
@@ -34,7 +35,7 @@
     "@types/jest": "23.3.14",
     "@types/lodash": "4.14.120",
     "@types/mobx-devtools-mst": "0.9.0",
-    "@types/react": "16.7.22",
+    "@types/react": "16.8.2",
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.8.0",
     "@types/react-router-dom": "4.3.1",
@@ -42,6 +43,8 @@
     "antd": "3.13.2",
     "apollo-cache-inmemory": "1.5.0-beta.1",
     "apollo-client": "2.5.0-verify.4",
+    "apollo-link-context": "^1.0.14",
+    "apollo-link-error": "1.1.7",
     "apollo-link-http": "1.5.11",
     "babel-plugin-import": "1.11.0",
     "braft-editor": "2.1.34",
@@ -77,10 +80,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "31138953252872820486c9e13905c14de7f2067e",
-  "dependencies": {
-    "@casl/ability": "3.0.0",
-    "apollo-link-context": "^1.0.14",
-    "apollo-link-error": "1.1.7"
-  }
+  "gitHead": "31138953252872820486c9e13905c14de7f2067e"
 }
