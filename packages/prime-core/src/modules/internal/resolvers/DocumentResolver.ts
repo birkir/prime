@@ -18,6 +18,7 @@ import { Document } from '../../../entities/Document';
 import { Context } from '../../../interfaces/Context';
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { SchemaFieldRepository } from '../repositories/SchemaFieldRepository';
 import { SchemaRepository } from '../repositories/SchemaRepository';
@@ -186,10 +187,10 @@ export class DocumentResolver {
     @Arg('locale', { nullable: true }) locale?: string,
     @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ): Promise<boolean> {
-    const doc = await this.Document(id, locale, releaseId);
+    const document = await this.Document(id, locale, releaseId);
     await this.documentRepository.update(
       {
-        documentId: doc.documentId,
+        documentId: document.documentId,
         ...(locale && { locale }),
         ...(releaseId && { releaseId }),
       },
@@ -197,7 +198,7 @@ export class DocumentResolver {
         deletedAt: new Date(),
       }
     );
-    // @todo run webhook
+    processWebhooks('document.removed', { document });
     // @todo update algolia
     return true;
   }
@@ -209,10 +210,11 @@ export class DocumentResolver {
     @Ctx() context: Context //
   ) {
     const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
-    const result = this.documentRepository.publish(doc, context.user.id);
-    // @todo run webhook
+    const publishedId = await this.documentRepository.publish(doc, context.user.id);
+    const document = await this.Document(publishedId);
+    processWebhooks('document.published', { document });
     // @todo update algolia
-    return result;
+    return document;
   }
 
   @Mutation(returns => Document)
@@ -230,9 +232,10 @@ export class DocumentResolver {
         publishedAt: null as any,
       }
     );
-    // @todo run webhook
     // @todo update algolia
-    return this.Document(id);
+    const document = await this.Document(id);
+    processWebhooks('document.unpublished', { document });
+    return document;
   }
 
   @FieldResolver(returns => GraphQLJSON, { nullable: true })

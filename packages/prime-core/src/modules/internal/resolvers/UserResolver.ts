@@ -6,6 +6,7 @@ import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } fr
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Context } from '../../../interfaces/Context';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { UserRepository } from '../repositories/UserRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { UpdateUserInput } from '../types/UpdateUserInput';
@@ -80,6 +81,8 @@ export class UserResolver {
       await password.server.setProfile(userId, profile);
     }
 
+    processWebhooks('user.created', { userId });
+
     return true;
   }
 
@@ -100,6 +103,7 @@ export class UserResolver {
     if (user) {
       await accounts.addEmail(user.id, email, false);
       await accounts.sendVerificationEmail(email);
+      processWebhooks('user.emailAdded', { userId: user.id, email });
       return true;
     }
     return false;
@@ -115,6 +119,7 @@ export class UserResolver {
     user.profile = input;
     context.ability.throwUnlessCan('update', user);
     await this.userRepository.save(user);
+    processWebhooks('user.updated', { user });
     return user;
   }
 
@@ -127,6 +132,7 @@ export class UserResolver {
     const user = await this.userRepository.findOneOrFail(id);
     context.ability.throwUnlessCan('delete', user);
     await this.userRepository.remove(user);
+    processWebhooks('user.removed', { user });
     return true;
   }
 
