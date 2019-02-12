@@ -5,6 +5,7 @@ import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { pubSub } from '../../../utils/pubSub';
 import { SchemaRepository } from '../repositories/SchemaRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
@@ -78,6 +79,7 @@ export class SchemaResolver {
     }
     pubSub.publish('REBUILD_EXTERNAL', schema);
     schema.variant = parseEnum(SchemaVariant, schema.variant);
+    processWebhooks('schema.created', { schema });
     return schema;
   }
 
@@ -97,6 +99,7 @@ export class SchemaResolver {
     await this.schemaRepository.save(schema);
     schema.variant = parseEnum(SchemaVariant, schema.variant);
     pubSub.publish('REBUILD_EXTERNAL', schema);
+    processWebhooks('schema.updated', { schema });
     return schema;
   }
 
@@ -106,6 +109,7 @@ export class SchemaResolver {
     const schema = await this.schemaRepository.findOneOrFail(id);
     await this.schemaRepository.remove(schema);
     pubSub.publish('REBUILD_EXTERNAL', schema);
+    processWebhooks('schema.removed', { schema });
     return true;
   }
 
