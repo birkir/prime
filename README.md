@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://birkir.github.io/prime/"><img alt="Prime" width="330px" src="docs/_assets/prime.png" /></a>
+  <a href="https://docs.primecms.app"><img alt="Prime" width="330px" src="docs/_assets/prime.png" /></a>
 </p>
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
@@ -30,7 +30,7 @@ There are a lot of headless SaaS solutions out there, and many of them better th
 - 📆 Plan and schedule releases
 - ... and many more
 
-See the [feature comparison](https://birkir.github.io/prime/#/features) to Prismic, Contentful and Strapi.
+See the [feature comparison](https://docs.primecms.app/#/features) to Prismic, Contentful and Strapi.
 
 ## Examples
 
@@ -105,11 +105,9 @@ Tools
 
 ## Getting Started
 
-#### [📖 Read Docs](https://birkir.github.io/prime/)
+#### [📖 Read Docs](https://docs.primecms.app)
 
-🚨 Not recommended in production!
-
-Prime is still in alpha, but fear not, it's moving very quickly towards beta.
+🚧 Prime is currently in beta 🚧
 
 To get a sandbox to play with, just hit the Deploy button:
 
