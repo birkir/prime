@@ -57,8 +57,8 @@ export class PrimeFieldDocument extends PrimeField {
         name: context.uniqueTypeName(`${context.name}_${this.schemaField.name}`),
         types: [...types.map(item => item.type), NotFound],
         async resolveType(value, ctx, info): Promise<GraphQLObjectType> {
-          if (value.__inputname) {
-            const foundType = types.find(({ schema }) => schema.id === value.__inputname);
+          if (value._meta && value._meta.schemaId) {
+            const foundType = types.find(({ schema }) => schema.id === value._meta.schemaId);
             if (foundType) {
               return foundType.type;
             }
@@ -69,7 +69,7 @@ export class PrimeFieldDocument extends PrimeField {
       });
 
       return {
-        type: unionType,
+        type: new GraphQLList(unionType),
         args: {
           locale: { type: GraphQLString },
         },
@@ -88,7 +88,7 @@ export class PrimeFieldDocument extends PrimeField {
           );
         },
       };
-    } else if (types.length) {
+    } else {
       return {
         type: types[0].type,
         args: {
