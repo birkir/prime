@@ -103,15 +103,23 @@ export class DocumentResolver {
             filterArr.map((filter, i) => {
               builder.orWhere(
                 new Brackets(sq => {
-                  Object.entries(filter).map(([key, value]) =>
-                    sq.andWhere(`${name}.${key} = :${key}_${i}`, { [`${key}_${i}`]: value })
-                  );
+                  Object.entries(filter).map(([key, value]) => {
+                    if (value === null) {
+                      sq.andWhere(`${name}.${key} IS NULL`);
+                    } else {
+                      sq.andWhere(`${name}.${key} = :${key}_${i}`, { [`${key}_${i}`]: value });
+                    }
+                  });
                 })
               );
             });
           });
 
-        const filtered = (filters || []).map(filter => pickBy(filter, identity));
+        const filtered = (filters || []).map(filter =>
+          pickBy(filter, (value, key) => {
+            return key === 'releaseId' || identity(value);
+          })
+        );
 
         if (filtered.length > 0 && Object.keys(filtered[0]).length > 0) {
           subquery.andWhere(filterWithName('d', filtered));
