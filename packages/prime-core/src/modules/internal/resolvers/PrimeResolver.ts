@@ -57,7 +57,7 @@ export class PrimeResolver {
     if (!settings) {
       settings = new Settings();
       settings.data = {
-        accessType: SettingsAccessType.PUBLIC,
+        accessType: SettingsAccessType[SettingsAccessType.PUBLIC] as any,
         previews: [],
         locales: [],
       };

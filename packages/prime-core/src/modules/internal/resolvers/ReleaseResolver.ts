@@ -4,6 +4,7 @@ import { getRepository, In } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { ReleaseRepository } from '../repositories/ReleaseRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
@@ -46,9 +47,10 @@ export class ReleaseResolver {
     @Arg('input') input: ReleaseInput,
     @Ctx() context: Context
   ): Promise<Release> {
-    const entity = this.releaseRepository.create(input);
-    await this.releaseRepository.save(entity);
-    return entity;
+    const release = this.releaseRepository.create(input);
+    await this.releaseRepository.save(release);
+    processWebhooks('release.created', { release });
+    return release;
   }
 
   @Authorized()
@@ -60,6 +62,7 @@ export class ReleaseResolver {
   ): Promise<Release> {
     const release = await this.releaseRepository.findOneOrFail(id);
     await this.releaseRepository.merge(release, input);
+    processWebhooks('release.updated', { release });
     return await this.releaseRepository.save(release);
   }
 
@@ -76,6 +79,8 @@ export class ReleaseResolver {
     });
 
     await this.releaseRepository.remove(release);
+
+    processWebhooks('release.removed', { release });
 
     return true;
   }
@@ -124,6 +129,8 @@ export class ReleaseResolver {
     release.publishedAt = new Date();
     release.publishedBy = context.user.id;
     await this.releaseRepository.save(release);
+
+    processWebhooks('release.published', { release });
 
     return release;
   }

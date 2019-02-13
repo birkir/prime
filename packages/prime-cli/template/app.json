@@ -1,0 +1,14 @@
+{
+  "name": "Prime CMS",
+  "description": "A barebone prime installation",
+  "repository": "https://github.com/primecms/heroku",
+  "logo": "https://raw.githubusercontent.com/birkir/prime/master/docs/_assets/prime-square.png",
+  "keywords": ["node", "express", "headless cms", "graphql"],
+  "addons": ["heroku-postgresql"],
+  "env": {
+    "SESSION_SECRET": {
+      "description": "Cookie and JWT encryption token",
+      "generator": "secret"
+    }
+  }
+}
