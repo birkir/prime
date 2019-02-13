@@ -81,14 +81,14 @@ export class DocumentResolver {
 
   @Authorized()
   @Query(returns => DocumentConnection)
-  public allDocuments(
+  public async allDocuments(
     @Arg('sort', type => [DocumentSort], { defaultValue: 1, nullable: true }) sorts: string[],
     @Arg('filter', type => [DocumentFilterInput], { nullable: true })
     filters: DocumentFilterInput[],
     @Args() args: ConnectionArgs
   ) {
     const result = new ExtendedConnection(args, {
-      where: qb => {
+      where: (qb, counter = false) => {
         qb.andWhere('Document.deletedAt IS NULL');
 
         const subquery = qb
@@ -120,15 +120,16 @@ export class DocumentResolver {
 
         subquery.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
 
-        qb.having(`Document.id = ${subquery.getQuery()}`);
-        qb.groupBy('Document.id');
+        if (!counter) {
+          qb.having(`Document.id = ${subquery.getQuery()}`);
+          qb.groupBy('Document.id');
+        }
         return qb;
       },
       repository: this.documentRepository,
       sortOptions: sortOptions(sorts),
     });
-
-    (result as any).totalCount = 15;
+    result.totalCountField = 'documentId';
 
     return result;
   }
@@ -248,6 +249,7 @@ export class DocumentResolver {
   public async versions(@Root() document: Document): Promise<Document[]> {
     return this.documentRepository.find({
       where: { documentId: document.documentId, deletedAt: IsNull() },
+      order: { updatedAt: 'DESC' },
     });
   }
 

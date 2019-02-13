@@ -5,7 +5,7 @@ query allReleases {
         id
         name
         description
-        # documents -> documents { id }
+        documentsCount
         scheduledAt
         publishedAt
         publishedBy

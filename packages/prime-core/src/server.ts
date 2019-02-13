@@ -3,7 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import { buildSchema } from 'graphql';
 import http from 'http';
-import sofa from 'sofa-api';
+// import sofa from 'sofa-api';
 import { ResolverData } from 'type-graphql';
 import { Container } from 'typedi';
 import { useContainer } from 'typeorm';
@@ -46,13 +46,13 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     external = await createExternal(connection);
     externalServer.schema = external.schema;
     externalServer.context = external.context;
-    app.use(
-      '/api',
-      sofa({
-        schema: external.schema,
-        ignore: ['Prime_Document'],
-      })
-    );
+    // app.use(
+    //   '/api',
+    //   sofa({
+    //     schema: external.schema,
+    //     ignore: ['Prime_Document'],
+    //   })
+    // );
   });
 
   pubSub.publish('REBUILD_EXTERNAL', { name: 'SERVER_BOOT' });

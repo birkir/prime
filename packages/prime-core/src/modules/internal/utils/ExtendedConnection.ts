@@ -2,11 +2,22 @@ import { Brackets } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 
 export class ExtendedConnection<T> extends EntityConnection<T> {
-  public createAppliedQueryBuilder() {
+  public totalCountField = 'id';
+
+  public get totalCount(): Promise<number> {
+    return new Promise(async resolve => {
+      const result = await this.createAppliedQueryBuilder(true)
+        .select(`COUNT(DISTINCT "${this.totalCountField}")`, 'cnt')
+        .getRawOne();
+      resolve((result && result.cnt) || 0);
+    });
+  }
+
+  public createAppliedQueryBuilder(counter = false) {
     const queryBuilder = this.repository.createQueryBuilder();
 
     if (this.where) {
-      this.where(queryBuilder);
+      (this.where as any)(queryBuilder, counter);
     }
 
     if (this.afterSelector) {
