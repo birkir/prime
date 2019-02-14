@@ -97,13 +97,13 @@ export const createAllDocumentResolver = async ({
       sortOptions,
     });
 
-    const { count } = await connection
+    const res = await connection
       .createAppliedQueryBuilder(true)
       .select('COUNT(DISTINCT Document.documentId)')
       .cache(2000)
       .getRawOne();
 
-    connection.totalCount = Number(count || -1);
+    connection.totalCount = Number((res && res.count) || 0);
 
     return connection;
   };

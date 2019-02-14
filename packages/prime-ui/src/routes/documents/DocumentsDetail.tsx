@@ -234,7 +234,8 @@ export class DocumentsDetail extends React.Component<IProps> {
   public onSave = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     try {
-      await this.save({ documentId: this.props.match.params.entryId });
+      const releaseId = this.options.release;
+      await this.save({ documentId: this.props.match.params.entryId, releaseId });
       message.success('Document was saved', 1);
     } catch (err) {
       message.error('Could not save document');
