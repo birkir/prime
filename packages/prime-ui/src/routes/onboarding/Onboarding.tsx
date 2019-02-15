@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
 import { Auth } from '../../stores/auth';
@@ -22,6 +22,20 @@ export class OnboardingBase extends React.Component<FormComponentProps> {
           });
           if (Auth.isLoggedIn) {
             (this.props as any).history.push('/');
+            Modal.info({
+              title: 'Welcome to Prime CMS',
+              content: (
+                <div>
+                  <p>To get started, create your first Schema.</p>
+                  <p>
+                    <a href="https://docs.primecms.app" target="_blank">
+                      Read the documentation
+                    </a>
+                  </p>
+                </div>
+              ),
+              onOk() {},
+            });
             return;
           }
         } catch (err) {
