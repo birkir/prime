@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.1](https://github.com/birkir/prime/compare/v0.3.3-beta.0...v0.3.3-beta.1) (2019-02-15)
+
+### Bug Fixes
+
+- onboarding ([08dd305](https://github.com/birkir/prime/commit/08dd305))
+- publish release doc count ([b84181c](https://github.com/birkir/prime/commit/b84181c))
+- releases and connection counts ([bf86d25](https://github.com/birkir/prime/commit/bf86d25))
+- webhook calls ([1740dac](https://github.com/birkir/prime/commit/1740dac))
+
 ## [0.3.3-beta.0](https://github.com/birkir/prime/compare/v0.3.2-beta.9...v0.3.3-beta.0) (2019-02-12)
 
 **Note:** Version bump only for package @primecms/ui
