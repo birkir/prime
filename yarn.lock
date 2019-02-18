@@ -15676,10 +15676,10 @@ socks@~2.2.0:
     ip "^1.1.5"
     smart-buffer "4.0.2"
 
-sofa-api@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/sofa-api/-/sofa-api-0.2.2.tgz#a4b15befabb2de749cc963271c7a6ba264b2bdf4"
-  integrity sha512-W6C0R00lM6lcnMzKnmHP82paNSNuJdQm5kk7Fh3rMG+iHTD2VS57vTEVE2bo32g9ug7RW5W5ZoVrAMlvcg2rfQ==
+sofa-api@0.2.3-alpha.0:
+  version "0.2.3-alpha.0"
+  resolved "https://registry.yarnpkg.com/sofa-api/-/sofa-api-0.2.3-alpha.0.tgz#2c7647df8400447c41e54677603f9178be1f4b79"
+  integrity sha512-AgaEAQcKLHK5pUPurG6yARu3XBX63Cgx7M4lYaNx0OWa2rWSPG1dsMFzqgYAUv+79qs9L4T5EKuIPx8C84AI1w==
   dependencies:
     change-case "3.0.2"
     graphql-subscriptions "1.0.0"
@@ -16810,7 +16810,12 @@ typeorm@0.2.13, typeorm@^0.2.11:
     yargonaut "^1.1.2"
     yargs "^12.0.5"
 
-typescript@3.2.x, typescript@3.3.1, typescript@^3.2.2:
+typescript@3.2.x:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.4.tgz#c585cb952912263d915b462726ce244ba510ef3d"
+  integrity sha512-0RNDbSdEokBeEAkgNbxJ+BLwSManFy9TeXz8uW+48j/xhEXv1ePME60olyzw2XzUqUBNAYFeJadIqAgNqIACwg==
+
+typescript@3.3.1, typescript@^3.2.2:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.1.tgz#6de14e1db4b8a006ac535e482c8ba018c55f750b"
   integrity sha512-cTmIDFW7O0IHbn1DPYjkiebHxwtCMU+eTy30ZtJNBPF9j2O1ITu5XH2YnBeVRKWHqF+3JQwWJv0Q0aUgX8W7IA==
