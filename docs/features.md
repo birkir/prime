@@ -1,5 +1,7 @@
 # Comparison of features
 
+# Features
+
 This is a comparison table of the top GraphQL headless CMS's
 
 |                         | Prime     | Prismic | Contentful | Strapi    |
@@ -39,7 +41,7 @@ GraphQL is the foundation of Prime, not an addon.
 
 In Prismic, the biggest downside is typing, most of their fields just output a JSON Scalar. Also their where query interface is not very flexible. Contentful has way better graphql interface, but both of them lack mutations.
 
-# Supported Fields
+# Fields
 
 Included with Prime are these set of core fields
 

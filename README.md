@@ -113,15 +113,15 @@ To get a sandbox to play with, just hit the Deploy button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku)
 
-### Video Tutorials
+## Video Tutorials
 
 <table>
   <tr>
     <td>
-<a href="https://www.youtube.com/watch?v=gwmdSD5muV4"><img src="https://i.imgur.com/3z7AT6s.png" width="200" alt="Installing video tutorial" /></a>
+<a href="https://www.youtube.com/watch?v=gwmdSD5muV4" target="_blank"><img src="https://i.imgur.com/3z7AT6s.png" width="200" alt="Installing video tutorial" /></a>
     </td>
     <td>
-<a href="https://www.youtube.com/watch?v=E_fvJzDNloc"><img src="https://i.imgur.com/MeRVFeN.png" width="200" alt="Adding Cloudinary" /></a>
+<a href="https://www.youtube.com/watch?v=E_fvJzDNloc" target="_blank"><img src="https://i.imgur.com/MeRVFeN.png" width="200" alt="Adding Cloudinary" /></a>
     </td>
   </tr>
   <tr>
@@ -129,7 +129,6 @@ To get a sandbox to play with, just hit the Deploy button:
     <td align="center"><i>Adding Cloudinary</i></td>
   </tr>
 </table>
-
 
 ## Credits
 
