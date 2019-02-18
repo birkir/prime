@@ -1979,10 +1979,10 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.1.tgz#0be64e2fbe7c0bb2a6cad6a152462127a1b0d45a"
   integrity sha512-OKKcc+Tt1rLMg1DTnmgvWHRna3SN51GWs/ERxpgjFNRjCUUVhGG8FEKeFqVTzBv1jEGFqbkJRWfsHV6KAcLT+A==
 
-"@types/draft-js@0.10.27":
-  version "0.10.27"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.27.tgz#d186cce8e94c3380c799a35fb00c3ce72b09b8b2"
-  integrity sha512-U7atht2GaYKtdBuRbwIavlr+APZknGy7Wyrs5fkDcx2kwNKyY8eZ6SdIbgxY6mvaezhZFQjpXLLmz0fDadd3Rw==
+"@types/draft-js@0.10.28":
+  version "0.10.28"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.28.tgz#14d68b496072689466e81887ac1e1c585157cc31"
+  integrity sha512-mShgWAYAduZ2Rwzpo52cToq+q8SIZ2O6Byl2F9wphB0QFjuNtUMyvAzGGg4kYGWPLZKELMWlEA/wv+AdPlkclw==
   dependencies:
     "@types/react" "*"
     immutable "^3.8.1"
