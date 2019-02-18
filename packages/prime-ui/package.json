@@ -20,7 +20,7 @@
     "@accounts/client": "0.11.2",
     "@accounts/client-password": "0.11.2",
     "@accounts/graphql-client": "0.11.2",
-    "@casl/ability": "3.0.0",
+    "@casl/ability": "3.0.1",
     "@primecms/field": "^0.3.2-beta.1",
     "@primecms/field-asset": "^0.3.3-beta.1",
     "@primecms/field-boolean": "^0.3.3-beta.1",
