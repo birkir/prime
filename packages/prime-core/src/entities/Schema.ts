@@ -1,7 +1,7 @@
 import { User } from '@accounts/typeorm';
 import { Matches } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
   BeforeInsert,
@@ -80,7 +80,7 @@ export class Schema {
     if (!this.name && this.title) {
       const { title, variant } = this;
       const contentTypes = getRepository(Document);
-      const baseName = startCase(title).replace(/ /g, '');
+      const baseName = upperFirst(camelCase(title)).replace(/ /g, '');
       let name = baseName;
       let count = 1;
       let i = 1;

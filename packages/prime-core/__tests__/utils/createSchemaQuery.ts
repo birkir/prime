@@ -1,4 +1,4 @@
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 
 const enumValue = value => {
   function enumValueOperator() {
@@ -41,7 +41,7 @@ const mapFields = fields => {
       },
       position
     ) => {
-      const title = passProps.title || startCase(name);
+      const title = passProps.title || upperFirst(camelCase(name));
       return {
         name,
         title,

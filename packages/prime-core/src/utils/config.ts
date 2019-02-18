@@ -14,6 +14,7 @@ export const config = rc('prime', {
     '@primecms/field-slice',
     '@primecms/field-string',
   ],
+  sofaApi: true,
   uiDir: defaultUiDir(),
   coreUrl: defaultCoreUrl(),
 });

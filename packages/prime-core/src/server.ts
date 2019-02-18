@@ -43,16 +43,20 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     if (external) {
       log('schemas have changed', payload.name);
     }
+
     external = await createExternal(connection);
     externalServer.schema = external.schema;
     externalServer.context = external.context;
-    app.use(
-      '/api',
-      sofa({
-        schema: external.schema,
-        ignore: ['Prime_Document'],
-      })
-    );
+
+    if (config.sofaApi) {
+      app.use(
+        '/api',
+        sofa({
+          schema: external.schema,
+          ignore: ['Prime_Document'],
+        })
+      );
+    }
   });
 
   pubSub.publish('REBUILD_EXTERNAL', { name: 'SERVER_BOOT' });
