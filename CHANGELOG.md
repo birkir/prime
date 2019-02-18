@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.2](https://github.com/birkir/prime/compare/v0.3.3-beta.1...v0.3.3-beta.2) (2019-02-18)
+
+### Bug Fixes
+
+- graphql name startCase bug ([3b8e46f](https://github.com/birkir/prime/commit/3b8e46f))
+
+### Reverts
+
+- **core:** sofa-api ([775d124](https://github.com/birkir/prime/commit/775d124))
+
 ## [0.3.3-beta.1](https://github.com/birkir/prime/compare/v0.3.3-beta.0...v0.3.3-beta.1) (2019-02-15)
 
 ### Bug Fixes
