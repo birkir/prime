@@ -3,9 +3,25 @@ import { Button, Card, Form, Icon } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 
-const { uuid } = window as any;
+const randomByte = () => {
+  const seq = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(16);
+  return seq.substr(seq.length - 1, 1);
+};
+const randomBytes = length =>
+  Array.from({ length })
+    .map(randomByte)
+    .join('');
+const randomUuid = () => [8, 4, 4, 4, 12].map(randomBytes).join('-');
 
-const getItems = ({ initialValue }: PrimeFieldProps) => {
+const { uuid = { v4: randomUuid } } = window as any;
+
+const initialToken = uuid.v4();
+
+const getItems = ({ initialValue, field }: PrimeFieldProps) => {
+  if (!field.options.repeated) {
+    return [[initialToken, 0]];
+  }
+
   if (Array.isArray(initialValue)) {
     return initialValue.map((_, index) => [uuid.v4(), index]);
   }
@@ -104,6 +120,10 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
     const { items } = this.state;
     const { field } = this.props;
     const repeated = get(field, 'options.repeated', false);
+
+    if (field.fields.length === 0) {
+      return null;
+    }
 
     return (
       <Form.Item label={field.title} className="prime-group">
