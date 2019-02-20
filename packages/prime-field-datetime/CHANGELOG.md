@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.3](https://github.com/birkir/prime/tree/master/packages/prime-field-datetime/compare/v0.3.3-beta.2...v0.3.3-beta.3) (2019-02-20)
+
+### Bug Fixes
+
+- fields general ([#93](https://github.com/birkir/prime/tree/master/packages/prime-field-datetime/issues/93)) ([94edde6](https://github.com/birkir/prime/tree/master/packages/prime-field-datetime/commit/94edde6))
+
 ## [0.3.3-beta.2](https://github.com/birkir/prime/tree/master/packages/prime-field-datetime/compare/v0.3.3-beta.1...v0.3.3-beta.2) (2019-02-18)
 
 **Note:** Version bump only for package @primecms/field-datetime
