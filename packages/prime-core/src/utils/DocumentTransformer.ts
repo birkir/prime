@@ -61,16 +61,16 @@ export class DocumentTransformer {
 
       let value = get(data, io === Types.INPUT ? field.name : field.id);
 
-      if (typeof value === 'undefined') {
-        continue;
-      }
-
       if (primeField) {
         if (io === Types.INPUT) {
           value = await primeField.processInput(value);
         } else if (io === Types.OUTPUT) {
           value = await primeField.processOutput(value);
         }
+      }
+
+      if (typeof value === 'undefined') {
+        continue;
       }
 
       if (field.parentFieldId && type !== Types.GROUP) {

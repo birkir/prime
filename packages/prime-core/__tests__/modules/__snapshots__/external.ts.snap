@@ -13,6 +13,7 @@ Array [
   Object {
     "description": "Boolean field",
     "options": Object {
+      "default": false,
       "label": "",
     },
     "title": "Boolean",

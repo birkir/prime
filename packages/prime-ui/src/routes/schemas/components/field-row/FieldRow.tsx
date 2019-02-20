@@ -36,7 +36,7 @@ export class FieldRow extends React.Component<IProps> {
 
   public render() {
     const { field, index, children } = this.props;
-    const starDisabled = field.type !== 'string';
+    const starDisabled = field.type !== 'string' && field.type !== 'number';
 
     return (
       <Draggable draggableId={`Field.${field.id}`} index={index} key={field.id}>
