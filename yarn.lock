@@ -2650,18 +2650,18 @@ apollo-cache-control@0.5.0:
     apollo-server-env "2.2.0"
     graphql-extensions "0.5.0"
 
-apollo-cache-inmemory@1.5.0-beta.1:
-  version "1.5.0-beta.1"
-  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.5.0-beta.1.tgz#cb46ce5b832cf8efe5b0871e3a5ac4bb291e9bef"
-  integrity sha512-pO39ROFGi/VZ8cVdjHCMJHqd55x31YgNtOvNOgrDF3VIE3kVTLOxF00ctMJvqzCp3Q2rbTmLo3d+MaGMZFTmHA==
+apollo-cache-inmemory@1.5.0-rc.1:
+  version "1.5.0-rc.1"
+  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.5.0-rc.1.tgz#85db999efcce7ff97c273f3e8b8e88a25f543e0f"
+  integrity sha512-lQnd/gdIGNA8Pp0pTv1XuEGWKAy9EfJERM7XVEZu0Uxpdh1j53K8O79cpBbokd/IAfLQnkZZxxG7R7C/VOctRA==
   dependencies:
-    apollo-cache "^1.2.0-beta.1"
-    apollo-utilities "^1.2.0-beta.1"
+    apollo-cache "^1.2.0-rc.1"
+    apollo-utilities "^1.2.0-rc.1"
     optimism "^0.6.9"
     ts-invariant "^0.2.1"
     tslib "^1.9.3"
 
-apollo-cache@1.2.0-verify.4, apollo-cache@^1.2.0-beta.1:
+apollo-cache@1.2.0-verify.4, apollo-cache@^1.2.0-rc.1:
   version "1.2.0-verify.4"
   resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.2.0-verify.4.tgz#7b974331015b8ced29ddd6dcf4a852109464d26f"
   integrity sha512-SgSuDoiZU++hcgJnUnH6WueFibZ6X0FpkppVIb0/6Bi8e8hNY6CT0V1GRtx6GMXQOw/vTjeuYYkxGZZJ0aqXaA==
@@ -2861,10 +2861,10 @@ apollo-utilities@^1.0.1, apollo-utilities@^1.1.0-verify.4:
     fast-json-stable-stringify "^2.0.0"
     tslib "^1.9.3"
 
-apollo-utilities@^1.2.0-beta.1:
-  version "1.2.0-beta.1"
-  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.2.0-beta.1.tgz#00a496fb234ac18fb18cd1b80d959e89c078d0da"
-  integrity sha512-YbQwgnyS6B6uJgtj7kIP/zsLoKuXNFJ4jW98v4PaMMuRb9LyCLm8jEAu5BQtW8Nx/7Vaa25C3o3nvqoAaqvsBg==
+apollo-utilities@^1.2.0-rc.1:
+  version "1.2.0-rc.1"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.2.0-rc.1.tgz#027c5f4736b59f9a1fae3cc85d3cb9625a15f67a"
+  integrity sha512-RKlC6yrKXo4hS+3zoN1RoW3n76GIV4++yehnU7TRoidD1JyJcWD1IxzcHAycvq3WVmKYtyA8kv0+xq0t5kBvJA==
   dependencies:
     fast-json-stable-stringify "^2.0.0"
     ts-invariant "^0.2.1"
@@ -4878,7 +4878,7 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^2.4.0, core-js@^2.4.1, core-js@^2.5.0, core-js@^2.5.7:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.7:
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.4.tgz#b8897c062c4d769dd30a0ac5c73976c47f92ea0d"
   integrity sha512-05qQ5hXShcqGkPZpXEFLIpxayZscVD2kuMBZewxiIPPEagukO4mqgPA9CWhUvFBJfy3ODdK2p9xyHh7FTU9/7A==
@@ -6547,31 +6547,12 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs-css-vars@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/fbjs-css-vars/-/fbjs-css-vars-1.0.2.tgz#216551136ae02fe255932c3ec8775f18e2c078b8"
-  integrity sha512-b2XGFAFdWZWg0phtAWLHCk836A1Xann+I+Dgd3Gk64MHKZO44FfoD1KxyvbSh0qZsIoXQGGlVztIY+oitJPpRQ==
-
 fbjs@^0.8.0, fbjs@^0.8.15, fbjs@^0.8.16, fbjs@^0.8.9:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
   dependencies:
     core-js "^1.0.0"
-    isomorphic-fetch "^2.1.1"
-    loose-envify "^1.0.0"
-    object-assign "^4.1.0"
-    promise "^7.1.1"
-    setimmediate "^1.0.5"
-    ua-parser-js "^0.7.18"
-
-fbjs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
-  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
-  dependencies:
-    core-js "^2.4.1"
-    fbjs-css-vars "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
@@ -14175,16 +14156,16 @@ rc@1.2.8, rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-apollo@2.5.0-bundle-size.0:
-  version "2.5.0-bundle-size.0"
-  resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-2.5.0-bundle-size.0.tgz#336690d2f45b07e292dc6f3fe992729cd0919a3a"
-  integrity sha512-kuapQNXTCiVia5+iOVdWaeYLdvXYNa1I0TllpXadgMm/XMtO0jqmvmKgE2R4CLxcVhJq+/nakhJf89wUhVzRbA==
+react-apollo@2.5.0-rc.1:
+  version "2.5.0-rc.1"
+  resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-2.5.0-rc.1.tgz#e9b62ee61d81375e3a2cc9a6272563e8b715d84b"
+  integrity sha512-T5f+3AuTd3vHmtZKJ08XTNiHD69RiIyeJ3sg4FEqJh07qpQ+jv1/TY5r3HZLhf773QpL7XW6lZq7V0kpFndPjw==
   dependencies:
-    fbjs "^1.0.0"
+    apollo-utilities "^1.2.0-rc.1"
     hoist-non-react-statics "^3.0.0"
-    invariant "^2.2.2"
     lodash.isequal "^4.5.0"
     prop-types "^15.6.0"
+    ts-invariant "^0.2.1"
     tslib "^1.9.3"
 
 react-app-polyfill@^0.1.3:
