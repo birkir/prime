@@ -98,4 +98,16 @@ export class PrimeFieldGroup extends PrimeField {
       fields,
     });
   }
+
+  public async processOutput(value) {
+    if (!Array.isArray(value) && this.options.repeated) {
+      return [value];
+    }
+
+    if (Array.isArray(value) && !this.options.repeated) {
+      return value[0];
+    }
+
+    return value;
+  }
 }
