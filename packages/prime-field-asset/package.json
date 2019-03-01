@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-asset",
-  "version": "0.3.3-beta.2",
+  "version": "0.3.3-beta.4",
   "description": "Asset Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-asset",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-asset"
   },
   "dependencies": {
-    "@primecms/field": "^0.3.3-beta.2",
+    "@primecms/field": "^0.3.3-beta.4",
     "antd": "^3.13.0",
     "graphql": "^14.1.1",
     "lodash": "^4.17.11",
