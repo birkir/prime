@@ -18,7 +18,8 @@ const { uuid = { v4: randomUuid } } = window as any;
 const initialToken = uuid.v4();
 
 const getItems = ({ initialValue, field }: PrimeFieldProps) => {
-  if (!field.options.repeated) {
+  const options = { ...field.defaultOptions, ...field.options };
+  if (!options.repeated) {
     return [[initialToken, 0]];
   }
 
@@ -38,6 +39,11 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
     items: getItems(this.props),
     index: getIndex(this.props),
   };
+
+  get options() {
+    const { field } = this.props;
+    return { ...field.defaultOptions, ...field.options };
+  }
 
   public componentWillReceiveProps(nextProps: PrimeFieldProps) {
     if (!this.props.document && nextProps.document) {
@@ -77,7 +83,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
   };
 
   public renderField = (field: any, key: string, index: number) => {
-    const repeated = get(this.props.field, 'options.repeated', false);
+    const repeated = this.options.repeated;
     const prefix = repeated ? `${index}.` : '';
     const path = `${this.props.path}.${prefix}${field.name}`;
     const initialValue = get(this.props.initialValue, `${prefix}${field.name}`);
@@ -93,7 +99,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
   public renderGroupItem = ([key, index]: any) => {
     const { field } = this.props;
     const { fields = [] } = field;
-    const repeated = get(field, 'options.repeated', false);
+    const repeated = this.options.repeated;
 
     if (!key) {
       return null;
@@ -119,7 +125,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps, any> {
   public render() {
     const { items } = this.state;
     const { field } = this.props;
-    const repeated = get(field, 'options.repeated', false);
+    const repeated = this.options.repeated;
 
     if (field.fields.length === 0) {
       return null;

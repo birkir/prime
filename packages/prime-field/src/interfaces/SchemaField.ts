@@ -11,6 +11,7 @@ export interface SchemaField {
   position: number;
   primary: boolean;
   options: any;
+  defaultOptions?: any;
   fields: SchemaField[];
   parentFieldId?: string;
   parentField?: SchemaField | null;
