@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.4](https://github.com/birkir/prime/compare/v0.3.3-beta.3...v0.3.3-beta.4) (2019-03-01)
+
+### Bug Fixes
+
+- group fields and related issues ([#103](https://github.com/birkir/prime/issues/103)) ([ca95718](https://github.com/birkir/prime/commit/ca95718))
+- start command for dev env ([#95](https://github.com/birkir/prime/issues/95)) ([da1733e](https://github.com/birkir/prime/commit/da1733e))
+
+## [0.3.3-beta.3](https://github.com/birkir/prime/compare/v0.3.3-beta.2...v0.3.3-beta.3) (2019-02-20)
+
+### Bug Fixes
+
+- fields general ([#93](https://github.com/birkir/prime/issues/93)) ([94edde6](https://github.com/birkir/prime/commit/94edde6))
+
+## [0.3.3-beta.2](https://github.com/birkir/prime/compare/v0.3.3-beta.1...v0.3.3-beta.2) (2019-02-18)
+
+### Bug Fixes
+
+- graphql name startCase bug ([3b8e46f](https://github.com/birkir/prime/commit/3b8e46f))
+
+### Reverts
+
+- **core:** sofa-api ([775d124](https://github.com/birkir/prime/commit/775d124))
+
+## [0.3.3-beta.1](https://github.com/birkir/prime/compare/v0.3.3-beta.0...v0.3.3-beta.1) (2019-02-15)
+
+### Bug Fixes
+
+- count and multiple documents ([066290e](https://github.com/birkir/prime/commit/066290e))
+- onboarding ([08dd305](https://github.com/birkir/prime/commit/08dd305))
+- publish release doc count ([b84181c](https://github.com/birkir/prime/commit/b84181c))
+- releases and connection counts ([bf86d25](https://github.com/birkir/prime/commit/bf86d25))
+- use default locale for documents ([b5339ac](https://github.com/birkir/prime/commit/b5339ac))
+- webhook calls ([1740dac](https://github.com/birkir/prime/commit/1740dac))
+
 ## [0.3.3-beta.0](https://github.com/birkir/prime/compare/v0.3.2-beta.9...v0.3.3-beta.0) (2019-02-12)
 
 ### Bug Fixes

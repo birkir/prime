@@ -1,5 +1,17 @@
 import { Context } from 'apollo-server-core';
-import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Ctx,
+  FieldResolver,
+  ID,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
+import { Inject } from 'typedi';
 import { getRepository, In } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
@@ -12,6 +24,7 @@ import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
 import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
+import { DocumentResolver } from './DocumentResolver';
 
 const ReleaseConnection = createConnectionType(Release);
 
@@ -22,6 +35,9 @@ export class ReleaseResolver {
 
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
+
+  @Inject(x => DocumentResolver)
+  private readonly documentResolver: DocumentResolver;
 
   @Authorized()
   @Query(returns => Release, { nullable: true, description: 'Get Release by ID' })
@@ -144,9 +160,21 @@ export class ReleaseResolver {
   }
 
   @FieldResolver(returns => [Document], { description: 'Get Release Documents' })
-  public documents(@Root() release: Release): Promise<Document[]> {
-    return this.documentRepository.find({
-      releaseId: release.id,
+  public async documents(
+    @Root() release: Release //
+  ): Promise<Document[]> {
+    const where = { releaseId: release.id } as any;
+    const result = await this.documentResolver.allDocuments([], [where], {});
+    const edges = await result.edges;
+    return edges.map(edge => {
+      return edge.node;
     });
+  }
+
+  @FieldResolver(returns => Int, { description: 'Get Release Document Count' })
+  public async documentsCount(@Root() release: Release): Promise<number> {
+    const where = { releaseId: release.id } as any;
+    const result = await this.documentResolver.allDocuments([], [where], {});
+    return result.totalCount;
   }
 }

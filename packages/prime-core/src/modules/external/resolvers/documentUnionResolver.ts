@@ -1,4 +1,4 @@
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 import { getRepository } from 'typeorm';
 import { Document } from '../../../entities/Document';
 import { Schema } from '../../../entities/Schema';
@@ -20,7 +20,7 @@ export const documentUnionResolver = (resolvers: { [key: string]: any }) => asyn
   });
   if (doc) {
     const schema = await schemaRepository.findOneOrFail(doc.schemaId);
-    const schemaName = startCase(schema.name);
+    const schemaName = upperFirst(camelCase(schema.name));
     if (resolvers[schemaName]) {
       return resolvers[schemaName](root, args, context, info);
     }

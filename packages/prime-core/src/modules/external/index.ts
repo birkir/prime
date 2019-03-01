@@ -69,10 +69,16 @@ export const createExternal = async (connection: Connection) => {
 
     if (schema.variant === SchemaVariant.Default) {
       queries[name] = SchemaTypeConfig;
-      queries[`all${name}`] = connectionType;
-      mutations[`create${name}`] = createType;
-      mutations[`update${name}`] = updateType;
-      mutations[`remove${name}`] = DocumentRemove;
+
+      if (!schema.settings.single) {
+        queries[`all${name}`] = connectionType;
+      }
+
+      if (schema.settings.mutations) {
+        mutations[`create${name}`] = createType;
+        mutations[`update${name}`] = updateType;
+        mutations[`remove${name}`] = DocumentRemove;
+      }
     }
 
     types.set(`create${name}`, createType);
@@ -101,10 +107,22 @@ export const createExternal = async (connection: Connection) => {
     resolvers[`remove${name}`] = await createDocumentRemoveResolver(payload);
 
     queries[name].resolve = resolvers[name];
-    queries[`all${name}`].resolve = resolvers[`all${name}`];
-    mutations[`create${name}`].resolve = resolvers[`create${name}`];
-    mutations[`update${name}`].resolve = resolvers[`update${name}`];
-    mutations[`remove${name}`].resolve = resolvers[`remove${name}`];
+
+    if (queries[`all${name}`]) {
+      queries[`all${name}`].resolve = resolvers[`all${name}`];
+    }
+
+    if (mutations[`create${name}`]) {
+      mutations[`create${name}`].resolve = resolvers[`create${name}`];
+    }
+
+    if (mutations[`update${name}`]) {
+      mutations[`update${name}`].resolve = resolvers[`update${name}`];
+    }
+
+    if (mutations[`remove${name}`]) {
+      mutations[`remove${name}`].resolve = resolvers[`remove${name}`];
+    }
 
     const SchemaType = types.get(schema.name)!.type!;
 

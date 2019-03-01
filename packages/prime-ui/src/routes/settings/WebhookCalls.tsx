@@ -14,20 +14,23 @@ export const WebhookCalls = ({ match }: any) => (
       variables={{ id: match.params.webhookId }}
       fetchPolicy="network-only"
       query={gql`
-        query allWebhookCalls($id: ID!) {
-          allWebhookCalls(id: $id) {
+        query Webhook(id:ID!) {
+          Webhook(id:$id) {
             id
-            success
-            status
-            request
-            response
-            executedAt
+            calls {
+              id
+              success
+              status
+              request
+              response
+              executedAt
+            }
           }
         }
       `}
     >
       {({ data, error, loading }) => {
-        const items = get(data, 'allWebhookCalls', []);
+        const items = get(data, 'Webhook.calls', []);
 
         return (
           <Table

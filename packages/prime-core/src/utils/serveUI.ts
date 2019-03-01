@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { log } from './log';
 
-export const serveUI = (app, config) => {
+export const serveUI = (app: express.Application, config) => {
   const { uiDir } = config;
 
   if (!uiDir) {
@@ -16,7 +16,11 @@ export const serveUI = (app, config) => {
     })
   );
 
-  app.get('*', (req, res) => {
+  app.get('*', (req, res, next) => {
+    if (req.url.substr(0, 4) === '/api') {
+      return next();
+    }
+
     fs.readFile(path.join(uiDir, 'index.html'), (err, data) => {
       if (err) {
         log(err);

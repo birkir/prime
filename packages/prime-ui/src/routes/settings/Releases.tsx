@@ -73,7 +73,7 @@ export class Releases extends React.Component<any> {
           if (!record.publishedAt) {
             return (
               <span>
-                {Number(record.documents)} doc{record.documents === 1 ? '' : 's'}.
+                {record.documentsCount} doc{record.documentsCount === 1 ? '' : 's'}.
               </span>
             );
           } else {

@@ -340,7 +340,9 @@ export const DocumentsList = ({ match, history }: any) => {
         const publishRelease = () => {
           Modal.confirm({
             title: `Do you want to publish ${contentRelease!.name}?`,
-            content: `This release contains ${pagination.total} documents`,
+            content: `This release contains ${contentRelease!.documentsCount} document${
+              contentRelease!.documentsCount === 1 ? '' : 's'
+            }`,
             onOk: async () => {
               await contentRelease!.publish();
               message.success('Release has been published');

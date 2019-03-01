@@ -7,7 +7,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 import { uniqueTypeName } from '../utils/uniqueTypeNames';
 import { PageInfo } from './PageInfo';
@@ -33,7 +33,7 @@ export const createSchemaConnectionType = async (
   const addFieldSort = (field, sortKey, acc) => {
     const children = fields.filter(f => f.parentFieldId === field.id);
     if (children.length) {
-      const subSortName = uniqueTypeName(`${sortKey}_${startCase(field.name)}`);
+      const subSortName = uniqueTypeName(`${sortKey}_${upperFirst(camelCase(field.name))}`);
       const subSortFields = {};
       for (const subfield of fields) {
         if (subfield.parentFieldId === field.id && field.primeField) {

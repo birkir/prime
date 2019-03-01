@@ -3,6 +3,7 @@ import { GraphQLBoolean } from 'graphql';
 
 interface Options {
   label: string;
+  default: boolean;
 }
 
 export class PrimeFieldBoolean extends PrimeField {
@@ -11,6 +12,7 @@ export class PrimeFieldBoolean extends PrimeField {
   public static description: string = 'Boolean field';
   public static options: Options = {
     label: '',
+    default: false,
   };
 
   public outputType() {
@@ -30,10 +32,18 @@ export class PrimeFieldBoolean extends PrimeField {
   }
 
   public async processInput(value) {
+    if (typeof value === 'undefined') {
+      return this.options.default;
+    }
+
     return Boolean(value);
   }
 
   public async processOutput(value) {
+    if (typeof value === 'undefined') {
+      return this.options.default;
+    }
+
     return Boolean(value);
   }
 }

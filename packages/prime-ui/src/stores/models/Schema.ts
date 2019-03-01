@@ -1,5 +1,6 @@
 import { destroy, detach, getParent, hasParentOfType, Instance, types } from 'mobx-state-tree';
 import { JSONObject } from '../../interfaces/JSONObject';
+import { Settings } from '../settings';
 
 export type ISchemaField = Instance<typeof SchemaField>;
 export interface IAddField {
@@ -34,6 +35,13 @@ export const SchemaField = types
   .views(self => ({
     get isLeaf() {
       return !hasParentOfType(self, SchemaField);
+    },
+    get defaultOptions() {
+      const settingsField = Settings.fields.find((f: any) => f.type === self.type);
+      if (settingsField) {
+        return settingsField.options;
+      }
+      return {};
     },
   }))
   .actions(self => ({
