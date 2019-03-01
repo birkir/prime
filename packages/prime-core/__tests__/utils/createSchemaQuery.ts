@@ -63,7 +63,9 @@ export const createSchemaQuery = (name, fields) => {
     title: name,
     description: name,
     variant: enumValue('Default'),
-    settings: {},
+    settings: {
+      mutations: true,
+    },
     fields: [
       {
         title: 'Main',

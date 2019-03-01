@@ -173,7 +173,7 @@ const EditContentTypeBase = ({ form, onCancel, onSubmit, schemas, schemaId, item
             </Form.Item>
             <Form.Item label="Mutations">
               {getFieldDecorator('settings.mutations', {
-                initialValue: true,
+                initialValue: false,
                 valuePropName: 'checked',
               })(<Switch />)}
             </Form.Item>
