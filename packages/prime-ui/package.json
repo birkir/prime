@@ -40,7 +40,7 @@
     "@types/react-dom": "16.8.0",
     "@types/react-router-dom": "4.3.1",
     "@types/semver": "5.5.0",
-    "antd": "3.13.2",
+    "antd": "3.13.6",
     "apollo-cache-inmemory": "1.5.0-rc.1",
     "apollo-client": "2.5.0-verify.4",
     "apollo-link-context": "1.0.14",
@@ -80,5 +80,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "47d760104a005afa5bb17cac6a9e609bec51eae4"
+  "gitHead": "47d760104a005afa5bb17cac6a9e609bec51eae4",
+  "dependencies": {
+    "antd": "3.13.6"
+  }
 }

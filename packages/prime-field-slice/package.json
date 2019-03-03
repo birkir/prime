@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@primecms/field": "^0.3.3-beta.4",
-    "antd": "^3.13.0",
+    "antd": "3.13.6",
     "graphql": "^14.1.1",
     "graphql-type-json": "^0.2.1",
     "graphql-union-input-type": "0.4.0",
