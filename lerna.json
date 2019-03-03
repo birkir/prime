@@ -1,7 +1,7 @@
 {
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "0.3.3-beta.5",
+  "version": "0.3.3-beta.6",
   "command": {
     "publish": {
       "conventionalCommits": true

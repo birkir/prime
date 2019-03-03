@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.6](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.3-beta.5...v0.3.3-beta.6) (2019-03-03)
+
+**Note:** Version bump only for package @primecms/cli
+
 ## [0.3.2-beta.9](https://github.com/birkir/prime/tree/master/packages/prime-cli/compare/v0.3.2-beta.8...v0.3.2-beta.9) (2019-02-11)
 
 ### Bug Fixes

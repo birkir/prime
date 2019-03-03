@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.6](https://github.com/birkir/prime/compare/v0.3.3-beta.5...v0.3.3-beta.6) (2019-03-03)
+
+### Bug Fixes
+
+- update system ([1d49907](https://github.com/birkir/prime/commit/1d49907))
+
 ## [0.3.3-beta.5](https://github.com/birkir/prime/compare/v0.3.3-beta.4...v0.3.3-beta.5) (2019-03-03)
 
 ### Bug Fixes
