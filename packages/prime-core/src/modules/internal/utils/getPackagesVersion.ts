@@ -1,4 +1,5 @@
 import latest from 'latest';
+import path from 'path';
 import readPkg from 'read-pkg';
 import { fields } from '../../../utils/fields';
 
@@ -24,7 +25,7 @@ export const getPackagesVersion = async () => {
     packages.map(async pkg => {
       try {
         const { version } = await readPkg({
-          cwd: pkg.dir || `../../node_modules/${pkg.packageName}`,
+          cwd: pkg.dir || path.dirname(require.resolve(`${pkg.packageName}/package.json`)),
         });
         const latestVersion = await getLatestVersion(pkg.packageName);
         return { name: pkg.packageName, currentVersion: version, latestVersion };
