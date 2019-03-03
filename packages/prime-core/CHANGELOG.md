@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.5](https://github.com/birkir/prime/compare/v0.3.3-beta.4...v0.3.3-beta.5) (2019-03-03)
+
+**Note:** Version bump only for package @primecms/core
+
 ## [0.3.3-beta.4](https://github.com/birkir/prime/compare/v0.3.3-beta.3...v0.3.3-beta.4) (2019-03-01)
 
 ### Bug Fixes
