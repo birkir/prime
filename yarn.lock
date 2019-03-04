@@ -1947,11 +1947,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/async@2.0.49":
-  version "2.0.49"
-  resolved "https://registry.yarnpkg.com/@types/async/-/async-2.0.49.tgz#92e33d13f74c895cb9a7f38ba97db8431ed14bc0"
-  integrity sha512-Benr3i5odUkvpFkOpzGqrltGdbSs+EVCkEBGXbuR7uT0VzhXKIkhem6PDzHdx5EonA+rfbB3QvP6aDOw5+zp5Q==
-
 "@types/body-parser@*", "@types/body-parser@1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.17.0.tgz#9f5c9d9bd04bb54be32d5eb9fc0d8c974e6cf58c"
@@ -2655,38 +2650,39 @@ apollo-cache-control@0.5.0:
     apollo-server-env "2.2.0"
     graphql-extensions "0.5.0"
 
-apollo-cache-inmemory@1.5.0-rc.1:
-  version "1.5.0-rc.1"
-  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.5.0-rc.1.tgz#85db999efcce7ff97c273f3e8b8e88a25f543e0f"
-  integrity sha512-lQnd/gdIGNA8Pp0pTv1XuEGWKAy9EfJERM7XVEZu0Uxpdh1j53K8O79cpBbokd/IAfLQnkZZxxG7R7C/VOctRA==
+apollo-cache-inmemory@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/apollo-cache-inmemory/-/apollo-cache-inmemory-1.5.1.tgz#265d1ee67b0bf0aca9c37629d410bfae44e62953"
+  integrity sha512-D3bdpPmWfaKQkWy8lfwUg+K8OBITo3sx0BHLs1B/9vIdOIZ7JNCKq3EUcAgAfInomJUdN0QG1yOfi8M8hxkN1g==
   dependencies:
-    apollo-cache "^1.2.0-rc.1"
-    apollo-utilities "^1.2.0-rc.1"
+    apollo-cache "^1.2.1"
+    apollo-utilities "^1.2.1"
     optimism "^0.6.9"
     ts-invariant "^0.2.1"
     tslib "^1.9.3"
 
-apollo-cache@1.2.0-verify.4, apollo-cache@^1.2.0-rc.1:
-  version "1.2.0-verify.4"
-  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.2.0-verify.4.tgz#7b974331015b8ced29ddd6dcf4a852109464d26f"
-  integrity sha512-SgSuDoiZU++hcgJnUnH6WueFibZ6X0FpkppVIb0/6Bi8e8hNY6CT0V1GRtx6GMXQOw/vTjeuYYkxGZZJ0aqXaA==
+apollo-cache@1.2.1, apollo-cache@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/apollo-cache/-/apollo-cache-1.2.1.tgz#aae71eb4a11f1f7322adc343f84b1a39b0693644"
+  integrity sha512-nzFmep/oKlbzUuDyz6fS6aYhRmfpcHWqNkkA9Bbxwk18RD6LXC4eZkuE0gXRX0IibVBHNjYVK+Szi0Yied4SpQ==
   dependencies:
-    apollo-utilities "^1.1.0-verify.4"
+    apollo-utilities "^1.2.1"
+    tslib "^1.9.3"
 
-apollo-client@2.5.0-verify.4:
-  version "2.5.0-verify.4"
-  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.5.0-verify.4.tgz#3fc8081283867685271d3845ebe6ab56a487ee60"
-  integrity sha512-gtXEXtlIJGF80kcR9w5S6kPhbAcDiis7w5apGBOcU5z9ls+cBphPbWRl3ZXf/FI32lRBVqIVX247qbUZJra35A==
+apollo-client@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/apollo-client/-/apollo-client-2.5.1.tgz#36126ed1d32edd79c3713c6684546a3bea80e6d1"
+  integrity sha512-MNcQKiqLHdGmNJ0rZ0NXaHrToXapJgS/5kPk0FygXt+/FmDCdzqcujI7OPxEC6e9Yw5S/8dIvOXcRNuOMElHkA==
   dependencies:
     "@types/zen-observable" "^0.8.0"
-    apollo-cache "1.2.0-verify.4"
+    apollo-cache "1.2.1"
     apollo-link "^1.0.0"
     apollo-link-dedup "^1.0.0"
-    apollo-utilities "1.1.0-verify.4"
+    apollo-utilities "1.2.1"
     symbol-observable "^1.0.2"
+    ts-invariant "^0.2.1"
+    tslib "^1.9.3"
     zen-observable "^0.8.0"
-  optionalDependencies:
-    "@types/async" "2.0.49"
 
 apollo-datasource@0.3.0:
   version "0.3.0"
@@ -2851,28 +2847,21 @@ apollo-tracing@0.5.0:
     apollo-server-env "2.2.0"
     graphql-extensions "0.5.0"
 
-apollo-utilities@1.1.0-verify.4:
-  version "1.1.0-verify.4"
-  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.1.0-verify.4.tgz#a960aa659e31ccd4467cf6b04e80a04eabc7cc2d"
-  integrity sha512-y/a0sOQAZ0IPh3dzVAnLSNdr0FraJnC/0p8HVg99rJZcefhaHsFIG77Jjr6ExwD2sXVJpXWHFgIGbXfQaatXSA==
+apollo-utilities@1.2.1, apollo-utilities@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.2.1.tgz#1c3a1ebf5607d7c8efe7636daaf58e7463b41b3c"
+  integrity sha512-Zv8Udp9XTSFiN8oyXOjf6PMHepD4yxxReLsl6dPUy5Ths7jti3nmlBzZUOxuTWRwZn0MoclqL7RQ5UEJN8MAxg==
   dependencies:
     fast-json-stable-stringify "^2.0.0"
+    ts-invariant "^0.2.1"
+    tslib "^1.9.3"
 
-apollo-utilities@^1.0.1, apollo-utilities@^1.1.0-verify.4:
+apollo-utilities@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.1.2.tgz#aa5eca9d1f1eb721c381a22e0dde03559d856db3"
   integrity sha512-EjDx8vToK+zkWIxc76ZQY/irRX52puNg04xf/w8R0kVTDAgHuVfnFVC01O5vE25kFnIaa5em0pFI0p9b6YMkhQ==
   dependencies:
     fast-json-stable-stringify "^2.0.0"
-    tslib "^1.9.3"
-
-apollo-utilities@^1.2.0-rc.1:
-  version "1.2.0-rc.1"
-  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.2.0-rc.1.tgz#027c5f4736b59f9a1fae3cc85d3cb9625a15f67a"
-  integrity sha512-RKlC6yrKXo4hS+3zoN1RoW3n76GIV4++yehnU7TRoidD1JyJcWD1IxzcHAycvq3WVmKYtyA8kv0+xq0t5kBvJA==
-  dependencies:
-    fast-json-stable-stringify "^2.0.0"
-    ts-invariant "^0.2.1"
     tslib "^1.9.3"
 
 app-root-path@^2.0.1:
@@ -14161,12 +14150,12 @@ rc@1.2.8, rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-apollo@2.5.0-rc.1:
-  version "2.5.0-rc.1"
-  resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-2.5.0-rc.1.tgz#e9b62ee61d81375e3a2cc9a6272563e8b715d84b"
-  integrity sha512-T5f+3AuTd3vHmtZKJ08XTNiHD69RiIyeJ3sg4FEqJh07qpQ+jv1/TY5r3HZLhf773QpL7XW6lZq7V0kpFndPjw==
+react-apollo@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-2.5.1.tgz#85934e1cf41ba88e2e96c921b44588f29d5daad6"
+  integrity sha512-obXPcmjJ5O75UkoizcsIbe0PXAXKRqm+SwNu059HQInB3FAab9PIn4wd/KglpPNiB9JXHe8OJDov0lFMcBbHEQ==
   dependencies:
-    apollo-utilities "^1.2.0-rc.1"
+    apollo-utilities "^1.2.1"
     hoist-non-react-statics "^3.0.0"
     lodash.isequal "^4.5.0"
     prop-types "^15.6.0"
@@ -16796,12 +16785,7 @@ typeorm@0.2.13, typeorm@^0.2.11:
     yargonaut "^1.1.2"
     yargs "^12.0.5"
 
-typescript@3.2.x:
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.2.4.tgz#c585cb952912263d915b462726ce244ba510ef3d"
-  integrity sha512-0RNDbSdEokBeEAkgNbxJ+BLwSManFy9TeXz8uW+48j/xhEXv1ePME60olyzw2XzUqUBNAYFeJadIqAgNqIACwg==
-
-typescript@3.3.1, typescript@^3.2.2:
+typescript@3.2.x, typescript@3.3.1, typescript@^3.2.2:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.1.tgz#6de14e1db4b8a006ac535e482c8ba018c55f750b"
   integrity sha512-cTmIDFW7O0IHbn1DPYjkiebHxwtCMU+eTy30ZtJNBPF9j2O1ITu5XH2YnBeVRKWHqF+3JQwWJv0Q0aUgX8W7IA==
