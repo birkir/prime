@@ -33,11 +33,11 @@
     "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
-    "@accounts/database-manager": "0.11.2",
-    "@accounts/graphql-api": "0.11.2",
-    "@accounts/password": "0.11.2",
-    "@accounts/server": "0.11.2",
-    "@accounts/typeorm": "0.11.2",
+    "@accounts/database-manager": "0.12.0",
+    "@accounts/graphql-api": "0.12.0",
+    "@accounts/password": "0.12.0",
+    "@accounts/server": "0.12.0",
+    "@accounts/typeorm": "0.12.0",
     "@casl/ability": "3.0.1",
     "@graphql-modules/core": "0.4.2",
     "@primecms/field": "^0.3.3-beta.6",
