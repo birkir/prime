@@ -1,9 +1,10 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import { config } from './config';
 import { log } from './log';
 
-export const serveUI = (app: express.Application, config) => {
+export const serveUI = (app: express.Application) => {
   const { uiDir } = config;
 
   if (!uiDir) {
@@ -11,13 +12,14 @@ export const serveUI = (app: express.Application, config) => {
   }
 
   app.use(
+    config.pathClean,
     express.static(uiDir, {
       index: false,
     })
   );
 
-  app.get('*', (req, res, next) => {
-    if (req.url.substr(0, 4) === '/api') {
+  app.get(`${config.pathClean}*`, (req, res, next) => {
+    if (req.url.substr(config.path.length, 4) === '/api') {
       return next();
     }
 
@@ -26,7 +28,12 @@ export const serveUI = (app: express.Application, config) => {
         log(err);
         res.send('error');
       } else {
-        res.send(data.toString().replace('"$PRIME_CONFIG$"', `'${JSON.stringify(config)}'`));
+        res.send(
+          data
+            .toString()
+            .replace('"$PRIME_CONFIG$"', `'${JSON.stringify(config)}'`)
+            .replace(/\/static\//g, `${config.path}static/`)
+        );
       }
     });
   });

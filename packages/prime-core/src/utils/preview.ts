@@ -2,10 +2,11 @@ import express from 'express';
 import { getRepository } from 'typeorm';
 import { Document } from '../entities/Document';
 import { Schema } from '../entities/Schema';
+import { config } from './config';
 import { DocumentTransformer } from './DocumentTransformer';
 
 export const previewRoutes = (app: express.Application) => {
-  app.get('/prime/redirect', (req, res) => {
+  app.get(`${config.pathClean}/prime/redirect`, (req, res) => {
     const { id, url, accessToken, refreshToken } = req.query;
     if (id.length === 36) {
       const cookieConfig = {
@@ -22,7 +23,7 @@ export const previewRoutes = (app: express.Application) => {
     res.json({ success: false });
   });
 
-  app.get('/prime/preview', async (req, res) => {
+  app.get(`${config.pathClean}/prime/preview`, async (req, res) => {
     const cookie = String(req.headers.cookie);
     const cookies = cookie.split(';').reduce((acc, item) => {
       const [key, value] = item
