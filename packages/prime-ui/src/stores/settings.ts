@@ -8,12 +8,14 @@ const isProd = process.env.NODE_ENV === 'production';
 
 let config = get(window, 'prime.config', '');
 let coreUrl = isProd ? '/' : 'http://localhost:4000';
+let corePath = '';
 const fields: any = [];
 let env: any = {};
 
 try {
   config = JSON.parse(config);
   coreUrl = config.coreUrl || coreUrl;
+  corePath = config.path || '';
   env = config.env || env;
 } catch (err) {
   if (isProd) {
@@ -65,6 +67,7 @@ export const Settings = types
   .model('Settings', {
     isProd,
     coreUrl,
+    path: corePath,
     packages: types.array(PackageVersion),
     shouldReloadPlayground: false,
     env: types.frozen(),
