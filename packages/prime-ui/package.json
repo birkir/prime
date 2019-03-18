@@ -35,7 +35,7 @@
     "@types/jest": "23.3.14",
     "@types/lodash": "4.14.122",
     "@types/mobx-devtools-mst": "0.9.0",
-    "@types/react": "16.8.7",
+    "@types/react": "16.8.8",
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.8.0",
     "@types/react-router-dom": "4.3.1",
