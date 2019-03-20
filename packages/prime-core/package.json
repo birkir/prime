@@ -1,6 +1,6 @@
 {
   "name": "@primecms/core",
-  "version": "0.3.3-beta.7",
+  "version": "0.3.3-beta.8",
   "description": "The core Prime CMS Engine",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime",
@@ -49,7 +49,7 @@
     "@primecms/field-number": "^0.3.3-beta.6",
     "@primecms/field-select": "^0.3.3-beta.6",
     "@primecms/field-slice": "^0.3.3-beta.6",
-    "@primecms/field-string": "^0.3.3-beta.7",
+    "@primecms/field-string": "^0.3.3-beta.8",
     "apollo-server-express": "2.4.0",
     "class-validator": "0.9.1",
     "cors": "2.8.5",
