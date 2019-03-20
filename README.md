@@ -42,6 +42,7 @@ Integration examples with previews.
 Tools
 
 - [apollo-link-prime](https://github.com/primecms/apollo-link-prime)
+- [Docker container](https://github.com/astzweig/docker-primecms)
 
 ## Screenshots
 
