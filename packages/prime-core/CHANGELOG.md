@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.7](https://github.com/birkir/prime/compare/v0.3.3-beta.6...v0.3.3-beta.7) (2019-03-20)
+
+### Bug Fixes
+
+- mark documents removed on schema delete ([71fc2ac](https://github.com/birkir/prime/commit/71fc2ac))
+
+### Features
+
+- core path configurable ([#119](https://github.com/birkir/prime/issues/119)) ([4b41064](https://github.com/birkir/prime/commit/4b41064))
+
 ## [0.3.3-beta.6](https://github.com/birkir/prime/compare/v0.3.3-beta.5...v0.3.3-beta.6) (2019-03-03)
 
 ### Bug Fixes
