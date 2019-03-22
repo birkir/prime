@@ -143,5 +143,5 @@ Special thanks to the following projects (sorted alphabetically):
 - [GraphQL Modules](https://graphql-modules.com)
 - [Mobx](https://github.com/mobxjs/mobx) and [MST](https://github.com/mobxjs/mobx-state-tree)
 - [React Beautiful DnD](https://github.com/atlassian/react-beautiful-dnd) by Atlassian
-- [TypeGraphQL](https://19majkel94.github.io/type-graphql/)
+- [TypeGraphQL](https://typegraphql.ml/)
 - [TypeORM](http://typeorm.io/)
