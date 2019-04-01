@@ -38,7 +38,7 @@
     "@accounts/password": "0.12.0",
     "@accounts/server": "0.12.0",
     "@accounts/typeorm": "0.12.0",
-    "@casl/ability": "3.0.1",
+    "@casl/ability": "3.0.2",
     "@graphql-modules/core": "0.4.2",
     "@primecms/field": "^0.3.3-beta.6",
     "@primecms/field-asset": "^0.3.3-beta.6",
