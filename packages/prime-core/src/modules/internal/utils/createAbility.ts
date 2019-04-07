@@ -4,7 +4,7 @@ import { Context } from '../../../interfaces/Context';
 export const createAbility = (context: Context) => {
   return AbilityBuilder.define((can, cannot) => {
     const userId = context.user && context.user.id;
-    const role = (() => 'editor')();
+    const role = (() => 'admin')();
 
     if (context.user) {
       can('update', 'User', { id: userId });
