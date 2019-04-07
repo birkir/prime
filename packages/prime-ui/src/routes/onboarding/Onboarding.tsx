@@ -138,7 +138,7 @@ export class OnboardingBase extends React.Component<FormComponentProps> {
             })(<Input type="password" placeholder="Confirm password" size="large" />)}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" size="large">
+            <Button type={'primary' as any} htmlType="submit" size="large">
               Continue
             </Button>
           </Form.Item>

@@ -35,19 +35,19 @@
     "@types/jest": "23.3.14",
     "@types/lodash": "4.14.123",
     "@types/mobx-devtools-mst": "0.9.0",
-    "@types/react": "16.8.8",
+    "@types/react": "16.8.12",
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.8.3",
     "@types/react-router-dom": "4.3.1",
     "@types/semver": "5.5.0",
-    "antd": "3.13.6",
+    "antd": "3.16.1",
     "apollo-cache-inmemory": "1.5.1",
     "apollo-client": "2.5.1",
     "apollo-link-context": "1.0.17",
     "apollo-link-error": "1.1.10",
     "apollo-link-http": "1.5.14",
     "babel-plugin-import": "1.11.0",
-    "braft-editor": "2.1.34",
+    "braft-editor": "2.2.9",
     "date-fns": "1.29.0",
     "fork-ts-checker-webpack-plugin": "0.5.2",
     "formik": "1.3.1",
@@ -80,8 +80,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "008cb9492c0499bf65b4e7621467dcefb796fd9d",
-  "dependencies": {
-    "antd": "3.13.6"
-  }
+  "gitHead": "008cb9492c0499bf65b4e7621467dcefb796fd9d"
 }

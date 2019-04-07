@@ -58,7 +58,7 @@ class LoginBase extends React.Component<FormComponentProps> {
             )}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button type={'primary' as any} htmlType="submit" className="login-form-button">
               Log in
             </Button>
           </Form.Item>
