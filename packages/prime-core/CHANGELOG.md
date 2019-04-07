@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3-beta.9](https://github.com/birkir/prime/compare/v0.3.3-beta.8...v0.3.3-beta.9) (2019-04-07)
+
+### Bug Fixes
+
+- admin by default ([7edf8b6](https://github.com/birkir/prime/commit/7edf8b6))
+- documents ui paging ([1ffdb2d](https://github.com/birkir/prime/commit/1ffdb2d))
+
 ## [0.3.3-beta.8](https://github.com/birkir/prime/compare/v0.3.3-beta.7...v0.3.3-beta.8) (2019-03-20)
 
 **Note:** Version bump only for package @primecms/core
