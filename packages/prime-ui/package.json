@@ -33,7 +33,7 @@
     "@primecms/field-string": "^0.3.3-beta.8",
     "@types/graphql": "14.0.7",
     "@types/jest": "23.3.14",
-    "@types/lodash": "4.14.122",
+    "@types/lodash": "4.14.123",
     "@types/mobx-devtools-mst": "0.9.0",
     "@types/react": "16.8.8",
     "@types/react-beautiful-dnd": "7.1.2",
