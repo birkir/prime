@@ -1,8 +1,18 @@
+import { ConnectionArguments } from '@girin/connection';
 import { Brackets } from 'typeorm';
-import { EntityConnection } from 'typeorm-cursor-connection';
+import { EntityConnection, EntityConnectionOptions } from 'typeorm-cursor-connection';
 
 export class ExtendedConnection<T> extends EntityConnection<T> {
   public totalCountField = 'id';
+  protected skip?: number;
+
+  constructor(
+    args: ConnectionArguments & { skip?: number },
+    public options: EntityConnectionOptions<T>
+  ) {
+    super(args, options);
+    this.skip = args.skip;
+  }
 
   public get totalCount(): Promise<number> {
     return new Promise(async resolve => {
@@ -46,6 +56,10 @@ export class ExtendedConnection<T> extends EntityConnection<T> {
 
     for (const { sort, order } of sortOptions) {
       queryBuilder.addOrderBy(`"${sort}"`, appliedOrderMap[order]);
+    }
+
+    if (this.skip) {
+      queryBuilder.offset(this.skip);
     }
 
     if (this.limit) {

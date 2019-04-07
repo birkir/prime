@@ -10,6 +10,9 @@ export class ConnectionArgs {
   @Field(type => Int, { nullable: true })
   public last?: number;
 
+  @Field(type => Int, { nullable: true })
+  public skip?: number;
+
   @Field({ nullable: true })
   public after?: string;
 

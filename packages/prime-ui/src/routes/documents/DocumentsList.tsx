@@ -38,6 +38,8 @@ const GET_CONTENT_ENTRIES = gql`
     $locale: String
     $schemaId: ID
     $releaseId: ID
+    $first: Int = 10
+    $skip: Int
     $sort: [DocumentConnectionSort!]
   ) {
     allSchemas {
@@ -50,12 +52,9 @@ const GET_CONTENT_ENTRIES = gql`
         }
       }
     }
-    # allUsers {
-    #   id
-    #   email
-    # }
     allDocuments(
-      first: 10
+      first: $first
+      skip: $skip
       filter: { locale: $locale, schemaId: $schemaId, releaseId: $releaseId }
       sort: $sort
     ) {
@@ -64,10 +63,8 @@ const GET_CONTENT_ENTRIES = gql`
         node {
           id
           documentId
-          # releaseId
           locale
           publishedAt
-          # publishedId
           updatedAt
           data
           primary
@@ -76,24 +73,14 @@ const GET_CONTENT_ENTRIES = gql`
           published {
             id
           }
-          # schema {
-          #   id
-          #   name
-          #   title
-          # }
-          # user {
-          #   id
-          #   email
-          #   firstname
-          #   lastname
-          # }
         }
+        cursor
       }
     }
   }
 `;
 
-const PER_PAGE = 10;
+const PER_PAGE = 30;
 
 export const DocumentsList = ({ match, history }: any) => {
   const options: IOptions = String(match.params.options)
@@ -135,6 +122,7 @@ export const DocumentsList = ({ match, history }: any) => {
 
   let userId: any;
   let contentTypeId: any = null;
+  let skip = 0;
   const contentReleaseId = options.release || null;
 
   if (options.type) {
@@ -155,10 +143,10 @@ export const DocumentsList = ({ match, history }: any) => {
         schemaId: contentTypeId,
         releaseId: contentReleaseId,
         userId,
-        // skip: 0,
-        // limit: PER_PAGE,
+        first: PER_PAGE,
+        skip,
         locale: locale.id,
-        sort: 'updatedAt_ASC',
+        sort: 'updatedAt_DESC',
       }}
     >
       {({ loading, error, data, refetch }) => {
@@ -167,7 +155,7 @@ export const DocumentsList = ({ match, history }: any) => {
         }
 
         const pagination = {
-          total: get(data, 'allContentEntries.totalCount'),
+          total: get(data, 'allDocuments.totalCount'),
           pageSize: PER_PAGE,
         };
 
@@ -175,22 +163,23 @@ export const DocumentsList = ({ match, history }: any) => {
           contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
           userId = filters['user.id'] && filters['user.id'][0];
 
-          const formatSorterField = (field: string) => {
+          const formatSorterField = (field: string = 'updatedAt') => {
             if (field === 'user.id') {
               field = 'userId';
             }
             return `${field}_${sorter.order === 'ascend' ? 'ASC' : 'DESC'}`;
           };
 
+          skip = paging.pageSize * (paging.current - 1);
+
           const variables = {
             schemaId: contentTypeId,
             releaseId: contentReleaseId,
             userId,
-            // limit: paging.pageSize,
-            // skip: (paging.current - 1) * paging.pageSize,
+            first: paging.pageSize,
+            skip,
             sort: formatSorterField(sorter.field),
             locale: locale.id,
-            // order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
           };
           refetch(variables);
         };
