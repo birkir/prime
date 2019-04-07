@@ -3748,7 +3748,7 @@ braces@^2.3.1, braces@^2.3.2:
     split-string "^3.0.2"
     to-regex "^3.0.1"
 
-braft-convert@^2.1.4:
+braft-convert@^2.1.10:
   version "2.1.12"
   resolved "https://registry.yarnpkg.com/braft-convert/-/braft-convert-2.1.12.tgz#dc331722feb5fe3fc2392d44db0c02922c19c6b2"
   integrity sha512-mGqlVfpUIW3HHFmYmTdV7QRI1e2bpMtvHGgIm5/sb0h4alX+kWHgIZ/vZHCHZAxPEp8bbL73+8rVjyp3NZBFtg==
@@ -3756,30 +3756,30 @@ braft-convert@^2.1.4:
     draft-convert "^2.0.0"
     draft-js "^0.10.3"
 
-braft-editor@2.1.34:
-  version "2.1.34"
-  resolved "https://registry.yarnpkg.com/braft-editor/-/braft-editor-2.1.34.tgz#3c90cfb146b77c73897d40645f2170a7b2738f7a"
-  integrity sha512-eRSCwc3FWGn1GYdZxIm5oWs1u8kmJoT+l5+7FxARy+uUVCWX/XZcIKS1WT/QdGtjWB9FXE+rKacrUdDyEAeZ0w==
+braft-editor@2.2.9:
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/braft-editor/-/braft-editor-2.2.9.tgz#8990b6b638a69daebfb57e3f1f8e057166abc5be"
+  integrity sha512-F1mb9luLXfJ6Lhw7jLT+DNE9lc2qAb4fzNu+x5t2gbNKMzdmLrE99aNsqbDIGYqP4AGamgbXIiLYF7Md1+PtoQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    braft-convert "^2.1.4"
-    braft-finder "^0.0.14"
-    braft-utils "^3.0.6"
+    braft-convert "^2.1.10"
+    braft-finder "^0.0.18"
+    braft-utils "^3.0.8"
     draft-convert "^2.0.0"
     draft-js "^0.10.3"
     draft-js-multidecorators "^1.0.0"
     draftjs-utils "^0.9.4"
     immutable "~3.7.4"
 
-braft-finder@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/braft-finder/-/braft-finder-0.0.14.tgz#f5a65548a00dbe3193be58a90fffe5264f0a1184"
-  integrity sha512-Gv4BESpi6O9EAHDmOlkpa1+zVRACkKBi9Htjpab1plNu1W/yyr9rsP2A8Q2Wg+X8Mx7Jh8byB1OQwuLwzV6SKQ==
+braft-finder@^0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/braft-finder/-/braft-finder-0.0.18.tgz#5f43659b61290081fb2920cc3ce1f62e31e9da57"
+  integrity sha512-XtEyVywEfHDzRjAV5HOiqKFva6vEm0Rez+QHgq+EbqXpAqxuHQTci2s3LX2u7G3UicNYpDsVY/UV3nleF2VYyw==
 
-braft-utils@^3.0.6:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/braft-utils/-/braft-utils-3.0.9.tgz#b0e28d84741921086a85b0fb07c6df2df5ae2878"
-  integrity sha512-S+eUc3iflmNBBOQ9K8tuEGB+FLoTjeoxhPcIsCsFc3tNh8yg4yTnk4RaR4pEeyCst7fPekJFtRQ1gzCWne3TWQ==
+braft-utils@^3.0.8:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/braft-utils/-/braft-utils-3.0.11.tgz#8a977f47b99dde09473363b90c3fe587103f3abe"
+  integrity sha512-bCtI+vSDCi8NyHeyhmHnKeRSIg00jI/LbKcMhxJnKclC2g6Aeo+jh42ol2gks61edKhd/s+fVx5M0NJXEGD9vA==
 
 brorand@^1.0.1:
   version "1.1.0"
