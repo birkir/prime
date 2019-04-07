@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@primecms/field": "^0.3.3-beta.6",
-    "antd": "3.13.6",
+    "antd": "3.16.1",
     "graphql": "^14.1.1",
     "graphql-iso-date": "^3.6.1",
     "react": "^16.8.0-alpha.1",

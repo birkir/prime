@@ -160,7 +160,7 @@ export const DocumentsList = ({ match, history }: any) => {
         };
 
         const onTableChange = async (paging: any, filters: any, sorter: any) => {
-          contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
+          contentTypeId = filters.schemaId && filters.schemaId[0];
           userId = filters['user.id'] && filters['user.id'][0];
 
           const formatSorterField = (field: string = 'updatedAt') => {
@@ -261,7 +261,7 @@ export const DocumentsList = ({ match, history }: any) => {
                 text: title,
                 value: id,
               })),
-            filteredValue: [contentTypeId] as any[],
+            // filteredValue: (contentTypeId ? [contentTypeId] : null) as any,
             filterMultiple: false,
             render(schemaId: string) {
               return ContentTypes.items.get(schemaId)!.name;
@@ -286,7 +286,7 @@ export const DocumentsList = ({ match, history }: any) => {
               text: email,
               value: id,
             })),
-            filteredValue: [userId] as any[],
+            filteredValue: userId,
             filterMultiple: false,
             align: 'center' as any,
             render(text: string, record: any) {
@@ -350,16 +350,17 @@ export const DocumentsList = ({ match, history }: any) => {
               </div>
               {contentRelease && (
                 <Button
+                  href="#"
                   type="default"
                   style={{ marginRight: 16 }}
                   onClick={publishRelease}
-                  disabled={Boolean(contentRelease.publishedAt)}
+                  {...{ disabled: Boolean(contentRelease.publishedAt) }}
                 >
                   Publish
                 </Button>
               )}
               <Dropdown overlay={locales} trigger={['click']}>
-                <Button type="default" style={{ marginRight: 16 }}>
+                <Button href="#" type="default" style={{ marginRight: 16 }}>
                   <span
                     className={`flagstrap-icon flagstrap-${locale.flag}`}
                     style={{ marginRight: 8 }}
@@ -369,7 +370,7 @@ export const DocumentsList = ({ match, history }: any) => {
                 </Button>
               </Dropdown>
               <Dropdown overlay={menu} trigger={['click']}>
-                <Button type="primary">
+                <Button href="#" type="primary">
                   Create
                   <Icon type="down" />
                 </Button>

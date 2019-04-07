@@ -10,7 +10,7 @@ import { Settings } from '../settings';
 import { Schema } from './Schema';
 
 const omitSchema = (collection: any, id: string) => {
-  return cloneDeepWith(collection, (value: any) => {
+  return cloneDeepWith(collection, (value: { __typename: string; id: string }) => {
     if (isObject(value)) {
       delete value.__typename;
       if (value.id && String(value.id).substr(0, 4) === 'new-') {
