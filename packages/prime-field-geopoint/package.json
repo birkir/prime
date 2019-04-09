@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-geopoint",
-  "version": "0.3.2-beta.1",
+  "version": "0.3.4-beta.0",
   "description": "GeoPoint Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-geopoint",

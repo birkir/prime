@@ -1,7 +1,7 @@
 {
   "name": "@primecms/cli",
   "private": false,
-  "version": "0.3.3-beta.6",
+  "version": "0.3.4-beta.0",
   "description": "primecms cli",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-cli",

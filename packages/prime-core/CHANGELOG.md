@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.0](https://github.com/birkir/prime/compare/v0.3.3-beta.9...v0.3.4-beta.0) (2019-04-09)
+
+### Bug Fixes
+
+- merge ([4d3444c](https://github.com/birkir/prime/commit/4d3444c))
+
+### Features
+
+- geopoint field ([15667b5](https://github.com/birkir/prime/commit/15667b5))
+- geopoint field ([201972e](https://github.com/birkir/prime/commit/201972e))
+
 ## [0.3.3-beta.9](https://github.com/birkir/prime/compare/v0.3.3-beta.8...v0.3.3-beta.9) (2019-04-07)
 
 ### Bug Fixes

@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.0](https://github.com/birkir/prime/tree/master/packages/prime-field-number/compare/v0.3.3-beta.9...v0.3.4-beta.0) (2019-04-09)
+
+**Note:** Version bump only for package @primecms/field-number
+
 ## [0.3.3-beta.9](https://github.com/birkir/prime/tree/master/packages/prime-field-number/compare/v0.3.3-beta.8...v0.3.3-beta.9) (2019-04-07)
 
 **Note:** Version bump only for package @primecms/field-number
