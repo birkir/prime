@@ -38,6 +38,14 @@ Array [
     "type": "document",
   },
   Object {
+    "description": "Geo point field",
+    "options": Object {
+      "required": false,
+    },
+    "title": "Geo Point",
+    "type": "geopoint",
+  },
+  Object {
     "description": "Group other fields to list",
     "options": Object {
       "repeated": true,
