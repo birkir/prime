@@ -5,7 +5,9 @@ import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Schema, SchemaVariant } from '../../../entities/Schema';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { pubSub } from '../../../utils/pubSub';
+import { DocumentRepository } from '../repositories/DocumentRepository';
 import { SchemaRepository } from '../repositories/SchemaRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { SchemaFieldGroup } from '../types/SchemaFieldGroup';
@@ -21,6 +23,9 @@ const parseEnum = (Enum, value: number) => Enum[(value as unknown) as string];
 export class SchemaResolver {
   @InjectRepository(SchemaRepository)
   private readonly schemaRepository: SchemaRepository;
+
+  @InjectRepository(DocumentRepository)
+  private readonly documentRepository: DocumentRepository;
 
   @Authorized()
   @Query(returns => Schema, { nullable: true, description: 'Get Schema by ID' })
@@ -78,6 +83,7 @@ export class SchemaResolver {
     }
     pubSub.publish('REBUILD_EXTERNAL', schema);
     schema.variant = parseEnum(SchemaVariant, schema.variant);
+    processWebhooks('schema.created', { schema });
     return schema;
   }
 
@@ -97,6 +103,7 @@ export class SchemaResolver {
     await this.schemaRepository.save(schema);
     schema.variant = parseEnum(SchemaVariant, schema.variant);
     pubSub.publish('REBUILD_EXTERNAL', schema);
+    processWebhooks('schema.updated', { schema });
     return schema;
   }
 
@@ -104,8 +111,15 @@ export class SchemaResolver {
   @Mutation(returns => Boolean)
   public async removeSchema(@Arg('id', type => ID) id: string): Promise<boolean> {
     const schema = await this.schemaRepository.findOneOrFail(id);
+    await this.documentRepository.update(
+      { schemaId: id },
+      {
+        deletedAt: Date.now(),
+      }
+    );
     await this.schemaRepository.remove(schema);
     pubSub.publish('REBUILD_EXTERNAL', schema);
+    processWebhooks('schema.removed', { schema });
     return true;
   }
 

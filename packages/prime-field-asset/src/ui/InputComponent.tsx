@@ -1,11 +1,11 @@
 import { PrimeFieldProps } from '@primecms/field';
 import { Button, Dropdown, Form, Icon, Menu, Modal, Upload } from 'antd';
-import { ClickParam } from 'antd/lib/menu'; // tslint:disable-line no-submodule-imports
-import { UploadChangeParam } from 'antd/lib/upload'; // tslint:disable-line no-submodule-imports
-import { UploadFile } from 'antd/lib/upload/interface'; // tslint:disable-line no-submodule-imports
+import { ClickParam } from 'antd/lib/menu';
+import { UploadChangeParam } from 'antd/lib/upload';
+import { UploadFile } from 'antd/lib/upload/interface';
 import { get } from 'lodash';
 import React from 'react';
-import Cropper from 'react-easy-crop'; // tslint:disable-line
+import Cropper from 'react-easy-crop';
 
 const CROP_SIZE = 800;
 
@@ -260,7 +260,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     return (
       <>
         <Form.Item label={field.title}>
-          <div style={{ width: 112, height: 112 }}>
+          <div style={{ width: 112, height: 112 }} key="noop">
             <Upload
               name="file"
               action={`https://api.cloudinary.com/v1_1/${this.url.hostname}/upload`}

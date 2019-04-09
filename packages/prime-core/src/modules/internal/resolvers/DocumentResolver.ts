@@ -18,6 +18,7 @@ import { Document } from '../../../entities/Document';
 import { Context } from '../../../interfaces/Context';
 import { DocumentTransformer } from '../../../utils/DocumentTransformer';
 import { getUniqueHashId } from '../../../utils/getUniqueHashId';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { SchemaFieldRepository } from '../repositories/SchemaFieldRepository';
 import { SchemaRepository } from '../repositories/SchemaRepository';
@@ -80,14 +81,14 @@ export class DocumentResolver {
 
   @Authorized()
   @Query(returns => DocumentConnection)
-  public allDocuments(
+  public async allDocuments(
     @Arg('sort', type => [DocumentSort], { defaultValue: 1, nullable: true }) sorts: string[],
     @Arg('filter', type => [DocumentFilterInput], { nullable: true })
     filters: DocumentFilterInput[],
     @Args() args: ConnectionArgs
   ) {
     const result = new ExtendedConnection(args, {
-      where: qb => {
+      where: (qb, counter = false) => {
         qb.andWhere('Document.deletedAt IS NULL');
 
         const subquery = qb
@@ -102,15 +103,23 @@ export class DocumentResolver {
             filterArr.map((filter, i) => {
               builder.orWhere(
                 new Brackets(sq => {
-                  Object.entries(filter).map(([key, value]) =>
-                    sq.andWhere(`${name}.${key} = :${key}_${i}`, { [`${key}_${i}`]: value })
-                  );
+                  Object.entries(filter).map(([key, value]) => {
+                    if (value === null) {
+                      sq.andWhere(`${name}.${key} IS NULL`);
+                    } else {
+                      sq.andWhere(`${name}.${key} = :${key}_${i}`, { [`${key}_${i}`]: value });
+                    }
+                  });
                 })
               );
             });
           });
 
-        const filtered = (filters || []).map(filter => pickBy(filter, identity));
+        const filtered = (filters || []).map(filter =>
+          pickBy(filter, (value, key) => {
+            return key === 'releaseId' || identity(value);
+          })
+        );
 
         if (filtered.length > 0 && Object.keys(filtered[0]).length > 0) {
           subquery.andWhere(filterWithName('d', filtered));
@@ -119,15 +128,16 @@ export class DocumentResolver {
 
         subquery.orderBy({ 'd.createdAt': 'DESC' }).limit(1);
 
-        qb.having(`Document.id = ${subquery.getQuery()}`);
-        qb.groupBy('Document.id');
+        if (!counter) {
+          qb.having(`Document.id = ${subquery.getQuery()}`);
+          qb.groupBy('Document.id');
+        }
         return qb;
       },
       repository: this.documentRepository,
       sortOptions: sortOptions(sorts),
     });
-
-    (result as any).totalCount = 15;
+    result.totalCountField = 'documentId';
 
     return result;
   }
@@ -186,10 +196,10 @@ export class DocumentResolver {
     @Arg('locale', { nullable: true }) locale?: string,
     @Arg('releaseId', type => ID, { nullable: true }) releaseId?: string
   ): Promise<boolean> {
-    const doc = await this.Document(id, locale, releaseId);
+    const document = await this.Document(id, locale, releaseId);
     await this.documentRepository.update(
       {
-        documentId: doc.documentId,
+        documentId: document.documentId,
         ...(locale && { locale }),
         ...(releaseId && { releaseId }),
       },
@@ -197,7 +207,7 @@ export class DocumentResolver {
         deletedAt: new Date(),
       }
     );
-    // @todo run webhook
+    processWebhooks('document.removed', { document });
     // @todo update algolia
     return true;
   }
@@ -209,10 +219,11 @@ export class DocumentResolver {
     @Ctx() context: Context //
   ) {
     const doc = await this.documentRepository.findOneOrFail({ id, deletedAt: IsNull() });
-    const result = this.documentRepository.publish(doc, context.user.id);
-    // @todo run webhook
+    const publishedId = await this.documentRepository.publish(doc, context.user.id);
+    const document = await this.Document(publishedId);
+    processWebhooks('document.published', { document });
     // @todo update algolia
-    return result;
+    return document;
   }
 
   @Mutation(returns => Document)
@@ -230,9 +241,10 @@ export class DocumentResolver {
         publishedAt: null as any,
       }
     );
-    // @todo run webhook
     // @todo update algolia
-    return this.Document(id);
+    const document = await this.Document(id);
+    processWebhooks('document.unpublished', { document });
+    return document;
   }
 
   @FieldResolver(returns => GraphQLJSON, { nullable: true })
@@ -245,6 +257,7 @@ export class DocumentResolver {
   public async versions(@Root() document: Document): Promise<Document[]> {
     return this.documentRepository.find({
       where: { documentId: document.documentId, deletedAt: IsNull() },
+      order: { updatedAt: 'DESC' },
     });
   }
 

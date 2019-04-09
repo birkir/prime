@@ -1,11 +1,11 @@
 {
   "private": true,
-  "engines" : {
-    "node" : ">= 10.*"
+  "engines": {
+    "node": ">= 10.*"
   },
   "scripts": {
     "setup": "lerna bootstrap; yarn run link",
-    "start": "lerna exec -- yarn dev --stream",
+    "start": "lerna run dev --stream",
     "link": "lerna exec -- yarn link",
     "unlink": "lerna exec -- yarn unlink",
     "clean": "lerna run clean; rimraf {.cache,node_modules,reports,packages/**/{node_modules,lib,build,coverage},yarn.lock}",
@@ -70,10 +70,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "7.5.1",
+    "@commitlint/cli": "7.5.2",
     "@commitlint/config-conventional": "7.5.0",
-    "@types/node": "10.12.21",
-    "codecov": "3.1.0",
+    "@types/node": "10.14.3",
+    "@types/react": "16.8.12",
+    "codecov": "3.2.0",
     "husky": "1.3.1",
     "jest": "24.0.0",
     "jest-junit": "6.2.1",

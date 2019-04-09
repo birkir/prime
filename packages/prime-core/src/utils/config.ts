@@ -15,9 +15,15 @@ export const config = rc('prime', {
     '@primecms/field-slice',
     '@primecms/field-string',
   ],
+  sofaApi: true,
   uiDir: defaultUiDir(),
   coreUrl: defaultCoreUrl(),
+  path: defaultCorePath(),
 });
+
+config.coreUrl = config.coreUrl.trim().replace(/\/+$/, '');
+config.path = `/${config.path.trim()}/`.replace(/\/+$/, '/').replace(/^\/+/, '/');
+config.pathClean = config.path.replace(/\/+$/, '');
 
 function defaultUiDir() {
   try {
@@ -46,4 +52,16 @@ function defaultCoreUrl() {
   }
 
   return `http://localhost:${PORT || 4000}`;
+}
+
+function defaultCorePath() {
+  const { CORE_PATH } = process.env;
+  if (CORE_PATH) {
+    return CORE_PATH;
+  }
+  const matches = defaultCoreUrl().match(/[0-9a-zA-Z]\/(.*)$/);
+  if (matches && matches[1]) {
+    return matches[1];
+  }
+  return '/';
 }

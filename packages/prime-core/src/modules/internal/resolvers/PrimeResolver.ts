@@ -57,7 +57,7 @@ export class PrimeResolver {
     if (!settings) {
       settings = new Settings();
       settings.data = {
-        accessType: SettingsAccessType.PUBLIC,
+        accessType: SettingsAccessType[SettingsAccessType.PUBLIC] as any,
         previews: [],
         locales: [],
       };
@@ -111,7 +111,7 @@ export class PrimeResolver {
     const allowedPackages = [
       '@primecms/core',
       '@primecms/ui',
-      ...fields.map(({ packageName }) => ({ packageName })),
+      ...fields.map(({ packageName }) => packageName),
     ];
 
     if (process.env.NODE_ENV !== 'production') {

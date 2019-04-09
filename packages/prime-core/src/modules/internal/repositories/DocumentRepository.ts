@@ -68,6 +68,6 @@ export class DocumentRepository extends DataLoaderRepository<Document> {
     document.userId = userId;
     const res = await this.insert(document);
     const doc = res.identifiers.pop() || { id: null };
-    return this.findOneOrFail(doc.id);
+    return doc.id;
   }
 }

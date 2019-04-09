@@ -117,7 +117,9 @@ export class SchemaDetail extends React.Component<IProps> {
   public onKeyDown = (e: any) => {
     if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      this.saveSchema();
+      if (!this.isDrawerOpen) {
+        this.saveSchema();
+      }
       return false;
     }
     return true;

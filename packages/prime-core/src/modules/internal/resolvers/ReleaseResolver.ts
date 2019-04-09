@@ -1,9 +1,22 @@
 import { Context } from 'apollo-server-core';
-import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Ctx,
+  FieldResolver,
+  ID,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
+import { Inject } from 'typedi';
 import { getRepository, In } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
+import { processWebhooks } from '../../../utils/processWebhooks';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { ReleaseRepository } from '../repositories/ReleaseRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
@@ -11,6 +24,7 @@ import { ReleaseInput } from '../types/ReleaseInput';
 import { User } from '../types/User';
 import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
+import { DocumentResolver } from './DocumentResolver';
 
 const ReleaseConnection = createConnectionType(Release);
 
@@ -21,6 +35,9 @@ export class ReleaseResolver {
 
   @InjectRepository(DocumentRepository)
   private readonly documentRepository: DocumentRepository;
+
+  @Inject(x => DocumentResolver)
+  private readonly documentResolver: DocumentResolver;
 
   @Authorized()
   @Query(returns => Release, { nullable: true, description: 'Get Release by ID' })
@@ -46,9 +63,10 @@ export class ReleaseResolver {
     @Arg('input') input: ReleaseInput,
     @Ctx() context: Context
   ): Promise<Release> {
-    const entity = this.releaseRepository.create(input);
-    await this.releaseRepository.save(entity);
-    return entity;
+    const release = this.releaseRepository.create(input);
+    await this.releaseRepository.save(release);
+    processWebhooks('release.created', { release });
+    return release;
   }
 
   @Authorized()
@@ -60,6 +78,7 @@ export class ReleaseResolver {
   ): Promise<Release> {
     const release = await this.releaseRepository.findOneOrFail(id);
     await this.releaseRepository.merge(release, input);
+    processWebhooks('release.updated', { release });
     return await this.releaseRepository.save(release);
   }
 
@@ -76,6 +95,8 @@ export class ReleaseResolver {
     });
 
     await this.releaseRepository.remove(release);
+
+    processWebhooks('release.removed', { release });
 
     return true;
   }
@@ -125,6 +146,8 @@ export class ReleaseResolver {
     release.publishedBy = context.user.id;
     await this.releaseRepository.save(release);
 
+    processWebhooks('release.published', { release });
+
     return release;
   }
 
@@ -137,9 +160,21 @@ export class ReleaseResolver {
   }
 
   @FieldResolver(returns => [Document], { description: 'Get Release Documents' })
-  public documents(@Root() release: Release): Promise<Document[]> {
-    return this.documentRepository.find({
-      releaseId: release.id,
+  public async documents(
+    @Root() release: Release //
+  ): Promise<Document[]> {
+    const where = { releaseId: release.id } as any;
+    const result = await this.documentResolver.allDocuments([], [where], {});
+    const edges = await result.edges;
+    return edges.map(edge => {
+      return edge.node;
     });
+  }
+
+  @FieldResolver(returns => Int, { description: 'Get Release Document Count' })
+  public async documentsCount(@Root() release: Release): Promise<number> {
+    const where = { releaseId: release.id } as any;
+    const result = await this.documentResolver.allDocuments([], [where], {});
+    return result.totalCount;
   }
 }

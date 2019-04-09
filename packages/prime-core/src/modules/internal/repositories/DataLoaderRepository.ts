@@ -45,6 +45,6 @@ export class DataLoaderRepository<T> extends Repository<T> {
     }
     const qb = this.createQueryBuilder();
     FindOptionsUtils.applyOptionsToQueryBuilder(qb, { where });
-    return this.getLoader(qb).load(id.toLowerCase());
+    return this.getLoader(qb).load(String(id).toLowerCase());
   }
 }

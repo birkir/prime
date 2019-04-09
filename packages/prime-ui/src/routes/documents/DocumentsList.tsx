@@ -38,6 +38,8 @@ const GET_CONTENT_ENTRIES = gql`
     $locale: String
     $schemaId: ID
     $releaseId: ID
+    $first: Int = 10
+    $skip: Int
     $sort: [DocumentConnectionSort!]
   ) {
     allSchemas {
@@ -50,12 +52,9 @@ const GET_CONTENT_ENTRIES = gql`
         }
       }
     }
-    # allUsers {
-    #   id
-    #   email
-    # }
     allDocuments(
-      first: 10
+      first: $first
+      skip: $skip
       filter: { locale: $locale, schemaId: $schemaId, releaseId: $releaseId }
       sort: $sort
     ) {
@@ -64,10 +63,8 @@ const GET_CONTENT_ENTRIES = gql`
         node {
           id
           documentId
-          # releaseId
           locale
           publishedAt
-          # publishedId
           updatedAt
           data
           primary
@@ -76,24 +73,14 @@ const GET_CONTENT_ENTRIES = gql`
           published {
             id
           }
-          # schema {
-          #   id
-          #   name
-          #   title
-          # }
-          # user {
-          #   id
-          #   email
-          #   firstname
-          #   lastname
-          # }
         }
+        cursor
       }
     }
   }
 `;
 
-const PER_PAGE = 10;
+const PER_PAGE = 30;
 
 export const DocumentsList = ({ match, history }: any) => {
   const options: IOptions = String(match.params.options)
@@ -135,6 +122,7 @@ export const DocumentsList = ({ match, history }: any) => {
 
   let userId: any;
   let contentTypeId: any = null;
+  let skip = 0;
   const contentReleaseId = options.release || null;
 
   if (options.type) {
@@ -155,10 +143,10 @@ export const DocumentsList = ({ match, history }: any) => {
         schemaId: contentTypeId,
         releaseId: contentReleaseId,
         userId,
-        // skip: 0,
-        // limit: PER_PAGE,
+        first: PER_PAGE,
+        skip,
         locale: locale.id,
-        sort: 'updatedAt_ASC',
+        sort: 'updatedAt_DESC',
       }}
     >
       {({ loading, error, data, refetch }) => {
@@ -167,30 +155,31 @@ export const DocumentsList = ({ match, history }: any) => {
         }
 
         const pagination = {
-          total: get(data, 'allContentEntries.totalCount'),
+          total: get(data, 'allDocuments.totalCount'),
           pageSize: PER_PAGE,
         };
 
         const onTableChange = async (paging: any, filters: any, sorter: any) => {
-          contentTypeId = filters['contentType.title'] && filters['contentType.title'][0];
+          contentTypeId = filters.schemaId && filters.schemaId[0];
           userId = filters['user.id'] && filters['user.id'][0];
 
-          const formatSorterField = (field: string) => {
+          const formatSorterField = (field: string = 'updatedAt') => {
             if (field === 'user.id') {
               field = 'userId';
             }
             return `${field}_${sorter.order === 'ascend' ? 'ASC' : 'DESC'}`;
           };
 
+          skip = paging.pageSize * (paging.current - 1);
+
           const variables = {
             schemaId: contentTypeId,
             releaseId: contentReleaseId,
             userId,
-            // limit: paging.pageSize,
-            // skip: (paging.current - 1) * paging.pageSize,
+            first: paging.pageSize,
+            skip,
             sort: formatSorterField(sorter.field),
             locale: locale.id,
-            // order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
           };
           refetch(variables);
         };
@@ -272,7 +261,7 @@ export const DocumentsList = ({ match, history }: any) => {
                 text: title,
                 value: id,
               })),
-            filteredValue: [contentTypeId] as any[],
+            // filteredValue: (contentTypeId ? [contentTypeId] : null) as any,
             filterMultiple: false,
             render(schemaId: string) {
               return ContentTypes.items.get(schemaId)!.name;
@@ -297,7 +286,7 @@ export const DocumentsList = ({ match, history }: any) => {
               text: email,
               value: id,
             })),
-            filteredValue: [userId] as any[],
+            filteredValue: userId,
             filterMultiple: false,
             align: 'center' as any,
             render(text: string, record: any) {
@@ -340,7 +329,9 @@ export const DocumentsList = ({ match, history }: any) => {
         const publishRelease = () => {
           Modal.confirm({
             title: `Do you want to publish ${contentRelease!.name}?`,
-            content: `This release contains ${pagination.total} documents`,
+            content: `This release contains ${contentRelease!.documentsCount} document${
+              contentRelease!.documentsCount === 1 ? '' : 's'
+            }`,
             onOk: async () => {
               await contentRelease!.publish();
               message.success('Release has been published');
@@ -359,16 +350,17 @@ export const DocumentsList = ({ match, history }: any) => {
               </div>
               {contentRelease && (
                 <Button
+                  href="#"
                   type="default"
                   style={{ marginRight: 16 }}
                   onClick={publishRelease}
-                  disabled={Boolean(contentRelease.publishedAt)}
+                  {...{ disabled: Boolean(contentRelease.publishedAt) }}
                 >
                   Publish
                 </Button>
               )}
               <Dropdown overlay={locales} trigger={['click']}>
-                <Button type="default" style={{ marginRight: 16 }}>
+                <Button href="#" type="default" style={{ marginRight: 16 }}>
                   <span
                     className={`flagstrap-icon flagstrap-${locale.flag}`}
                     style={{ marginRight: 8 }}
@@ -378,7 +370,7 @@ export const DocumentsList = ({ match, history }: any) => {
                 </Button>
               </Dropdown>
               <Dropdown overlay={menu} trigger={['click']}>
-                <Button type="primary">
+                <Button href="#" type="primary">
                   Create
                   <Icon type="down" />
                 </Button>

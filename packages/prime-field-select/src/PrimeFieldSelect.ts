@@ -52,7 +52,7 @@ export class PrimeFieldSelect extends PrimeField {
     const { enum: enumeration, multiple } = this.options;
     this.ensureEnumType(context);
 
-    if (enumeration && this.EnumType.getValues().length === 0) {
+    if (this.EnumType.getValues().length === 0) {
       return null;
     }
 

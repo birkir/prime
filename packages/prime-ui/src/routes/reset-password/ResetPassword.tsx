@@ -104,7 +104,7 @@ class ResetPasswordBase extends React.Component<FormComponentProps & { match: an
                 })(<Input type="password" placeholder="Confirm password" size="large" />)}
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
+                <Button type={'primary' as any} htmlType="submit" className="login-form-button">
                   Set Password
                 </Button>
               </Form.Item>

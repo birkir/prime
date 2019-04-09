@@ -73,6 +73,11 @@ export class PrimeFieldNumber extends PrimeField {
   public processInput(value) {
     const { rules } = this.options;
     const { name } = this.schemaField;
+
+    if (!this.options.float) {
+      value = parseInt(value, 10);
+    }
+
     const num = Number(value);
 
     if (rules.required) {

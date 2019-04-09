@@ -1,6 +1,6 @@
 import { PrimeField, PrimeFieldContext, PrimeFieldOperation } from '@primecms/field';
 import { GraphQLInputObjectType, GraphQLList, GraphQLObjectType } from 'graphql';
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 
 interface Options {
   repeated: boolean;
@@ -29,7 +29,7 @@ export class PrimeFieldGroup extends PrimeField {
     }
 
     const type = new GraphQLObjectType({
-      name: uniqueTypeName(`${name}_${startCase(this.schemaField.name)}`),
+      name: uniqueTypeName(`${name}_${upperFirst(camelCase(this.schemaField.name))}`),
       fields,
     });
 
@@ -62,7 +62,7 @@ export class PrimeFieldGroup extends PrimeField {
 
     const type = new GraphQLInputObjectType({
       name: uniqueTypeName(
-        `${name}_${startCase(this.schemaField.name)}${operationNames[operation]}Input`
+        `${name}_${upperFirst(camelCase(this.schemaField.name))}${operationNames[operation]}Input`
       ),
       fields,
     });
@@ -73,7 +73,10 @@ export class PrimeFieldGroup extends PrimeField {
   }
 
   public async whereType(context: PrimeFieldContext) {
-    const name = context.uniqueTypeName(`${context.name}_Sort_${startCase(this.schemaField.name)}`);
+    const name = context.uniqueTypeName(
+      `${context.name}_Sort_${upperFirst(camelCase(this.schemaField.name))}`
+    );
+
     const fields = {};
 
     for (const field of context.fields) {
@@ -94,5 +97,17 @@ export class PrimeFieldGroup extends PrimeField {
       name,
       fields,
     });
+  }
+
+  public async processOutput(value) {
+    if (!Array.isArray(value) && this.options.repeated) {
+      return [value];
+    }
+
+    if (Array.isArray(value) && !this.options.repeated) {
+      return value[0];
+    }
+
+    return value;
   }
 }

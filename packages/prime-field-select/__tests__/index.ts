@@ -15,15 +15,19 @@ describe('PrimeFieldSelect', () => {
     },
   } as any;
 
-  beforeAll(() => {
-    test = new PrimeFieldSelect(field as any, {} as any);
-  });
-
   it('should have default export', () => {
     expect(typeof PrimeFieldSelect).toBe('function');
   });
 
+  it('should have null type when empty', async () => {
+    test = new PrimeFieldSelect({ ...field, options: { items: [] } } as any, {} as any);
+    expect(await test.outputType(context)).toBeNull();
+    expect(await test.inputType(context)).toBeNull();
+    expect(await test.whereType(context)).toBeNull();
+  });
+
   it('should return same input for processInput', async () => {
+    test = new PrimeFieldSelect(field as any, {} as any);
     expect(await test.processInput(1)).toBe(1);
   });
 
@@ -35,5 +39,10 @@ describe('PrimeFieldSelect', () => {
     const { resolve } = await test.outputType(context)!;
     expect(resolve({ a: 'foo' }, {}, {}, { fieldName: 'a' })).toEqual('Foo');
     expect(resolve({}, {}, {}, { fieldName: 'a' })).toBeFalsy();
+  });
+
+  it('should have input type', async () => {
+    const res = await test.inputType(context);
+    expect(res).toBeTruthy();
   });
 });

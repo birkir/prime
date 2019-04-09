@@ -109,7 +109,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     return (
       <Form.Item label={field.title}>
         <BraftEditor
-          controls={controls}
+          controls={controls as any}
           value={this.state.value}
           onChange={this.onChange}
           language="en"

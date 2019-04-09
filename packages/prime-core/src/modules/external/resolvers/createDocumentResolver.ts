@@ -2,7 +2,7 @@ import { getRepository, IsNull, Raw } from 'typeorm';
 import { Document } from '../../../entities/Document';
 import { SchemaPayload } from '../interfaces/SchemaPayload';
 
-const getDefaultLocale = () => 'en';
+const getDefaultLocale = async () => 'en';
 
 export const createDocumentResolver = async ({
   name,
@@ -13,9 +13,10 @@ export const createDocumentResolver = async ({
   const documentRepository = getRepository(Document);
 
   return async (root, args: { id: string; locale?: string }, context, info) => {
-    const key = args.id.length === 36 ? 'id' : 'documentId';
+    const key = args.id && args.id.length === 36 ? 'id' : 'documentId';
     const locale = args.locale || (await getDefaultLocale());
     const single = schema.settings.single;
+
     const where = {
       ...(!single && { [key]: args.id }),
       ...((single || key === 'documentId') && {

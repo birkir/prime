@@ -12,7 +12,7 @@ import { ResetPassword } from './routes/reset-password/ResetPassword';
 import { Schemas } from './routes/schemas/Schemas';
 import { Settings } from './routes/settings/Settings';
 import { Auth } from './stores/auth';
-import { ContentTypes } from './stores/contentTypes';
+import { Settings as CSettings } from './stores/settings';
 
 const Private = observer(({ children }) => {
   if (Auth.isLoggedIn) {
@@ -38,7 +38,7 @@ export class App extends React.Component {
     }
 
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={CSettings.path}>
         <Route
           render={({ location }) => {
             let key = location.pathname;

@@ -1,4 +1,4 @@
-import { startCase } from 'lodash';
+import { camelCase, upperFirst } from 'lodash';
 import { SchemaVariant } from '../interfaces/SchemaVariant';
 import { generateRandomUuid } from './generateRandomUuid';
 
@@ -9,7 +9,7 @@ export const createMockSchema = ({
   settings = {},
   ...passProps
 }) => {
-  const title = passProps.title || startCase(name);
+  const title = passProps.title || upperFirst(camelCase(name));
 
   return {
     id: generateRandomUuid(),

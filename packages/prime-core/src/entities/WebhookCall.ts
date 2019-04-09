@@ -18,7 +18,7 @@ export class WebhookCall {
   @Field(type => Int)
   public status: number;
 
-  @Column('jsonb', { default: {} })
+  @Column('jsonb', { default: {}, nullable: true })
   @Field(type => GraphQLJSON)
   public request: any;
 
@@ -29,6 +29,9 @@ export class WebhookCall {
   @Column('timestamp')
   @Field(type => Date)
   public executedAt: Date;
+
+  @Column({ nullable: true })
+  public webhookId: string;
 
   @ManyToOne(type => Webhook, webhook => webhook.calls, {
     onDelete: 'CASCADE',

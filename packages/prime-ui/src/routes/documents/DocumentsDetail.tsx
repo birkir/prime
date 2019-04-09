@@ -226,16 +226,23 @@ export class DocumentsDetail extends React.Component<IProps> {
 
   public onKeyDown = (e: any) => {
     if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
-      return this.onSave(e);
+      if (e.shiftKey) {
+        return this.onPublish(e);
+      } else {
+        return this.onSave(e);
+      }
     }
     return true;
   };
 
-  public onSave = async (e: React.MouseEvent<HTMLElement>) => {
+  public onSave = async (e: React.MouseEvent<HTMLElement>, feedback = true) => {
     e.preventDefault();
     try {
-      await this.save({ documentId: this.props.match.params.entryId });
-      message.success('Document was saved', 1);
+      const releaseId = this.options.release;
+      await this.save({ documentId: this.props.match.params.entryId, releaseId });
+      if (feedback) {
+        message.success('Document was saved', 1);
+      }
     } catch (err) {
       message.error('Could not save document');
       console.error(err); // tslint:disable-line no-console
@@ -246,6 +253,9 @@ export class DocumentsDetail extends React.Component<IProps> {
   public onPublish = async (e: any) => {
     if (this.contentEntry) {
       this.loading.publish = true;
+      if (this.promptEnabled && this.documentForm!.props.form.isFieldsTouched()) {
+        await this.onSave(e, false);
+      }
       await this.contentEntry.publish();
       message.success('Document was published', 1);
       this.loading.publish = false;
@@ -402,7 +412,7 @@ export class DocumentsDetail extends React.Component<IProps> {
             )}
           </div>
           <Dropdown overlay={this.localesMenu} trigger={['click']}>
-            <Button type="default">
+            <Button href="#" type="default">
               <span
                 className={`flagstrap-icon flagstrap-${this.locale.flag}`}
                 style={{ marginRight: 8 }}
@@ -412,23 +422,25 @@ export class DocumentsDetail extends React.Component<IProps> {
             </Button>
           </Dropdown>
           <Button
+            href="#"
             onClick={this.onSave}
             type="default"
             icon="save"
-            disabled={this.loading.document || this.loading.publish}
             style={{ marginLeft: 16 }}
             loading={this.loading.save}
+            {...{ disabled: this.loading.document || this.loading.publish }}
           >
             Save
           </Button>
           {!options.release && (
             <Button
+              href="#"
               onClick={this.onPublish}
               type="primary"
               icon="cloud-upload"
               loading={this.loading.publish}
-              disabled={this.loading.document}
               style={{ marginLeft: 16 }}
+              {...{ disabled: this.loading.document }}
             >
               Publish
             </Button>
@@ -511,7 +523,7 @@ export class DocumentsDetail extends React.Component<IProps> {
                     await contentEntry.unpublish();
                   }}
                 >
-                  <Button type="dashed" style={{ marginBottom: 8 }} block>
+                  <Button href="#" type="dashed" style={{ marginBottom: 8 }} block>
                     Unpublish
                   </Button>
                 </Popconfirm>
@@ -532,7 +544,7 @@ export class DocumentsDetail extends React.Component<IProps> {
                     message.success('Document was deleted');
                   }}
                 >
-                  <Button type="danger" block>
+                  <Button href="#" type="danger" block>
                     Delete
                   </Button>
                 </Popconfirm>

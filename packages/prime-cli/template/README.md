@@ -1,0 +1,3 @@
+# Prime CMS
+
+{{projectName}}

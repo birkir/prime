@@ -6,7 +6,7 @@ export const ContentRelease = types
   .model('ContentRelease', {
     id: types.identifier,
     name: types.maybeNull(types.string),
-    documents: types.number,
+    documentsCount: types.number,
     description: types.maybeNull(types.string),
     scheduledAt: types.maybeNull(types.Date),
     publishedAt: types.maybeNull(types.Date),
@@ -14,7 +14,7 @@ export const ContentRelease = types
   })
   .preProcessSnapshot(snapshot => ({
     ...snapshot,
-    documents: Number(snapshot.documents || 0),
+    documentsCount: Number(snapshot.documentsCount || 0),
     scheduledAt: snapshot.scheduledAt ? new Date(snapshot.scheduledAt) : null,
     publishedAt: snapshot.publishedAt ? new Date(snapshot.publishedAt) : null,
     updatedAt: snapshot.updatedAt ? new Date(snapshot.updatedAt) : null,

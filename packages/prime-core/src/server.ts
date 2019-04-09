@@ -43,29 +43,35 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     if (external) {
       log('schemas have changed', payload.name);
     }
+
     external = await createExternal(connection);
     externalServer.schema = external.schema;
     externalServer.context = external.context;
-    app.use(
-      '/api',
-      sofa({
-        schema: external.schema,
-        ignore: ['Prime_Document'],
-      })
-    );
+
+    if (config.sofaApi) {
+      app.use(
+        `${config.path}api`,
+        sofa({
+          schema: external.schema,
+          ignore: ['Prime_Document'],
+        })
+      );
+    }
   });
 
   pubSub.publish('REBUILD_EXTERNAL', { name: 'SERVER_BOOT' });
 
   externalServer.applyMiddleware({
     app,
+    path: `${config.path}graphql`,
     cors: {
       origin: true,
     },
   });
 
   fields.forEach(
-    field => field.ui && app.use(`/prime/field/${field.type}`, express.static(field.ui))
+    field =>
+      field.ui && app.use(`${config.pathClean}/prime/field/${field.type}`, express.static(field.ui))
   );
 
   const apollo = new ApolloServer({
@@ -91,14 +97,14 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
   apollo.installSubscriptionHandlers(server);
   apollo.applyMiddleware({
     app,
-    path: '/prime/graphql',
+    path: `${config.path}prime/graphql`,
     cors: {
       origin: true,
     },
   });
 
   previewRoutes(app);
-  serveUI(app, config);
+  serveUI(app);
 
   return server.listen(port, () => {
     log(`🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`);
