@@ -3,27 +3,25 @@ import { Form } from 'antd';
 import { ValidationRule } from 'antd/lib/form';
 import { icon } from 'leaflet';
 import React from 'react';
-import { ReactLeafletSearch } from 'react-leaflet-search';
-
-import { Map, Marker, Popup, TileLayer, withLeaflet } from 'react-leaflet';
-
-const MapSearch = withLeaflet(ReactLeafletSearch);
+import { Map, TileLayer } from 'react-leaflet';
 
 export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public state = {
-    center: {
-      lat: 51.505,
-      lng: -0.09,
-    },
     marker: {
-      lat: 51.505,
-      lng: -0.09,
+      lat: this.initialValue.latitude,
+      lng: this.initialValue.longitude,
     },
-    zoom: 13,
-    draggable: true,
+    zoom: this.initialValue.zoom,
   };
 
-  public refmarker = React.createRef<Marker>();
+  get initialValue(): { latitude: number; longitude: number; zoom: number } {
+    const { initialValue = {} } = this.props as any;
+    return {
+      latitude: initialValue.latitude || 0,
+      longitude: initialValue.longitude || 0,
+      zoom: initialValue.zoom || 0,
+    };
+  }
 
   public markerIcon = icon({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png',
@@ -36,23 +34,10 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     shadowSize: [41, 41],
   });
 
-  public toggleDraggable = () => {
-    this.setState({ draggable: !this.state.draggable });
-  };
-
-  public updatePosition = () => {
-    const marker = this.refmarker.current;
-    if (marker != null) {
-      this.setState({
-        marker: marker.leafletElement.getLatLng(),
-      });
-    }
-  };
-
   public render() {
-    const { field } = this.props;
-    // const { form, field, path, initialValue = false } = this.props;
-    // const { getFieldDecorator } = form;
+    const { form, field, path } = this.props;
+    const { getFieldDecorator } = form;
+
     const rules = field.options.rules || {};
     const fieldRules: ValidationRule[] = [];
 
@@ -63,37 +48,52 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
       });
     }
 
-    const position = [this.state.center.lat, this.state.center.lng];
-    const markerPosition = [this.state.marker.lat, this.state.marker.lng];
+    const value = form.getFieldValue(path) || this.initialValue;
 
     return (
       <Form.Item label={field.title}>
-        {/* {getFieldDecorator(path, { initialValue, rules: fieldRules })(
-          <Input size="large" type="number" />
-        )} */}
+        {getFieldDecorator(path, { initialValue: this.initialValue })(<input type="hidden" />)}
 
-        <Map center={position} zoom={this.state.zoom} style={{ height: 300 }}>
-          <TileLayer
-            // attribution="&copy; <a href=\"http:// osm.org/copyright\">OpenStreetMap</a> contributors"
-            url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-          />
+        <div style={{ marginBottom: 4 }}>
+          (lat: {value.latitude.toFixed(5)}, lon: {value.longitude.toFixed(5)}, zoom: {value.zoom})
+        </div>
 
-          <MapSearch provider="OpenStreetMap" />
-
-          <Marker
-            draggable={this.state.draggable}
-            onDragend={this.updatePosition}
-            position={markerPosition}
-            icon={this.markerIcon}
-            ref={this.refmarker}
+        <div style={{ position: 'relative' }}>
+          <div
+            style={{
+              pointerEvents: 'none',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginLeft: -25 / 2,
+              marginTop: -41 / 2,
+              zIndex: 1000,
+            }}
           >
-            <Popup minWidth={90}>
-              <span onClick={this.toggleDraggable}>
-                {this.state.draggable ? 'DRAG MARKER' : 'MARKER FIXED'}
-              </span>
-            </Popup>
-          </Marker>
-        </Map>
+            <img
+              src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png"
+              alt="Marker"
+            />
+          </div>
+          <Map
+            closePopupOnClick={false}
+            center={{ lat: value.latitude, lng: value.longitude }}
+            onViewportChange={(viewport: { center: [number, number]; zoom: number }) => {
+              const marker = {
+                latitude: viewport.center[0],
+                longitude: viewport.center[1],
+                zoom: viewport.zoom,
+              };
+              form.setFieldsValue({
+                [path]: marker,
+              });
+            }}
+            zoom={value.zoom}
+            style={{ height: 300 }}
+          >
+            <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+          </Map>
+        </div>
       </Form.Item>
     );
   }
