@@ -1,5 +1,5 @@
-import { User } from '@accounts/typeorm';
 import { EntityRepository } from 'typeorm';
+import { User } from '../../../entities/User';
 import { DataLoaderRepository } from './DataLoaderRepository';
 
 @EntityRepository(User)

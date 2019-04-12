@@ -5,12 +5,14 @@ import GraphQLJSON from 'graphql-type-json';
 import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import { User } from '../../../entities/User';
+import { UserMeta } from '../../../entities/UserMeta';
 import { Context } from '../../../interfaces/Context';
 import { processWebhooks } from '../../../utils/processWebhooks';
+import { UserMetaRepository } from '../repositories/UserMetaRepository';
 import { UserRepository } from '../repositories/UserRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { UpdateUserInput } from '../types/UpdateUserInput';
-import { User } from '../types/User';
 import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 
@@ -20,6 +22,9 @@ const UserConnection = createConnectionType(User);
 export class UserResolver {
   @InjectRepository(UserRepository)
   private readonly userRepository: UserRepository;
+
+  @InjectRepository(UserMetaRepository)
+  private readonly userMetaRepository: UserMetaRepository;
 
   @InjectRepository(UserEmail)
   private readonly userEmailRepository: Repository<UserEmail>;
@@ -34,9 +39,12 @@ export class UserResolver {
 
   @Authorized()
   @Query(returns => User)
-  public getUser(@Ctx() context: Context) {
+  public async getUser(@Ctx() context: Context) {
+    const user = await this.userRepository.findOneOrFail(context.user.id);
+    const meta = await user.meta();
     return {
       ...context.user,
+      meta,
       ability: context.ability.rules,
     };
   }
@@ -78,7 +86,10 @@ export class UserResolver {
     await password.server.activateUser(userId);
 
     if (profile) {
-      await password.server.setProfile(userId, profile);
+      const meta = new UserMeta();
+      meta.id = userId;
+      meta.profile = profile;
+      await this.userMetaRepository.save(meta);
     }
 
     processWebhooks('user.created', { userId });
@@ -116,9 +127,11 @@ export class UserResolver {
     @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
-    user.profile = input;
+    const meta = await user.meta();
+    meta.profile = input;
     context.ability.throwUnlessCan('update', user);
     await this.userRepository.save(user);
+    await this.userMetaRepository.save(meta);
     processWebhooks('user.updated', { user });
     return user;
   }
@@ -151,5 +164,10 @@ export class UserResolver {
   @FieldResolver(returns => GraphQLJSON, { nullable: true })
   public ability(@Ctx() context: Context) {
     return context.ability.rules;
+  }
+
+  @FieldResolver(returns => UserMeta)
+  public async meta(@Root() user: User): Promise<UserMeta> {
+    return user.meta();
   }
 }
