@@ -11654,10 +11654,10 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@0.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@
   dependencies:
     minimist "0.0.8"
 
-mobx-devtools-mst@0.9.18:
-  version "0.9.18"
-  resolved "https://registry.yarnpkg.com/mobx-devtools-mst/-/mobx-devtools-mst-0.9.18.tgz#ba515b15d05eb0a971a409a5fa587fffd3065dda"
-  integrity sha512-HlCcUuKr5aBDGUespXgvwPA9LP2T0dUyx/Ngan8SCF2ywrdB1m+Dz6QISRjUXAJM4Mk9wDyHcrljbxH2QVa0kQ==
+mobx-devtools-mst@0.9.21:
+  version "0.9.21"
+  resolved "https://registry.yarnpkg.com/mobx-devtools-mst/-/mobx-devtools-mst-0.9.21.tgz#430c52131d82b7ef24281baaae64e552908afa91"
+  integrity sha512-eyGtucp9zXunzRjYZjXsaQ18/riOy8bdW2a14YIQ96ZPhLXXnR0zivIUyJ35ZC3o5Nd+kpUzqrm/8jCf8zjLyQ==
 
 mobx-react@5.3.6:
   version "5.3.6"
