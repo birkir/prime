@@ -114,7 +114,7 @@ export class SchemaResolver {
     await this.documentRepository.update(
       { schemaId: id },
       {
-        deletedAt: Date.now(),
+        deletedAt: new Date(),
       }
     );
     await this.schemaRepository.remove(schema);
