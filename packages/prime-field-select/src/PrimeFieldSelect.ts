@@ -19,7 +19,7 @@ export class PrimeFieldSelect extends PrimeField {
   public static type: string = 'select';
   public static title: string = 'Select';
   public static description: string = 'Select field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     items: [],
     required: false,
     enum: false,

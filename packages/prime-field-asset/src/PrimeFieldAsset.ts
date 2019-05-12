@@ -16,7 +16,7 @@ export class PrimeFieldAsset extends PrimeField {
   public static type: string = 'asset';
   public static title: string = 'Asset';
   public static description: string = 'Images, videos and other assets';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     crops: [],
   };
 

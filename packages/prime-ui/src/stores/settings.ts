@@ -105,7 +105,7 @@ export const Settings = types
               type
               title
               description
-              options
+              defaultOptions
               ui
             }
           }

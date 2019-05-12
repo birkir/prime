@@ -41,7 +41,7 @@ export class PrimeFieldNumber extends PrimeField {
   public static type: string = 'number';
   public static title: string = 'Number';
   public static description: string = 'Number field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     float: true,
     rules: {},
   };

@@ -27,7 +27,7 @@ export class PrimeFieldSlice extends PrimeField {
   public static type: string = 'slice';
   public static title: string = 'Slice';
   public static description: string = 'Slice field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     multiple: true,
     schemaIds: [],
   };
