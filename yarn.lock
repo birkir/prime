@@ -2230,10 +2230,10 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.4.tgz#56eec47706f0fd0b7c694eae2f3172e6b0b769da"
   integrity sha512-D9MyoQFI7iP5VdpEyPZyjjqIJ8Y8EDNQFIFVLOmeg1rI1xiHOChyUPMPRUVfqFCerxfE+yS3vMyj37F6IdtOoQ==
 
-"@types/draft-js@0.10.30":
-  version "0.10.30"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.30.tgz#6fc64dd420b3d23e53c2fb041155d8338519e297"
-  integrity sha512-lKcRtkR5ahtFCprfs+QEP2K/pFsXEU7PeliSTalhzxhVFaHEYBdnppKXj4b4Gxihl+A/Xnk0OIa4sHpWMPourg==
+"@types/draft-js@0.10.31":
+  version "0.10.31"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.31.tgz#b71596f2429bef24ddc7a69d44361d6cd3b14212"
+  integrity sha512-1+uoii/aH4NmCG2NHZpMqN+9PhN/79pIFAGWSaZTS6EFkf66tPau3QTIHbeGwKV4L3xgd8ZN7hmzkk6nelprBg==
   dependencies:
     "@types/react" "*"
     immutable "^3.8.1"
