@@ -27,7 +27,7 @@ export class PrimeFieldGeoPoint extends PrimeField {
   public static type: string = 'geopoint';
   public static title: string = 'Geo Point';
   public static description: string = 'Geo point field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     required: false,
   };
 

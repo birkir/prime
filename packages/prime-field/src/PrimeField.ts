@@ -11,7 +11,7 @@ export class PrimeField {
   public static type: string;
   public static title: string;
   public static description: string;
-  public static options: any = {};
+  public static defaultOptions: any = {};
   public static env: string[] = [];
 
   constructor(
@@ -24,7 +24,7 @@ export class PrimeField {
   ) {}
 
   public get options() {
-    const defaults = Object.getPrototypeOf(this).constructor.options;
+    const defaults = Object.getPrototypeOf(this).constructor.defaultOptions;
     return defaultsDeep(this.schemaField.options, defaults);
   }
 

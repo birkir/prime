@@ -70,7 +70,7 @@ describe('InternalModule', () => {
               type
               title
               description
-              options
+              defaultOptions
               ui
             }
           }
@@ -327,7 +327,7 @@ describe('InternalModule', () => {
               type
               title
               description
-              options
+              defaultOptions
               ui
             }
             getSettings {

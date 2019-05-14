@@ -25,7 +25,7 @@ export class PrimeFieldDocument extends PrimeField {
   public static type: string = 'document';
   public static title: string = 'Document';
   public static description: string = 'Link and resolve documents';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     schemaIds: [],
     schemaId: null,
     multiple: false,
