@@ -3,91 +3,91 @@
 exports[`InternalModule health should have fields 1`] = `
 Array [
   Object {
-    "description": "Images, videos and other assets",
-    "options": Object {
+    "defaultOptions": Object {
       "crops": Array [],
     },
+    "description": "Images, videos and other assets",
     "title": "Asset",
     "type": "asset",
   },
   Object {
-    "description": "Boolean field",
-    "options": Object {
+    "defaultOptions": Object {
       "default": false,
       "label": "",
     },
+    "description": "Boolean field",
     "title": "Boolean",
     "type": "boolean",
   },
   Object {
-    "description": "Date and time field",
-    "options": Object {
+    "defaultOptions": Object {
       "time": true,
     },
+    "description": "Date and time field",
     "title": "DateTime",
     "type": "datetime",
   },
   Object {
-    "description": "Link and resolve documents",
-    "options": Object {
+    "defaultOptions": Object {
       "multiple": false,
       "schemaId": null,
       "schemaIds": Array [],
     },
+    "description": "Link and resolve documents",
     "title": "Document",
     "type": "document",
   },
   Object {
-    "description": "Geo point field",
-    "options": Object {
+    "defaultOptions": Object {
       "required": false,
     },
+    "description": "Geo point field",
     "title": "Geo Point",
     "type": "geopoint",
   },
   Object {
-    "description": "Group other fields to list",
-    "options": Object {
+    "defaultOptions": Object {
       "repeated": true,
     },
+    "description": "Group other fields to list",
     "title": "Group",
     "type": "group",
   },
   Object {
-    "description": "Number field",
-    "options": Object {
+    "defaultOptions": Object {
       "float": true,
       "rules": Object {},
     },
+    "description": "Number field",
     "title": "Number",
     "type": "number",
   },
   Object {
-    "description": "Select field",
-    "options": Object {
+    "defaultOptions": Object {
       "enum": false,
       "items": Array [],
       "multiple": false,
       "required": false,
     },
+    "description": "Select field",
     "title": "Select",
     "type": "select",
   },
   Object {
-    "description": "Slice field",
-    "options": Object {
+    "defaultOptions": Object {
       "multiple": true,
       "schemaIds": Array [],
     },
+    "description": "Slice field",
     "title": "Slice",
     "type": "slice",
   },
   Object {
-    "description": "Text field with no formatting",
-    "options": Object {
+    "defaultOptions": Object {
       "rules": Object {},
       "type": "singleline",
     },
+    "description": "Text field with no formatting",
     "title": "String",
     "type": "string",
   },
