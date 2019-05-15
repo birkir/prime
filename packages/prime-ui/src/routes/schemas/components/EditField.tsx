@@ -22,7 +22,7 @@ const EditFieldBase = ({ form, onCancel, onSubmit, field, schema, availableField
   const type = form.getFieldValue('type');
   const theField = get(fields, type);
   const SchemaSettingsComponent = get(theField, 'SchemaSettingsComponent', () => null);
-  const fromAvailableField = availableFields.find(f => f.id === type);
+  const fromAvailableField = availableFields.find(f => f.type === type);
 
   const options = defaultsDeep(
     {},

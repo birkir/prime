@@ -21,7 +21,7 @@ export class PrimeFieldString extends PrimeField {
   public static type = 'string';
   public static title = 'String';
   public static description = 'Text field with no formatting';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     type: 'singleline',
     rules: {},
   };

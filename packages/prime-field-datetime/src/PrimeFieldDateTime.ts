@@ -35,7 +35,7 @@ export class PrimeFieldDateTime extends PrimeField {
   public static type: string = 'datetime';
   public static title: string = 'DateTime';
   public static description: string = 'Date and time field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     time: true,
   };
 

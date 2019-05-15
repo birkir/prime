@@ -13,7 +13,7 @@ export class PrimeField {
   public description: string;
 
   @Field(type => GraphQLJSON)
-  public options: GraphQLJSON;
+  public defaultOptions: GraphQLJSON;
 
   @Field()
   public ui: string;
