@@ -15,6 +15,7 @@ const primeConfig = require('rc')('prime', {
     '@primecms/field-select',
     '@primecms/field-slice',
     '@primecms/field-string',
+    '@primecms/field-richtext',
   ],
 });
 

@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   registerField('select', require('@primecms/field-select/src/ui').default);
   registerField('slice', require('@primecms/field-slice/src/ui').default);
   registerField('string', require('@primecms/field-string/src/ui').default);
+  registerField('richtext', require('@primecms/field-richtext/src/ui').default);
 
   console.log('using development fields');
 }

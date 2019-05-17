@@ -31,6 +31,7 @@
     "@primecms/field-select": "^0.3.4-beta.0",
     "@primecms/field-slice": "^0.3.4-beta.0",
     "@primecms/field-string": "^0.3.4-beta.0",
+    "@primecms/field-richtext": "^0.3.4-beta.0",
     "@types/graphql": "14.2.0",
     "@types/jest": "23.3.14",
     "@types/lodash": "4.14.129",

@@ -1,0 +1,9 @@
+{
+  "extends": "../prime-core/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "declaration": true
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}

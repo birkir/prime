@@ -1,0 +1,58 @@
+{
+  "name": "@primecms/field-richtext",
+  "version": "0.3.4-beta.0",
+  "description": "RichText Field for Prime CMS",
+  "author": "Dominic Watson <intellix@gmail.com>",
+  "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-richtext",
+  "license": "MIT",
+  "main": "lib/index",
+  "typings": "lib/index",
+  "prime": "lib/ui",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "tsc --watch; webpack --config ../prime-tools/webpack.config.js --watch",
+    "precompile": "yarn clean",
+    "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
+    "prepublishOnly": "yarn compile",
+    "testonly": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "coverage": "yarn testonly --coverage"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-richtext"
+  },
+  "dependencies": {
+    "@primecms/field": "^0.3.4-beta.0",
+    "antd": "3.16.1",
+    "apollo-server-core": "^2.3.1",
+    "braft-editor": "2.2.9",
+    "draft-js": "^0.10.5",
+    "draft-js-export-html": "^1.3.3",
+    "draft-js-export-markdown": "^1.3.3",
+    "draft-js-import-markdown": "^1.3.3",
+    "graphql": "^14.1.1",
+    "graphql-type-json": "^0.3.0",
+    "markdown-draft-js": "1.3.0",
+    "react": "^16.8.0-alpha.1",
+    "react-dom": "^16.8.0-alpha.1"
+  },
+  "devDependencies": {
+    "@types/draft-js": "0.10.31",
+    "@types/graphql": "14.2.0",
+    "ts-loader": "5.3.3",
+    "ts-node-dev": "^1.0.0-pre.39",
+    "webpack-cli": "3.2.3"
+  },
+  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+}
