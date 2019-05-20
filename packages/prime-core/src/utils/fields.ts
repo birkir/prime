@@ -55,7 +55,7 @@ export const fields = (config.fields || [])
 
       return field;
     } catch (err) {
-      log('Could not resolve field module %o', moduleName);
+      log('Could not resolve field module %o because:\n%O', moduleName, err);
     }
 
     return null;
