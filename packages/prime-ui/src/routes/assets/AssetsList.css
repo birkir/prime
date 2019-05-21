@@ -1,0 +1,12 @@
+.ant-upload-list-picture-card .ant-upload-list-item {
+  margin: 0;
+  width: auto;
+  height: auto;
+  max-height: 100%;
+}
+
+.ant-upload.ant-upload-select-picture-card {
+  margin: 0;
+  width: auto;
+  height: auto;
+}

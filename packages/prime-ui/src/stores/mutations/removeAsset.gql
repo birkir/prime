@@ -1,0 +1,3 @@
+mutation removeAsset($id: ID!) {
+  removeAsset(id: $id)
+}

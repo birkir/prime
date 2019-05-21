@@ -7,6 +7,7 @@ import { Connection } from 'typeorm';
 import { pubSub } from '../../utils/pubSub';
 import { createAccounts } from '../accounts';
 import { AccessTokenResolver } from './resolvers/AccessTokenResolver';
+import { AssetResolver } from './resolvers/AssetResolver';
 import { DocumentResolver } from './resolvers/DocumentResolver';
 import { PrimeResolver } from './resolvers/PrimeResolver';
 import { ReleaseResolver } from './resolvers/ReleaseResolver';
@@ -29,6 +30,7 @@ export const createInternal = async (connection: Connection) => {
   const schema = await buildTypeDefsAndResolvers({
     resolvers: [
       AccessTokenResolver,
+      AssetResolver,
       DocumentResolver,
       PrimeResolver,
       ReleaseResolver,

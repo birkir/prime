@@ -4,7 +4,7 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
-import { HttpLink } from 'apollo-link-http';
+import { createUploadLink } from 'apollo-upload-client';
 import { Settings } from '../stores/settings';
 import { accountsClient } from './accounts';
 
@@ -27,7 +27,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
-const httpLink = new HttpLink({
+const httpUploadLink = createUploadLink({
   uri: `${coreUrl}/prime/graphql`,
   credentials: 'include',
 });
@@ -47,7 +47,7 @@ const withToken = setContext(async (input, b) => {
 });
 
 export const client = new ApolloClient({
-  link: ApolloLink.from([withToken, errorLink, httpLink]),
+  link: ApolloLink.from([withToken, errorLink, httpUploadLink]),
   cache: new InMemoryCache(),
 });
 

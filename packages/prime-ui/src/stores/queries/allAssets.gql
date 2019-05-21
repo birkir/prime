@@ -1,0 +1,14 @@
+query allAssets {
+  allAssets {
+    edges {
+      node {
+        id
+        fileName
+        mimeType
+        url
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

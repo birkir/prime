@@ -1,3 +1,4 @@
+import ALL_ASSETS from './allAssets.gql';
 import ALL_CONTENT_RELEASES from './allContentReleases.gql';
 import ALL_CONTENT_TYPES from './allContentTypes.gql';
 import ALL_FIELDS from './allFields.gql';
@@ -11,6 +12,7 @@ import LOAD_SCHEMA from './loadSchema.gql';
 
 export {
   LOAD_SCHEMA,
+  ALL_ASSETS,
   ALL_FIELDS,
   ALL_USERS,
   ALL_CONTENT_RELEASES,

@@ -45,6 +45,12 @@ export const Layout = withRouter(({ children, history, location }: any) => {
               <span>Schemas</span>
             </NavLink>
           </Menu.Item>
+          <Menu.Item key="assets">
+            <NavLink to="/assets" className="nav-text">
+              <Icon type="file-image" />
+              <span>Assets</span>
+            </NavLink>
+          </Menu.Item>
           <Menu.Item key="playground">
             <NavLink to="/playground" className="nav-text">
               <Icon type="code" />

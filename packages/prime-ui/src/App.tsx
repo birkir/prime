@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
+import { AssetsList } from './routes/assets/AssetsList';
 import { DocumentsDetail } from './routes/documents/DocumentsDetail';
 import { DocumentsList } from './routes/documents/DocumentsList';
 import { Login } from './routes/login/Login';
@@ -71,6 +72,7 @@ export class App extends React.Component {
                         <Route path="/" exact render={() => <Redirect to="/documents" />} />
                         <Route path="/schemas" component={Schemas} />
                         <Route path="/documents" exact component={DocumentsList} />
+                        <Route path="/assets" exact component={AssetsList} />
                         <Route path="/playground" exact component={Playground} />
                         <Route
                           path="/documents/doc/:entryId/:options?"
