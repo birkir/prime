@@ -112,7 +112,7 @@ Tools
 
 To get a sandbox to play with, just hit the Deploy button:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/primecms/heroku) [![Join the chat at https://gitter.im/birkir/community](https://badges.gitter.im/birkir/community.svg)](https://gitter.im/birkir/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Video Tutorials
 
