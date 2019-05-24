@@ -26,8 +26,8 @@
     "start": "node lib/index.js",
     "prepublishOnly": "yarn compile",
     "compile": "rm -rf ./lib && tsc -p .",
-    "dev": "DEBUG=prime* ts-node src",
-    "dev:debug": "DEBUG=prime:*,typeorm:* ts-node src",
+    "dev": "DEBUG=prime* ts-node-dev --no-notify --transpileOnly src",
+    "dev:debug": "DEBUG=prime:*,typeorm:* ts-node-dev --no-notify --transpileOnly --inspect -- src",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
     "coverage": "yarn testonly --coverage"
@@ -82,7 +82,8 @@
     "@types/graphql": "14.2.0",
     "@types/lodash": "4.14.129",
     "@types/rc": "1.1.0",
-    "ts-node": "8.0.2"
+    "ts-node": "8.0.2",
+    "ts-node-dev": "^1.0.0-pre.39"
   },
   "publishConfig": {
     "access": "public"
