@@ -3,7 +3,7 @@
 </p>
 <p align="center"><strong>Open Source GraphQL CMS</strong></p>
 
-[![Join the chat at https://gitter.im/primecms](https://badges.gitter.im/primecms/community.svg)](https://gitter.im/birkir/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/primecms](https://badges.gitter.im/primecms/community.svg)](https://gitter.im/primecms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm downloads](https://img.shields.io/npm/dt/@primecms/core.svg)](https://www.npmjs.com/package/@primecms/core)
 [![npm](https://img.shields.io/npm/v/@primecms/core.svg?maxAge=3600)](https://www.npmjs.com/package/@primecms/core)
 [![codecov](https://codecov.io/gh/birkir/prime/branch/master/graph/badge.svg)](https://codecov.io/gh/birkir/prime)
