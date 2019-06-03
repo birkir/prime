@@ -26,8 +26,8 @@
     "start": "node lib/index.js",
     "prepublishOnly": "yarn compile",
     "compile": "rm -rf ./lib && tsc -p .",
-    "dev": "DEBUG=prime* ts-node src",
-    "dev:debug": "DEBUG=prime:*,typeorm:* ts-node src",
+    "dev": "DEBUG=prime* ts-node-dev --no-notify --transpileOnly src",
+    "dev:debug": "DEBUG=prime:*,typeorm:* ts-node-dev --no-notify --transpileOnly --inspect -- src",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
     "coverage": "yarn testonly --coverage"
@@ -50,6 +50,7 @@
     "@primecms/field-select": "^0.3.4-beta.0",
     "@primecms/field-slice": "^0.3.4-beta.0",
     "@primecms/field-string": "^0.3.4-beta.0",
+    "@primecms/field-richtext": "^0.3.4-beta.0",
     "apollo-server-express": "2.4.0",
     "class-validator": "0.9.1",
     "cors": "2.8.5",
