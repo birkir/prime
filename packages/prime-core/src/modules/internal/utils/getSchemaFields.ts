@@ -33,7 +33,7 @@ export const getSchemaFields = async (schemaId: string, inheritance = true) => {
   }));
 
   const withOptions = field => {
-    const fieldInstance = allFields.find(f => f.id === field.type);
+    const fieldInstance = allFields.find(f => f.type === field.type);
     const defaultOptions = (fieldInstance && fieldInstance.defaultOptions) || {};
     field.options = defaultsDeep(field.options || {}, defaultOptions);
     return field;

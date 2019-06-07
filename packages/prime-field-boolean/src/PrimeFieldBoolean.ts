@@ -10,7 +10,7 @@ export class PrimeFieldBoolean extends PrimeField {
   public static type: string = 'boolean';
   public static title: string = 'Boolean';
   public static description: string = 'Boolean field';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     label: '',
     default: false,
   };

@@ -10,7 +10,7 @@ export class PrimeFieldGroup extends PrimeField {
   public static type = 'group';
   public static title = 'Group';
   public static description = 'Group other fields to list';
-  public static options: Options = {
+  public static defaultOptions: Options = {
     repeated: true,
   };
 

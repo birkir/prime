@@ -49,7 +49,7 @@ interface IOptions {
 export class DocumentsDetail extends React.Component<IProps> {
   public documentForm: BaseDocumentForm | null = null;
 
-  public contentEntry: Instance<typeof ContentEntry> | null = null;
+  public contentEntry: Instance<typeof ContentEntry> | undefined | null = null;
   public contentType: Instance<typeof ContentType> | undefined;
   public locale = Settings.masterLocale;
 

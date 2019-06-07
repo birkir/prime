@@ -5,7 +5,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:10
-      - image: circleci/postgres:10.7
+      - image: circleci/postgres:10.8
         environment:
           POSTGRES_USER: prime
           POSTGRES_DB: prime-test

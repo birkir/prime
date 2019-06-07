@@ -18,6 +18,7 @@ import { createDocumentRemoveResolver } from './resolvers/createDocumentRemoveRe
 import { createDocumentResolver } from './resolvers/createDocumentResolver';
 import { createDocumentUpdateResolver } from './resolvers/createDocumentUpdateResolver';
 import { documentUnionResolver } from './resolvers/documentUnionResolver';
+import { createSchemaConnectionArgs } from './types/createSchemaConnectionArgs';
 import { createSchemaConnectionType } from './types/createSchemaConnectionType';
 import { createSchemaInputType } from './types/createSchemaInputType';
 import { createSchemaType } from './types/createSchemaType';
@@ -63,6 +64,7 @@ export const createExternal = async (connection: Connection) => {
 
     types.set(name, SchemaTypeConfig);
 
+    const args = await createSchemaConnectionArgs(payload);
     const connectionType = await createSchemaConnectionType(payload, SchemaType);
     const createType = await createSchemaInputType(payload, SchemaType, CREATE);
     const updateType = await createSchemaInputType(payload, SchemaType, UPDATE);
@@ -71,7 +73,10 @@ export const createExternal = async (connection: Connection) => {
       queries[name] = SchemaTypeConfig;
 
       if (!schema.settings.single) {
-        queries[`all${name}`] = connectionType;
+        queries[`all${name}`] = {
+          args,
+          type: connectionType,
+        };
       }
 
       if (schema.settings.mutations) {
