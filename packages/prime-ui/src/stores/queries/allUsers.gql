@@ -3,7 +3,9 @@ query {
     edges {
       node {
         id
-        profile
+        meta {
+          profile
+        }
         emails {
           address
           verified

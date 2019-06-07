@@ -33,7 +33,7 @@ export const SchemaField = types
     fields: snapshot.fields || [],
   }))
   .views(self => ({
-    get isLeaf() {
+    get isLeaf(): boolean {
       return !hasParentOfType(self, SchemaField);
     },
     get defaultOptions() {
@@ -82,7 +82,7 @@ export const Schema = types
         group.fields.forEach(field => {
           acc.push(field);
           if (field.fields) {
-            field.fields.forEach(subfield => acc.push(subfield as any));
+            field.fields.forEach((subfield: any) => acc.push(subfield as any));
           }
         });
         return acc;
