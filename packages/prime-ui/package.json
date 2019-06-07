@@ -40,7 +40,7 @@
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "4.3.3",
     "@types/semver": "5.5.0",
-    "antd": "3.16.1",
+    "antd": "3.19.2",
     "apollo-cache-inmemory": "1.6.0",
     "apollo-client": "2.6.0",
     "apollo-link-context": "1.0.17",
