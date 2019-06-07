@@ -33,11 +33,11 @@
     "coverage": "yarn testonly --coverage"
   },
   "dependencies": {
-    "@accounts/database-manager": "0.12.0",
-    "@accounts/graphql-api": "0.12.0",
-    "@accounts/password": "0.12.0",
-    "@accounts/server": "0.12.0",
-    "@accounts/typeorm": "0.12.0",
+    "@accounts/database-manager": "0.15.0",
+    "@accounts/graphql-api": "0.15.0",
+    "@accounts/password": "0.15.0",
+    "@accounts/server": "0.15.0",
+    "@accounts/typeorm": "0.15.0",
     "@casl/ability": "3.0.2",
     "@graphql-modules/core": "0.4.2",
     "@primecms/field": "^0.3.4-beta.0",
@@ -71,7 +71,7 @@
     "sofa-api": "0.2.3-alpha.0",
     "type-graphql": "0.17.0-beta.3",
     "typedi": "0.8.0",
-    "typeorm": "0.2.13",
+    "typeorm": "0.2.18",
     "typeorm-cursor-connection": "0.5.2",
     "typeorm-loader": "0.0.1-0.5",
     "typeorm-typedi-extensions": "0.2.3",
@@ -80,7 +80,7 @@
   "devDependencies": {
     "@types/debug": "4.1.4",
     "@types/graphql": "14.2.0",
-    "@types/lodash": "4.14.132",
+    "@types/lodash": "4.14.133",
     "@types/rc": "1.1.0",
     "ts-node": "8.0.2",
     "ts-node-dev": "^1.0.0-pre.39"

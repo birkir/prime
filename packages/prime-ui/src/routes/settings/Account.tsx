@@ -15,9 +15,7 @@ export const Account = () => {
 
   const changeEmailRef = React.useRef(null);
   const changePasswordRef = React.useRef(null);
-
   const onChangeEmail = () => setChangeEmail(false);
-
   const onChangePassword = () => setChangePassword(false);
 
   const accountList = [

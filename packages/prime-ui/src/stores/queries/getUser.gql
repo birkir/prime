@@ -6,7 +6,9 @@
       verified
     }
     username
-    profile
+    meta {
+      profile
+    }
     ability
   }
 }

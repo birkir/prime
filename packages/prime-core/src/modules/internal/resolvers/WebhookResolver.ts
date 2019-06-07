@@ -17,11 +17,11 @@ import {
 import { getRepository, Repository } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import { User } from '../../../entities/User';
 import { Webhook } from '../../../entities/Webhook';
 import { WebhookCall } from '../../../entities/WebhookCall';
 import { WebhookRepository } from '../repositories/WebhookRepository';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
-import { User } from '../types/User';
 import { WebhookInput } from '../types/WebhookInput';
 import { Authorized } from '../utils/Authorized';
 
