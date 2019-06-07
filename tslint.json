@@ -7,7 +7,6 @@
     "no-relative-imports": false,
     "no-reserved-keywords": false,
     "no-unsafe-any": false,
-    "no-unused-variable": true,
     "object-literal-sort-keys": false,
     "quotemark": [true, "single", "jsx-double"],
     "strict-boolean-expressions": false,
