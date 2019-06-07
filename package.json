@@ -84,6 +84,7 @@
     "rimraf": "2.6.3",
     "ts-jest": "24.0.2",
     "ts-node": "8.0.2",
+    "ts-node-dev": "^1.0.0-pre.39",
     "tslint": "5.12.1",
     "tslint-config-prettier": "1.17.0",
     "tslint-junit-formatter": "5.1.0",
