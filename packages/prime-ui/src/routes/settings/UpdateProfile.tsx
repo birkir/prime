@@ -17,21 +17,25 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
             mutation updateUser($id: ID!, $input: UpdateUserInput!) {
               updateUser(id: $id, input: $input) {
                 id
-                profile
+                meta {
+                  profile
+                }
               }
             }
           `,
           variables: {
             id: Auth.user!.id,
             input: {
-              firstname: values.firstname,
-              lastname: values.lastname,
-              displayName: values.displayName,
+              profile: {
+                firstname: values.firstname,
+                lastname: values.lastname,
+                displayName: values.displayName,
+              },
             },
           },
         });
         if (data) {
-          user.updateProfile(values);
+          user.updateMeta(values);
           message.info('Profile updated');
         }
       }
@@ -49,17 +53,17 @@ export const UpdateProfile = Form.create()(({ form, user }: IUpdateProfileProps)
         <div style={{ maxWidth: 448, minWidth: 224 }}>
           <Form.Item label="First name" colon={false} style={{ marginBottom: 0 }}>
             {form.getFieldDecorator('firstname', {
-              initialValue: user.profile.firstname,
+              initialValue: user.meta.profile.firstname,
             })(<Input />)}
           </Form.Item>
           <Form.Item label="Last name" colon={false} style={{ marginBottom: 0 }}>
             {form.getFieldDecorator('lastname', {
-              initialValue: user.profile.lastname,
+              initialValue: user.meta.profile.lastname,
             })(<Input />)}
           </Form.Item>
           <Form.Item label="Display name" colon={false} style={{ marginBottom: 12 }}>
             {form.getFieldDecorator('displayName', {
-              initialValue: user.profile.displayName,
+              initialValue: user.meta.profile.displayName,
             })(<Input />)}
           </Form.Item>
           <Button htmlType="submit">Update profile</Button>

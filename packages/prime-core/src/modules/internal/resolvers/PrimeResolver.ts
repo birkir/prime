@@ -7,6 +7,7 @@ import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { getRepository, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Settings } from '../../../entities/Settings';
+import { UserMeta } from '../../../entities/UserMeta';
 import { fields } from '../../../utils/fields';
 import { PackageVersion } from '../types/PackageVersion';
 import { PackageVersionInput } from '../types/PackageVersionInput';
@@ -39,7 +40,10 @@ export class PrimeResolver {
       const userId = await accounts.createUser({ email, password });
       await accounts.server.activateUser(userId);
       if (profile) {
-        await accounts.server.setProfile(userId, profile);
+        const meta = new UserMeta();
+        meta.id = userId;
+        meta.profile = profile;
+        await getRepository(UserMeta).save(meta);
       }
       await db.verifyEmail(userId, email);
       return true;

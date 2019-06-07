@@ -13,17 +13,21 @@ const UserProfile = types.model('UserProfile', {
   avatarUrl: types.maybeNull(types.string),
 });
 
+export const UserMeta = types.model('UserMeta', {
+  profile: types.optional(UserProfile, {}),
+});
+
 export const User = types
   .model('User', {
     id: types.identifier,
     emails: types.array(UserEmail),
-    profile: types.optional(UserProfile, {}),
+    meta: UserMeta,
     abilities: types.frozen(),
   })
   .preProcessSnapshot(snapshot => ({
     ...snapshot,
     abilities: (snapshot && (snapshot as any).ability) || [],
-    profile: (snapshot && snapshot.profile) || {},
+    meta: (snapshot && snapshot.meta) || {},
   }))
   .views(self => ({
     get gravatarUrl() {
@@ -35,8 +39,8 @@ export const User = types
     },
   }))
   .actions(self => ({
-    updateProfile(profile: any) {
-      self.profile = profile;
+    updateMeta(meta: any) {
+      self.meta = meta;
     },
     // updateLastPasswordChange() {
     //   self.lastPasswordChange = new Date();

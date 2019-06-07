@@ -40,6 +40,11 @@ export const fields = (config.fields || [])
         }
       }
 
+      if (field.options && !field.defaultOptions) {
+        // Backwards compatible
+        field.defaultOptions = field.options;
+      }
+
       let error;
 
       if (!field.type) {
