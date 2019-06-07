@@ -128,7 +128,7 @@ export class UserResolver {
   ) {
     const user = await this.userRepository.findOneOrFail(id);
     const meta = await user.meta();
-    meta.profile = input;
+    meta.profile = input.profile;
     context.ability.throwUnlessCan('update', user);
     await this.userRepository.save(user);
     await this.userMetaRepository.save(meta);
