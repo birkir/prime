@@ -46,11 +46,12 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
   public setMarkdownValue = debounce(() => {
     try {
       const { form, path } = this.props;
+      this.state.value.toRAW();
       form.setFieldsValue({
-        [path]: draftToMarkdown(JSON.parse(this.state.value.toRAW()), markdownConfig).replace(
-          /\n\n/g,
-          '\n \n'
-        ),
+        [path]: draftToMarkdown(
+          JSON.parse(this.state.value.toRAW().toString()),
+          markdownConfig
+        ).replace(/\n\n/g, '\n \n'),
       });
     } catch (err) {
       console.error('Error converting rich text to markdown'); // tslint:disable-line no-console

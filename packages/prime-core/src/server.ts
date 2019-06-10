@@ -82,8 +82,8 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
       onConnect: (params, ws, ctx) => ctx,
     },
     async context(ctx) {
-      if (!ctx.req && ctx.connection) {
-        return context({ req: ctx.connection.context.request });
+      if (!ctx.req && (ctx as any).connection) {
+        return context({ req: (ctx as any).connection.context.request });
       }
       return context(ctx);
     },

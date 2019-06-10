@@ -10,6 +10,7 @@ import {
   Switch,
   Table,
 } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
 import gql from 'graphql-tag';
 import { get } from 'lodash';
 import React from 'react';
@@ -18,7 +19,7 @@ import { Auth } from '../../stores/auth';
 import { client } from '../../utils/client';
 import { stringToColor } from '../../utils/stringToColor';
 
-export const Users = Form.create()(({ form }) => {
+export const Users = Form.create()(({ form }: FormComponentProps) => {
   const [confirmDirty, setConfirmDirty] = React.useState(false);
   const [isVisible, setVisible] = React.useState(false);
   const [user, setUser] = React.useState(null);
@@ -191,7 +192,7 @@ export const Users = Form.create()(({ form }) => {
           }
         `}
       >
-        {({ data, loading, error, refetch }) => {
+        {({ data, loading, error, refetch }: any) => {
           if (error) {
             return null;
           }

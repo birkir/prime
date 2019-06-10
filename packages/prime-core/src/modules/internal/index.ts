@@ -64,10 +64,10 @@ export const createInternal = async (connection: Connection) => {
       'Mutation.createUser': [isAuthenticated()],
     },
     configRequired: false,
-    logger: {
-      clientError: () => null,
-      log,
-      error: log,
-    },
+    // logger: {
+    //   clientError: () => null,
+    //   log,
+    //   error: log,
+    // },
   });
 };
