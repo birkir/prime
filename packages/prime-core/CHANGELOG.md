@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
+
+### Bug Fixes
+
+- not being able to delete schema ([#180](https://github.com/birkir/prime/issues/180)) ([#186](https://github.com/birkir/prime/issues/186)) ([925704c](https://github.com/birkir/prime/commit/925704c))
+- prime field default options not showing in ui ([#194](https://github.com/birkir/prime/issues/194)) ([7a7b162](https://github.com/birkir/prime/commit/7a7b162))
+- **core:** show require errors rather than swallow ([#206](https://github.com/birkir/prime/issues/206)) ([d95969b](https://github.com/birkir/prime/commit/d95969b))
+- **deps:** update dependency @graphql-modules/core to v0.7.5 ([#215](https://github.com/birkir/prime/issues/215)) ([367a99e](https://github.com/birkir/prime/commit/367a99e))
+- **deps:** update dependency apollo-server-express to v2.6.2 ([#219](https://github.com/birkir/prime/issues/219)) ([e6b8b9e](https://github.com/birkir/prime/commit/e6b8b9e))
+
+### Features
+
+- improve dev experience with ts-node-dev ([#212](https://github.com/birkir/prime/issues/212)) ([cdbd350](https://github.com/birkir/prime/commit/cdbd350))
+
 ## [0.3.4-beta.0](https://github.com/birkir/prime/compare/v0.3.3-beta.9...v0.3.4-beta.0) (2019-04-09)
 
 ### Bug Fixes

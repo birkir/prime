@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
+
+### Bug Fixes
+
+- prime field default options not showing in ui ([#194](https://github.com/birkir/prime/issues/194)) ([7a7b162](https://github.com/birkir/prime/commit/7a7b162))
+- **deps:** update dependency antd to v3.19.2 ([#218](https://github.com/birkir/prime/issues/218)) ([b027a53](https://github.com/birkir/prime/commit/b027a53))
+
 ## [0.3.4-beta.0](https://github.com/birkir/prime/compare/v0.3.3-beta.9...v0.3.4-beta.0) (2019-04-09)
 
 ### Bug Fixes

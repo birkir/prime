@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-datetime",
-  "version": "0.3.4-beta.0",
+  "version": "0.3.4-beta.1",
   "description": "DateTime Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-datetime",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-datetime"
   },
   "dependencies": {
-    "@primecms/field": "^0.3.4-beta.0",
+    "@primecms/field": "^0.3.4-beta.1",
     "antd": "3.19.2",
     "graphql": "^14.1.1",
     "graphql-iso-date": "^3.6.1",
