@@ -1,8 +1,9 @@
 import { Button, Form, message, Select } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
 import React from 'react';
 import { Settings } from '../../stores/settings';
 
-export const Security = Form.create()(({ form }) => {
+export const Security = Form.create()(({ form }: FormComponentProps) => {
   const onSubmit = (e: any) => {
     e.preventDefault();
     Settings.setAccessType(form.getFieldValue('accessType'));

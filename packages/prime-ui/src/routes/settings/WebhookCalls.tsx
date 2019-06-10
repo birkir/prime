@@ -29,7 +29,7 @@ export const WebhookCalls = ({ match }: any) => (
         }
       `}
     >
-      {({ data, error, loading }) => {
+      {({ data, error, loading }: any) => {
         const items = get(data, 'Webhook.calls', []);
 
         return (
