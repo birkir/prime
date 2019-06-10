@@ -39,7 +39,7 @@
     "@accounts/server": "0.15.0",
     "@accounts/typeorm": "0.15.0",
     "@casl/ability": "3.0.2",
-    "@graphql-modules/core": "0.4.2",
+    "@graphql-modules/core": "0.7.5",
     "@primecms/field": "^0.3.4-beta.0",
     "@primecms/field-asset": "^0.3.4-beta.0",
     "@primecms/field-boolean": "^0.3.4-beta.0",
