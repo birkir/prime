@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@primecms/field": "^0.3.4-beta.0",
-    "antd": "3.16.1",
+    "antd": "3.19.2",
     "apollo-server-core": "^2.3.1",
     "braft-editor": "2.2.9",
     "draft-js": "^0.10.5",

@@ -12,7 +12,7 @@ type IProps = FormComponentProps & {
   close(): void;
 };
 
-export const ChangeEmail = Form.create()(({ form, forwardRef, close, visible }: IProps) => {
+export const ChangeEmail = Form.create<IProps>()(({ form, forwardRef, close, visible }: IProps) => {
   React.useEffect(() => form.resetFields(), [visible]);
 
   const onSubmit = (e: React.FormEvent<HTMLElement>) => {
