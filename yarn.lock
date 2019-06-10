@@ -4378,10 +4378,10 @@ braft-convert@^2.1.10:
     draft-convert "^2.0.0"
     draft-js "^0.10.3"
 
-braft-editor@2.2.9:
-  version "2.2.9"
-  resolved "https://registry.yarnpkg.com/braft-editor/-/braft-editor-2.2.9.tgz#8990b6b638a69daebfb57e3f1f8e057166abc5be"
-  integrity sha512-F1mb9luLXfJ6Lhw7jLT+DNE9lc2qAb4fzNu+x5t2gbNKMzdmLrE99aNsqbDIGYqP4AGamgbXIiLYF7Md1+PtoQ==
+braft-editor@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/braft-editor/-/braft-editor-2.3.2.tgz#73cc3ca801efa0d492b11ba23b66df5314ffd658"
+  integrity sha512-TRohNRhvZrmP3HZVgsQzn8ebk5dGNP02BUebHEeyOYN3QMcLNUmYM6rJzlNc2+vwPs9evGt3NijB+O06TLMofg==
   dependencies:
     "@babel/runtime" "^7.0.0"
     braft-convert "^2.1.10"
