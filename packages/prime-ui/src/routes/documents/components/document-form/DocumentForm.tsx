@@ -94,4 +94,4 @@ export class BaseDocumentForm extends React.Component<IDocumentFormProps, any> {
   }
 }
 
-export const DocumentForm = Form.create()(BaseDocumentForm);
+export const DocumentForm = Form.create<IDocumentFormProps>()(BaseDocumentForm);

@@ -10,7 +10,7 @@ interface IProps extends FormComponentProps {
   history: any;
 }
 
-export const Webhooks = Form.create()(({ form, history }: IProps) => {
+export const Webhooks = Form.create<IProps>()(({ form, history }: IProps) => {
   const [isVisible, setVisible] = React.useState(false);
   const [webhook, setWebhook] = React.useState(null as Instance<typeof Webhook> | null);
 
