@@ -50,7 +50,7 @@
     "@primecms/field-select": "^0.3.4-beta.0",
     "@primecms/field-slice": "^0.3.4-beta.0",
     "@primecms/field-string": "^0.3.4-beta.0",
-    "apollo-server-express": "2.4.0",
+    "apollo-server-express": "2.6.2",
     "class-validator": "0.9.1",
     "cors": "2.8.5",
     "dataloader": "1.4.0",
