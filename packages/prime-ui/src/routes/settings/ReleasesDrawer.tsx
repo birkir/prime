@@ -14,7 +14,7 @@ interface IProps extends FormComponentProps {
   onClose(): void;
 }
 
-export const ReleasesDrawer = Form.create()(({ form, isOpen, onClose, item }: IProps) => {
+export const ReleasesDrawer = Form.create<IProps>()(({ form, isOpen, onClose, item }: IProps) => {
   React.useEffect(() => {
     form.resetFields();
   }, [isOpen]);

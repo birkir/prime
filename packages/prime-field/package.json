@@ -43,7 +43,7 @@
     "base"
   ],
   "dependencies": {
-    "antd": "3.16.1",
+    "antd": "3.19.2",
     "graphql": "^14.1.1",
     "lodash": "^4.17.11",
     "react": "^16.8.0-alpha.1"

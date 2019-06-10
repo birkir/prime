@@ -1,9 +1,10 @@
 import { Button, Drawer, Form, Icon, Input, Modal, Popconfirm, Table } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
 import { Observer } from 'mobx-react';
 import React from 'react';
 import { Settings } from '../../stores/settings';
 
-export const Previews = Form.create()(({ form }) => {
+export const Previews = Form.create()(({ form }: FormComponentProps) => {
   const [isVisible, setVisible] = React.useState(false);
   const [index, setIndex] = React.useState(null as null | number);
 
