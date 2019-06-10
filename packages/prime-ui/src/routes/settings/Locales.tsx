@@ -1,10 +1,11 @@
-import { Button, Drawer, Form, Icon, Input, Modal, Popconfirm, Select, Table, Tooltip } from 'antd';
+import { Button, Drawer, Form, Icon, Input, Popconfirm, Select, Table, Tooltip } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
 import { Observer } from 'mobx-react';
 import React from 'react';
 import { Settings } from '../../stores/settings';
 import countries from './countries.json';
 
-export const Locales = Form.create()(({ form }) => {
+export const Locales = Form.create()(({ form }: FormComponentProps) => {
   const [isVisible, setVisible] = React.useState(false);
   const [index, setIndex] = React.useState(null as null | number);
 

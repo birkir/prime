@@ -240,7 +240,7 @@ export class SchemaList extends React.Component<any> {
             }
             schemas={this.data}
             onCancel={this.onCloseDrawer}
-            onSubmit={contentType => {
+            onSubmit={(contentType: any) => {
               this.onCloseDrawer();
               if (contentType) {
                 this.props.history.push(`/schemas/edit/${contentType.id}`);
