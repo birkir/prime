@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn compile",
-    "dev": "SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
-    "compile": "SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
+    "dev": "cross-env SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
+    "compile": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -48,6 +48,7 @@
     "apollo-link-http": "1.5.14",
     "babel-plugin-import": "1.12.0",
     "braft-editor": "2.3.2",
+    "cross-env": "^5.2.0",
     "date-fns": "1.30.1",
     "fork-ts-checker-webpack-plugin": "0.5.2",
     "formik": "1.5.7",
