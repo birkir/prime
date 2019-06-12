@@ -81,5 +81,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
+  "dependencies": {
+    "cross-env": "^5.2.0"
+  }
 }
