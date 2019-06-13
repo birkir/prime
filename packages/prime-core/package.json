@@ -19,7 +19,8 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__tests__/utils"
-    ]
+    ],
+    "setupFiles": ["dotenv/config"]
   },
   "scripts": {
     "clean": "rimraf lib",
