@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@types/debug": "4.1.4",
-    "@types/graphql": "14.2.0",
+    "@types/graphql": "14.2.1",
     "@types/lodash": "4.14.134",
     "@types/rc": "1.1.0",
     "ts-node": "8.0.2",

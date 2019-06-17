@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@types/draft-js": "0.10.32",
-    "@types/graphql": "14.2.0",
+    "@types/graphql": "14.2.1",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"
   },
