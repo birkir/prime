@@ -42,7 +42,7 @@
     "react-easy-crop": "^1.6.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.0",
+    "@types/graphql": "14.2.1",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"
   },
