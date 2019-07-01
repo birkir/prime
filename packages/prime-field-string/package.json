@@ -44,7 +44,7 @@
     "react-dom": "^16.8.0-alpha.1"
   },
   "devDependencies": {
-    "@types/draft-js": "0.10.33",
+    "@types/draft-js": "0.10.34",
     "@types/graphql": "14.2.1",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"

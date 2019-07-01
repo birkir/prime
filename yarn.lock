@@ -2445,13 +2445,13 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.4.tgz#56eec47706f0fd0b7c694eae2f3172e6b0b769da"
   integrity sha512-D9MyoQFI7iP5VdpEyPZyjjqIJ8Y8EDNQFIFVLOmeg1rI1xiHOChyUPMPRUVfqFCerxfE+yS3vMyj37F6IdtOoQ==
 
-"@types/draft-js@0.10.33":
-  version "0.10.33"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.33.tgz#25aa433718c07bc4c0f82cbbbda939d31cd152a3"
-  integrity sha512-yx6Q+JwS6RcW8RPxDGjTq854M5MOMrS6LgXrwTkQavWTc/bgZi0pqUjdBAGe8TFWCTpJgFwl+vO3MBw0KaaLdw==
+"@types/draft-js@0.10.34":
+  version "0.10.34"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.34.tgz#1f1c26a2e28dea8d3567d331fcf5b178b12eba92"
+  integrity sha512-w+Q8Bj/BRZZiumvlx3lkZv3WQ54HFpu+L+29zRkFw53upf9uslYh4DHXqle59NVWwuu9CjxdAoUSD66utaXsBg==
   dependencies:
     "@types/react" "*"
-    immutable "^3.8.1"
+    immutable "~3.7.4"
 
 "@types/events@*":
   version "3.0.0"
@@ -8997,7 +8997,7 @@ immer@1.7.2:
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.7.2.tgz#a51e9723c50b27e132f6566facbec1c85fc69547"
   integrity sha512-4Urocwu9+XLDJw4Tc6ZCg7APVjjLInCFvO4TwGsAYV5zT6YYSor14dsZR0+0tHlDIN92cFUOq+i7fC00G5vTxA==
 
-immutable@*, immutable@^3.7.4, immutable@^3.8.1:
+immutable@*, immutable@^3.7.4:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
   integrity sha1-wkOZUUVbs5kT2vKBN28VMOEErfM=
