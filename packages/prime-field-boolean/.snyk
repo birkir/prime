@@ -32,3 +32,25 @@ patch:
         patched: '2019-07-03T22:47:25.610Z'
     - '@primecms/field > antd > rc-editor-mention > rc-editor-core > lodash':
         patched: '2019-07-03T22:47:25.610Z'
+    - snyk > snyk-nodejs-lockfile-parser > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > inquirer > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-config > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-mvn-plugin > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > @snyk/dep-graph > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-nuget-plugin > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-go-plugin > graphlib > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-nodejs-lockfile-parser > graphlib > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > snyk-php-plugin > @snyk/composer-lockfile-parser > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
+    - snyk > @snyk/dep-graph > graphlib > lodash:
+        patched: '2019-07-04T12:15:38.563Z'
