@@ -56,7 +56,7 @@
     "lodash": "4.17.11",
     "mobx": "5.11.0",
     "mobx-devtools-mst": "0.9.21",
-    "mobx-react": "5.4.3",
+    "mobx-react": "5.4.4",
     "mobx-state-tree": "3.14.0",
     "moment": "2.24.0",
     "rc": "1.2.8",
