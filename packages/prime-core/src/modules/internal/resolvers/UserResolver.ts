@@ -60,7 +60,11 @@ export class UserResolver {
     });
     (result as any).resolveNode = async user => {
       user.emails = await this.userEmailRepository.find({ user });
-      return user;
+      const meta = await user.meta();
+      return {
+        ...user,
+        meta,
+      };
     };
     return result;
   }

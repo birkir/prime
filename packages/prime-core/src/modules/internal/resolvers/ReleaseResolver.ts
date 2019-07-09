@@ -1,4 +1,3 @@
-import { Context } from 'apollo-server-core';
 import {
   Arg,
   Args,
@@ -25,6 +24,7 @@ import { ReleaseInput } from '../types/ReleaseInput';
 import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 import { DocumentResolver } from './DocumentResolver';
+import { Context } from '../../../interfaces/Context';
 
 const ReleaseConnection = createConnectionType(Release);
 

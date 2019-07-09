@@ -36,7 +36,7 @@
     "@primecms/field": "^0.3.4-beta.1",
     "antd": "3.19.2",
     "apollo-server-core": "^2.3.1",
-    "braft-editor": "2.3.2",
+    "braft-editor": "2.3.7",
     "draft-js": "^0.10.5",
     "graphql": "^14.1.1",
     "markdown-draft-js": "1.3.0",
@@ -44,8 +44,8 @@
     "react-dom": "^16.8.0-alpha.1"
   },
   "devDependencies": {
-    "@types/draft-js": "0.10.32",
-    "@types/graphql": "14.2.0",
+    "@types/draft-js": "0.10.34",
+    "@types/graphql": "14.2.2",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"
   },

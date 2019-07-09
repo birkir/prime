@@ -180,7 +180,9 @@ export const Users = Form.create()(({ form }: FormComponentProps) => {
               edges {
                 node {
                   id
-                  profile
+                  meta {
+                    profile
+                  }
                   username
                   emails {
                     address
