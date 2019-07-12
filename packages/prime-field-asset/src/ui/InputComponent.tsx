@@ -25,9 +25,7 @@ const getInitialFile = (value?: { url: string } | string) => {
     status: 'done',
     url: value.url,
     imageUrl: value.url.replace(/\.[a-z]{3,4}$/, '.png'),
-    thumbUrl: value.url
-      .replace('/image/upload/', '/image/upload/w_100,h_100,c_fill/')
-      .replace(/\.[a-z]{3,4}$/, '.png'),
+    thumbUrl: value.url,
     width: null,
     height: null,
   };
@@ -113,9 +111,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
       if (file.status === 'done' && file.response) {
         file.url = file.response.url;
         file.imageUrl = file.response.url.replace(/\.[a-z]{3,4}$/, '.png');
-        file.thumbUrl = file.response.url
-          .replace('/image/upload/', '/image/upload/w_100,h_100,c_fill/')
-          .replace(/\.[a-z]{3,4}$/, '.png');
+        file.thumbUrl = file.response.url;
       }
     }
 
