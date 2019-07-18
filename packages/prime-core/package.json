@@ -39,7 +39,7 @@
     "@accounts/password": "0.15.0",
     "@accounts/server": "0.15.0",
     "@accounts/typeorm": "0.15.0",
-    "@casl/ability": "3.1.1",
+    "@casl/ability": "3.1.2",
     "@graphql-modules/core": "0.7.5",
     "@primecms/field": "^0.3.4-beta.1",
     "@primecms/field-asset": "^0.3.4-beta.1",
@@ -81,9 +81,9 @@
   "devDependencies": {
     "@types/debug": "4.1.4",
     "@types/graphql": "14.2.2",
-    "@types/lodash": "4.14.135",
+    "@types/lodash": "4.14.136",
     "@types/rc": "1.1.0",
-    "cross-env": "^5.2.0",
+    "cross-env": "5.2.0",
     "ts-node": "8.0.2",
     "ts-node-dev": "1.0.0-pre.39"
   },
