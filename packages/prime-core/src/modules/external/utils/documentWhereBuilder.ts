@@ -23,6 +23,7 @@ const operators = {
   lt: '<',
   lte: '<=',
   eq: '=',
+  neq: '!=',
   in: 'IN',
   contains: 'LIKE',
   not: '!=',
@@ -63,8 +64,16 @@ export const documentWhereBuilder = (
       } else if (fieldName === 'id') {
         value = `%(,${value}("|\\Z))%`;
       }
-      const key = Buffer.from(value).toString('hex');
-      queryBuilder[mode](`${column} ${operator} :${key}`, { [key]: value });
+      let keyValue = whereOrValue;
+      if (Array.isArray(keyValue)) {
+        keyValue = keyValue.join(',');
+      }
+      const key = Buffer.from(`key:${keyValue}`).toString('hex');
+      let queryKey = `:${key}`;
+      if (fieldName === 'in') {
+        queryKey = `(:...${key})`;
+      }
+      queryBuilder[mode](`${column} ${operator} ${queryKey}`, { [key]: value });
     } else if (whereOrValue) {
       const field = fields.find(
         targetField =>
