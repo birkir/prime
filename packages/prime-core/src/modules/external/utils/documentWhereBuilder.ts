@@ -27,6 +27,7 @@ const operators = {
   in: 'IN',
   contains: 'LIKE',
   not: '!=',
+  id: 'SIMILAR TO',
 };
 
 const modes = { OR: 'orWhere', AND: 'andWhere' };
@@ -60,6 +61,8 @@ export const documentWhereBuilder = (
       let value = whereOrValue;
       if (fieldName === 'contains') {
         value = `%${value}%`;
+      } else if (fieldName === 'id') {
+        value = `%(,${value}("|\\Z))%`;
       }
       let keyValue = whereOrValue;
       if (Array.isArray(keyValue)) {

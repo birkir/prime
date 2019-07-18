@@ -19,7 +19,7 @@
     "clean": "rimraf lib",
     "start": "tsc --watch",
     "precompile": "yarn clean",
-    "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
+    "compile": "tsc && rimraf lib/ui && webpack --config ../prime-tools/webpack.config.js",
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
@@ -42,7 +42,7 @@
     "react-easy-crop": "^1.6.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.0",
+    "@types/graphql": "14.2.2",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"
   },

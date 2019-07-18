@@ -1,4 +1,3 @@
-import { Context } from 'apollo-server-core';
 import crypto from 'crypto';
 import { GraphQLResolveInfo } from 'graphql';
 import Hashids from 'hashids';
@@ -7,6 +6,7 @@ import { Repository } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { AccessToken } from '../../../entities/AccessToken';
+import { Context } from '../../../interfaces/Context';
 import { AccessTokenInput } from '../types/AccessTokenInput';
 import { ConnectionArgs, createConnectionType } from '../types/createConnectionType';
 import { Authorized } from '../utils/Authorized';
