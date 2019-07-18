@@ -19,15 +19,16 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__tests__/utils"
-    ]
+    ],
+    "setupFiles": ["dotenv/config"]
   },
   "scripts": {
     "clean": "rimraf lib",
     "start": "node lib/index.js",
     "prepublishOnly": "yarn compile",
-    "compile": "rm -rf ./lib && tsc -p .",
-    "dev": "DEBUG=prime* ts-node-dev --no-notify --transpileOnly src",
-    "dev:debug": "DEBUG=prime:*,typeorm:* ts-node-dev --no-notify --transpileOnly --inspect -- src",
+    "compile": "rimraf lib && tsc -p .",
+    "dev": "cross-env DEBUG=prime* ts-node-dev --no-notify --transpileOnly src",
+    "dev:debug": "cross-env DEBUG=prime:*,typeorm:* ts-node-dev --no-notify --transpileOnly --inspect -- src",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
     "coverage": "yarn testonly --coverage"
@@ -38,7 +39,7 @@
     "@accounts/password": "0.15.0",
     "@accounts/server": "0.15.0",
     "@accounts/typeorm": "0.15.0",
-    "@casl/ability": "3.0.2",
+    "@casl/ability": "3.1.2",
     "@graphql-modules/core": "0.7.5",
     "@primecms/field": "^0.3.4-beta.1",
     "@primecms/field-asset": "^0.3.4-beta.1",
@@ -80,8 +81,9 @@
   "devDependencies": {
     "@types/debug": "4.1.4",
     "@types/graphql": "14.2.2",
-    "@types/lodash": "4.14.135",
+    "@types/lodash": "4.14.136",
     "@types/rc": "1.1.0",
+    "cross-env": "5.2.0",
     "ts-node": "8.0.2",
     "ts-node-dev": "1.0.0-pre.39"
   },

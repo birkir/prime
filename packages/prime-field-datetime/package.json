@@ -19,7 +19,7 @@
     "clean": "rimraf lib",
     "start": "tsc --watch",
     "precompile": "yarn clean",
-    "compile": "tsc; rimraf lib/ui; webpack --config ../prime-tools/webpack.config.js",
+    "compile": "tsc && rimraf lib/ui && webpack --config ../prime-tools/webpack.config.js",
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",

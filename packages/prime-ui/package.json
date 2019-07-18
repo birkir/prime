@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn compile",
-    "dev": "SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
-    "compile": "SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
+    "dev": "cross-env SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
+    "compile": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -20,7 +20,7 @@
     "@accounts/client": "0.15.0",
     "@accounts/client-password": "0.15.0",
     "@accounts/graphql-client": "0.15.0",
-    "@casl/ability": "3.0.2",
+    "@casl/ability": "3.1.2",
     "@primecms/field": "^0.3.4-beta.1",
     "@primecms/field-asset": "^0.3.4-beta.1",
     "@primecms/field-boolean": "^0.3.4-beta.1",
@@ -33,9 +33,9 @@
     "@primecms/field-string": "^0.3.4-beta.1",
     "@types/graphql": "14.2.2",
     "@types/jest": "23.3.14",
-    "@types/lodash": "4.14.135",
+    "@types/lodash": "4.14.136",
     "@types/mobx-devtools-mst": "0.9.0",
-    "@types/react": "16.8.22",
+    "@types/react": "16.8.23",
     "@types/react-beautiful-dnd": "7.1.2",
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "4.3.4",
@@ -48,15 +48,16 @@
     "apollo-link-http": "1.5.15",
     "babel-plugin-import": "1.12.0",
     "braft-editor": "2.3.7",
+    "cross-env": "5.2.0",
     "date-fns": "1.30.1",
     "fork-ts-checker-webpack-plugin": "0.5.2",
-    "formik": "1.5.7",
-    "graphql": "14.4.1",
+    "formik": "1.5.8",
+    "graphql": "14.4.2",
     "graphql-tag": "2.10.1",
     "lodash": "4.17.11",
-    "mobx": "5.9.4",
+    "mobx": "5.11.0",
     "mobx-devtools-mst": "0.9.21",
-    "mobx-react": "5.4.3",
+    "mobx-react": "5.4.4",
     "mobx-state-tree": "3.14.0",
     "moment": "2.24.0",
     "rc": "1.2.8",
@@ -65,7 +66,7 @@
     "react-app-rewire-graphql-tag": "1.1.0",
     "react-app-rewire-less": "2.1.3",
     "react-app-rewired": "1.6.2",
-    "react-beautiful-dnd": "10.0.0",
+    "react-beautiful-dnd": "10.1.1",
     "react-dom": "16.8.0-alpha.1",
     "react-router-dom": "4.3.1",
     "react-scripts": "2.1.1",
@@ -80,5 +81,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
+  "dependencies": {
+    "cross-env": "^5.2.0"
+  }
 }
