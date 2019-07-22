@@ -58,7 +58,7 @@
     "mobx": "5.13.0",
     "mobx-devtools-mst": "0.9.21",
     "mobx-react": "5.4.4",
-    "mobx-state-tree": "3.14.0",
+    "mobx-state-tree": "3.14.1",
     "moment": "2.24.0",
     "rc": "1.2.8",
     "react": "16.8.0-alpha.1",
