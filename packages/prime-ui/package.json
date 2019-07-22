@@ -55,7 +55,7 @@
     "graphql": "14.4.2",
     "graphql-tag": "2.10.1",
     "lodash": "4.17.11",
-    "mobx": "5.11.0",
+    "mobx": "5.13.0",
     "mobx-devtools-mst": "0.9.21",
     "mobx-react": "5.4.4",
     "mobx-state-tree": "3.14.0",
