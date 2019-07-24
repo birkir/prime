@@ -99,7 +99,7 @@ describe('InternalModule', () => {
 
   describe('One Schema', () => {
     beforeAll(async () => {
-      const fields = [{ name: 'name' }, { name: 'bio' }];
+      const fields = [{ name: 'name' }, { name: 'bio' }, { name: 'age', type: 'number' }];
       await query(
         gql`
           mutation {
@@ -219,6 +219,18 @@ describe('InternalModule', () => {
         internal
       );
       expect(res5!.data!).toBeTruthy();
+
+      const unpublish = await query(
+        gql`
+          mutation {
+            unpublishDocument(id: "${uuid}") {
+              id
+            }
+          }
+      `,
+        internal
+      );
+      expect(unpublish).toBeTruthy();
     });
 
     it('should show list of documents', async () => {
@@ -392,6 +404,213 @@ describe('InternalModule', () => {
         internal
       );
       expect(res!.data!.allReleases!.edges).toHaveLength(1);
+    });
+  });
+
+  describe('Document queries', () => {
+    const createPublishedAuthor = async (name, bio, age) => {
+      const res = await query(
+        gql`
+          mutation {
+            createAuthor(input: { name: "${name}", bio: "${bio}", age: ${age} }) {
+              id
+              _meta {
+                id
+              }
+            }
+          }
+        `
+      );
+
+      const {
+        _meta: { id: uuid },
+      } = res!.data!.createAuthor as any;
+
+      await query(
+        gql`
+          mutation {
+            publishDocument(id: "${uuid}") {
+              id
+            }
+          }
+        `,
+        internal
+      );
+
+      return res;
+    };
+
+    beforeAll(async () => {
+      await createPublishedAuthor('Ted Turner', 'Organizer. Incurable problem solver.', 27);
+      await createPublishedAuthor('Philip Young', 'Friendly thinker. Certified bacon expert.', 44);
+      await createPublishedAuthor('Chris Peterson', 'Proud coffee expert. Webaholic.', 87);
+      await createPublishedAuthor('Joseph Turner', 'Twitter junkie. Certified troublemaker.', 53);
+      await createPublishedAuthor(
+        'Benjamin Stewart',
+        'Lifelong problem solver. Pop culture enthusiast.',
+        36
+      );
+    });
+
+    it('should show all authors', async () => {
+      const res = await query(
+        gql`
+          query {
+            allAuthor {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+      expect(res!.data!.allAuthor!.edges).toHaveLength(5);
+    });
+    it('should show correct order with one sortBy key', async () => {
+      const res1 = await query(
+        gql`
+          query {
+            allAuthor(sort: { name: ASC }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res1!.data!.allAuthor!.edges![0].node.name).toBe('Benjamin Stewart');
+      expect(res1!.data!.allAuthor!.edges![4].node.name).toBe('Ted Turner');
+
+      const res2 = await query(
+        gql`
+          query {
+            allAuthor(sort: { age: DESC }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res2!.data!.allAuthor!.edges![0].node.name).toBe('Chris Peterson');
+      expect(res2!.data!.allAuthor!.edges![4].node.name).toBe('Ted Turner');
+    });
+
+    it('should show correct posts with one filter', async () => {
+      const res1 = await query(
+        gql`
+          query {
+            allAuthor(where: { name: { eq: "Joseph Turner" } }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res1!.data!.allAuthor!.edges).toHaveLength(1);
+      expect(res1!.data!.allAuthor!.edges![0].node.name).toBe('Joseph Turner');
+
+      const res2 = await query(
+        gql`
+          query {
+            allAuthor(where: { name: { contains: "Turner" } }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res2!.data!.allAuthor!.edges).toHaveLength(2);
+
+      const res3 = await query(
+        gql`
+          query {
+            allAuthor(where: { name: { in: ["Philip Young", "Chris Peterson"] } }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res3!.data!.allAuthor!.edges).toHaveLength(2);
+    });
+
+    it('should show correct posts with two filters', async () => {
+      const res1 = await query(
+        gql`
+          query {
+            allAuthor(where: { name: { contains: "Turner" }, age: { eq: 27 } }) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res1!.data!.allAuthor!.edges).toHaveLength(1);
+      expect(res1!.data!.allAuthor!.edges![0].node.name).toBe('Ted Turner');
+
+      const res2 = await query(
+        gql`
+          query {
+            allAuthor(
+              where: {
+                OR: {
+                  AND: { name: { contains: "Turner" }, name: { contains: "Ted" } }
+                  age: { eq: 87 }
+                }
+              }
+            ) {
+              edges {
+                node {
+                  name
+                  bio
+                  age
+                }
+              }
+            }
+          }
+        `
+      );
+
+      expect(res2!.data!.allAuthor!.edges).toHaveLength(2);
     });
   });
 });
