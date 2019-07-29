@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@types/graphql": "14.2.3",
-    "ts-loader": "5.3.3",
+    "ts-loader": "5.4.5",
     "webpack-cli": "3.2.3"
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
