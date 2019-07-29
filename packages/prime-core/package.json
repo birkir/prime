@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@types/debug": "4.1.4",
-    "@types/graphql": "14.2.2",
+    "@types/graphql": "14.2.3",
     "@types/lodash": "4.14.136",
     "@types/rc": "1.1.0",
     "cross-env": "5.2.0",

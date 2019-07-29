@@ -43,7 +43,7 @@
     "snyk": "^1.189.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.2",
+    "@types/graphql": "14.2.3",
     "ts-loader": "5.3.3",
     "webpack-cli": "3.2.3"
   },
