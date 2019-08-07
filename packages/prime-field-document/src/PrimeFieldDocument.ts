@@ -76,7 +76,7 @@ export class PrimeFieldDocument extends PrimeField {
           locale: { type: GraphQLString },
         },
         resolve: async (root, args, ctx, info) => {
-          const values = root[this.schemaField.name];
+          const values = root[this.schemaField.name] || [];
           return Promise.all(
             values.map(value => {
               const [schemaId, documentId] = value.split(',');
