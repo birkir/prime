@@ -39,7 +39,7 @@
     "braft-editor": "2.3.7",
     "draft-js": "^0.10.5",
     "graphql": "^14.1.1",
-    "markdown-draft-js": "1.3.0",
+    "markdown-draft-js": "2.0.0",
     "react": "^16.8.0-alpha.1",
     "react-dom": "^16.8.0-alpha.1"
   },
