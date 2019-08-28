@@ -1,4 +1,4 @@
-import { GraphQLInputObjectType, GraphQLString } from 'graphql';
+import { GraphQLInputObjectType, GraphQLList, GraphQLString } from 'graphql';
 
 export const PrimeFieldStringWhere = new GraphQLInputObjectType({
   name: 'PrimeField_String_Where',
@@ -6,5 +6,6 @@ export const PrimeFieldStringWhere = new GraphQLInputObjectType({
     neq: { type: GraphQLString },
     eq: { type: GraphQLString },
     contains: { type: GraphQLString },
+    in: { type: new GraphQLList(GraphQLString) },
   },
 });

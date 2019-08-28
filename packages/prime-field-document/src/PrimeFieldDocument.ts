@@ -1,11 +1,13 @@
 import { PrimeField, PrimeFieldContext } from '@primecms/field';
 import {
   GraphQLID,
+  GraphQLInputObjectType,
   GraphQLList,
   GraphQLObjectType,
   GraphQLString,
   GraphQLUnionType,
 } from 'graphql';
+import { camelCase, upperFirst } from 'lodash';
 
 interface Options {
   schemaIds: string[];
@@ -74,7 +76,7 @@ export class PrimeFieldDocument extends PrimeField {
           locale: { type: GraphQLString },
         },
         resolve: async (root, args, ctx, info) => {
-          const values = root[this.schemaField.name];
+          const values = root[this.schemaField.name] || [];
           return Promise.all(
             values.map(value => {
               const [schemaId, documentId] = value.split(',');
@@ -120,5 +122,14 @@ export class PrimeFieldDocument extends PrimeField {
     return {
       type: options.multiple ? new GraphQLList(GraphQLID) : GraphQLID,
     };
+  }
+
+  public async whereType(context: PrimeFieldContext) {
+    return new GraphQLInputObjectType({
+      name: `${context.name}_${upperFirst(camelCase(this.schemaField.name))}_Where`,
+      fields: {
+        id: { type: GraphQLID },
+      },
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { PrimeFieldProps } from '@primecms/field';
 import { Form, TreeSelect } from 'antd';
 import React from 'react';
+import { get } from 'lodash';
 
 interface IContentType {
   documentId: string;
@@ -94,6 +95,7 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
     const { loading, options } = this.state;
     const { field, document, path, form, initialValue } = this.props;
     const { getFieldDecorator } = form;
+    const required = get(field.options, 'required', false);
 
     return (
       <Form.Item label={field.title}>
@@ -112,6 +114,7 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
             multiple={field.options.multiple || false}
             treeNodeFilterProp="title"
             onChange={this.onChange}
+            allowClear={!required}
           />
         ) : null}
       </Form.Item>
