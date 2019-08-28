@@ -97,7 +97,9 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
 
     return (
       <Form.Item label={field.title}>
-        {loading === false ? (
+        {!loading ? getFieldDecorator(path, {
+          initialValue,
+        })(
           <TreeSelect
             key={(document && document.documentId) || 'picker'}
             style={{ width: 300 }}
@@ -112,9 +114,6 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
             onChange={this.onChange}
           />
         ) : null}
-        {getFieldDecorator(path, {
-          initialValue,
-        })(<input type="hidden" />)}
       </Form.Item>
     );
   }
