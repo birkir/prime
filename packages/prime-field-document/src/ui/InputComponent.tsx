@@ -1,6 +1,7 @@
 import { PrimeFieldProps } from '@primecms/field';
 import { Form, TreeSelect } from 'antd';
 import React from 'react';
+import { get } from 'lodash';
 
 interface IContentType {
   documentId: string;
@@ -94,27 +95,30 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
     const { loading, options } = this.state;
     const { field, document, path, form, initialValue } = this.props;
     const { getFieldDecorator } = form;
+    const required = get(field.options, 'required', false);
 
     return (
       <Form.Item label={field.title}>
-        {loading === false ? (
-          <TreeSelect
-            key={(document && document.documentId) || 'picker'}
-            style={{ width: 300 }}
-            defaultValue={this.defaultValue}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            showSearch={true}
-            size="large"
-            treeData={options}
-            placeholder="Pick document(s)"
-            multiple={field.options.multiple || false}
-            treeNodeFilterProp="title"
-            onChange={this.onChange}
-          />
-        ) : null}
-        {getFieldDecorator(path, {
-          initialValue,
-        })(<input type="hidden" />)}
+        {!loading
+          ? getFieldDecorator(path, {
+              initialValue,
+            })(
+              <TreeSelect
+                key={(document && document.documentId) || 'picker'}
+                style={{ width: 300 }}
+                defaultValue={this.defaultValue}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                showSearch={true}
+                size="large"
+                treeData={options}
+                placeholder="Pick document(s)"
+                multiple={field.options.multiple || false}
+                treeNodeFilterProp="title"
+                onChange={this.onChange}
+                allowClear={!required}
+              />
+            )
+          : null}
       </Form.Item>
     );
   }

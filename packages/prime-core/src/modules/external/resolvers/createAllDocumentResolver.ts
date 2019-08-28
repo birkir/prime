@@ -27,15 +27,6 @@ export const createAllDocumentResolver = async ({
   return async (root, args: Args, context, info) => {
     const locale = args.locale || (await getDefaultLocale());
 
-    FindAllConnection.prototype.resolveNode = async node => {
-      const data = await documentTransformer.transformOutput(node, schema, fields);
-      return {
-        ...data,
-        _meta: node,
-        id: node.documentId,
-      };
-    };
-
     const sortOptions = getSortOptions('Document', fields, args.sort || []);
     if (sortOptions.length === 0) {
       sortOptions.push({ sort: '"createdAt"', order: 'DESC' });
@@ -104,6 +95,21 @@ export const createAllDocumentResolver = async ({
       .getRawOne();
 
     connection.totalCount = Number((res && res.count) || 0);
+
+    /**
+     * Here we have no choice to ts-ignore the next line because 'typeorm-cursor-connection'
+     * does not properly type the resolveNode function  as a MaybePromise<TNode> return type.
+     * In order to asynchronously resolve the node, we need this hack until a PR fixes the typings.
+     */
+    // @ts-ignore-next-line
+    connection.resolveNode = async node => {
+      const data = await documentTransformer.transformOutput(node, schema, fields);
+      return {
+        ...data,
+        _meta: node,
+        id: node.documentId,
+      };
+    };
 
     return connection;
   };
