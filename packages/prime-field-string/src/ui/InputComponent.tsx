@@ -72,14 +72,6 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
     this.setState({ value }, this.setMarkdownValue);
   };
 
-  public onUrlSafeKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const { form, path } = this.props;
-    const value = form.getFieldValue(path);
-    form.setFieldsValue({
-      [path]: (value.match(/[A-Za-z0-9_-]/g) || []).join(''),
-    });
-  };
-
   public renderMarkdown = (rules: ValidationRule[]) => {
     const { form, field, path, initialValue = '' } = this.props;
     const { getFieldDecorator } = form;
@@ -217,13 +209,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
         {getFieldDecorator(path, {
           initialValue,
           rules: fieldRules,
-        })(
-          <Input
-            size="large"
-            style={styles}
-            onKeyUp={rules.urlsafe ? this.onUrlSafeKeyUp : undefined}
-          />
-        )}
+        })(<Input size="large" style={styles} />)}
       </Form.Item>
     );
   }
