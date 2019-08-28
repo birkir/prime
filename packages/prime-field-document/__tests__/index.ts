@@ -45,8 +45,9 @@ describe('PrimeFieldDocument', () => {
     expect(typeof PrimeFieldDocument).toBe('function');
   });
 
-  it('should have null where type', async () => {
-    expect(await test.whereType(createContext())).toBeNull();
+  it('should have where type', async () => {
+    test = createTestField();
+    expect(await test.whereType(createContext())).toBeTruthy();
   });
 
   it('should have null output type with no options', async () => {
