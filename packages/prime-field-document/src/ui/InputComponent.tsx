@@ -97,23 +97,25 @@ export class InputComponent extends React.Component<PrimeFieldProps, IState> {
 
     return (
       <Form.Item label={field.title}>
-        {!loading ? getFieldDecorator(path, {
-          initialValue,
-        })(
-          <TreeSelect
-            key={(document && document.documentId) || 'picker'}
-            style={{ width: 300 }}
-            defaultValue={this.defaultValue}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            showSearch={true}
-            size="large"
-            treeData={options}
-            placeholder="Pick document(s)"
-            multiple={field.options.multiple || false}
-            treeNodeFilterProp="title"
-            onChange={this.onChange}
-          />
-        ) : null}
+        {!loading
+          ? getFieldDecorator(path, {
+              initialValue,
+            })(
+              <TreeSelect
+                key={(document && document.documentId) || 'picker'}
+                style={{ width: 300 }}
+                defaultValue={this.defaultValue}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                showSearch={true}
+                size="large"
+                treeData={options}
+                placeholder="Pick document(s)"
+                multiple={field.options.multiple || false}
+                treeNodeFilterProp="title"
+                onChange={this.onChange}
+              />
+            )
+          : null}
       </Form.Item>
     );
   }

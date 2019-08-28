@@ -209,12 +209,7 @@ export class InputComponent extends React.PureComponent<PrimeFieldProps> {
         {getFieldDecorator(path, {
           initialValue,
           rules: fieldRules,
-        })(
-          <Input
-            size="large"
-            style={styles}
-          />
-        )}
+        })(<Input size="large" style={styles} />)}
       </Form.Item>
     );
   }
