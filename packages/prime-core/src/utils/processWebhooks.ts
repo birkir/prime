@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-fetch';
 import { getRepository } from 'typeorm';
 import { Webhook } from '../entities/Webhook';
 import { WebhookCall } from '../entities/WebhookCall';
