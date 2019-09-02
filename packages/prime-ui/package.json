@@ -46,7 +46,7 @@
     "apollo-link-context": "1.0.18",
     "apollo-link-error": "1.1.11",
     "apollo-link-http": "1.5.15",
-    "babel-plugin-import": "1.12.0",
+    "babel-plugin-import": "1.12.1",
     "braft-editor": "2.3.7",
     "cross-env": "5.2.1",
     "date-fns": "1.30.1",
