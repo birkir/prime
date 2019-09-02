@@ -31,6 +31,7 @@
     "@primecms/field-select": "^0.3.4-beta.1",
     "@primecms/field-slice": "^0.3.4-beta.1",
     "@primecms/field-string": "^0.3.4-beta.1",
+    "@types/apollo-upload-client": "^8.1.1",
     "@types/graphql": "14.2.3",
     "@types/jest": "23.3.14",
     "@types/lodash": "4.14.138",
@@ -46,6 +47,7 @@
     "apollo-link-context": "1.0.18",
     "apollo-link-error": "1.1.11",
     "apollo-link-http": "1.5.15",
+    "apollo-upload-client": "^10.0.1",
     "babel-plugin-import": "1.12.0",
     "braft-editor": "2.3.7",
     "cross-env": "5.2.1",
@@ -83,6 +85,7 @@
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
   "dependencies": {
+    "apollo-upload-client": "^10.0.1",
     "cross-env": "^5.2.0"
   }
 }

@@ -1,9 +1,11 @@
+import CREATE_ASSET from './createAsset.gql';
 import CREATE_CONTENT_ENTRY from './createContentEntry.gql';
 import CREATE_CONTENT_RELEASE from './createContentRelease.gql';
 import CREATE_CONTENT_TYPE from './createContentType.gql';
 import CREATE_WEBHOOK from './createWebhook.gql';
 import PUBLISH_CONTENT_ENTRY from './publishContentEntry.gql';
 import PUBLISH_CONTENT_RELEASE from './publishContentRelease.gql';
+import REMOVE_ASSET from './removeAsset.gql';
 import REMOVE_CONTENT_ENTRY from './removeContentEntry.gql';
 import REMOVE_CONTENT_RELEASE from './removeContentRelease.gql';
 import REMOVE_CONTENT_TYPE from './removeContentType.gql';
@@ -17,6 +19,8 @@ import UPDATE_WEBHOOK from './updateWebhook.gql';
 
 export {
   SAVE_SCHEMA,
+  CREATE_ASSET,
+  REMOVE_ASSET,
   CREATE_CONTENT_TYPE,
   REMOVE_CONTENT_TYPE,
   UPDATE_CONTENT_TYPE,

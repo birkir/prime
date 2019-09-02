@@ -1,0 +1,11 @@
+mutation CreateAsset($input:AssetInput!) {
+  createAsset(input:$input) {
+    id
+    fileName
+    fileSize
+    mimeType
+    url
+    createdAt
+    updatedAt
+  }
+}
