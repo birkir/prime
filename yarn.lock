@@ -19080,10 +19080,10 @@ ts-loader@5.4.5:
     micromatch "^3.1.4"
     semver "^5.0.1"
 
-ts-node-dev@1.0.0-pre.39:
-  version "1.0.0-pre.39"
-  resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.0.0-pre.39.tgz#17c3f6350c974a16dd9b18b67577b1786b88973d"
-  integrity sha512-yOg9nMAi6U2HcAkhnFuWxfg53XDqpdbeBESo+7DfmlDpQX4RrEzBNV6szOjlm/OH0KiRgG5J0emvg/BS/gQmXQ==
+ts-node-dev@1.0.0-pre.42:
+  version "1.0.0-pre.42"
+  resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.0.0-pre.42.tgz#1370603eaac171d6ed1d38d3f9879429122088ff"
+  integrity sha512-1jrTjDu6SpBCkRYuBsBIND6hPO3FBP8+XdovchYp7Fi95pIpG0AmpVY+Xk4cmYTogd1sB4g0dQU98U1l0lHPtg==
   dependencies:
     dateformat "~1.0.4-1.2.3"
     dynamic-dedupe "^0.3.0"
@@ -19093,6 +19093,7 @@ ts-node-dev@1.0.0-pre.39:
     node-notifier "^5.4.0"
     resolve "^1.0.0"
     rimraf "^2.6.1"
+    source-map-support "^0.5.12"
     tree-kill "^1.2.1"
     ts-node "*"
     tsconfig "^7.0.0"
