@@ -86,7 +86,7 @@
     "ts-jest": "24.1.0",
     "ts-node": "8.4.1",
     "ts-node-dev": "1.0.0-pre.42",
-    "tslint": "5.12.1",
+    "tslint": "5.20.0",
     "tslint-config-prettier": "1.17.0",
     "tslint-junit-formatter": "5.1.0",
     "typedoc": "0.14.2",
