@@ -50,7 +50,7 @@ export const Auth = types
       self.user = null;
     });
 
-    const checkLogin = flow(function*() {
+    const checkLogin = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.query({
         query: GET_USER,
       });
@@ -83,7 +83,7 @@ export const Auth = types
       lastname?: string;
       email: string;
       password: string;
-    }) {
+    }): Generator<Promise<any>, boolean, any> {
       const { data } = yield client.mutate({
         mutation: gql`
           mutation onboard($email: String!, $password: String!, $profile: JSON!) {

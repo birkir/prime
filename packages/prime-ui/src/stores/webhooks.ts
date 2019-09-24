@@ -1,4 +1,4 @@
-import { destroy, flow, types } from 'mobx-state-tree';
+import { destroy, flow, types, Instance } from 'mobx-state-tree';
 import { client } from '../utils/client';
 import { Webhook } from './models/Webhook';
 import { CREATE_WEBHOOK, REMOVE_WEBHOOK } from './mutations';
@@ -19,7 +19,7 @@ export const Webhooks = types
     },
   }))
   .actions(self => {
-    const loadAll = flow(function*(clear = true) {
+    const loadAll = flow(function*(clear = true): Generator<Promise<any>, void, any> {
       self.loading = true;
 
       if (clear) {
@@ -42,7 +42,9 @@ export const Webhooks = types
       self.loading = false;
     });
 
-    const create = flow(function*(input: any) {
+    const create = flow(function*(
+      input: any
+    ): Generator<Promise<any>, Instance<typeof Webhook> | void, any> {
       const { data } = yield client.mutate({
         mutation: CREATE_WEBHOOK,
         variables: {
@@ -56,7 +58,7 @@ export const Webhooks = types
       }
     });
 
-    const remove = flow(function*(webhook: any) {
+    const remove = flow(function*(webhook: any): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: REMOVE_WEBHOOK,
         variables: { id: webhook.id },

@@ -23,9 +23,7 @@
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "yarn testonly --coverage",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "coverage": "yarn testonly --coverage"
   },
   "jest": {
     "preset": "ts-jest"
@@ -36,17 +34,14 @@
   },
   "dependencies": {
     "@primecms/field": "^0.3.4-beta.1",
-    "antd": "3.19.2",
-    "graphql": "^14.1.1",
-    "react": "^16.8.0-alpha.1",
-    "react-dom": "^16.8.0-alpha.1",
-    "snyk": "^1.189.0"
+    "antd": "^3.23.0",
+    "graphql": "^14.5.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "devDependencies": {
-    "@types/graphql": "14.2.3",
-    "ts-loader": "5.4.5",
-    "webpack-cli": "3.2.3"
+    "ts-loader": "^6.0.0",
+    "webpack-cli": "^3.3.0"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
-  "snyk": true
+  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
 }

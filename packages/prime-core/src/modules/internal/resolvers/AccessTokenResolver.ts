@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { GraphQLResolveInfo } from 'graphql';
-import Hashids from 'hashids';
+import Hashids from 'hashids/cjs';
 import { Arg, Args, Ctx, ID, Info, Mutation, Query, Resolver } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { EntityConnection } from 'typeorm-cursor-connection';

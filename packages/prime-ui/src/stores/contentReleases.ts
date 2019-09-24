@@ -26,7 +26,7 @@ export const ContentReleases = types
       destroy(item);
     };
 
-    const loadAll = flow(function*(clear = true) {
+    const loadAll = flow(function*(clear = true): Generator<Promise<any>, void, any> {
       self.loading = true;
 
       if (clear) {

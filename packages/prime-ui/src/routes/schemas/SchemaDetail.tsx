@@ -82,11 +82,11 @@ export class SchemaDetail extends React.Component<IProps> {
 
   public async load() {
     this.loading = true;
-    const contentType = await ContentTypes.loadById(this.props.match.params.id);
+    const contentType: any = await ContentTypes.loadById(this.props.match.params.id);
 
     if (contentType) {
       this.contentType = clone(contentType);
-      this.selectedGroup = this.contentType.groups[0] || DEFAULT_GROUP_TITLE;
+      this.selectedGroup = this.contentType!.groups[0] || DEFAULT_GROUP_TITLE;
       const { data } = await client.query({ query: ALL_FIELDS });
       this.availableFields = (data as any).allFields;
       this.detectChanges();

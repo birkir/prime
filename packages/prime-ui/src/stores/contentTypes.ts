@@ -21,7 +21,9 @@ export const ContentTypes = types
     },
   }))
   .actions(self => {
-    const loadByName = flow(function*(name: string) {
+    const loadByName = flow(function*(
+      name: string
+    ): Generator<Promise<any>, Instance<typeof ContentType> | void, any> {
       let item;
       const entries = Array.from(self.items.values());
       const entry = entries.find(n => n.name.toLocaleLowerCase() === name.toLocaleLowerCase());
@@ -48,7 +50,9 @@ export const ContentTypes = types
       return item;
     });
 
-    const loadById = flow(function*(id: string) {
+    const loadById = flow(function*(
+      id: string
+    ): Generator<Promise<any>, Instance<typeof ContentType> | undefined, any> {
       let item;
       const { data } = yield client.query({
         query: CONTENT_TYPE_BY_ID,
@@ -69,7 +73,7 @@ export const ContentTypes = types
       return item;
     });
 
-    const loadAll = flow(function*() {
+    const loadAll = flow(function*(): Generator<Promise<any>, void, any> {
       if (self.loading) {
         yield new Promise(resolve => {
           when(() => self.loading === false, resolve);
@@ -100,7 +104,9 @@ export const ContentTypes = types
       self.loading = false;
     });
 
-    const create = flow(function*(input: any) {
+    const create = flow(function*(
+      input: any
+    ): Generator<Promise<any>, Instance<typeof ContentType> | void, any> {
       try {
         const { data } = yield client.mutate({
           mutation: CREATE_CONTENT_TYPE,

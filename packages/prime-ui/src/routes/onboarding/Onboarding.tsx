@@ -34,7 +34,9 @@ export class OnboardingBase extends React.Component<FormComponentProps> {
                   </p>
                 </div>
               ),
-              onOk() {},
+              onOk() {
+                // noop
+              },
             });
             return;
           }

@@ -97,7 +97,7 @@ export const ContentEntry = types
       releaseId?: string;
       locale?: string;
     }) {
-      const res = yield client.mutate({
+      const res: any = yield client.mutate({
         mutation: UPDATE_CONTENT_ENTRY,
         variables: {
           id: self.id,
@@ -111,7 +111,7 @@ export const ContentEntry = types
       }
     });
 
-    const publish = flow(function*() {
+    const publish = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: PUBLISH_CONTENT_ENTRY,
         variables: {
@@ -123,7 +123,7 @@ export const ContentEntry = types
       }
     });
 
-    const unpublish = flow(function*() {
+    const unpublish = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: UNPUBLISH_CONTENT_ENTRY,
         variables: {
