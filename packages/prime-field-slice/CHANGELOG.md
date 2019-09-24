@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/compare/v0.3.4-beta.1...v0.4.0-beta.0) (2019-09-24)
+
+### Bug Fixes
+
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/commit/b560249))
+- packages/prime-field-slice/.snyk & packages/prime-field-slice/package.json to reduce vulnerabilities ([#253](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/issues/253)) ([6565f93](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/commit/6565f93))
+- packages/prime-field-slice/.snyk & packages/prime-field-slice/package.json to reduce vulnerabilities ([#257](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/issues/257)) ([8aadd67](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/commit/8aadd67))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-slice/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

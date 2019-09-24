@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/birkir/prime/compare/v0.3.4-beta.1...v0.4.0-beta.0) (2019-09-24)
+
+### Bug Fixes
+
+- add isomorphic-fetch to webhook ([#323](https://github.com/birkir/prime/issues/323)) ([9b58604](https://github.com/birkir/prime/commit/9b58604))
+- correct context ([6c6e715](https://github.com/birkir/prime/commit/6c6e715))
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/issues/271)) ([b560249](https://github.com/birkir/prime/commit/b560249))
+- moves profile prop inside meta prop ([#252](https://github.com/birkir/prime/issues/252)) ([a16f670](https://github.com/birkir/prime/commit/a16f670))
+- prevent multiple chained graphql queries from cobbling context ([#263](https://github.com/birkir/prime/issues/263)) ([c3a62b8](https://github.com/birkir/prime/commit/c3a62b8))
+- reload schema ([f28c6a2](https://github.com/birkir/prime/commit/f28c6a2))
+
+### Features
+
+- **query:** add possibility to filter query by subdocuments id ([#282](https://github.com/birkir/prime/issues/282)) ([783ee1b](https://github.com/birkir/prime/commit/783ee1b))
+- query string field with IN ([#195](https://github.com/birkir/prime/issues/195)) ([0b0e76c](https://github.com/birkir/prime/commit/0b0e76c))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

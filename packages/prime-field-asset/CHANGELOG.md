@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/birkir/prime/tree/master/packages/prime-field-asset/compare/v0.3.4-beta.1...v0.4.0-beta.0) (2019-09-24)
+
+### Bug Fixes
+
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-asset/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-asset/commit/b560249))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-asset/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

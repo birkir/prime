@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/birkir/prime/compare/v0.3.4-beta.1...v0.4.0-beta.0) (2019-09-24)
+
+### Bug Fixes
+
+- add an empty array fallback for fields with multiple documents type ([#300](https://github.com/birkir/prime/issues/300)) ([63fad25](https://github.com/birkir/prime/commit/63fad25))
+- add isomorphic-fetch to webhook ([#323](https://github.com/birkir/prime/issues/323)) ([9b58604](https://github.com/birkir/prime/commit/9b58604))
+- allow document selector to be cleared ([#274](https://github.com/birkir/prime/issues/274)) ([f44ae0e](https://github.com/birkir/prime/commit/f44ae0e))
+- correct context ([6c6e715](https://github.com/birkir/prime/commit/6c6e715))
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/issues/271)) ([b560249](https://github.com/birkir/prime/commit/b560249))
+- moves profile prop inside meta prop ([#252](https://github.com/birkir/prime/issues/252)) ([a16f670](https://github.com/birkir/prime/commit/a16f670))
+- packages/prime-field-boolean/.snyk & packages/prime-field-boolean/package.json to reduce vulnerabilities ([#255](https://github.com/birkir/prime/issues/255)) ([29a1f9a](https://github.com/birkir/prime/commit/29a1f9a))
+- packages/prime-field-boolean/.snyk & packages/prime-field-boolean/package.json to reduce vulnerabilities ([#260](https://github.com/birkir/prime/issues/260)) ([16ccdf6](https://github.com/birkir/prime/commit/16ccdf6))
+- packages/prime-field-document/.snyk & packages/prime-field-document/package.json to reduce vulnerabilities ([#256](https://github.com/birkir/prime/issues/256)) ([7a6b090](https://github.com/birkir/prime/commit/7a6b090))
+- packages/prime-field-number/.snyk & packages/prime-field-number/package.json to reduce vulnerabilities ([#254](https://github.com/birkir/prime/issues/254)) ([14383f8](https://github.com/birkir/prime/commit/14383f8))
+- packages/prime-field-number/.snyk & packages/prime-field-number/package.json to reduce vulnerabilities ([#258](https://github.com/birkir/prime/issues/258)) ([54b1bdf](https://github.com/birkir/prime/commit/54b1bdf))
+- packages/prime-field-number/.snyk & packages/prime-field-number/package.json to reduce vulnerabilities ([#259](https://github.com/birkir/prime/issues/259)) ([777861a](https://github.com/birkir/prime/commit/777861a))
+- packages/prime-field-slice/.snyk & packages/prime-field-slice/package.json to reduce vulnerabilities ([#253](https://github.com/birkir/prime/issues/253)) ([6565f93](https://github.com/birkir/prime/commit/6565f93))
+- packages/prime-field-slice/.snyk & packages/prime-field-slice/package.json to reduce vulnerabilities ([#257](https://github.com/birkir/prime/issues/257)) ([8aadd67](https://github.com/birkir/prime/commit/8aadd67))
+- packages/prime-field-string/package.json to reduce vulnerabilities ([#306](https://github.com/birkir/prime/issues/306)) ([5512199](https://github.com/birkir/prime/commit/5512199))
+- prevent multiple chained graphql queries from cobbling context ([#263](https://github.com/birkir/prime/issues/263)) ([c3a62b8](https://github.com/birkir/prime/commit/c3a62b8))
+- reload schema ([f28c6a2](https://github.com/birkir/prime/commit/f28c6a2))
+
+### Features
+
+- **query:** add possibility to filter query by subdocuments id ([#282](https://github.com/birkir/prime/issues/282)) ([783ee1b](https://github.com/birkir/prime/commit/783ee1b))
+- query string field with IN ([#195](https://github.com/birkir/prime/issues/195)) ([0b0e76c](https://github.com/birkir/prime/commit/0b0e76c))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

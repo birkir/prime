@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0-beta.0](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/compare/v0.3.4-beta.1...v0.4.0-beta.0) (2019-09-24)
+
+### Bug Fixes
+
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/commit/b560249))
+- packages/prime-field-boolean/.snyk & packages/prime-field-boolean/package.json to reduce vulnerabilities ([#255](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/issues/255)) ([29a1f9a](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/commit/29a1f9a))
+- packages/prime-field-boolean/.snyk & packages/prime-field-boolean/package.json to reduce vulnerabilities ([#260](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/issues/260)) ([16ccdf6](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/commit/16ccdf6))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-boolean/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes
