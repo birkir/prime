@@ -225,10 +225,10 @@ export const createExternal = async (connection: Connection) => {
       container.set('context', ctx);
       return ctx;
     },
-    // logger: {
-    //   clientError: () => null,
-    //   log,
-    //   error: log,
-    // },
+    logger: {
+      clientError: () => null,
+      log,
+      error: log,
+    },
   });
 };
