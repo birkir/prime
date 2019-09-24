@@ -3,22 +3,25 @@ import { UseMiddleware } from 'type-graphql';
 import { Context } from '../../../interfaces/Context';
 
 export function Authorized(ruleFn?: any) {
-  return UseMiddleware(async ({ args, context }: { args: any; context: Context }, next) => {
-    if (!context.user) {
-      throw new AuthenticationError('Must be authenticated');
-    }
+  return UseMiddleware(
+    async ({ args, context, info }: { args: any; context: Context; info: any }, next) => {
+      const { session = {} } = info || {};
+      if (!context.user && !session.user) {
+        throw new AuthenticationError('Must be authenticated');
+      }
 
-    if (ruleFn) {
-      ruleFn(
-        {
-          can: (action: string, subject: any, field?: string) => {
-            context.ability.throwUnlessCan(action, subject, field);
+      if (ruleFn) {
+        ruleFn(
+          {
+            can: (action: string, subject: any, field?: string) => {
+              context.ability.throwUnlessCan(action, subject, field);
+            },
           },
-        },
-        args
-      );
-    }
+          args
+        );
+      }
 
-    return next();
-  });
+      return next();
+    }
+  );
 }

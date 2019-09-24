@@ -54,7 +54,7 @@
     "@primecms/field-slice": "^0.3.4-beta.1",
     "@primecms/field-string": "^0.3.4-beta.1",
     "apollo-server-express": "^2.9.3",
-    "class-validator": "^0.9.0",
+    "class-validator": "0.9.1",
     "cors": "^2.8.0",
     "dataloader": "^1.4.0",
     "debug": "^4.0.0",

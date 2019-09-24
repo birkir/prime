@@ -54,6 +54,7 @@ export const createInternal = async (connection: Connection) => {
       const ctx = {
         requestId,
         container,
+        user: ((session || {}) as any).user,
         ability: createAbility(currentContext),
       };
 
