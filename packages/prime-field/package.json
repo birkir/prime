@@ -43,10 +43,10 @@
     "base"
   ],
   "dependencies": {
-    "antd": "3.19.2",
-    "graphql": "^14.1.1",
-    "lodash": "^4.17.11",
-    "react": "^16.8.0-alpha.1"
+    "antd": "^3.23.0",
+    "graphql": "^14.1.0",
+    "lodash": "^4.17.0",
+    "react": "^16.9.0"
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
 }

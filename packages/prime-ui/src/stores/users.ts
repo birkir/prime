@@ -16,7 +16,7 @@ export const Users = types
     },
   }))
   .actions(self => {
-    const loadAll = flow(function*(clear = true) {
+    const loadAll = flow(function*(clear = true): Generator<Promise<any>, void, any> {
       self.loading = true;
 
       if (clear) {

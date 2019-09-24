@@ -1,7 +1,7 @@
-import hashids from 'hashids';
+import Hashids from 'hashids/cjs';
 import { Repository } from 'typeorm';
 
-const hashid = new hashids(process.env.HASHID_SALT || 'SaltingTheHash', 10);
+const hashid = new Hashids(process.env.HASHID_SALT || 'SaltingTheHash', 10);
 
 export const getUniqueHashId = async (repository: Repository<any>, fieldName: string = 'id') => {
   const id = hashid.encode(Date.now());

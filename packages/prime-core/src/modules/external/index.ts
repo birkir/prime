@@ -200,7 +200,8 @@ export const createExternal = async (connection: Connection) => {
     name: 'prime-graphql',
     extraSchemas: [graphqlSchema],
     resolvers: unionResolvers,
-    async context({ req }) {
+    async context(session, currentContext) {
+      const { req } = session;
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       log('requestId', requestId);
       const container = Container.of(requestId);
@@ -224,10 +225,10 @@ export const createExternal = async (connection: Connection) => {
       container.set('context', ctx);
       return ctx;
     },
-    // logger: {
-    //   clientError: () => null,
-    //   log,
-    //   error: log,
-    // },
+    logger: {
+      clientError: () => null,
+      log,
+      error: log,
+    },
   });
 };

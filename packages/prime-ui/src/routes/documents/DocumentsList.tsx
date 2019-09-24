@@ -149,7 +149,7 @@ export const DocumentsList = ({ match, history }: any) => {
         sort: 'updatedAt_DESC',
       }}
     >
-      {({ loading, error, data, refetch }: any) => {
+      {({ error, data, refetch }: any): any => {
         if (error) {
           return `Error! ${error.message}`;
         }

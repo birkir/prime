@@ -47,7 +47,7 @@ export const ContentType = types
     };
   })
   .actions(self => {
-    const loadSchema = flow(function*() {
+    const loadSchema = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.query({
         query: LOAD_SCHEMA,
         variables: { contentTypeId: self.id },
@@ -60,7 +60,7 @@ export const ContentType = types
       }
     });
 
-    const saveSchema = flow(function*() {
+    const saveSchema = flow(function*(): Generator<any> {
       const result = yield client.mutate({
         mutation: UPDATE_CONTENT_TYPE,
         variables: {
@@ -88,7 +88,7 @@ export const ContentType = types
       }
     };
 
-    const update = flow(function*(input: any) {
+    const update = flow(function*(input: any): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: UPDATE_CONTENT_TYPE,
         variables: {
@@ -103,7 +103,7 @@ export const ContentType = types
       Settings.reloadPlayground();
     });
 
-    const remove = flow(function*() {
+    const remove = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: REMOVE_CONTENT_TYPE,
         variables: {

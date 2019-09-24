@@ -82,7 +82,7 @@ export const Settings = types
     },
   }))
   .actions(self => {
-    const read = flow(function*() {
+    const read = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.query({
         query: gql`
           query {
@@ -122,7 +122,7 @@ export const Settings = types
       }
     });
 
-    const readVersion = flow(function*() {
+    const readVersion = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.query({
         query: gql`
           query {
@@ -185,7 +185,7 @@ export const Settings = types
       node.setMaster(true);
     };
 
-    const save = flow(function*() {
+    const save = flow(function*(): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: gql`
           mutation setSettings($input: SettingsInput!) {

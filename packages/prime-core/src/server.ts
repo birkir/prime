@@ -47,6 +47,9 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
     external = await createExternal(connection);
     externalServer.schema = external.schema;
     externalServer.context = external.context;
+    externalServer.schemaDerivedData = externalServer.generateSchemaDerivedData(
+      externalServer.schema
+    );
 
     if (config.sofaApi) {
       app.use(

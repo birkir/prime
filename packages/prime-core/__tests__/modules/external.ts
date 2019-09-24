@@ -20,11 +20,9 @@ describe('InternalModule', () => {
   const context: any = { req: { headers: {} } };
 
   const query = async (document, which = external, ctx = context) => {
-    const contextValue = await which.context(ctx);
-    contextValue.user = user;
     return execute({
       schema: which.schema,
-      contextValue,
+      contextValue: { user },
       document,
     });
   };

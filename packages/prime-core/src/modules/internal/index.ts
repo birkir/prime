@@ -48,13 +48,17 @@ export const createInternal = async (connection: Connection) => {
     resolvers: () =>
       mapValues(omitBy(schema.resolvers, noEnumsOrInheritedModels), noUndefinedTypeOf),
     async context(session, currentContext) {
+      const accountsCtx = await accounts.context(session, currentContext);
+
       const requestId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       const container = Container.of(requestId);
 
       const ctx = {
         requestId,
         container,
-        ability: createAbility(currentContext),
+        user: ((session || {}) as any).user,
+        ability: createAbility(currentContext as any),
+        ...accountsCtx,
       };
 
       container.set('context', ctx);

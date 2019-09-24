@@ -25,7 +25,7 @@ export const Webhook = types
     updatedAt: snapshot.updatedAt ? new Date(snapshot.updatedAt) : null,
   }))
   .actions(self => {
-    const update = flow(function*(input: any) {
+    const update = flow(function*(input: any): Generator<Promise<any>, void, any> {
       const { data } = yield client.mutate({
         mutation: UPDATE_WEBHOOK,
         variables: { id: self.id, input },

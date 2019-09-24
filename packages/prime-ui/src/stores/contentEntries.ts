@@ -12,7 +12,7 @@ export const ContentEntries = types
     error: false,
   })
   .actions(self => {
-    const loadByContentType = flow(function*(contentTypeId: string) {
+    const loadByContentType = flow(function*(contentTypeId: string): any {
       const { data } = yield client.query({
         query: CONTENT_ENTRIES_BY_CONTENT_TYPE,
         variables: {
@@ -22,7 +22,7 @@ export const ContentEntries = types
       return data.allDocuments.edges.map(({ node }: any) => ContentEntry.create({ ...node }));
     });
 
-    const loadById = flow(function*(entryId: string, locale: string, release?: string) {
+    const loadById = flow(function*(entryId: string, locale: string, release?: string): any {
       self.loading = true;
       const id = [entryId, locale, release].join(':');
 
@@ -60,8 +60,8 @@ export const ContentEntries = types
       locale: string;
       releaseId?: string;
       documentId?: string;
-    }) {
-      const res = yield client.mutate({
+    }): any {
+      const res: any = yield client.mutate({
         mutation: CREATE_CONTENT_ENTRY,
         variables: {
           input: {
@@ -73,6 +73,7 @@ export const ContentEntries = types
           },
         },
       });
+
       if (res.data) {
         const entry = res.data.createDocument;
         const item = ContentEntry.create({
@@ -86,6 +87,7 @@ export const ContentEntries = types
         self.items.put(item);
         return item;
       }
+
       return null;
     });
 

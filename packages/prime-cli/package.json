@@ -43,14 +43,14 @@
     "ink"
   ],
   "dependencies": {
-    "cli-spinners": "1.3.1",
-    "copy-template-dir": "1.4.0",
-    "ink": "2.0.0-11",
-    "ink-text-input": "3.0.0-0",
-    "lodash": "4.17.11",
-    "meow": "5.0.0",
-    "pkg-up": "2.0.0",
-    "react": "16.8.1"
+    "cli-spinners": "^1.3.0",
+    "copy-template-dir": "^1.4.0",
+    "ink": "^2.0.0",
+    "ink-text-input": "^3.0.0",
+    "lodash": "^4.17.0",
+    "meow": "^5.0.0",
+    "pkg-up": "^2.0.0",
+    "react": "^16.9.0"
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
 }

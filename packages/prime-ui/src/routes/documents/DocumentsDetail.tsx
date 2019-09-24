@@ -102,7 +102,7 @@ export class DocumentsDetail extends React.Component<IProps> {
     const { options, locale } = this;
 
     if (options.type) {
-      this.contentType = await ContentTypes.loadByName(options.type);
+      this.contentType = (await ContentTypes.loadByName(options.type)) as any;
       if (this.contentType) {
         this.forceUpdate();
       }
@@ -116,14 +116,14 @@ export class DocumentsDetail extends React.Component<IProps> {
       const loadDocTimer = setTimeout(() => {
         this.loading.document = true;
       }, 125);
-      this.contentEntry = await ContentEntries.loadById(
+      this.contentEntry = (await ContentEntries.loadById(
         options.entryId,
         locale.id,
         options.release
-      );
+      )) as Instance<typeof ContentEntry>;
       clearTimeout(loadDocTimer);
       if (this.contentEntry && !options.type) {
-        this.contentType = await ContentTypes.loadById(this.contentEntry.schemaId);
+        this.contentType = (await ContentTypes.loadById(this.contentEntry.schemaId)) as any;
         if (this.contentType) {
           this.options.type = this.contentType.name.toLocaleLowerCase();
         }
@@ -198,13 +198,13 @@ export class DocumentsDetail extends React.Component<IProps> {
               resolve();
             } else if (this.contentType) {
               try {
-                this.contentEntry = await ContentEntries.create({
+                this.contentEntry = (await ContentEntries.create({
                   schemaId: this.contentType.id,
                   data: parsed,
                   locale: this.locale.id,
                   releaseId,
                   documentId,
-                });
+                })) as Instance<typeof ContentEntry>;
                 if (this.contentEntry) {
                   this.props.history.replace(
                     `/documents/doc/${this.contentEntry.documentId}/${this.opts()}`
