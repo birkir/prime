@@ -82,12 +82,12 @@
     "which-pm": "^2.0.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.5",
-    "@types/lodash": "^4.14.0",
-    "@types/rc": "^1.1.0",
-    "cross-env": "^6.0.0",
-    "ts-node": "^8.4.0",
-    "ts-node-dev": "^1.0.0-pre.42"
+    "@types/debug": "4.1.5",
+    "@types/lodash": "4.14.139",
+    "@types/rc": "1.1.0",
+    "cross-env": "6.0.0",
+    "ts-node": "8.4.1",
+    "ts-node-dev": "1.0.0-pre.43"
   },
   "publishConfig": {
     "access": "public"
