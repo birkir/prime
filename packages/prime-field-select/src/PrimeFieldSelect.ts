@@ -67,7 +67,7 @@ export class PrimeFieldSelect extends PrimeField {
           return root[info.fieldName];
         }
 
-        return value.value;
+        return [value.value];
       },
     };
   }
