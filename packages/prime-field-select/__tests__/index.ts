@@ -35,9 +35,9 @@ describe('PrimeFieldSelect', () => {
     expect((await test.whereType(context))!.toString()).toEqual('Example_Arigato_Where');
   });
 
-  it('should resolve', async () => {
+  it('should resolve & expect iterable value', async () => {
     const { resolve } = await test.outputType(context)!;
-    expect(resolve({ a: 'foo' }, {}, {}, { fieldName: 'a' })).toEqual('Foo');
+    expect(resolve({ a: 'foo' }, {}, {}, { fieldName: 'a' })).toEqual(['Foo']);
     expect(resolve({}, {}, {}, { fieldName: 'a' })).toBeFalsy();
   });
 
