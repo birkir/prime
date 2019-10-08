@@ -72,13 +72,9 @@ export class PrimeFieldSlice extends PrimeField {
       resolveType,
     });
 
-    if (this.options.multiple) {
-      return {
-        type: new GraphQLList(SlicesUnionType),
-      };
-    }
-
-    return { type: SlicesUnionType };
+    return {
+      type: new GraphQLList(SlicesUnionType),
+    };
   }
 
   public inputType(

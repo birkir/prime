@@ -95,7 +95,11 @@ export class DocumentTransformer {
       }
 
       if (field.type === 'slice') {
-        if (options.multiple && Array.isArray(value)) {
+        if (!options.multiple && Array.isArray(value)) {
+          value = [value.shift()];
+        }
+
+        if (Array.isArray(value)) {
           value = (await Promise.all(
             value.map(async item => {
               const sfields = await this.getFields({ id: item.__inputname } as any);
