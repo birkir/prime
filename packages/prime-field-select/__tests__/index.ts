@@ -1,3 +1,4 @@
+import * as graphql from 'graphql';
 import PrimeFieldSelect from '../src';
 
 describe('PrimeFieldSelect', () => {
@@ -39,6 +40,11 @@ describe('PrimeFieldSelect', () => {
     const { resolve } = await test.outputType(context)!;
     expect(resolve({ a: 'foo' }, {}, {}, { fieldName: 'a' })).toEqual(['Foo']);
     expect(resolve({}, {}, {}, { fieldName: 'a' })).toBeFalsy();
+  });
+
+  it('should have list output type', async () => {
+    const { type } = await test.outputType(context)!;
+    expect(type).toMatchObject(new graphql.GraphQLList(graphql.GraphQLString));
   });
 
   it('should have input type', async () => {
