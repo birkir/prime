@@ -3,6 +3,7 @@ import PrimeFieldSelect from '../src';
 
 describe('PrimeFieldSelect', () => {
   let test: PrimeFieldSelect;
+
   const schema = { name: 'Example' };
   const items = [{ key: 'foo', value: 'Foo' }, { key: 'bar', value: 'Bar' }];
   const field = {
