@@ -2631,10 +2631,10 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
-"@types/draft-js@0.10.36":
-  version "0.10.36"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.36.tgz#0470f54f58480b93ce05f5ad409837883d2c2c9c"
-  integrity sha512-BBmmQFyDrimi0xNDWI51lx87hc11gotG9+AZUgjbObiW4lQ+ODSvrlDf+LWjkgCquNKmnGPBfRbRXvxpQ7PVmg==
+"@types/draft-js@0.10.37":
+  version "0.10.37"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.37.tgz#41f3ddc64eb90d2ee7af73911c3f85e370aebdf1"
+  integrity sha512-hoAMn1DoCsNDyMILu6c3En84CHBAfycyiSqwOfO3pR+bcJ2xoa61KANGYWE7JJhKB4q0kunM+aFiBLRWWLDhxA==
   dependencies:
     "@types/react" "*"
     immutable "~3.7.4"
