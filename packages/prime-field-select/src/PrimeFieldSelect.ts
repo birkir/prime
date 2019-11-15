@@ -49,7 +49,7 @@ export class PrimeFieldSelect extends PrimeField {
   }
 
   public outputType(context: PrimeFieldContext) {
-    const { enum: enumeration, multiple } = this.options;
+    const { enum: enumeration } = this.options;
     this.ensureEnumType(context);
 
     if (this.EnumType.getValues().length === 0) {
@@ -59,7 +59,7 @@ export class PrimeFieldSelect extends PrimeField {
     const OutputType = enumeration ? this.EnumType : GraphQLString;
 
     return {
-      type: multiple ? new GraphQLList(OutputType) : OutputType,
+      type: new GraphQLList(OutputType),
       resolve: (root, args, ctx, info) => {
         const value = get(this.values, root[info.fieldName], null);
 
