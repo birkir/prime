@@ -107,7 +107,7 @@ export class DocumentTransformer {
               }
               return {};
             })
-          )).filter(item => Object.keys(item).length > 0);
+          )).filter(item => Object.keys(item as object).length > 0);
         } else {
           const sfields = await this.getFields({ id: value.__inputname } as any);
           value = await this.transform(sfields, value, schema, io, Types.SLICE);
