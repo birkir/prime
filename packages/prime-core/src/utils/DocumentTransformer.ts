@@ -96,6 +96,9 @@ export class DocumentTransformer {
 
       if (field.type === 'slice') {
         if (options.multiple && Array.isArray(value)) {
+          value = value.sort((a: any, b: any): number => {
+            return a.__index - b.__index;
+          });
           value = (await Promise.all(
             value.map(async item => {
               const sfields = await this.getFields({ id: item.__inputname } as any);
@@ -104,7 +107,7 @@ export class DocumentTransformer {
               }
               return {};
             })
-          )).filter(item => Object.keys(item).length > 0);
+          )).filter(item => Object.keys(item as object).length > 0);
         } else {
           const sfields = await this.getFields({ id: value.__inputname } as any);
           value = await this.transform(sfields, value, schema, io, Types.SLICE);
