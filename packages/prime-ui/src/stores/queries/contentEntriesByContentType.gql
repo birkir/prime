@@ -9,7 +9,6 @@ query contentEntriesByContentType($contentTypeId: ID) {
         releaseId
         locale
         primary
-        data
         createdAt
         updatedAt
         publishedAt
