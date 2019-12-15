@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server-express';
+import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import { buildSchema } from 'graphql';
@@ -32,6 +33,8 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
       origin: true,
     })
   );
+
+  app.use(compression());
 
   const externalServer: any = new ApolloServer({
     introspection: true,

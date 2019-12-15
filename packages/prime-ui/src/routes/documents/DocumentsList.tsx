@@ -66,7 +66,6 @@ const GET_CONTENT_ENTRIES = gql`
           locale
           publishedAt
           updatedAt
-          data
           primary
           schemaId
           userId
@@ -80,7 +79,7 @@ const GET_CONTENT_ENTRIES = gql`
   }
 `;
 
-const PER_PAGE = 30;
+const PER_PAGE = 50;
 
 export const DocumentsList = ({ match, history }: any) => {
   const options: IOptions = String(match.params.options)
@@ -388,11 +387,10 @@ export const DocumentsList = ({ match, history }: any) => {
                   onRow={record => ({
                     onClick: () => {
                       const schema = ContentTypes.items.get(record.schemaId);
-                      history.push(
-                        `/documents/doc/${record.documentId}/${opts({
-                          type: schema!.name.toLowerCase(),
-                        })}`
-                      );
+                      const url = `/documents/doc/${record.documentId}/${opts({
+                        type: schema!.name.toLowerCase(),
+                      })}`;
+                      window.open(url);
                     },
                   })}
                 />

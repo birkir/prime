@@ -13,6 +13,7 @@ yarn-error.log
 .idea
 .vscode
 .cache
+.nvmrc
 
 packages/*/package-lock.json
 packages/*/*.tgz

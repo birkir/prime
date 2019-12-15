@@ -5,7 +5,7 @@ import { AccountsTypeorm } from '@accounts/typeorm';
 import Mailgun from 'mailgun-js';
 import { Connection } from 'typeorm';
 
-const { MAILGUN_API_KEY, MAILGUN_DOMAIN, ACCOUNTS_SECRET } = process.env;
+const { MAILGUN_API_KEY, MAILGUN_DOMAIN, ACCOUNTS_SECRET, CORE_URL } = process.env;
 
 let mailgun;
 
@@ -33,7 +33,7 @@ export const createAccounts = async (connection: Connection) => {
     {
       db,
       tokenSecret,
-      siteUrl: 'http://localhost:3000',
+      siteUrl: CORE_URL,
       sendMail(mail) {
         if (mailgun) {
           return mailgun.messages().send(mail);
