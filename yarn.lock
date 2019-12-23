@@ -1110,12 +1110,12 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@casl/ability@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-3.3.0.tgz#112d9c0028db9f7f3bcc78718eecb75c3a659885"
-  integrity sha512-+BxRsYHoclMwwCCSBATwkJce9gnuF/1GGoondVvDanG4JeGIVeZkVEoI/b5cyAqwhOVbyV7X468/Q1yb8/8NTA==
+"@casl/ability@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@casl/ability/-/ability-3.4.0.tgz#06c9f2df0bbb257b3deecb05885e731420cca780"
+  integrity sha512-aJodlkXamBRNnb25m0xuibU6StiyWZzz7EFivqLKO5kmfLDAwrIklysa1w4K/Exi1mRt+lfOp7pSb4QtuAXx+A==
   dependencies:
-    sift "^9.0.1"
+    sift "^9.0.4"
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
@@ -17089,7 +17089,7 @@ shellwords@^0.1.1:
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
 
-sift@^9.0.1:
+sift@^9.0.4:
   version "9.0.4"
   resolved "https://registry.yarnpkg.com/sift/-/sift-9.0.4.tgz#9f0767230cc7d156684cd152a3f0cc7389d15a08"
   integrity sha512-mXYg5X7rMxBRG7CTOKVigbKMUzidLy2T95LwsYKTqn+BfYFxBzdyrMhKWWwiEcJViVZr2TiI6JyaSlNUVsGUfQ==
