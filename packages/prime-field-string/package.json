@@ -44,7 +44,7 @@
     "react-dom": "^16.9.0"
   },
   "devDependencies": {
-    "@types/draft-js": "0.10.37",
+    "@types/draft-js": "0.10.38",
     "ts-loader": "6.1.2",
     "webpack-cli": "3.3.9"
   },
