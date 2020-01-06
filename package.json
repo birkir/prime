@@ -67,8 +67,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "8.2.0",
-    "@commitlint/config-conventional": "8.2.0",
+    "@commitlint/cli": "8.3.4",
+    "@commitlint/config-conventional": "8.3.4",
     "@types/node": "10.17.13",
     "@types/react": "16.9.17",
     "codecov": "3.6.1",
