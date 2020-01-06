@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@types/draft-js": "0.10.38",
-    "ts-loader": "6.1.2",
+    "ts-loader": "6.2.1",
     "webpack-cli": "3.3.9"
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
