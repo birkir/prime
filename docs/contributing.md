@@ -18,7 +18,9 @@ All pull requests and issues are welcome
 
 - Install project dependencies: `yarn`
 - Link together all the packages: `yarn setup`
-- Watch the packages for changes and recompile: `yarn start`
+- Compile all the packages (**needed** once): `yarn compile`
+- Watch the **prime-core** and **prime-ui** packages for changes and recompile: `yarn start`
+- Reset the repository to a clean state and re-install everything: `yarn reset`
 
 ## Pull Requests
 
