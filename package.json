@@ -82,7 +82,7 @@
     "ts-jest": "24.2.0",
     "ts-node": "8.5.4",
     "ts-node-dev": "1.0.0-pre.44",
-    "tslint": "5.20.0",
+    "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
     "tslint-junit-formatter": "5.1.0",
     "typedoc": "0.15.0",
