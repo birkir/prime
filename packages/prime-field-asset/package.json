@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "ts-loader": "6.2.1",
-    "webpack-cli": "3.3.9"
+    "webpack-cli": "3.3.10"
   },
   "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
 }
