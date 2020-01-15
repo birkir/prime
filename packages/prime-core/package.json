@@ -76,7 +76,7 @@
     "sofa-api": "^0.5.0",
     "type-graphql": "^0.17.0",
     "typedi": "^0.8.0",
-    "typeorm": "^0.2.0",
+    "typeorm": "^0.2.21",
     "typeorm-cursor-connection": "^0.5.0",
     "typeorm-loader": "0.0.1-0.5",
     "typeorm-typedi-extensions": "^0.2.0",
