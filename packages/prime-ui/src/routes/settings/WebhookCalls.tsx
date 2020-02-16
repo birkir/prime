@@ -14,8 +14,8 @@ export const WebhookCalls = ({ match }: any) => (
       variables={{ id: match.params.webhookId }}
       fetchPolicy="network-only"
       query={gql`
-        query Webhook(id:ID!) {
-          Webhook(id:$id) {
+        query Webhook($id: ID!) {
+          Webhook(id: $id) {
             id
             calls {
               id
