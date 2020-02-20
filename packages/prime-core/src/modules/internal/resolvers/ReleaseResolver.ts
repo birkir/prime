@@ -16,6 +16,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { Document } from '../../../entities/Document';
 import { Release } from '../../../entities/Release';
 import { User } from '../../../entities/User';
+import { Context } from '../../../interfaces/Context';
 import { processWebhooks } from '../../../utils/processWebhooks';
 import { DocumentRepository } from '../repositories/DocumentRepository';
 import { ReleaseRepository } from '../repositories/ReleaseRepository';
@@ -24,7 +25,6 @@ import { ReleaseInput } from '../types/ReleaseInput';
 import { Authorized } from '../utils/Authorized';
 import { ExtendedConnection } from '../utils/ExtendedConnection';
 import { DocumentResolver } from './DocumentResolver';
-import { Context } from '../../../interfaces/Context';
 
 const ReleaseConnection = createConnectionType(Release);
 

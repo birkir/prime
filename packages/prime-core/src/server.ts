@@ -17,6 +17,7 @@ import { fields } from './utils/fields';
 import { log } from './utils/log';
 import { previewRoutes } from './utils/preview';
 import { pubSub } from './utils/pubSub';
+import { ReleaseCron } from './utils/releaseCron';
 import { serveUI } from './utils/serveUI';
 
 useContainer(Container);
@@ -111,6 +112,7 @@ export const createServer = async ({ port, connection }: ServerConfig) => {
 
   previewRoutes(app);
   serveUI(app);
+  ReleaseCron.run();
 
   return server.listen(port, () => {
     log(`🚀 Server ready at http://localhost:${port}${apollo.graphqlPath}`);
