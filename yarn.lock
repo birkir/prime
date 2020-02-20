@@ -82,21 +82,28 @@
     speakeasy "^2.0.0"
     tslib "1.10.0"
 
-"@accounts/typeorm@^0.19.0":
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/@accounts/typeorm/-/typeorm-0.19.0.tgz#043f896b4121d5f3a3fdeccd5874c7f899b47d5a"
-  integrity sha512-gYyTchFL1hL0bMlW5Ms2RDTFmp+Tha2BYGEM+anRqv0inZCG+vatDrdpn2fAXY94e5mvXpcLwYJiZ38tT6kpKg==
+"@accounts/typeorm@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@accounts/typeorm/-/typeorm-0.22.0.tgz#90ad1fb78668589fe2972fc93d669472c87552b1"
+  integrity sha512-oeNBebLL3lEv14dh1f7Kf+QlTXYlxriDTY0QX3DAJkX18l6FWgFOO4FTpiNT2mZ0C2zZ5kk4by+2ug0g2c/jbQ==
   dependencies:
-    "@accounts/types" "^0.19.0"
+    "@accounts/types" "^0.22.0"
     lodash "^4.17.15"
     reflect-metadata "^0.1.13"
     tslib "1.10.0"
-    typeorm "^0.2.17"
+    typeorm "^0.2.22"
 
 "@accounts/types@^0.19.0":
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/@accounts/types/-/types-0.19.0.tgz#283e5a236ad79e37a017ef843254ff6699ccbe78"
   integrity sha512-Su72qBZN2SpNrlC5yIFg/eyV18dEIDvfKyqmiPNlwFlIFAzNUoQCFr9i3+r/F5Zz3DFzvHb7dYFRCzFgtozPCg==
+  dependencies:
+    tslib "1.10.0"
+
+"@accounts/types@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@accounts/types/-/types-0.22.0.tgz#5b1bc49a0e9d97c6fd7bc0928d8d9a5e7321d20a"
+  integrity sha512-EwQSX2V7bjXJ810H/a+FhFgcViPYi0lVHNuqqU5Qal6tUcB0hvV3rfI7am1H1nv3MG3tjx/FAcBuQdbpoDGPiQ==
   dependencies:
     tslib "1.10.0"
 
@@ -3743,10 +3750,10 @@ apollo-utilities@^1.0.1, apollo-utilities@^1.3.0:
     ts-invariant "^0.4.0"
     tslib "^1.9.3"
 
-app-root-path@^2.0.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/app-root-path/-/app-root-path-2.2.1.tgz#d0df4a682ee408273583d43f6f79e9892624bc9a"
-  integrity sha512-91IFKeKk7FjfmezPKkwtaRvSpnUc4gDwPAjA1YZ9Gn0q0PPeW+vbeUsZuyDwjI7+QTHhcLen2v25fi/AmhvbJA==
+app-root-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/app-root-path/-/app-root-path-3.0.0.tgz#210b6f43873227e18a4b810a032283311555d5ad"
+  integrity sha512-qMcx+Gy2UZynHjOHOIXPNvpf+9cjvk3cWrBBK7zg4gH9+clobJRb9NGzcT7mQTcV/6Gm/1WelUtqxVXnNlrwcw==
 
 append-transform@^0.4.0:
   version "0.4.0"
@@ -18532,12 +18539,12 @@ typeorm-typedi-extensions@^0.2.0:
   resolved "https://registry.yarnpkg.com/typeorm-typedi-extensions/-/typeorm-typedi-extensions-0.2.3.tgz#94fca2656206d771bf6d2242f5aab570511188e8"
   integrity sha512-T9i1NvRZNjPn9Jb8oT772ihfn6PwdqDVpzPCtKSqjkZGOgXrCkdyD3dDrzfMaoWJ1afU58bVx2CMb95FzT42Ow==
 
-typeorm@^0.2.0, typeorm@^0.2.17:
-  version "0.2.19"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.19.tgz#a0cff0714180e5720df157df02c5759a1a646dc3"
-  integrity sha512-xKVx/W41zckQ7v8WYcpRhSKpjXDKG/Jgjy0RWvYelR8ZnfyblNRL12jF4P8tIhwXv6l5t01s7HEc9lR+zb6Gtg==
+typeorm@^0.2.21, typeorm@^0.2.22:
+  version "0.2.22"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.22.tgz#e85166e29ee4e4248ed73b2b8c977f364ffba606"
+  integrity sha512-mDEnMtzRwX4zMYbyzM9xDn7jvGs8hfQ2ymOBq36Zxq1RVM642numwlRbr4W8dU7ZYx8CQUE9rmk+sU0baHD9Rw==
   dependencies:
-    app-root-path "^2.0.1"
+    app-root-path "^3.0.0"
     buffer "^5.1.0"
     chalk "^2.4.2"
     cli-highlight "^2.0.0"
