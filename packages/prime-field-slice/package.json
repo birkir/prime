@@ -23,7 +23,9 @@
     "prepublishOnly": "yarn compile",
     "testonly": "jest --runInBand",
     "test:watch": "jest --watch",
-    "coverage": "yarn testonly --coverage"
+    "coverage": "yarn testonly --coverage",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "jest": {
     "preset": "ts-jest"
@@ -40,11 +42,13 @@
     "graphql-union-input-type": "^0.4.0",
     "lodash": "^4.17.0",
     "react": "^16.9.0",
-    "react-dom": "^16.9.0"
+    "react-dom": "^16.9.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "ts-loader": "6.2.1",
     "webpack-cli": "3.3.10"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c",
+  "snyk": true
 }
