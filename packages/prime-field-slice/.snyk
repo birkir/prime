@@ -1,0 +1,34 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > rc-form > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > rc-steps > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > rc-table > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > rc-tabs > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - antd > rc-editor-mention > rc-editor-core > lodash:
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > rc-form > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > rc-steps > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > rc-table > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > rc-tabs > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
+    - '@primecms/field > antd > rc-editor-mention > rc-editor-core > lodash':
+        patched: '2020-04-30T21:23:03.270Z'
