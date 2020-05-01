@@ -1,0 +1,38 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > rc-form > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > rc-steps > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > rc-table > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > rc-tabs > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - antd > rc-editor-mention > rc-editor-core > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > rc-form > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > rc-steps > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > rc-table > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > rc-tabs > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - '@primecms/field > antd > rc-editor-mention > rc-editor-core > lodash':
+        patched: '2020-05-01T08:27:53.413Z'
+    - react-easy-crop > @emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
+    - react-easy-crop > @emotion/core > @emotion/css > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T08:27:53.413Z'
