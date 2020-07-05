@@ -87,6 +87,6 @@
     "tslint-junit-formatter": "5.1.0",
     "typedoc": "0.16.4",
     "typedoc-plugin-lerna": "0.1.0",
-    "typescript": "3.7.4"
+    "typescript": "3.9.6"
   }
 }
