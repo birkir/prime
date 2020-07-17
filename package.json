@@ -9,17 +9,15 @@
     "link": "lerna exec -- yarn link",
     "unlink": "lerna exec -- yarn unlink",
     "clean": "lerna run clean && rimraf {.cache,node_modules,reports,packages/**/{node_modules,lib,build,coverage},yarn.lock}",
-    "compile": "lerna run compile",
+    "compile": "lerna run compile --stream",
     "lint": "tslint ./packages/*/{src,__tests__}/*.{ts,tsx}",
-    "lint:ci": "mkdir -p reports/junit && yarn lint --formatters-dir node_modules/tslint-junit-formatter/formatters --format junit -o ./reports/junit/tslint.xml",
     "publish": "lerna publish prerelease",
     "publish:canary": "lerna publish --canary",
-    "test": "yarn lint && yarn compile && yarn coverage && yarn test:prettier",
+    "test": "yarn lint && yarn test:prettier && yarn compile && yarn coverage",
     "testonly": "lerna run testonly",
-    "prettier": "prettier --write \"**/*.{json,md,js,jsx,ts,tsx}\"",
     "test:prettier": "prettier --list-different \"**/*.{json,md,js,jsx,ts,tsx}\"",
-    "coverage": "lerna run coverage",
-    "coverage:ci": "lerna run coverage -- --ci --reporters=default --reporters=jest-junit",
+    "prettier": "prettier --write \"**/*.{json,md,js,jsx,ts,tsx}\"",
+    "coverage": "yarn run jest --coverage --runInBand",
     "codecov": "codecov",
     "reset": "yarn clean && yarn install && yarn setup && yarn compile",
     "docs": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages"
@@ -46,6 +44,10 @@
       "git add"
     ]
   },
+  "resolutions": {
+    "typeorm": "0.2.25",
+    "class-validator": "0.10.1"
+  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5",
@@ -71,10 +73,9 @@
     "@commitlint/config-conventional": "8.3.4",
     "@types/node": "10.17.13",
     "@types/react": "16.9.17",
-    "codecov": "3.6.1",
+    "codecov": "3.6.5",
     "husky": "3.1.0",
     "jest": "24.9.0",
-    "jest-junit": "8.0.0",
     "lerna": "3.20.2",
     "lint-staged": "9.5.0",
     "prettier": "1.18.2",
@@ -84,7 +85,6 @@
     "ts-node-dev": "1.0.0-pre.44",
     "tslint": "5.20.1",
     "tslint-config-prettier": "1.18.0",
-    "tslint-junit-formatter": "5.1.0",
     "typedoc": "0.16.4",
     "typedoc-plugin-lerna": "0.1.0",
     "typescript": "3.7.4"

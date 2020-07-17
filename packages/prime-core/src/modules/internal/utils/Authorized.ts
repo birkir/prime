@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@casl/ability';
 import { AuthenticationError } from 'apollo-server-core';
 import { UseMiddleware } from 'type-graphql';
 import { Context } from '../../../interfaces/Context';
@@ -14,7 +15,7 @@ export function Authorized(ruleFn?: any) {
         ruleFn(
           {
             can: (action: string, subject: any, field?: string) => {
-              context.ability.throwUnlessCan(action, subject, field);
+              ForbiddenError.from(context.ability).throwUnlessCan(action, subject, field);
             },
           },
           args

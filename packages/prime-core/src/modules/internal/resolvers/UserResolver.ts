@@ -1,6 +1,7 @@
 import { AccountsModule } from '@accounts/graphql-api';
 import AccountsPassword from '@accounts/password';
 import { UserEmail } from '@accounts/typeorm';
+import { ForbiddenError } from '@casl/ability';
 import GraphQLJSON from 'graphql-type-json';
 import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Repository } from 'typeorm';
@@ -40,8 +41,8 @@ export class UserResolver {
   @Authorized()
   @Query(returns => User)
   public async getUser(@Ctx() context: Context) {
-    const user = await this.userRepository.findOneOrFail(context.user.id);
-    const meta = await user.meta();
+    const meta = await User.meta(context.user.id);
+
     return {
       ...context.user,
       meta,
@@ -60,7 +61,7 @@ export class UserResolver {
     });
     (result as any).resolveNode = async user => {
       user.emails = await this.userEmailRepository.find({ user });
-      const meta = await user.meta();
+      const meta = await User.meta(user.id);
       return {
         ...user,
         meta,
@@ -131,9 +132,9 @@ export class UserResolver {
     @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
-    const meta = await user.meta();
+    const meta = await User.meta(id);
     meta.profile = input.profile;
-    context.ability.throwUnlessCan('update', user);
+    ForbiddenError.from(context.ability).throwUnlessCan('update', user);
     await this.userRepository.save(user);
     await this.userMetaRepository.save(meta);
     processWebhooks('user.updated', { user });
@@ -147,7 +148,7 @@ export class UserResolver {
     @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
-    context.ability.throwUnlessCan('delete', user);
+    ForbiddenError.from(context.ability).throwUnlessCan('delete', user);
     await this.userRepository.remove(user);
     processWebhooks('user.removed', { user });
     return true;
@@ -171,7 +172,7 @@ export class UserResolver {
   }
 
   @FieldResolver(returns => UserMeta)
-  public async meta(@Root() user: User): Promise<UserMeta> {
-    return user.meta();
+  public meta(@Root() user: User): Promise<UserMeta> {
+    return User.meta(user.id);
   }
 }
