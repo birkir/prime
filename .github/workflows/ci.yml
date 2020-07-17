@@ -48,7 +48,7 @@ jobs:
       run: yarn run lerna bootstrap
 
     - name: Run code linting
-      run: yarn lint:ci
+      run: yarn lint
 
     - name: Run prettier
       run: yarn test:prettier
