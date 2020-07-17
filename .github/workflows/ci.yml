@@ -10,8 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: node:10.18-jessie
-    env:
-      TEST_DATABASE_URL: postgresql://prime:prime@localhost:5432/prime-test
 
     services:
       postgres:
@@ -59,5 +57,6 @@ jobs:
     - name: Collect Coverage
       uses: tangro/actions-coverage@1.1.2
       env:
+        TEST_DATABASE_URL: postgresql://prime:prime@localhost:5432/prime-test
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_CONTEXT: ${{ toJson(github) }}
