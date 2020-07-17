@@ -32,12 +32,7 @@ describe('InternalModule', () => {
     const container = Container.of(requestId);
     context = { requestId, container, user, session: { user } };
     container.set('context', context);
-
-    await connection.dropDatabase();
-    await connection.synchronize();
-
-    // settle db connection
-    await new Promise(r => setTimeout(r, 1000));
+    await connection.synchronize(true);
   });
 
   afterAll(() => connection.close());

@@ -17,8 +17,8 @@
     "testonly": "lerna run testonly",
     "test:prettier": "prettier --list-different \"**/*.{json,md,js,jsx,ts,tsx}\"",
     "prettier": "prettier --write \"**/*.{json,md,js,jsx,ts,tsx}\"",
-    "coverage": "yarn run jest --coverage",
-    "coverage:collect": "yarn coverage --coverageReporters=\"json\" --coverageReporters=\"json-summary\" --coverageReporters=\"lcov\" --coverageReporters=\"text\"",
+    "coverage": "yarn run jest --coverage --runInBand",
+    "coverage:collect": "yarn coverage --ci --coverageReporters=\"json\" --coverageReporters=\"json-summary\" --coverageReporters=\"lcov\" --coverageReporters=\"text\"",
     "codecov": "codecov",
     "reset": "yarn clean && yarn install && yarn setup && yarn compile",
     "docs": "typedoc --readme none --mode modules --out docs/api --ignoreCompilerErrors --excludeExternals --external-modulemap  \".*(packages/[^/]+)/.*\" --logger none --name \"Prime CMS\" ./packages"

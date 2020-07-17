@@ -29,18 +29,10 @@ describe('InternalModule', () => {
 
   beforeAll(async () => {
     connection = await connect(process.env.TEST_DATABASE_URL);
-
-    await connection.dropDatabase();
-    await connection.synchronize();
-
-    // settle db connection
-    await new Promise(r => setTimeout(r, 1000));
+    await connection.synchronize(true);
 
     internal = await createInternal(connection);
     external = await createExternal(connection);
-
-    // settle graphql-modules
-    await new Promise(r => setTimeout(r, 1000));
 
     const onboard = await query(
       gql`
