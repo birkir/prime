@@ -44,11 +44,20 @@ jobs:
     - name: Install Dependencies
       run: yarn install --frozen-lockfile
 
-    - name: Bootstrap packages with lerna
+    - name: Bootstrap packages
       run: yarn run lerna bootstrap
 
-    - name: Lint the codebase
+    - name: Run code linting
       run: yarn lint:ci
 
-    - name: Compile codebase
+    - name: Run prettier
+      run: yarn test:prettier
+
+    - name: Compile
       run: yarn compile
+
+    - name: Collect Coverage
+      uses: tangro/actions-coverage@1.1.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}

@@ -1,6 +1,7 @@
 import { AccountsModule } from '@accounts/graphql-api';
 import AccountsPassword from '@accounts/password';
 import { UserEmail } from '@accounts/typeorm';
+import { ForbiddenError } from '@casl/ability';
 import GraphQLJSON from 'graphql-type-json';
 import { Arg, Args, Ctx, FieldResolver, ID, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Repository } from 'typeorm';
@@ -133,7 +134,7 @@ export class UserResolver {
     const user = await this.userRepository.findOneOrFail(id);
     const meta = await user.meta();
     meta.profile = input.profile;
-    context.ability.throwUnlessCan('update', user);
+    ForbiddenError.from(context.ability).throwUnlessCan('update', user);
     await this.userRepository.save(user);
     await this.userMetaRepository.save(meta);
     processWebhooks('user.updated', { user });
@@ -147,7 +148,7 @@ export class UserResolver {
     @Ctx() context: Context
   ) {
     const user = await this.userRepository.findOneOrFail(id);
-    context.ability.throwUnlessCan('delete', user);
+    ForbiddenError.from(context.ability).throwUnlessCan('delete', user);
     await this.userRepository.remove(user);
     processWebhooks('user.removed', { user });
     return true;

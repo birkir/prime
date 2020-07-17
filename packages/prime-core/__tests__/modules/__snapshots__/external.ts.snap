@@ -12,15 +12,6 @@ Array [
   },
   Object {
     "defaultOptions": Object {
-      "default": false,
-      "label": "",
-    },
-    "description": "Boolean field",
-    "title": "Boolean",
-    "type": "boolean",
-  },
-  Object {
-    "defaultOptions": Object {
       "time": true,
     },
     "description": "Date and time field",

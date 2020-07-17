@@ -24,6 +24,7 @@ describe('InternalModule', () => {
     queries = internal.resolvers.Query;
     user = getRepository(User).create({ username: 'test ' });
     info = { session: { user } };
+    await new Promise(r => setTimeout(r, 1000));
   });
 
   beforeEach(async () => {
@@ -34,6 +35,9 @@ describe('InternalModule', () => {
 
     await connection.dropDatabase();
     await connection.synchronize();
+
+    // settle db connection
+    await new Promise(r => setTimeout(r, 1000));
   });
 
   afterAll(() => connection.close());
