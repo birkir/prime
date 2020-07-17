@@ -91,7 +91,6 @@
     lodash "^4.17.15"
     reflect-metadata "^0.1.13"
     tslib "1.11.2"
-    typeorm "^0.2.22"
 
 "@accounts/types@^0.19.0":
   version "0.19.0"
@@ -18835,6 +18834,7 @@ typeorm-typedi-extensions@^0.2.0:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/typeorm-typedi-extensions/-/typeorm-typedi-extensions-0.2.3.tgz#94fca2656206d771bf6d2242f5aab570511188e8"
   integrity sha512-T9i1NvRZNjPn9Jb8oT772ihfn6PwdqDVpzPCtKSqjkZGOgXrCkdyD3dDrzfMaoWJ1afU58bVx2CMb95FzT42Ow==
+
 
 typeorm@0.2.25, typeorm@^0.2.21, typeorm@^0.2.22:
   version "0.2.25"

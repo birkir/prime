@@ -9,7 +9,7 @@
     "link": "lerna exec -- yarn link",
     "unlink": "lerna exec -- yarn unlink",
     "clean": "lerna run clean && rimraf {.cache,node_modules,reports,packages/**/{node_modules,lib,build,coverage},yarn.lock}",
-    "compile": "lerna run compile",
+    "compile": "lerna run compile --stream",
     "lint": "tslint ./packages/*/{src,__tests__}/*.{ts,tsx}",
     "publish": "lerna publish prerelease",
     "publish:canary": "lerna publish --canary",
