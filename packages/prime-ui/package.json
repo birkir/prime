@@ -12,7 +12,7 @@
   "scripts": {
     "prepublishOnly": "yarn compile",
     "dev": "cross-env SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
-    "compile": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
+    "compile2": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
