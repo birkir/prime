@@ -54,10 +54,15 @@ jobs:
     - name: Compile
       run: yarn compile
 
-    - name: Collect Coverage
-      uses: tangro/actions-coverage@1.1.2
+    - name: Test
+      run: yarn coverage --ci
       env:
         TEST_DATABASE_URL: postgresql://prime:prime@postgres:5432/prime-test
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_CONTEXT: ${{ toJson(github) }}
         NODE_OPTIONS: --max_old_space_size=4096
+
+    - name: Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/coverage-final.json
+        fail_ci_if_error: false
