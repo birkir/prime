@@ -69,6 +69,7 @@
     jwt-decode "2.2.0"
     lodash "4.17.15"
     tslib "1.11.2"
+    typeorm "^0.2.22"
 
 "@accounts/two-factor@^0.27.0":
   version "0.27.0"
