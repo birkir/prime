@@ -29,8 +29,8 @@ jobs:
       - run: yarn run lerna bootstrap
       - run: yarn lint:ci
       - run: yarn compile
-      - run: yarn coverage:ci
       - run: yarn test:prettier
+      - run: yarn coverage:ci
       - run: yarn codecov
       - run:
           name: Copy artifacts

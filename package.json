@@ -46,6 +46,9 @@
       "git add"
     ]
   },
+  "resolutions": {
+    "typeorm": "0.2.25"
+  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5",

@@ -1,7 +1,7 @@
 import { AccountsModule } from '@accounts/graphql-api';
 import { AccountsPassword } from '@accounts/password';
 import { AccountsServer } from '@accounts/server';
-import { AccountsTypeorm } from '@accounts/typeorm';
+import { AccountsTypeorm, User } from '@accounts/typeorm';
 import Mailgun from 'mailgun-js';
 import { Connection } from 'typeorm';
 
@@ -23,7 +23,7 @@ export const createAccounts = async (connection: Connection) => {
     cache: 1000,
   });
 
-  const password = new AccountsPassword({
+  const password = new AccountsPassword<User>({
     twoFactor: {
       appName: 'Prime',
     },
