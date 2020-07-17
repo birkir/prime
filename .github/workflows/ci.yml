@@ -60,3 +60,4 @@ jobs:
         TEST_DATABASE_URL: postgresql://prime:prime@postgres:5432/prime-test
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_CONTEXT: ${{ toJson(github) }}
+        NODE_OPTIONS: --max_old_space_size=4096
