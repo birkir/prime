@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-geopoint",
-  "version": "0.3.4-beta.2",
+  "version": "0.3.4-beta.3",
   "description": "GeoPoint Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-geopoint",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-geopoint"
   },
   "dependencies": {
-    "@primecms/field": "^0.3.4-beta.2",
+    "@primecms/field": "^0.3.4-beta.3",
     "antd": "^3.23.0",
     "graphql": "^14.5.0",
     "leaflet": "^1.5.0",
