@@ -12,7 +12,7 @@
   "scripts": {
     "prepublishOnly": "yarn compile",
     "dev": "cross-env SKIP_PREFLIGHT_CHECK=true react-app-rewired start",
-    "compile2": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
+    "compile": "cross-env SKIP_PREFLIGHT_CHECK=true PUBLIC_URL=/ react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -83,5 +83,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+  "gitHead": "e8b82b591c3203c1d20cdfa9f5361f9329923caa"
 }
