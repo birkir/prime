@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.2](https://github.com/birkir/prime/tree/master/packages/prime-field-string/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Bug Fixes
+
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-string/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-string/commit/b560249))
+- packages/prime-field-string/package.json to reduce vulnerabilities ([#306](https://github.com/birkir/prime/tree/master/packages/prime-field-string/issues/306)) ([5512199](https://github.com/birkir/prime/tree/master/packages/prime-field-string/commit/5512199))
+
+### Features
+
+- circleci vs gh actions ([3b4017e](https://github.com/birkir/prime/tree/master/packages/prime-field-string/commit/3b4017e))
+- query string field with IN ([#195](https://github.com/birkir/prime/tree/master/packages/prime-field-string/issues/195)) ([0b0e76c](https://github.com/birkir/prime/tree/master/packages/prime-field-string/commit/0b0e76c))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-string/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

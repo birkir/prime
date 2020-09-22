@@ -1,6 +1,6 @@
 {
   "name": "@primecms/field-select",
-  "version": "0.3.4-beta.1",
+  "version": "0.3.4-beta.2",
   "description": "Select Field for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field-select",
@@ -33,7 +33,7 @@
     "url": "https://github.com/birkir/prime/tree/master/packages/prime-field-select"
   },
   "dependencies": {
-    "@primecms/field": "^0.3.4-beta.1",
+    "@primecms/field": "^0.3.4-beta.2",
     "antd": "^3.23.0",
     "graphql": "^14.5.0",
     "lodash": "^4.17.0",

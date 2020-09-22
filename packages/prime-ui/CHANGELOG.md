@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.2](https://github.com/birkir/prime/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Bug Fixes
+
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/issues/271)) ([b560249](https://github.com/birkir/prime/commit/b560249))
+- moves profile prop inside meta prop ([#252](https://github.com/birkir/prime/issues/252)) ([a16f670](https://github.com/birkir/prime/commit/a16f670))
+- update WebhookCalls graphql query to no longer cause a syntax error ([#459](https://github.com/birkir/prime/issues/459)) ([8488112](https://github.com/birkir/prime/commit/8488112))
+
+### Features
+
+- **ui:** optimize load in document list and small fixes ([#404](https://github.com/birkir/prime/issues/404)) ([a9d8476](https://github.com/birkir/prime/commit/a9d8476))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

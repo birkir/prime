@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.2](https://github.com/birkir/prime/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Bug Fixes
+
+- add isomorphic-fetch to webhook ([#323](https://github.com/birkir/prime/issues/323)) ([9b58604](https://github.com/birkir/prime/commit/9b58604))
+- correct context ([6c6e715](https://github.com/birkir/prime/commit/6c6e715))
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/issues/271)) ([b560249](https://github.com/birkir/prime/commit/b560249))
+- moves profile prop inside meta prop ([#252](https://github.com/birkir/prime/issues/252)) ([a16f670](https://github.com/birkir/prime/commit/a16f670))
+- prevent multiple chained graphql queries from cobbling context ([#263](https://github.com/birkir/prime/issues/263)) ([c3a62b8](https://github.com/birkir/prime/commit/c3a62b8))
+- typeorm dep ([e6419d3](https://github.com/birkir/prime/commit/e6419d3))
+- update accounts-js ([6ef2d99](https://github.com/birkir/prime/commit/6ef2d99))
+- user meta is not a function error ([#462](https://github.com/birkir/prime/issues/462)) ([2e94286](https://github.com/birkir/prime/commit/2e94286))
+- **core:** bug with slices sorting ([#391](https://github.com/birkir/prime/issues/391)) ([b3a09cc](https://github.com/birkir/prime/commit/b3a09cc))
+- **deps:** update dependency class-validator to v0.10.1 ([e1479e0](https://github.com/birkir/prime/commit/e1479e0))
+
+### Features
+
+- **core:** create intial document releasing cron ([#463](https://github.com/birkir/prime/issues/463)) ([dddfe34](https://github.com/birkir/prime/commit/dddfe34))
+- circleci vs gh actions ([3b4017e](https://github.com/birkir/prime/commit/3b4017e))
+- **ui:** optimize load in document list and small fixes ([#404](https://github.com/birkir/prime/issues/404)) ([a9d8476](https://github.com/birkir/prime/commit/a9d8476))
+- query string field with IN ([#195](https://github.com/birkir/prime/issues/195)) ([0b0e76c](https://github.com/birkir/prime/commit/0b0e76c))
+- **query:** add possibility to filter query by subdocuments id ([#282](https://github.com/birkir/prime/issues/282)) ([783ee1b](https://github.com/birkir/prime/commit/783ee1b))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes
