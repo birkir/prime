@@ -45,7 +45,7 @@
     ]
   },
   "resolutions": {
-    "typeorm": "0.2.25",
+    "typeorm": "0.2.26",
     "class-validator": "0.10.1"
   },
   "prettier": {

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.3](https://github.com/birkir/prime/tree/master/packages/prime-field/compare/v0.3.4-beta.2...v0.3.4-beta.3) (2020-09-22)
+
+### Features
+
+- beta ([159299e](https://github.com/birkir/prime/tree/master/packages/prime-field/commit/159299e))
+
+## [0.3.4-beta.2](https://github.com/birkir/prime/tree/master/packages/prime-field/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Features
+
+- circleci vs gh actions ([3b4017e](https://github.com/birkir/prime/tree/master/packages/prime-field/commit/3b4017e))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

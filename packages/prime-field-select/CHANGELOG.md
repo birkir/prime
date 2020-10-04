@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.3](https://github.com/birkir/prime/tree/master/packages/prime-field-select/compare/v0.3.4-beta.2...v0.3.4-beta.3) (2020-09-22)
+
+### Features
+
+- beta ([159299e](https://github.com/birkir/prime/tree/master/packages/prime-field-select/commit/159299e))
+
+## [0.3.4-beta.2](https://github.com/birkir/prime/tree/master/packages/prime-field-select/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Bug Fixes
+
+- **field-select:** [#354](https://github.com/birkir/prime/tree/master/packages/prime-field-select/issues/354) return iterable value ([#355](https://github.com/birkir/prime/tree/master/packages/prime-field-select/issues/355)) ([e40772d](https://github.com/birkir/prime/tree/master/packages/prime-field-select/commit/e40772d))
+- **field-select:** [#354](https://github.com/birkir/prime/tree/master/packages/prime-field-select/issues/354) return type is always GraphQLList ([#362](https://github.com/birkir/prime/tree/master/packages/prime-field-select/issues/362)) ([d7c1cd8](https://github.com/birkir/prime/tree/master/packages/prime-field-select/commit/d7c1cd8))
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-select/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-select/commit/b560249))
+
+### Features
+
+- circleci vs gh actions ([3b4017e](https://github.com/birkir/prime/tree/master/packages/prime-field-select/commit/3b4017e))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-select/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

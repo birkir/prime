@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.4-beta.3](https://github.com/birkir/prime/tree/master/packages/prime-field-document/compare/v0.3.4-beta.2...v0.3.4-beta.3) (2020-09-22)
+
+### Features
+
+- beta ([159299e](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/159299e))
+
+## [0.3.4-beta.2](https://github.com/birkir/prime/tree/master/packages/prime-field-document/compare/v0.3.4-beta.1...v0.3.4-beta.2) (2020-09-22)
+
+### Bug Fixes
+
+- add an empty array fallback for fields with multiple documents type ([#300](https://github.com/birkir/prime/tree/master/packages/prime-field-document/issues/300)) ([63fad25](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/63fad25))
+- allow document selector to be cleared ([#274](https://github.com/birkir/prime/tree/master/packages/prime-field-document/issues/274)) ([f44ae0e](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/f44ae0e))
+- make dev environment run on windows ([#271](https://github.com/birkir/prime/tree/master/packages/prime-field-document/issues/271)) ([b560249](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/b560249))
+- packages/prime-field-document/.snyk & packages/prime-field-document/package.json to reduce vulnerabilities ([#256](https://github.com/birkir/prime/tree/master/packages/prime-field-document/issues/256)) ([7a6b090](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/7a6b090))
+
+### Features
+
+- circleci vs gh actions ([3b4017e](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/3b4017e))
+- **query:** add possibility to filter query by subdocuments id ([#282](https://github.com/birkir/prime/tree/master/packages/prime-field-document/issues/282)) ([783ee1b](https://github.com/birkir/prime/tree/master/packages/prime-field-document/commit/783ee1b))
+
 ## [0.3.4-beta.1](https://github.com/birkir/prime/tree/master/packages/prime-field-document/compare/v0.3.4-beta.0...v0.3.4-beta.1) (2019-06-10)
 
 ### Bug Fixes

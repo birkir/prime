@@ -1,7 +1,7 @@
 {
   "name": "@primecms/field",
   "private": false,
-  "version": "0.3.4-beta.1",
+  "version": "0.3.4-beta.3",
   "description": "Field Base for Prime CMS",
   "author": "Birkir Gudjonsson <birkir.gudjonsson@gmail.com>",
   "homepage": "https://github.com/birkir/prime/tree/master/packages/prime-field",
@@ -48,5 +48,5 @@
     "lodash": "^4.17.0",
     "react": "^16.9.0"
   },
-  "gitHead": "f00baf08a686c40cd5cc34fa4facdacf605b7e0c"
+  "gitHead": "e8b82b591c3203c1d20cdfa9f5361f9329923caa"
 }
