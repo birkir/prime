@@ -61,7 +61,7 @@
     "mobx-devtools-mst": "0.9.21",
     "mobx-react": "6.1.4",
     "mobx-state-tree": "3.15.0",
-    "moment": "2.24.0",
+    "moment": "2.29.2",
     "rc": "1.2.8",
     "react": "16.9.0",
     "react-apollo": "3.1.3",
